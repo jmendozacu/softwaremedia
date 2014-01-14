@@ -1,0 +1,55 @@
+<?php 
+$root_id = Mage::app()->getStore()->getRootCategoryId();
+$root_category = Mage::getModel('catalog/category')->load(66);
+$categoryIds = $root_category->getChildren();
+?>
+<div class="all-brands">
+		
+        <div class="alphabet">
+            <a class="first" href="#">A</a>
+            <a href="#">B</a>
+            <a href="#">C</a>
+            <a href="#">D</a>
+            <a href="#">E</a>
+            <a href="#">F</a>
+            <a href="#">G</a>
+            <a href="#">H</a>
+            <a href="#">I</a>
+            <a href="#">J</a>
+            <a href="#">K</a>
+            <a href="#">L</a>
+            <a href="#">M</a>
+            <a href="#">N</a>
+            <a href="#">O</a>
+            <a href="#">P</a>
+            <a href="#">Q</a>
+            <a href="#">R</a>
+            <a href="#">S</a>
+            <a href="#">T</a>
+            <a href="#">U</a>
+            <a href="#">V</a>
+            <a href="#">W</a>
+            <a href="#">X</a>
+            <a href="#">Y</a>
+            <a class="last" href="#">Z</a>
+        </div>
+        <div id="brandsList">
+            <div id="brands-table">
+                <div>
+					<ul>
+                        <?php
+                            $cat_col = Mage::getModel('catalog/category')
+                                ->getCollection()
+                                ->addAttributeToSelect('name')
+                                ->addAttributeToFilter(array(array('attribute' => 'parent_id', 'eq' => '66'), array('attribute' => 'parent_id', 'eq' => '110')))
+                                ->addAttributeToSort('name');
+
+                            foreach ($cat_col as $cat) :
+                                echo "<li><a href='{$cat->getUrl()}'>{$cat->getName()}</a></li>";
+                            endforeach; 
+                        ?>
+					</ul>
+                </div>
+            </div>
+        </div>
+</div>

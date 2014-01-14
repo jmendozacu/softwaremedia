@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <ocm translate="label" module="etilize">
+            <label>Etilize</label>
+            <sort_order>100</sort_order>
+        </ocm>
+    </tabs>
+    <sections>
+    <ocm translate="label" module="etilize">
+            <label>Etilize</label>
+            <tab>ocm</tab>
+            <sort_order>1000</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            
+            <groups>
+                <ocm_group translate="label" module="etilize">
+                    <label>Etilize Configuration Options</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+ 
+                    <fields>
+                        <spex_catalogid translate="label">
+                            <label>Spex Catalog ID: </label>
+                            <comment>This is provided by your Etilze account manager</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </spex_catalogid>
+                    </fields>
+                </ocm_group>
+            </groups>
+        </ocm>
+    </sections>
+</config>
+    

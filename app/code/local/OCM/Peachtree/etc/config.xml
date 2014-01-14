@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OCM_Peachtree>
+            <version>0.1.0</version>
+        </OCM_Peachtree>
+    </modules>
+    <admin>
+        <routers>
+			<adminhtml>
+				<args>
+    				<modules>
+                        <peachtree before="Mage_Adminhtml">OCM_Peachtree_Adminhtml</peachtree>
+    				</modules>
+				</args>
+			</adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+		<menu>
+		  <sales>
+		      <children>
+			<peachtree module="peachtree">
+				<title>Peachtree Export</title>
+				<sort_order>71</sort_order>               
+				<action>adminhtml/peachtree</action>
+			</peachtree>
+		      </children>
+		  </sales>
+		</menu>
+		<acl>
+			<resources>
+				<all>
+					<title>Allow Everything</title>
+				</all>
+				<admin>
+					<children>
+            		  <sales>
+            		      <children>
+    						<OCM_Peachtree>
+    							<title>Peachtree Export</title>
+    							<sort_order>71</sort_order>
+    						</OCM_Peachtree>
+            		      </children>
+            		  </sales>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+		<layout>
+			<updates>
+				<peachtree>
+					<file>peachtree.xml</file>
+				</peachtree>
+			</updates>
+		</layout>
+    </adminhtml>   
+    <global>
+    
+
+        <models>
+            <peachtree>
+                <class>OCM_Peachtree_Model</class>
+                <resourceModel>peachtree_mysql4</resourceModel>
+            </peachtree>
+            <peachtree_mysql4>
+                <class>OCM_Peachtree_Model_Mysql4</class>
+                <entities>
+                    <ocm_peachtree_referer>
+                        <table>ocm_peachtree_referer</table>
+                    </ocm_peachtree_referer>
+                </entities>
+            </peachtree_mysql4>
+        </models>
+        <resources>
+            <ocm_peachtree_setup>
+                <setup>
+                    <module>OCM_Peachtree</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </ocm_peachtree_setup>
+            <peachtree_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </peachtree_write>
+            <peachtree_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </peachtree_read>
+        </resources>
+
+
+
+        <blocks>
+            <peachtree>
+                <class>OCM_Peachtree_Block</class>
+            </peachtree>
+        </blocks>
+        <helpers>
+            <peachtree>
+                <class>OCM_Peachtree_Helper</class>
+            </peachtree>
+        </helpers>
+        
+        <events>
+            <controller_action_layout_render_before>
+                <observers>
+                    <ocm_peachtree_referer_cookie>
+                        <class>OCM_Peachtree_Model_Observer</class>
+                        <method>setRefererCookie</method>
+                    </ocm_peachtree_referer_cookie>
+                </observers>
+            </controller_action_layout_render_before>
+            <sales_order_place_after>
+                <observers>
+                    <ocm_peachtree_referer_save>
+                        <class>OCM_Peachtree_Model_Observer</class>
+                        <method>saveRefererId</method>
+                    </ocm_peachtree_referer_save>
+                </observers>
+            </sales_order_place_after>
+        </events>
+        
+    </global>
+</config>

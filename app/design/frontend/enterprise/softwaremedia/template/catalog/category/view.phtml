@@ -1,0 +1,56 @@
+<?php
+$_helper = $this->helper('catalog/output');
+$_category = $this->getCurrentCategory();
+$_imgHtml = '';
+if ($_imgUrl = $_category->getImageUrl()) {
+    $_imgHtml = '<p class="category-image"><img src="' . $_imgUrl . '" alt="' . $this->htmlEscape($_category->getName()) . '" title="' . $this->htmlEscape($_category->getName()) . '" /></p>';
+    $_imgHtml = $_helper->categoryAttribute($_category, $_imgHtml, 'image');
+}
+?>
+<?php echo $this->getChildHtml("category.title");?>
+<!--
+<script type="text/javascript">
+    jQuery(window).load(function() {
+        jQuery('#main-banner').nivoSlider({
+            effect: 'fade', // Specify sets like: 'fold,fade,sliceDown'
+            animSpeed: 500, // Slide transition speed
+            pauseTime: 3000, // How long each slide will show
+            startSlide: 0, // Set starting Slide (0 index)
+            directionNav: false, // Next & Prev navigation
+            controlNav: false, // 1,2,3... navigation
+            controlNavThumbs: false, // Use thumbnails for Control Nav
+            pauseOnHover: false, // Stop animation while hovering
+            manualAdvance: false // Force manual transitions
+
+        });
+    });
+</script>
+-->
+
+<?php echo $this->getMessagesBlock()->toHtml() ?>
+<div class="category-view">
+    <?php if ($_imgUrl): ?>
+        <?php echo $_imgHtml ?>
+    <?php endif; ?>
+
+    <?php if ($this->isContentMode()): ?>
+        <?php echo $this->getCmsBlockHtml() ?>
+
+    <?php elseif ($this->isMixedMode()): ?>
+        <?php echo $this->getCmsBlockHtml() ?>
+        <?php if ($_description = $this->getCurrentCategory()->getDescription()): ?>
+			<div class="f-fix category-desc">
+			    <p><?php echo $_helper->categoryAttribute($_category, $_description, 'description') ?></p>
+			</div>
+		<?php endif; ?>
+        <?php echo $this->getProductListHtml() ?>
+
+    <?php else: ?>
+    	<?php if ($_description = $this->getCurrentCategory()->getDescription()): ?>
+		<div class="f-fix category-desc">
+		    <p><?php echo $_helper->categoryAttribute($_category, $_description, 'description') ?></p>
+		</div>
+		<?php endif; ?>
+        <?php echo $this->getProductListHtml() ?>
+    <?php endif; ?>
+</div>

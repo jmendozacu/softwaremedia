@@ -1,0 +1,144 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+
+<?php
+$_product    = $this->getProduct();
+$_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
+?>
+<?php if ($_product->isSaleable() && count($_attributes)):?>
+    <?php foreach($_attributes as $_attribute): ?>
+    <dl>
+        <dt><label class="required"><em>*</em><?php echo $_attribute->getLabel() ?></label></dt>
+        <dd<?php if ($_attribute->decoratedIsLast){?> class="last"<?php }?>>
+            <div class="input-box">
+                <select onchange="updateUniform(); return changeSku(<?php echo $_attribute->getAttributeId() ?>, this);" name="super_attribute[<?php echo $_attribute->getAttributeId() ?>]" id="attribute<?php echo $_attribute->getAttributeId() ?>" class="required-entry super-attribute-select">
+                	<?php if ($_product->getData('delivery_option')): ?>
+                	<option><?php echo $this->__('Download...') ?></option>
+                	<?php else: ?>
+                    <option><?php echo $this->__('Choose an Option...') ?></option>
+                    <?php endif; ?>
+                  </select>
+              </div>
+        </dd>
+    </dl>
+    <?php endforeach; ?>
+    <script type="text/javascript">
+        function updateUniform(){
+            setTimeout("jQuery.uniform.update();",500);
+        }
+        var spConfig = new Product.Config(<?php echo $this->getJsonConfig() ?>);
+        var extra_config = <?php echo $this->getExtraJson() ?>;
+    </script>
+<?php endif;?>
+
+<?php
+$conf = Mage::getModel('catalog/product_type_configurable')->setProduct($_product);
+$col = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
+
+$productMap = array();
+foreach($col as $simpleProduct){
+    $productMap[$simpleProduct->getId()] = $simpleProduct->getSku();
+}
+?>
+
+<script type="text/javascript">
+
+document.observe("dom:loaded", function() {
+  $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
+});
+
+function changeSku(confAttributeId, sel) {
+/*    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
+    var selectedAttributeId = sel.options[sel.selectedIndex].value;
+    if (selectedAttributeId) {
+        var options = spConfig.config.attributes[confAttributeId].options;
+        var productId = options.find(function (option) {return option.id == selectedAttributeId}).products[0]
+        $("sku-container").update("<strong>Part Number: </strong>" + productMap[productId]);
+    } else {
+        $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
+    }*/
+}
+
+jQuery(document).ready(function(){
+    if(location.search) {
+        var attr = location.search.substring(1)//window.location.hash.substring(1)
+        attr = attr.split('&');
+        for (var i=0; i<attr.length; i++) {
+            values = attr[i].split('=');
+            //console.log(values);
+            a = 'attribute'+values[0];
+            o = $$('#'+a+' option');
+            //console.log(o);
+            for (var si = 0; si < o.length; si++) {
+                //console.log(o[si].value+' '+values[1]);
+                if(o[si].value == values[1] ) {
+                    //console.log(a+' '+si);
+                    $(a).selectedIndex = si;
+                   spConfig.configureElement($(a));
+                   jQuery('#uniform-'+a+' span').text(o[si].text);
+                }
+            }
+        }
+    } else {
+    
+            <?php //default to downlowdable if possible ?>
+            a = 'attribute1055';
+            o = $$('#'+a+' option');
+            for (var si = 0; si < o.length; si++) {
+                //console.log(o[si].value+' '+'420');
+                if(o[si].value == 420 ) {
+                    //console.log(a+' '+si);
+                    $(a).selectedIndex = si;
+                   spConfig.configureElement($(a));
+                   jQuery('#uniform-'+a+' span').text(o[si].text);
+                }
+            }
+    }
+})
+
+var updateHash = function() {
+    var ss = $$('.super-attribute-select');
+    var hash = Array();
+    for (var i=0; i<ss.length; i++) {
+        var attr = ss[i].id.replace('attribute','');
+        var sel = ss[i].options[ ss[i].selectedIndex ].value;
+        if(sel != '') {
+            var qstr = attr+'='+sel;
+            hash.push(qstr);
+        }
+    }
+    hash = '?'+hash.join('&');
+    //window.location.hash = hash;
+    window.history.pushState('', document.title, window.location.href.split('?')[0]+hash);
+}
+
+
+jQuery('.super-attribute-select').change(function() {
+    updateHash();
+});
+
+</script>

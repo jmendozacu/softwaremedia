@@ -1,0 +1,7 @@
+<layout version="0.1.0"> 
+    <default>
+        <reference name="left"> 
+            <block type="advancedstaticleftnav/tree" name="advancedleft" after="-" template="advancedstaticleftnav/tree.phtml"></block>
+        </reference>  
+    </default>
+</layout>

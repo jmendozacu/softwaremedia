@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <adminhtml_sales_licenseorder_index>
+        <reference name="content">
+            <block type="ocm_fullfilment/adminhtml_licenseorder" name="adminhtml_licenseorder" />
+        </reference>
+    </adminhtml_sales_licenseorder_index>
+
+    <adminhtml_sales_licenseorder_grid>
+        <update handle="formkey"/>
+        <block type="ocm_fullfilment/adminhtml_sales_licenseorder_grid" name="sales_licenseorder.grid" output="toHtml"/>
+    </adminhtml_sales_licenseorder_grid>
+</layout>

@@ -1,0 +1,189 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Top menu for store
+ *
+ * @see Mage_Page_Block_Html_Topmenu
+ */
+?>
+<?php
+$root_id = Mage::app()->getStore()->getRootCategoryId();
+$root_category = Mage::getModel('catalog/category')->load($root_id);
+$categoryIds = $root_category->getChildren();
+$categorySoftware = $root_category->getChildren() == '51';
+
+$attributeCode = 'brand';
+$_product = Mage::getModel('catalog/product');
+$_attributes = Mage::getResourceModel('eav/entity_attribute_collection')
+        ->setEntityTypeFilter($_product->getResource()->getTypeId())
+        ->addFieldToFilter('attribute_code', $attributeCode);
+$_attribute = $_attributes->getFirstItem()->setEntity($_product->getResource());
+$attributeOptions = $_attribute->getSource()->getAllOptions(false);
+$children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getStore()->getRootCategoryId());
+?>
+
+<div class="nav-container">
+    <ul id="nav">
+        <?php foreach (explode(',', $categoryIds) as $sub_catId): ?>
+            <?php $sub_cat = Mage::getModel('catalog/category')->load($sub_catId); ?>
+            <?php if ($sub_cat->getIncludeInMenu()): ?>
+                <li class="level0 nav-1 first level-top parent">
+                    <?php if ($sub_cat->getName() != 'Top Deals'): ?>
+                        <a class="level-top"><span><?php echo $sub_cat->getName() ?></span></a>
+						<?php if ($sub_cat->getName() == 'Download'): ?>
+                        <div class="sub-navigation software download" style="display: none">
+                        <?php else: ?>
+                        <div class="sub-navigation software" style="display: none">
+                        
+                            <?php endif; ?>
+                            <!-- Brand-->
+                            <?php if ($sub_cat->getName() == 'Software'): ?>
+                            <dl class="brand-menu">
+                                <dt>brand</dt>
+                                <dd class="brand-menu-ul">
+                                	<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('brand-dropdown-nav')->toHtml(); ?> 
+                                    <?php /*<ol>
+                                        <?php $i = 0; ?>
+                                        <?php foreach ($attributeOptions as $option): ?>
+                                            <?php $i++; ?>
+                                            <li class="brand-menu-title">
+                                                <a href="<?php echo Mage::helper('amshopby/url')->getFullUrl(array($attributeCode => $option['value']), false, $sub_cat); ?>"><?php echo $option['label'] ?></a>
+                                            </li>
+                                            <?php
+                                            if ($i == 15) {
+                                                break;
+                                            }
+                                            ?>
+                                        <?php endforeach; ?>
+                                        <li class="categories-menu-end"><a href="<?php echo $this->getUrl(); ?>brands">View all brands</a></li>
+                                    </ol> */?>
+                                </dd>
+                            </dl>
+                            <?php elseif ($sub_cat->getName() == 'Download'): ?>
+                            <dl class="brand-menu">
+                                <dt></dt>
+                                <dd class="brand-menu-ul">
+                                </dd>
+                            </dl>
+
+                            <?php endif; ?>
+                            <!-- End.Brand-->
+
+                            <!-- Categories-->
+                            
+                            	<?php if ($sub_cat->getName() == 'Software'): ?>
+                            	<dl class="categories-menu">
+                                <dt>software</dt>
+                                <dd class="categories-menu-ul software-list">
+                                    <?php $all_child_categoryIds = Mage::getModel('catalog/category')->getResource()->getChildrenCategories($sub_cat); ?>
+                                    
+                                    <?php if (count($all_child_categoryIds) > 1): ?>
+                                        <ol>
+                                            <?php foreach ($all_child_categoryIds as $cat) : ?>
+                                                <li class="category-menu-title">
+                                                    <a href="<?php echo $cat->getUrl() ?>">
+                                                        <span><?php echo $cat->getName() ?></span>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach ?>
+                                        </ol>
+                                    <?php else: ?>
+                                        &nbsp;
+                                    <?php endif; ?>
+                                </dd>
+
+                                <?php elseif ($sub_cat->getName() == 'Licensing'): ?>
+                                <dl class="categories-menu licensing-menu">
+                                <dt>licensing</dt>
+                                <dd class="categories-menu-ul licensing-list">
+                                    <?php $all_child_categoryIds = Mage::getModel('catalog/category')->getResource()->getChildrenCategories($sub_cat); ?>
+                                    
+                                    <?php if (count($all_child_categoryIds) > 1): ?>
+                                        <ol>
+                                            <?php foreach ($all_child_categoryIds as $cat) : ?>
+                                                <li class="category-menu-title">
+                                                    <a href="<?php echo $cat->getUrl() ?>">
+                                                        <span><?php echo $cat->getName() ?></span>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach ?>
+                                        </ol>
+                                    <?php else: ?>
+                                        &nbsp;
+                                    <?php endif; ?>
+                                </dd>
+
+                                <?php elseif ($sub_cat->getName() == 'Download'): ?>
+                                <dl class="categories-menu download-menu">
+                                <dt>download</dt> 
+                                <dd class="categories-menu-ul download-list">
+                                    <?php $all_child_categoryIds = Mage::getModel('catalog/category')->getResource()->getChildrenCategories($sub_cat); ?>
+                                    <?php if (count($all_child_categoryIds) > 1): ?>
+                                        <ol>
+                                            <?php foreach ($all_child_categoryIds as $cat) : ?>
+                                                <li class="category-menu-title">
+                                                    <a href="<?php echo $cat->getUrl() ?>">
+                                                        <span><?php echo $cat->getName() ?></span>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach ?>
+                                        </ol>
+                                    <?php else: ?>
+                                        &nbsp;
+                                    <?php endif; ?>
+                                </dd>
+
+                                <?php endif; ?>
+                            </dl>
+                            <!-- End.Categories-->
+
+                            <!-- Other-->
+                            <dl class="other-menu">
+                                <dt>other</dt>
+                                <dd class="other-menu-ul">
+                                	<?php if ($sub_cat->getName() == 'Software'): ?>
+										<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('other-dropdown-software')->toHtml(); ?> 
+									<?php elseif ($sub_cat->getName() == 'Licensing'): ?>  
+										<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('other-dropdown-licensing')->toHtml(); ?> 
+									<?php elseif ($sub_cat->getName() == 'Download'): ?>  
+										<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('other-dropdown-download')->toHtml(); ?> 
+									<?php endif; ?>            
+                                </dd>
+                            </dl>
+                            <!-- End.Other-->
+                        </div>
+                    <?php else: ?>
+                        <a class="level-top" href="<?php echo $sub_cat->getUrl() ?>">
+                            <span><?php echo $sub_cat->getName() ?></span>
+                        </a>
+                    <?php endif; ?>
+                </li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </ul>
+</div>

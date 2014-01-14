@@ -1,0 +1,61 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php /* @var $this Mage_Catalog_Block_Product_View_Abstract */?>
+<?php $_product = $this->getProduct() ?>
+<?php
+$_coreHelper = $this->helper('core');
+if($_product->isConfigurable()) {
+    $sku = $_product->getSku();
+    $configs = $this->getAllowProducts();
+    $simple = null;
+    $lowest_price = PHP_INT_MAX;
+    foreach($configs as $lpsimple) {
+        if($lpsimple->getFinalPrice() < $lowest_price) {
+            $simple = $lpsimple;
+            $lowest_price = $simple->getFinalPrice();
+        }
+    }
+} else {
+    $simple = $_product;
+    $sku = $simple->getSku();
+}
+?>
+<?php echo $this->getChildHtml('product_type_data_extra') ?>
+<?php echo $this->getPriceHtml($simple) ?>
+<?php $msrp = floatval($simple->getTypeInstance()->getMsrp()); ?>
+<?php
+    $display = $simple->getFinalPrice() >= $msrp ? 'display: none;' : '';
+?>
+<div class="product-msrp" style="text-align: right;font-weight: bold; <?php echo $display ?>">
+<p style="font-size: 20px;" class=""><label><?php echo $this->__('MSRP: ') ?></label><span class='msrp-field' style="text-decoration: line-through;"><?php echo $_coreHelper->currency($msrp, true, false)?></span></p>
+<?php if($msrp > $simple->getFinalPrice()):?>
+    <p class='saved-field' style="font-size: 16px;font-weight: normal;">
+        <?php echo $this->__('You Save: ') ?>
+        <?php echo 100-round(($simple->getFinalPrice()/$msrp) * 100 ,0).'%';?>
+    </p>
+<?php endif;?>
+</div>

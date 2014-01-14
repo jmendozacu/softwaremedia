@@ -1,0 +1,257 @@
+
+<config>
+    <sections>
+        <rewards translate="label" module="rewardssocial">
+            <groups>
+                <transferComments>
+                    <fields>
+                        <facebookLike translate="label comment">
+                            <label><![CDATA[Facebook Like]]></label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </facebookLike>
+                        <twitterTweet translate="label comment">
+                            <label><![CDATA[Twitter Tweet]]></label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>171</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </twitterTweet>
+                        <pinterestPin translate="label comment">
+                            <label><![CDATA[Pinterest Pin]]></label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>172</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </pinterestPin>
+                        <googlePlusOne translate="label comment">
+                            <label><![CDATA[Google +1]]></label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>173</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </googlePlusOne>
+                    </fields>
+                </transferComments>
+                <InitialTransferStatus translate="label">
+                    <fields>
+                        <AfterFacebookLike translate="label">
+                            <label>Facebook Like</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_statuslist</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </AfterFacebookLike>
+                        <AfterTwitterTweet translate="label">
+                            <label>Twitter Tweet</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_statuslist</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </AfterTwitterTweet>
+                        <AfterPinterestPin translate="label">
+                            <label>Pinterest Pin</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_statuslist</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </AfterPinterestPin>
+                        <AfterGooglePlusOne translate="label">
+                            <label>Google +1</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_statuslist</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </AfterGooglePlusOne>
+                    </fields>
+                </InitialTransferStatus>
+                <facebook translate="label">
+                    <label>Facebook Rewards Settings</label>
+                    <sort_order>110</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enableFacebookLike>
+                            <label>Facebook Like Button On Frontend</label>
+                            <comment><![CDATA[If enabled, Facebook Like button will be shown on the front-end. You can further configure on which pages to show the button from RETAIL EVOLVED > Facebook Like Button > Default Button Visibility.]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_source_showHide</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enableFacebookLike>
+	                    <maxLikeRewardsPerDay translate="label comment">
+                            <label>Maximum Like Rewards Per Day</label>
+                            <comment><![CDATA[If greater than zero, Sweet Tooth will limit the number of times a customer can LIKE something on the site and get rewarded for it within a span of 24-hours. The customer can still get rewarded for liking products on Facebook after they've reached the limit, but they will not get rewarded until 24 hours have passed since the last 'like'.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+	                    </maxLikeRewardsPerDay>
+	                    <minSecondsBetweenLikes translate="label comment">
+                            <label>Minimum Time Between Likes</label>
+                            <comment><![CDATA[In seconds, this is the minimum amount of time that must elapse between two different Facebook 'likes' in order for a customer to be rewarded.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+	                    </minSecondsBetweenLikes>
+                    </fields>
+                </facebook>
+                <twitter translate="label">
+                    <label>Twitter Rewards Settings</label>
+                    <sort_order>111</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enableTwitterTweet>
+                            <label>Twitter Tweet Button On Frontend</label>
+                            <comment><![CDATA[If enabled, Twitter Tweet button will be shown on the front-end.]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_source_showHide</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enableTwitterTweet>
+                        <!--
+                        <storeTwitterUsername translate="label comment">
+                            <label>Store Twitter Username</label>
+                            <comment><![CDATA[Enter your store's Twitter username to start rewarding customers for tweeting your store's pages. Each customer can only receive a tweet reward once. Make sure the Twitter feed is not protected and that your Magento cron is working.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </storeTwitterUsername>
+                        -->
+                        <!-- TODO: I think this is only relevant if we're showing *our own* Tweet button -->
+                        <!-- Removing this temporarily since it's not fully implemented yet.
+                        <showNumPageTweets translate="label comment">
+                            <label>Show Number of Page Tweets</label>
+                            <comment><![CDATA[If enabled, each page's Tweet button will show the number of times that page has been tweeted.]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </showNumPageTweets> -->
+                        <!-- this isn't needed so long as rewards are limited to one tweet per customer -->
+	                    <maxTweetRewardsPerDay translate="label comment">
+                            <label>Maximum Tweet Rewards Per Day</label>
+                            <comment><![CDATA[If greater than zero, Sweet Tooth will limit the number of times a customer can TWEET something on the site and get rewarded for it within a span of 24-hours. The customer can still get rewarded for tweeting products on Twitter after they've reached the limit, but they will not get rewarded until 24 hours have passed since the last 'tweet'.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+	                    </maxTweetRewardsPerDay>
+	                    <minSecondsBetweenTweets translate="label comment">
+                            <label>Minimum Time Between Tweets</label>
+                            <comment><![CDATA[In seconds, this is the minimum amount of time that must elapse between two different Twitter 'tweets' in order for a customer to be rewarded.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+	                    </minSecondsBetweenTweets>
+                    </fields>
+                </twitter>
+                <pinterest translate="label">
+                    <label>Pinterest Rewards Settings</label>
+                    <sort_order>112</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enablePinterestPin>
+                            <label>Pinterest Pin Button On Frontend</label>
+                            <comment><![CDATA[If enabled, Pinterest Pin button will be shown on the front-end.]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_source_showHide</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enablePinterestPin>
+                        <maxPinRewardsPerDay translate="label comment">
+                            <label>Maximum Pin Rewards Per Day</label>
+                            <comment><![CDATA[If greater than zero, Sweet Tooth will limit the number of times a customer can Pin something on the site and get rewarded for it within a span of 24-hours. The customer can still get rewarded for pinning products on Pinterest after they've reached the limit, but they will not get rewarded until 24 hours have passed since the last 'pin'.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </maxPinRewardsPerDay>
+                        <minSecondsBetweenPins translate="label comment">
+                            <label>Minimum Time Between Pins</label>
+                            <comment><![CDATA[In seconds, this is the minimum amount of time that must elapse between two different Pinterest 'pins' in order for a customer to be rewarded.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </minSecondsBetweenPins>
+                    </fields>
+                </pinterest>
+                <google translate="label">
+                    <label>Google+ Rewards Settings</label>
+                    <sort_order>113</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enableGooglePlus>
+                            <label>Google +1 Button On Frontend</label>
+                            <comment><![CDATA[If enabled, Google +1 button will be shown on the front-end.]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>rewards/system_config_source_showHide</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enableGooglePlus>
+                        <maxPlusOneRewardsPerDay translate="label comment">
+                            <label>Maximum +1 Rewards Per Day</label>
+                            <comment><![CDATA[If greater than zero, Sweet Tooth will limit the number of times a customer can +1 something on the site and get rewarded for it within a span of 24-hours. The customer can still get rewarded for +1'ing products on Google+ after they've reached the limit, but they will not get rewarded until 24 hours have passed since the last +1.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </maxPlusOneRewardsPerDay>
+                        <minSecondsBetweenPlusOnes translate="label comment">
+                            <label>Minimum Time Between +1's</label>
+                            <comment><![CDATA[In seconds, this is the minimum amount of time that must elapse between two different +1's in order for a customer to be rewarded.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </minSecondsBetweenPlusOnes>
+                    </fields>
+                </google>
+            </groups>
+        </rewards>
+    </sections>
+</config>

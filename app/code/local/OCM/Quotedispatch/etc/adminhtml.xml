@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<config>
+	<menu>
+	   <sales>
+	       <children>
+        		<quotedispatch module="quotedispatch">
+        			<title>Quote Dispatch</title>
+        			<sort_order>71</sort_order>               
+        			<action>adminhtml/quotedispatch</action>
+<!--
+        			<children>
+        				<items module="quotedispatch">
+        					<title>Manage Items</title>
+        					<sort_order>0</sort_order>
+        					<action>adminhtml/quotedispatch</action>
+        				</items>
+        			</children>
+-->
+        		</quotedispatch>
+	       </children>
+	   </sales>
+	</menu>
+	<acl>
+		<resources>
+<!--
+			<all>
+				<title>Allow Everything</title>
+			</all>
+-->
+			<admin>
+	       <children>
+	   <sales>
+				<children>
+					<quotedispatch>
+						<title>Quotedispatch Module</title>
+        			<sort_order>71</sort_order>               
+					</quotedispatch>
+				</children>
+	   </sales>
+	       </children>
+			</admin>
+		</resources>
+	</acl>
+</config>

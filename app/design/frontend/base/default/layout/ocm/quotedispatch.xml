@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+    </default>
+    <quotedispatch_index_index>
+        <reference name="content">
+            <block type="quotedispatch/view" name="quotedispatch" template="ocm/quotedispatch/quotedispatch.phtml" />
+        </reference>
+    </quotedispatch_index_index>
+    
+    <quotedispatch_index_view>
+        <reference name="content">
+            <block type="quotedispatch/view" name="quotedispatch" template="ocm/quotedispatch/view.phtml">
+                <block type="quotedispatch/view_list" name="quotedispatch.view.list" as="list" template="ocm/quotedispatch/list.phtml"/>
+            </block>
+        </reference>
+    </quotedispatch_index_view>
+    
+    <quotedispatch_index_create>
+
+        <reference name="root"><action method="setTemplate"><tempate>page/1column.phtml</tempate></action></reference>
+
+        <reference name="content">
+            <block type="quotedispatch/create" name="quotedispatch" template="ocm/quotedispatch/create/form.phtml">
+                <block type="quotedispatch/create_list" name="quotedispatch.create.list" as="list" template="ocm/quotedispatch/list.phtml"/>
+            </block>
+        </reference>
+    </quotedispatch_index_create>
+
+    <quotedispatch_index_success>
+        <reference name="content">
+            <block type="core/template" name="quotedispatch.success" template="ocm/quotedispatch/create/success.phtml">
+                <block type="quotedispatch/create_list" name="quotedispatch.create.list" as="list" template="ocm/quotedispatch/list.phtml"/>
+            </block>
+        </reference>
+    </quotedispatch_index_success>
+
+
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="quotedispatch"><name>quotes</name><path>customer/quote</path><label>My Quotes</label></action>
+        </reference>
+    </customer_account>
+
+    <customer_quote_index>
+        <update handle="customer_account" />
+        <reference name="content">
+            <block type="quotedispatch/view" name="quotedispatch" template="ocm/quotedispatch/quotedispatch.phtml" />
+        </reference>
+    </customer_quote_index>
+
+    <customer_quote_view>
+        <update handle="customer_account" />
+        <reference name="content">
+            <block type="quotedispatch/view" name="quotedispatch" template="ocm/quotedispatch/view.phtml">
+                <block type="quotedispatch/view_list" name="quotedispatch.view.list" as="list" template="ocm/quotedispatch/list.phtml"/>
+            </block>
+        </reference>
+    </customer_quote_view>
+
+
+</layout> 

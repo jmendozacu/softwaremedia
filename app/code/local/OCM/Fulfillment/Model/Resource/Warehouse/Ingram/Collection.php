@@ -1,0 +1,10 @@
+<?php
+class OCM_Fulfillment_Model_Resource_Warehouse_Ingram_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+{
+    public function _construct()
+    {
+        parent::_construct();
+        $this->_init('ocm_fulfillment/warehouse_ingram');
+    }
+
+}

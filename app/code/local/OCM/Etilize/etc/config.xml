@@ -1,0 +1,39 @@
+<!-- config.xml -->
+<config>
+    <modules>
+        <OCM_Etilize><!-- COMPANYNAME_MODULE -->
+            <version>0.1.0</version>
+        </OCM_Etilize>
+    </modules>
+        <frontend>
+    	<routers>
+        	<etilize>
+            	<use>standard</use>
+            	<args>
+                	<module>OCM_Etilize</module>
+                	<frontName>etilize</frontName>
+            	</args>
+        	</etilize>
+    	</routers>
+	</frontend>
+	<crontab>
+        <jobs>
+            <ocm_etilize>
+                <schedule>
+                	<cron_expr>0 * * * *</cron_expr>
+                </schedule>
+                <run>
+                	<model>etilize/etilize::updateSpex</model>
+                </run>
+            </ocm_etilize>
+        </jobs>
+    </crontab>
+    <global>
+    	<models>
+    		<etilize>
+    			<class>OCM_Etilize_Model</class>
+    		</etilize>
+    	</models>
+    	</global>
+</config>
+

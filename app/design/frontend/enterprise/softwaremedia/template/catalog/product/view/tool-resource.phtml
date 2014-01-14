@@ -1,0 +1,26 @@
+<?php
+$_product = $this->getProduct();
+$links = array();
+if($_product->getArticleLink()!='' && $_product->getArticleTitle()!=''){
+    $links[] = array(
+        'label'=>$_product->getArticleTitle(),
+        'link'=>$_product->getArticleLink()
+    );
+}
+if($_product->getArticleLink2()!='' && $_product->getArticleTitle2()!=''){
+    $links[] = array(
+        'label'=>$_product->getArticleTitle2(),
+        'link'=>$_product->getArticleLink2()
+    );
+}
+?>
+<?php if(count($links)>0):?>
+<div class="sub-list">
+    <h4 class="sub-list-label"><?php echo $this->__('Tools & Resources')?></h4>
+    <ul>
+        <?php foreach($links as $link):?>
+        <li><a target="_blank" href="<?php echo $link['link']?>"><?php echo $link['label']?></a> </li>
+        <?php endforeach;?>
+    </ul>
+</div>
+<?php endif;?>

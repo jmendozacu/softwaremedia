@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OCM_Page>
+            <active>true</active>
+            <codePool>local</codePool>
+        </OCM_Page>
+    </modules>
+</config>
+
+        

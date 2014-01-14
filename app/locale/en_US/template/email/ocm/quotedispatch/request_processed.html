@@ -1,0 +1,106 @@
+<!--@subject Quote "{{var quote_name}}" is ready for purchase @-->
+
+<!--@styles
+body,td { color:#2f2f2f; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; }
+
+table {
+    border: 0 none;
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+    font-size: 100%;
+}
+
+.data-table { border:1px solid #d9d9d9; border-bottom:0; width:100%; border-collapse:separate; }
+.data-table th { padding:5px 12px; color:#2d2d2d; border-bottom:1px solid #d9d9d9; font-weight:normal; text-transform:uppercase; white-space:nowrap; }
+.data-table td { padding:5px 12px; }
+.data-table thead { background:#e8e8e8 url(../images/bkg_thead.gif) repeat-x 0 0; font-size:11px; }
+.data-table tbody {}
+.data-table tfoot { background-color:#ededed; }
+.data-table tfoot td { padding:5px 12px; }
+.data-table tfoot th { border:none; text-transform:none; }
+.data-table tr.first {}
+.data-table tr.last {}
+.data-table tr.last th,
+.data-table tr.last td { border-bottom:1px solid #d9d9d9; }
+.data-table tr:last-child td,
+.data-table tr:last-child th { border-bottom:1px solid #d9d9d9; }
+.data-table tbody tr:nth-child(odd),
+.data-table tr.odd { background-color:#fff; }
+.data-table tbody tr:nth-child(even),
+.data-table tr.even { background-color:#fafafa; }
+.data-table tbody.odd {}
+.data-table tbody.odd td { border-width:0 1px; }
+.data-table tbody.even { background-color:#f5f5f5; }
+.data-table tbody.even td { border-width:0 1px; }
+.data-table tbody.odd tr.border td,
+.data-table tbody.even tr.border td { border-bottom-width:1px; }
+.data-table th .tax-flag { white-space:nowrap; font-weight:normal; }
+.data-table td.label,
+.data-table th.label { font-weight:bold; text-transform:none; border-color:#fff; background-color:#f7f7f7; }
+.data-table td.value { float:none !important; }
+.data-table .link-rss { display:block; }
+
+.f-right { float:right; }
+@-->
+
+<body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+<div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+<table cellspacing="0" cellpadding="0" border="0" width="100%">
+<tr>
+    <td align="center" valign="top" style="padding:20px 0 20px 0">
+        <table bgcolor="#FFFFFF" cellspacing="0" cellpadding="10" border="0" width="650" style="border:1px solid #E0E0E0;">
+            <!-- [ header starts here] 
+            <tr>
+                <td valign="top"><a href="{{store url=""}}">
+                <img src="{{var logo_url}}" alt="{{var logo_alt}}" style="margin-bottom:10px;" border="0"/>
+                <img src="{{skin url="images/logo_email.gif" _area='frontend' _theme='enterprise'}}" alt="{{var logo_alt}}" style="margin-bottom:10px;" border="0"/>
+                </a></td>
+            </tr>
+             [ middle starts here] -->
+            <tr>
+                <td valign="top">
+                    <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;">Hello, {{var customer_name}}</h1>
+                    <p style="font-size:12px; line-height:16px; margin:0;">
+                        Your Quote {{var quote_name}} has been processed.
+                        You may complete the order for this quote by <a href="{{var view_quote_url}}" style="color:#1E7EC8;">clicking here</a>.<br/>
+                        or you may view all your available quotes <a href="{{var view_all_quotes_url}}" style="color:#1E7EC8;">here</a>.<br/>
+                        This quote expires on {{var expires_at}}<br/><br/>
+
+                        If you have any questions about this quote please contact us at 
+                        <!-- <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#1E7EC8;">{{config path='trans_email/ident_support/email'}}</a> -->
+                        <a href="mailto:{{var sender_email}}" style="color:#1E7EC8;">{{var sender_email}}</a>.
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h2 style="font-size:18px; font-weight:normal; margin:0;">Your Quote {{var quote_name}}</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{var items_list}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="f-right">
+                        <tr>
+                            <td class="a-right">Subtotal:</td>
+                            <td class="a-right" style="padding:0 15px; font-weight:bold">{{var subtotal}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!--
+            <tr>
+                <td bgcolor="#EAEAEA" align="center" style="background:#EAEAEA; text-align:center;"><center><p style="font-size:12px; margin:0;">Thank you, <strong>{{var store.getFrontendName()}}</strong></p></center></td>
+            </tr>
+            -->
+        </table>
+    </td>
+</tr>
+</table>
+</div>
+</body>

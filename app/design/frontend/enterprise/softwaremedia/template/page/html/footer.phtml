@@ -1,0 +1,26 @@
+
+<div class="footer-container">
+    <div class="footer-block">
+        <div class="footer-top">
+            <a href="<?php echo $this->getUrl(); ?>shipping" class="free-shipping"><?php echo $this->__('Always free shipping') ?></a>
+            <div class="footer-newsletter">
+                <p class="text"><?php echo $this->__('GET EXCLUSIVE DEALS')?></p>
+                <div class="social-footer">
+                    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('follow_us')->toHtml(); ?>
+                </div>
+                <div class="f-fix">
+                    <?php echo $this->getChildHtml('newsletter') ?>
+                </div>
+            </div>
+        </div>
+        <div class="footer-content">
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('footer_blocks')->toHtml(); ?>
+        </div>
+        <div class="footer-content footer-card">
+            <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('footer_card')->toHtml(); ?>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/livechat.js')?>"></script>
+
+<p class="copyright"><label><?php echo $this->__('&copy; Copyright') ?> <?php echo date("Y") ?> - <?php echo $this->getCopyright() ?></label></p>

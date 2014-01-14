@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OCM_Mods>
+            <version>0.1.0</version>
+        </OCM_Mods>
+    </modules>
+    <global>
+        <helpers>
+            <ocm_mods>
+                <class>OCM_Mods_Helper</class>
+            </ocm_mods>
+        </helpers>
+    </global>
+</config>

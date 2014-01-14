@@ -1,0 +1,28 @@
+<?php 
+$current_category_id = Mage::getModel('catalog/layer')->getCurrentCategory()->getId();
+if($current_category_id > 0 && (!is_null($current_category_id))) {
+    $trees = $this->getTrees($current_category_id);
+    $tree_string = "<div class='block-layered-nav amshopby-filters-left'><dl>";
+    $flop = "odd";
+    foreach($trees as $title => $tree) {
+        $tree_string .= "<dt class='$flop'>$title</dt>";
+        $tree_string .= "<dd class='$flop'><ol>";
+        $off_site = $title == "Related Categories" ?  '' : "target='_blank'";
+        foreach($tree as $item) {
+            if(!is_null($item['related_category_id'])) {
+                $category_m = Mage::getModel('catalog/category')->load($item['related_category_id']);
+                $url = Mage::helper('core/url')->getHomeUrl().$category_m->getUrlPath();
+                $meta_title = $category_m->getMetaTitle();
+                $name = empty($meta_title) ? $category_m->getName() : $meta_title;
+            } else {
+                $url = $item['url'];
+                $name = $item['name'];
+            }
+            $tree_string .= "<li><a href='$url' $off_site>$name</a></li>";
+        }
+        $tree_string .= "</ol></dd>";
+        $flop = ($flop == "odd") ? "even" : "odd";
+    }
+    $tree_string .= "</dl></div>";
+    echo $tree_string;
+}

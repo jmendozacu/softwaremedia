@@ -1,0 +1,49 @@
+<meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+<?php 
+    // Use category metatitle if it's available
+    $category = Mage::registry('current_category');
+    if(is_null($category)) {
+        $title = $this->getTitle();
+        $extra_meta_title = '';
+    } else {
+        $title = $category->getMetaTitle();
+        $extra_meta_title = $category->getExtraMetaTitle();
+    } 
+?>
+<title><?php echo $title ?></title>
+<meta name="title" content="<?php echo htmlspecialchars($extra_meta_title) ?>" />
+<meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
+<meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+<meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+<link rel="icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+<link rel="shortcut icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+<!--[if lt IE 7]>
+<script type="text/javascript">
+    //<![CDATA[
+var BLANK_URL = '<?php echo $this->helper('core/js')->getJsUrl('blank.html') ?>';
+var BLANK_IMG = '<?php echo $this->helper('core/js')->getJsUrl('spacer.gif') ?>';
+
+alert('sss');
+//]]>
+</script>
+<![endif]-->
+<script type="text/javascript">
+    var SKIN_URL = '<?php echo $this->helper('core/js')->getJsSkinUrl('') ?>';
+</script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl().'js/jquery/jquery-1.8.0.min.js' ?>"></script>
+<?php echo $this->getCssJsHtml() ?>
+<?php echo $this->getChildHtml() ?>
+<?php echo $this->helper('core/js')->getTranslatorScript() ?>
+<?php echo $this->getIncludes() ?>
+
+<?php /*Typekit Script*/ ?>
+<script type="text/javascript">
+  (function() {
+    var config = {
+      kitId: 'ara7vzg',
+      scriptTimeout: 3000
+    };
+    var h=document.getElementsByTagName("html")[0];h.className+=" wf-loading";var t=setTimeout(function(){h.className=h.className.replace(/(\s|^)wf-loading(\s|$)/g," ");h.className+=" wf-inactive"},config.scriptTimeout);var tk=document.createElement("script"),d=false;tk.src='//use.typekit.net/'+config.kitId+'.js';tk.type="text/javascript";tk.async="true";tk.onload=tk.onreadystatechange=function(){var a=this.readyState;if(d||a&&a!="complete"&&a!="loaded")return;d=true;clearTimeout(t);try{Typekit.load(config)}catch(b){}};var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(tk,s)
+  })();
+</script>

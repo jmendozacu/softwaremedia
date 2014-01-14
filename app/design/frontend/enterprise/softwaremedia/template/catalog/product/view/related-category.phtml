@@ -1,0 +1,18 @@
+<?php
+$product = $this->getProduct();
+$related_categories = $this->getRelated($product->getAttributeText('brand'));
+?>
+<?php if (count($related_categories) > 0) : ?>
+<div class="sub-list">
+    <h4 class="sub-list-label"><?php echo $this->__('Related Categories')?></h4>
+    <ul>
+        <?php
+        foreach($related_categories as $category) {
+            $meta_title = $category->getMetaTitle();
+            $name = empty($meta_title) ? $category->getName() : $meta_title;
+                echo "<li><a href='{$category->getUrl()}'> {$name }</a></li>";
+        }
+        ?>
+    </ul>
+</div>
+<?php endif; ?>

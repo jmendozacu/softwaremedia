@@ -1,0 +1,248 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     enterprise_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Shopping cart template
+ *
+ * @see Mage_Checkout_Block_Cart
+ */
+?>
+<div class="cart">
+    <div class="page-title title-buttons">
+        <h1><?php echo $this->__('Shopping Cart') ?></h1>
+        <?php if(!$this->hasError()): ?>
+        <ul class="checkout-types">
+            <li>    <button onclick="window.location='<?php echo $this->getUrl('checkout/onepage') ?>';" class="button btn-proceed-checkout btn-checkout" title="Proceed to Checkout" type="button"><span><span>Proceed to Checkout</span></span></button>
+            </li>
+        </ul>
+        <?php endif; ?>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getChildHtml('form_before') ?>
+    <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
+        <fieldset class="cart-data-content">
+        
+        	<!-- START Mobile Cart -->
+        		<div class="mobile-cart-append show-mobile">
+        			<div class="mobile-cart-title">
+        				<p>Description</p>
+        			</div>
+        			<div class="mobile-cart-rows">
+        			</div>
+        			<div class="clear"></div>
+        			<div class="mobile-cart-subtotal">
+        			</div>
+        		</div>
+        	<!-- END Mobile Cart -->
+        	<div class="clear"></div>
+        
+            <table id="shopping-cart-table" class="data-table cart-table">
+                <col width="1" />
+                <col />
+                <col width="1" />
+            <?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
+                <col width="1" />
+            <?php endif ?>
+            <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+            <?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+                <col width="1" />
+            <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+            <?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+                <col width="1" />
+
+            <?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
+                <thead>
+                    <tr>
+                        <th rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-left"><span class="nobr"><?php echo $this->__('Description') ?></span></th>
+                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Unit Price') ?></span></th>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Quantity') ?></th>
+                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Subtotal') ?></th>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Remove') ?></th>
+                    </tr>
+                    <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                    <tr>
+                        <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                        <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                        <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                        <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                    </tr>
+                    <?php endif; ?>
+                </thead>
+                <tfoot>
+                    <tr>
+                    	
+                        <td colspan="6" class="cart_subtotal a-right">
+                        	<div class="f-left">
+                                <button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
+                                
+                            </div>
+                            <label><?php echo $this->__('Subtotal: ');?></label>
+                            <span>
+                                <?php
+                                    $_coreHelper = $this->helper('core');
+                                    echo $_coreHelper->currency(Mage::getSingleton('checkout/cart')->getQuote()->getSubtotal(), true, false);
+                                ?>
+                             </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="a-right">
+                            
+                            <!--[if lt IE 8]>
+                            <input type="hidden" id="update_cart_action_container" />
+                            <script type="text/javascript">
+                            <![CDATA[
+                                Event.observe(window, 'load', function()
+                                {
+                                    // Internet Explorer (lt 8) does not support value attribute in button elements
+                                    $emptyCartButton = $('empty_cart_button');
+                                    $cartActionContainer = $('update_cart_action_container');
+                                    if ($emptyCartButton && $cartActionContainer) {
+                                        Event.observe($emptyCartButton, 'click', function()
+                                        {
+                                            $emptyCartButton.setAttribute('name', 'update_cart_action_temp');
+                                            $cartActionContainer.setAttribute('name', 'update_cart_action');
+                                            $cartActionContainer.setValue('empty_cart');
+                                        });
+                                    }
+
+                                });
+                            //]]>
+                            </script>
+                            <![endif]-->
+                            
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                <?php foreach($this->getItems() as $_item): ?>
+                    <?php // Echo cart items ?>
+                    <?php echo $this->getItemHtml($_item) ?>
+                <?php endforeach ?>
+                </tbody>
+            </table>
+            <script type="text/javascript">decorateTable('shopping-cart-table')</script>
+        </fieldset>
+    </form>
+    <div class="form_bottom">
+    	<div class="f-left">
+    		<?php if($this->getContinueShoppingUrl()): ?>
+                <button type="button" title="<?php echo $this->__('Continue Shopping') ?>" class="button btn-continue" onclick="setLocation('<?php echo $this->getContinueShoppingUrl() ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+            <?php endif; ?>
+            <button onclick="window.print();" name="print_cart_action"  title="<?php echo $this->__('Print Shopping Cart'); ?>" class="button btn-print" id="print_cart_button"><span><span><?php echo $this->__('Print Cart'); ?></span></span></button>
+
+            <button onclick="setLocation('<?php echo $this->getUrl('quotedispatch/index/create') ?>')" name="request_quote_action"  title="<?php echo $this->__('Request Quote'); ?>" class="button btn-continue" id="request_quote_button"><span><span><?php echo $this->__('Request Quote'); ?></span></span></button>
+
+
+            <?php /*<button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('Save Cart'); ?>" class="button btn-save"><span><span><?php echo $this->__('Save Cart'); ?></span></span></button>*/ ?>
+			
+    	</div>
+    	<div class="coupon_discount"><?php echo $this->getChildHtml('couponform') ?></div>
+	</div>
+    <?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
+    <div class="cart_total_code">
+        <div class="deals">
+            <?php /* Extensions placeholder */ ?>
+            <?php echo $this->getChildHtml('checkout.cart.extra') ?>
+            <?php echo $this->getChildHtml('checkout_cart_widget') ?>
+            <?php echo $this->getChildHtml('coupon') ?>
+            <?php //echo $this->getChildHtml('giftcards') ?>
+        </div>
+
+        <?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping'); endif; ?>
+
+        <div class="totals">
+    <div class="block-cart-total">
+        <h2>order summary</h2>
+            <?php echo $this->getChildHtml('totals'); ?>
+    </div>
+        </div>
+    </div>
+
+    <!-- START mobile-checkout-step -->
+    <div class="mobile-checkout-step show-mobile">
+    	<?php if(!$this->hasError()): ?>
+        <ul class="checkout-types">
+            <?php $licount = 0 ; foreach ($this->getMethods('methods') as $method): ?>
+            <?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
+                <li class="item-<?php echo $licount;?>"><?php echo $methodHtml; ?></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif;?>
+    </div>
+    <!-- END mobile-checkout-step -->
+    
+    <div class="clear"></div>
+    
+    <!-- START mobile-checkout-help -->
+    <div class="mobile-checkout-help show-mobile">
+    	<div class="help-title">Need Help With Your Order?</div>
+    	<div class="help-content">
+    		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml();?>
+    	</div>
+    </div>
+    <!-- END mobile-checkout-help -->
+    
+    <div class="title-orange cart-checkout-bottom hide-mobile">
+        <h3><?php echo $this->__('Need Help With Your Order?'); ?> </h3>
+        <?php if(!$this->hasError()): ?>
+        <ul class="checkout-types">
+            <?php $licount = 0 ; foreach ($this->getMethods('methods') as $method): ?>
+            <?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
+                <li class="item-<?php echo $licount;?>"><?php echo $methodHtml; ?></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif;?>
+    </div>
+
+    <div class="f-fix hide-mobile">
+    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml();?>
+    </div>
+    <div class="f-fix crosssells">
+    <?php echo $this->getChildHtml('crosssell') ?>
+    </div>
+    <div class="f-fix line-10">
+    <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('shop_with_confidence')->toHtml();?>
+    </div>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function(){
+            jQuery('.satisfaction').remove();
+        });
+        </script>
+</div>

@@ -1,0 +1,15 @@
+<?php
+    $_helper    = $this->helper('catalog/output');
+    $_category  = $this->getCurrentCategory();
+?>
+<div class="page-title category-title">
+<?php if($this->IsRssCatalogEnable()): ?>
+    <a href="<?php echo $this->getRssLink() ?>" title="<?php echo $this->__('Subscribe to RSS Feed') ?>" class="rss-feed"><?php echo $this->__('Subscribe to RSS Feed') ?></a>
+<?php endif; ?>
+    <?php 
+        $title = $this->getCurrentCategory()->getMetaTitle();
+        $title = empty($title) ? $this->getCurrentCategory()->getName() : $title; 
+    ?>
+    <h1><?php echo $_helper->categoryAttribute($_category, $title, 'name') ?></h1>
+    <img src="<?php echo Mage::getBaseUrl('media').'catalog/category/'.$_category->getThumbnail()  ?>" />
+</div>

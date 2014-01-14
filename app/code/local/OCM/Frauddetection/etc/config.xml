@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OCM_Frauddetection>
+            <version>0.1.1</version>
+        </OCM_Frauddetection>
+    </modules>
+    <global>
+        <blocks>
+            <ocm_frauddetection>
+                <class>OCM_Frauddetection_Block</class>
+            </ocm_frauddetection>
+            <adminhtml>
+                <rewrite>
+                    <sales_order_view_tab_invoices>OCM_Frauddetection_Block_Adminhtml_Sales_Order_View_Tab_Invoices</sales_order_view_tab_invoices>
+                </rewrite>
+            </adminhtml>
+        </blocks>
+        <models>
+            <ocm_frauddetection>
+                <class>OCM_Frauddetection_Model</class>
+            </ocm_frauddetection>
+        </models>
+        <helpers>
+            <ocm_frauddetection>
+                <class>OCM_Frauddetection_Helper</class>
+            </ocm_frauddetection>
+        </helpers>
+
+        <events>
+            <sales_order_place_after>
+                <observers>
+                    <ocm_frauddetection_set_order_status>
+                        <class>ocm_frauddetection/observer</class>
+                        <method>setOrderIsSuspectHold</method>
+                    </ocm_frauddetection_set_order_status>
+                </observers>
+            </sales_order_place_after>
+        </events>
+
+    </global>
+
+</config>

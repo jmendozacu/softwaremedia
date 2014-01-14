@@ -1,0 +1,49 @@
+<div style="display:none">
+    <div id="data">
+        <form id="testimonial_form" name="testimonial_form" method="post" action="<?php echo Mage::getUrl('testimonial/index/post'); ?>">
+            <div class="fieldset">
+                <h2 class="legend"><?php echo $this->__('Your Testamonial')?></h2>
+                <ul class="form-list">
+                    <li class="fields">
+                        <div class="field">
+                            <label class="required" for="testimonial_name">
+                                <em>*</em>
+                                <?php echo $this->__('Your Name') ?>
+                            </label>
+                            <div class="input-box">
+                                <input id="testimonial_name" class="input-text required-entry" type="text" value="" title="Name" name="testimonial_name">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="testimonial_company">
+                                <?php echo $this->__('Your Company(optional):') ?>
+                            </label>
+                            <div class="input-box">
+                                <input id="testimonial_company" class="input-text" type="text" value="" title="Your Company" name="testimonial_company">
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="required" for="testimonial_comment">
+                            <em>*</em>
+                            <?php echo $this->__('Your Comments:') ?>
+                        </label>
+                        <div class="input-box">
+                            <textarea id="testimonial_comment" class="required-entry input-text" rows="3" cols="5" title="Comment" name="testimonial_comment"></textarea>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div style="padding: 5px; font-size: 8pt;"><?php echo $this->__("By submitting your comment, you agree to let SoftwareMedia.com publish your content whether in part or in its entirety") ?></div>
+            <div class="buttons-set form-buttons btn-only">
+                <input id="testimonial_hideit" type="text" style="display:none !important;" value="" name="testimonial_hideit">
+                <button class="button" title="Submit" type="submit">
+                <span>
+                    <span>Submit</span>
+                </span>
+                </button>
+            </div>
+            <p class="required">* Required Fields</p>
+        </form>
+    </div>
+</div>

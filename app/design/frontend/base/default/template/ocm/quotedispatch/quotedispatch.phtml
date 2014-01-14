@@ -1,0 +1,80 @@
+<?php $quotes = $this->getQuoteCollection() ?>
+<?php $core_helper = Mage::helper('core'); ?>
+
+<div class="my-account">
+
+    <div class="page-title">
+        <h1><?php echo $this->__('Quotes for %s',$this->getEmail()) ?></h1>
+    </div>
+    
+    <?php /*        <div class="pager">
+        
+            <p class="amount">
+                        <strong>1 Item(s)</strong>
+                </p>
+        
+            <div class="limiter">
+            <label>Show</label>
+            <select onchange="setLocation(this.value)">
+                        <option selected="selected" value="http://experiment-repos.devocm.com/nate/sales/order/history/?limit=10">
+                    10            </option>
+                        <option value="http://experiment-repos.devocm.com/nate/sales/order/history/?limit=20">
+                    20            </option>
+                        <option value="http://experiment-repos.devocm.com/nate/sales/order/history/?limit=50">
+                    50            </option>
+                    </select> per page    </div>
+        
+        
+            </div> /**/ ?>
+        
+    <table id="my-orders-table" class="data-table">
+        <colgroup>
+        <col width="1">
+        <col>
+        <col width="1">
+        <col width="1">
+        <col width="1">
+        </colgroup><thead>
+            <tr class="first last">
+                <th>Quote #</th>
+                <th>Name</th>
+                <th>Exipre Date</th>
+                <th>Subtotal</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($quotes as $quote) : ?>
+                <tr class="">
+                    <td><?php echo $quote->getId(); ?></td>
+                    <td><span class="nobr"><?php echo $quote->getTitle(); ?></span></td>
+                    <td><span class="nobr"><?php echo $core_helper->formatDate($quote->getExpireTime(),'medium',false); ?></span></td>
+                    <td><span class="price"><?php echo $core_helper->currency($quote->getSubtotal(),true,false); ?></span></td>
+                    <td><span class="nobr"><a href="<?php echo $this->getQuoteUrl($quote->getId()) ?>">view</a> / <a href="<?php echo $this->getOrderQuoteUrl($quote->getId()) ?>">order</a></span></td>
+                </tr>
+            <?php endforeach ?>
+        </tbody>
+    </table>
+    <script type="text/javascript">decorateTable('my-orders-table');</script>
+    
+    <?php /*        <div class="pager">
+        
+            <p class="amount">
+                        <strong>1 Item(s)</strong>
+                </p>
+        
+            <div class="limiter">
+            <label>Show</label>
+            <select onchange="setLocation(this.value)">
+                        <option selected="selected" value="http://experiment-repos.devocm.com/nate/sales/order/history/?limit=10">
+                    10            </option>
+                        <option value="http://experiment-repos.devocm.com/nate/sales/order/history/?limit=20">
+                    20            </option>
+                        <option value="http://experiment-repos.devocm.com/nate/sales/order/history/?limit=50">
+                    50            </option>
+                    </select> per page    </div>
+        
+        
+            </div> /**/ ?>
+    
+</div>            

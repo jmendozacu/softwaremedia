@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OCM_Catalog>
+            <version>0.1.0</version>
+        </OCM_Catalog>
+    </modules>
+    <global>
+        <blocks>
+            <ocm_catalog>
+                <class>OCM_Catalog_Block</class>
+            </ocm_catalog>
+            <catalog>
+                <rewrite>
+                    <layer_view>OCM_Catalog_Block_Layer_View</layer_view>
+                    <product_view>OCM_Catalog_Block_Product_View</product_view>
+                </rewrite>
+            </catalog>
+        </blocks>
+        <helpers>
+            <ocm_catalog>
+                <class>OCM_Catalog_Helper</class>
+            </ocm_catalog>
+        </helpers>
+    </global>
+</config>

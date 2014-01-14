@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+
+    <adminhtml_quotedispatch_quoteitems>
+
+       <block type="core/text_list" name="root" output="toHtml">
+           <block type="quotedispatch/adminhtml_quotedispatch_edit_tab_grid" name="quoteitems.grid"/>
+           <block type="adminhtml/widget_grid_serializer" name="grid_serializer">
+           
+               <reference name="grid_serializer">
+                   <action method="initSerializerBlock">
+                       <grid_block_name>quoteitems.grid</grid_block_name>
+                       <data_callback>getSelectedQuoteitems</data_callback>
+                       <hidden_input_name>links[quoteitems]</hidden_input_name>
+                       <reload_param_name>quoteitems</reload_param_name>
+                   </action>
+                   <action method="addColumnInputName">
+                       <input_name>qty</input_name>
+                   </action>                  
+                   <action method="addColumnInputName">
+                       <input_name>price</input_name>
+                   </action>                  
+               </reference>
+               
+           </block>
+       </block>
+
+   </adminhtml_quotedispatch_quoteitems>
+
+
+    <adminhtml_quotedispatch_quoteitemsgrid>
+            <block type="core/text_list" name="root" output="toHtml">
+                <block type="quotedispatch/adminhtml_quotedispatch_edit_tab_grid" name="quoteitems.grid"/>
+            </block>
+    </adminhtml_quotedispatch_quoteitemsgrid>
+   
+</layout>

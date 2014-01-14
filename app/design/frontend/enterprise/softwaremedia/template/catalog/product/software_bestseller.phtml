@@ -1,0 +1,40 @@
+
+<?php if (($_products = $this->getLoadedProductCollection()) && $_products->getSize()): ?>
+<?php $maxDisplayProduct = 5 ?>
+<?php $imageWidth = 190; $imageHeight=208 ?>
+<div class="list_carousel">
+    <ul id="bestseller">
+        <?php $i=0; foreach ($_products->getItems() as $_product): $i++; ?>
+        <?php $msrp = $_product->getTypeInstance()->getMsrp();?>
+        <li>
+            <div class="item slide <?php if(($i == $maxDisplayProduct && $_products->getSize() <= $maxDisplayProduct) || ($i == $_products->getSize())) echo 'last'?>">
+                <?php /*REMOVED, BREAKING HOMEPAGE ON STAGE, FILE DOESNT EXSIST<?php include('view/labels.phtml')  ?>*/ ?>
+                
+                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize($imageWidth,$imageHeight) ?>" width="<?php echo $imageWidth ?>" height="<?php echo $imageHeight ?>" alt="<?php echo $this->htmlEscape($_product->getName()) ?>" /></a>
+                <?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
+                    <div class="compare-img"><a href="<?php echo $_compareUrl ?>" title="Add To Compare" class="button link-compare"><?php echo $this->__('Add to Compare') ?></a></div>
+                <?php endif; ?>
+                <div class="new-description">
+                    <h3><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+                    <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_product->getName() ?>">
+	                        <?php echo $this->getPriceHtml($_product, true) ?>
+	                    </a>	
+	                    <?php if($msrp && $msrp > $_product->getPrice()):?>
+						    <?php $_coreHelper = $this->helper('core');?>
+						    <div class="product-msrp" style="text-align: right;font-weight: bold;">
+						        <p style="font-size: 16px;" class=""><label><?php echo $this->__('MSRP: ') ?></label><span style="text-decoration: line-through;"><?php echo $_coreHelper->currency($msrp, true, false)?></span></p>
+						    </div>
+						<?php endif;?>
+						<?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                </div>
+            </div>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+    
+    <a id="prevBestseller" class="prev-carousel">&lt;</a>
+    <a id="nextBestseller" class="next-carousel">&gt;</a>
+    <div class="clearfix"></div>
+</div>
+<div class="see_all"><a class="link-blue" href="<?php echo $this->getBaseUrl(); ?>bestsellers">See All...</a></div>
+<?php endif; ?>

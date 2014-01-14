@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <testimonial module="ocm_testimonial">
+                        <title>Message</title>
+                        <sort_order>80</sort_order>
+                    </testimonial>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <menu>
+        <testimonial module="ocm_testimonial">
+            <title>Message</title>
+            <sort_order>80</sort_order>
+            <action>adminhtml/testimonial/index</action>
+        </testimonial>
+    </menu>
+</config>

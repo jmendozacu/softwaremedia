@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OCM_Setup>
+            <active>true</active>
+            <codePool>local</codePool>
+        </OCM_Setup>
+    </modules>
+</config>

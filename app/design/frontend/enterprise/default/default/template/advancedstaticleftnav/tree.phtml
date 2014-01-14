@@ -1,0 +1,33 @@
+<style type="text/css">
+dl.advanced-static-list {
+    padding: 10px 14px 17px 17px;
+}
+.advanced-static-list dt{
+    margin: 2px 0 0;
+    font-weight: bold;
+    font-size: 12px;
+    color: #222;
+}
+.advanced-static-list li {
+    padding: 2px 0px 2px 2px;
+}
+</style>
+<?php 
+$current_category_id = Mage::getModel('catalog/layer')->getCurrentCategory()->getId();
+if($current_category_id > 0 && (!is_null($current_category_id))) {
+    $trees = $this->getTrees($current_category_id); 
+    $tree_string = "<div id='advanced-static-left'><dl class='advanced-static-list'>";
+    $flop = "odd";
+    foreach($trees as $title => $tree) {
+        $tree_string .= "<dt class='".$flop."'>".$title."</dt>";
+        $tree_string .= "<dd class'".$flop."'><ol>";
+        foreach($tree as $item) {
+            $tree_string .= "<li><a href='".$item['url']."'>".$item['name']."</a></li>";
+        }
+        $tree_string .= "</ol></dd>";
+        $flop = ($flop == "odd") ? "even" : "odd";
+    }
+    $tree_string .= "</dl></div>";
+    echo $tree_string;
+}
+?>

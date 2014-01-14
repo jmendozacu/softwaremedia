@@ -1,0 +1,9 @@
+<!-- OCM_Etilize.xml -->
+<config>
+    <modules>
+        <OCM_Etilize>
+            <active>true</active>
+            <codePool>local</codePool>
+        </OCM_Etilize>
+    </modules>
+</config>

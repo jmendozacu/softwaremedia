@@ -1,0 +1,59 @@
+<?php $quote = $this->getQuote() ?>
+<?php $core_helper = Mage::helper('core'); ?>
+<div class="my-account">
+    <div class="page-title">
+        <h1><?php echo $this->__('Quote %s',$quote->getTitle()) ?></h1>
+    </div>
+    
+    <h2 class="sub-title"><?php echo $this->__('Quote Information') ?></h2>
+    <table width="50%">
+        <tr>
+            <td>Quote #:</td>
+            <td><?php echo $quote->getId() ?></td>
+        </tr>
+        <tr>
+            <td>Quote Name:</td>
+            <td><?php echo $quote->getTitle() ?></td>
+        </tr>
+        <tr>
+            <td>Name:</td>
+            <td><?php echo $quote->getfirstname().' '.$quote->getlastname() ?></td>
+        </tr>
+        <tr>
+            <td>Company:</td>
+            <td><?php echo $quote->getCompany() ?></td>
+        </tr>
+        <tr>
+            <td>Created:</td>
+            <td><?php echo $core_helper->formatDate($quote->getCreatedTime(),'medium',false) ?></td>
+        </tr>
+        <tr>
+            <td>Expires:</td>
+            <td><?php echo $core_helper->formatDate($quote->getExpireTime(),'medium',false) ?></td>
+        </tr>
+    </table>
+    <br />   
+    <?php echo $this->getChildHtml('list') ?>
+    <br/>
+    <div>
+        <table class="f-right">
+            <tr>
+                <td class="a-right">Subtotal:</td>
+                <td class="a-right" style="padding:0 15px; font-weight:bold"><?php echo $core_helper->currency($quote->getSubtotal(),true,false) ?></td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <div class="f-right">
+        <form action="<?php echo $this->getOrderQuoteUrl($quote->getId())//getUrl('quotedispatch/index/order') ?>">
+        <input id="quote_id" type="hidden" name="id" value="<?php echo $quote->getId() ?>">
+        <input id="uid" type="hidden" name="uid" value="<?php echo $this->getUid() ?>">
+        <button class="button btn-cart" title="Order" type="submit"><span><span>Order</span></span></button>
+    </div>
+    <div class="f-left">
+        <a href="<?php echo $this->getViewAllLink() ?>">View all available quotes</a>
+    </div>
+
+    
+</div>

@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <OCM_Fulfillment>
+            <version>0.1.4</version>
+        </OCM_Fulfillment>
+    </modules>
+    <global>
+    
+        <models>
+            <ocm_fulfillment>
+                <class>OCM_Fulfillment_Model</class>
+                <resourceModel>ocm_fulfillment_resource</resourceModel>
+            </ocm_fulfillment>
+            <ocm_fulfillment_resource>
+                <class>OCM_Fulfillment_Model_Resource</class>
+                <entities>
+                    <license>
+                        <table>licensing_grid</table>
+                    </license>
+                    <warehouse_synnex>
+                        <table>ocm_fulfillment_synnex</table>
+                    </warehouse_synnex>
+                    <warehouse_ingram>
+                        <table>ocm_fulfillment_ingram</table>
+                    </warehouse_ingram>
+                </entities>
+            </ocm_fulfillment_resource>
+        </models>
+        
+        <blocks>
+            <ocm_fulfillment>
+                <class>OCM_Fulfillment_Block</class>
+            </ocm_fulfillment>
+        </blocks>
+        <helpers>
+            <ocm_fulfillment>
+                <class>OCM_Fulfillment_Helper</class>
+            </ocm_fulfillment>
+        </helpers>
+        <resources>
+            <ocm_fulfillment_setup>
+                <setup>
+                    <module>OCM_Fulfillment</module>
+                </setup>
+            </ocm_fulfillment_setup>
+        </resources>
+        
+<!--
+        <events>
+            <checkout_type_onepage_save_order_after>
+                <observers>
+                    <ocm_fulfillment_update_orderstatus>
+                        <class>ocm_fulfillment/observer</class>
+                        <method>setOrderStatusAfter</method>
+                    </ocm_fulfillment_update_orderstatus>
+                </observers>
+            </checkout_type_onepage_save_order_after>
+        </events>
+-->
+        
+    </global>
+    
+    
+    <crontab>
+        <jobs>
+            <evaluate_orders_daily>
+                <schedule>
+                    <cron_expr>*/10 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ocm_fulfillment/observer::evaluateOrdersDaily</model>
+                </run>
+            </evaluate_orders_daily>
+            <update_prices_qty>
+                <schedule>
+                    <cron_expr>30 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ocm_fulfillment/observer::updatePricesQty</model>
+                </run>
+            </update_prices_qty>
+            <update_product_warehouse_data>
+                <schedule>
+                    <cron_expr>0 4,22 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ocm_fulfillment/observer::updateProductWarehouseData</model>
+                </run>
+            </update_product_warehouse_data>
+        </jobs>
+    </crontab>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <OCM_Fulfillment before="Mage_Adminhtml">OCM_Fulfillment_Adminhtml</OCM_Fulfillment>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <purchaseorder>
+                    <file>ocm_fulfillment.xml</file>
+                </purchaseorder>
+            </updates>
+        </layout>
+    </adminhtml>
+</config>
