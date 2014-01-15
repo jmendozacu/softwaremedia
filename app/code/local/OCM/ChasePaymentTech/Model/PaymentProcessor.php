@@ -9,10 +9,12 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor
     const AUTHORIZE_METHOD = 'newOrder';
     const AUTHORIZE_TRANSTYPE = 'A';
     const AUTHORIZE_APPROVE_CODE = '00';
-    const CAPTURE_METHOD = 'CreditCardAuthorizationCompletion';
+    const CAPTURE_METHOD = 'newOrder';
     const SALE_TRANSTYPE = 'AC';
-    const SALE_METHOD = 'CreditCardSale';
+    const SALE_METHOD = 'newOrder';
     const VOID_METHOD = 'CreditCardVoid';
+    const REFUND_METHOD = 'newOrder';
+    const REFUND_TRANSTYPE = 'R';
     
     
     public function __construct()
@@ -26,7 +28,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor
 	{	
 	    $order = $payment->getOrder();
     	$billing = $order->getBillingAddress();
-    	
+    	Mage::log('AMOUNT: ' . $amount,null,'SDB.log');
     	$txRequest = new StdClass();
     	$txRequest->newOrderRequest = new StdClass();
     	$txRequest->newOrderRequest->orbitalConnectionUsername = Mage::getStoreConfig('payment/chasePaymentTech/username',Mage::app()->getStore());
@@ -62,13 +64,20 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor
     	        $TxResponse = $this->_sendRequest(self::AUTHORIZE_METHOD, $this->_txRequest);
     	        break;
             case 'Capture':
+            	$this->_txRequest->newOrderRequest->transType = self::SALE_TRANSTYPE;
     	        $TxResponse = $this->_sendRequest(self::CAPTURE_METHOD, $this->_txRequest);
     	        break;
     	   case 'Sale':
+    	   		$this->_txRequest->newOrderRequest->transType = self::SALE_TRANSTYPE;
     	        $TxResponse = $this->_sendRequest(self::SALE_METHOD, $this->_txRequest);
     	        break;
     	   case 'Void':
     	        $TxResponse = $this->_sendRequest(self::VOID_METHOD, $this->_txRequest);
+    	        break;
+    	   case 'Refund':
+    	   
+    	   		$this->_txRequest->newOrderRequest->transType = self::REFUND_TRANSTYPE;
+    	        $TxResponse = $this->_sendRequest(self::REFUND_METHOD, $this->_txRequest);
     	        break;
 	    }
     	
@@ -83,7 +92,8 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor
                                 'Response' =>"Approved",
                                 'TransactionId' => $this->_getTransactionId($TxResponse)
                                 );
-                
+                Mage::log('In switch approved',null,'SDB.log');
+                break;
             default:
                 $resultArray = array(
                                 'Response' =>"Error",

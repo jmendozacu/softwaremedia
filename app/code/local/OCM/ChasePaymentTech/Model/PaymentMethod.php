@@ -72,7 +72,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
     
     public function refund(Varien_Object $payment, $amount)
     {
-        $this->_paymentProcessor->buildRequest($payment, amount);
+        $this->_paymentProcessor->buildRequest($payment, $amount);
         $voidTxResponse = $this->_paymentProcessor->sendRequest(self::REFUND);
         $this->_processResponse($payment, $voidTxResponse,1,1);
         
@@ -89,8 +89,10 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
                 $payment->setTransactionId($txResponse["TransactionId"]);
                 $payment->setIsTransactionClosed($txClose);
                 $payment->setShouldCloseParentTransaction($txParentClose);
+                break;
             case "Declined":
                 Mage::throwException(Mage::helper('paygate')->__('The credit card was declined.'));
+                break;
             case "Error":
                 Mage::throwException(Mage::helper('paygate')->__('Error #'.$txResponse["ErrorCode"]));
         }
