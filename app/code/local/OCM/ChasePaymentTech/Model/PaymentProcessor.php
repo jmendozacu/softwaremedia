@@ -75,34 +75,55 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor
     	        $TxResponse = $this->_sendRequest(self::VOID_METHOD, $this->_txRequest);
     	        break;
     	   case 'Refund':
-    	   
     	   		$this->_txRequest->newOrderRequest->transType = self::REFUND_TRANSTYPE;
     	        $TxResponse = $this->_sendRequest(self::REFUND_METHOD, $this->_txRequest);
     	        break;
 	    }
     	
     	$TxResponseCode = $this->_parseResponse($TxResponse);
+    	$TxApprovalCode = $this->_getApprovalStatus($TxResponse);
     	
-    	Mage::log('Parsed Response Code : '.$TxResponseCode,null,'SDB.log');
-    	
-    	switch ($TxResponseCode)
-        {
-            case self::AUTHORIZE_APPROVE_CODE:
-                $resultArray = array(
-                                'Response' =>"Approved",
-                                'TransactionId' => $this->_getTransactionId($TxResponse)
-                                );
-                Mage::log('In switch approved',null,'SDB.log');
-                break;
-            default:
-                $resultArray = array(
-                                'Response' =>"Error",
-                                'ErrorCode' => $TxResponseCode
-                                );
-                Mage::log('In switch default',null,'SDB.log');
-                
+    	//Handle refund requests through Approval Status
+    	if ($method == "Refund") {
+	        switch ($TxApprovalCode)
+	        {
+	        	
+	            case 1:
+	                $resultArray = array(
+	                                'Response' =>"Approved",
+	                                'TransactionId' => $this->_getTransactionId($TxResponse)
+	                                );
+	                Mage::log('In switch approved',null,'SDB.log');
+	                break;
+	            default:
+	                $resultArray = array(
+	                                'Response' =>"Error",
+	                                'ErrorCode' => $TxResponseCode
+	                                );
+	                Mage::log('In switch default',null,'SDB.log');
+	                
+	        }	
+        } else {
+        	//Handle Auth and Capture through Response Code	       	
+	    	switch ($TxResponseCode)
+	        {
+	        	
+	            case self::AUTHORIZE_APPROVE_CODE:
+	                $resultArray = array(
+	                                'Response' =>"Approved",
+	                                'TransactionId' => $this->_getTransactionId($TxResponse)
+	                                );
+	                Mage::log('In switch approved',null,'SDB.log');
+	                break;
+	            default:
+	                $resultArray = array(
+	                                'Response' =>"Error",
+	                                'ErrorCode' => $TxResponseCode
+	                                );
+	                Mage::log('In switch default',null,'SDB.log');
+	                
+	        }
         }
-        
         return $resultArray;
     }
     
@@ -115,6 +136,11 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor
 	private function _getTransactionId($response)
 	{
     	return $response->return->txRefNum;
+	}
+	
+	private function _getApprovalStatus($response)
+	{
+    	return $response->return->approvalStatus;
 	}
 	
 	private function _sendRequest($method, $request)
