@@ -124,7 +124,8 @@
                     	<?php if($_product->isConfigurable()): ?>
 						<div id="sku-container"></div>
 						<?php else: ?>
-                        <label><?php echo $this->__('Part Number') ?></label>
+                            <p>Qty</p>
+                        <label><?php echo $this->__('Part #: ') ?></label>
                         <span><?php echo $_product->getData('manufacturer_pn_2') ?></span>
                         <?php endif; ?>
                     </div>

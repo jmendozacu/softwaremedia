@@ -1376,8 +1376,9 @@ p.product-image { cursor:default !important; }
 .product-view .product-shop .add-to-cart { float:left; padding:2px 15px 10px 0; }
 
 .product-view .product-shop .product-style {float: left;width: 100%;padding-bottom: 3px;line-height: 30px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 300;font-size: 16px;color: #000;}
-.product-view .product-shop .product-style label {float: left;width: 114px}
-.product-view .product-shop .product-style span {float: right;width:225px;text-align: right;font-family: arial}
+.product-view .product-shop .product-style label {margin-left:160px;width: 114px;text-align: center}
+.product-view .product-shop .product-style span {margin-left:10px;width:225px;text-align: right;font-family: arial;}
+.product-view .product-shop .product-style p {float:left;width:50px;text-align: left;font-family: arial;}
 
 /* Rating */
 
