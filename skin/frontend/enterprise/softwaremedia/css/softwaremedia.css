@@ -865,6 +865,7 @@ div.block-layered-nav dd li.amshopby-cat-level-3 {
 .form_bottom {
 	background: #e5e5e5;
 	min-height: 60px;
+	height:108px;
 	border-bottom: 5px solid #323232;
 	padding: 6px 0;
 	margin: 0 25px 32px;
