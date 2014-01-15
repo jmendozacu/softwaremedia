@@ -8,11 +8,18 @@
                     <?php $_filters = $this->getFilters() ?>
                     <?php foreach ($_filters as $_filter): ?>
                         <?php if ($_filter->getItemsCount() > 1): ?>
-                            <dt><?php echo $this->__($_filter->getName()) ?></dt>
-                            <dd><?php echo $_filter->getHtml() ?></dd>
+                            <?php   
+			                $tmpTitle = $this->htmlEscape($this->__($_filter->getName()));
+			                $tmpTitle = strtolower($tmpTitle);
+			                $tmpTitle = preg_replace("/[\s]+/", "-", $tmpTitle);
+			                $tmpTitle = str_replace("/", "-", $tmpTitle);
+			                ?>
+			                <dt class="<?=$tmpTitle?>"><?php echo $this->__($_filter->getName()) ?></dt>
+			                <dd class="<?=$tmpTitle?>"><?php echo $_filter->getHtml() ?></dd>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 <script type="text/javascript">decorateDataList('narrow-by-list')</script>
+                </dl>
             <?php endif; ?>
             <?php if ($this->getLayer()->getState()->getFilters()): ?>
                 <div class="actions"><a href="<?php echo $this->getClearUrl() ?>"><?php echo $this->__('Clear All') ?></a></div>
