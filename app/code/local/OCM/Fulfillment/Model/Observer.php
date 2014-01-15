@@ -46,7 +46,6 @@ class OCM_Fulfillment_Model_Observer
                 // internal is first, and all others are in order of preference
                 $done = false;
                 foreach($warehouse_model->warehouses as $warehouse_name) {
-                    print_r($warehouse_model->getData($warehouse_name)->getData());
                     if ($warehouse_model->getData($warehouse_name)->getCanFulfill()) {
                     
                         //fulfill with warehouse here
