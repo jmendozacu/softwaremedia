@@ -49,11 +49,11 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
     {
         if ($payment->getParentTransactionId())
         {
-            $this->_paymentProcessor->buildRequest($payment, $amount);
+            $this->_paymentProcessor->buildCaptureRequest($payment, $amount);
             $captureTxResponse = $this->_paymentProcessor->sendRequest(self::CAPTURE);
         } else 
         {
-           $this->_paymentProcessor->buildRequest($payment, $amount);
+           $this->_paymentProcessor->buildCaptureRequest($payment, $amount);
            $captureTxResponse = $this->_paymentProcessor->sendRequest(self::SALE);
         }
           
@@ -63,7 +63,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
     
     public function void(Varien_Object $payment)
     {
-        $this->_paymentProcessor->buildRequest($payment, 0);
+        $this->_paymentProcessor->buildReverseRequest($payment, 0);
         $voidTxResponse = $this->_paymentProcessor->sendRequest(self::VOID);
         $this->_processResponse($payment, $voidTxResponse,1,1);
         
@@ -72,7 +72,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
     
     public function refund(Varien_Object $payment, $amount)
     {
-        $this->_paymentProcessor->buildRequest($payment, amount);
+        $this->_paymentProcessor->buildReverseRequest($payment, $amount);
         $voidTxResponse = $this->_paymentProcessor->sendRequest(self::REFUND);
         $this->_processResponse($payment, $voidTxResponse,1,1);
         
@@ -89,8 +89,10 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
                 $payment->setTransactionId($txResponse["TransactionId"]);
                 $payment->setIsTransactionClosed($txClose);
                 $payment->setShouldCloseParentTransaction($txParentClose);
+                break;
             case "Declined":
                 Mage::throwException(Mage::helper('paygate')->__('The credit card was declined.'));
+                break;
             case "Error":
                 Mage::throwException(Mage::helper('paygate')->__('Error #'.$txResponse["ErrorCode"]));
         }
