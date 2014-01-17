@@ -123,8 +123,7 @@
                     <div class="product-style">
                     	<?php if($_product->isConfigurable()): ?>
 						<div id="sku-container"></div>
-						<?php else: ?>
-                            <p>Qty</p>
+						<?php else: ?>  
                         <span><?php echo $_product->getData('manufacturer_pn_2') ?></span>
                         <label><?php echo $this->__('Part #: ') ?></label>
                         <?php endif; ?>

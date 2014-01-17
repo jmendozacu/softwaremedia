@@ -29,6 +29,7 @@
 <?php if($_product->isSaleable()): ?>
     <div class="add-to-cart">
         <?php if(!$_product->isGrouped()): ?>
+        <label>Qty</label>
         <input type="text" name="qty" id="qty" maxlength="12" value="<?php if($this->getProductDefaultQty() == 0):?><?php echo "1" ?><?php else: ?><?php echo $this->getProductDefaultQty() * 1 ?><?php endif;?>" title="<?php echo $this->__('Qty') ?>" class="input-text qty" />
         <?php endif; ?>
         <button type="button" title="<?php echo $buttonTitle ?>" class="button btn-cart" onclick="productAddToCartForm.submit(this)"><span><span><?php echo $buttonTitle ?></span></span></button>
