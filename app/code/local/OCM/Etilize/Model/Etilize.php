@@ -404,7 +404,10 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 		switch ($name)
 		{
 			case ($name == "Marketing Information"):
-				$cleanAttribute = "Description";
+				//$cleanAttribute = "Description";
+				break;
+			case ($name == "Features"):
+				$cleanAttribute = "Product Features";
 				break;
 			case ($name == "Weight Approximate"):
 				$cleanAttribute = "Weight";
@@ -424,6 +427,10 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 		$this->_error = $_error;
 	}
 
+	private function reviewError() {
+	
+	}
+	
 	private function getProductID() {
 		return $this->_productID;
 	}
