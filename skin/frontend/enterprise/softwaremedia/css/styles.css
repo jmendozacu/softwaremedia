@@ -41,7 +41,7 @@ h4            { font-size:13px; }
 h5            { font-size:12px; }
 h6            { font-size:11px; }
 h1,h2,h3,
-h4,h5,h6      { font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal;}
+h4,h5,h6      { font-family: "Carrois Gothic", 'Duru Sans',sans-serif; font-style: normal;}
 
 /* Forms */
 form          { display: block }
@@ -161,7 +161,7 @@ button.button { border:0; padding:0; margin:0; background:#323232; /* line-heigh
 a.button,
 button.button span,
 a.button span,
-button.button span span { background-color:#323232;text-transform: capitalize;cursor: pointer;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400 !important;text-transform: capitalize !important;}
+button.button span span { background-color:#323232;text-transform: capitalize;cursor: pointer;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400 !important;text-transform: capitalize !important;}
 
 a.button,
 button.button span { border:0; padding:0 10px; margin:0; cursor:pointer; background:none; display:-moz-inline-stack; display:inline-block; color:#fff; height:30px;font-size: 14px;line-height: 30px;text-decoration:none; text-transform: capitalize;font-weight: 200 !important;}
@@ -305,7 +305,7 @@ a.back-link { color:#999; }
 .back-to-top {float: left;position: fixed;width: 50px;height: 50px;right: 10px;bottom: 10px;z-index: 999;text-indent: -9999px;background: url("../images/back-to-top.png") no-repeat}
 .back-to-top:hover {background-position: left bottom}
 
-.cms-page-view .std {font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 300;font-size: 14px;}
+.cms-page-view .std {font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 300;font-size: 14px;}
 .cms-page-view .shipping_orange_header {color: #D15B1E;font-weight: bold;font-size: 18px;margin-bottom: 8px}
 .cms-page-view .shipping_text {margin-bottom: 15px}
 .cms-page-view .shipping_text_bold {font-weight: bold}
@@ -321,7 +321,7 @@ a.back-link { color:#999; }
 .cms-ratings-html #testimonial_page {margin: 30px 0;}
 .cms-ratings-html #inline { display: inline-block;margin: 0 0 20px 500px}
 .cms-ratings-html #testimonial_form {width: 700px}
-.cms-ratings-html #testimonial_form .fieldset h2.legend {font-size: 40px;margin: 10px 0 30px 0;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.cms-ratings-html #testimonial_form .fieldset h2.legend {font-size: 40px;margin: 10px 0 30px 0;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 
 /* Global Messages */
 .messages { width:100%; overflow:hidden; text-align:left;padding:  10px 0;float: left }
@@ -369,7 +369,7 @@ p.error-msg { border-color:#e9581f; background-color:#fff5f3; color:#d91a00; }
 .page-title {padding:28px 0;float: left;width: 100%;clear: both;position: relative; background: url("../images/line-title-orange.png") repeat-x center center;}
 .page-title .link-rss { float:right; margin-top:8px; }
 .page-title h1,
-.page-title h2 { font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 700;font-size: 40px;line-height: 40px; color:#333;display: inline-block;vertical-align: middle;padding: 0 5px;background: #fff;margin: 0 0 0 45px;text-transform: capitalize }
+.page-title h2 { font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 700;font-size: 40px;line-height: 40px; color:#333;display: inline-block;vertical-align: middle;padding: 0 5px;background: #fff;margin: 0 0 0 45px;text-transform: capitalize }
 
 .title-buttons { text-align:right; }
 .title-buttons h1,
@@ -405,7 +405,7 @@ p.error-msg { border-color:#e9581f; background-color:#fff5f3; color:#d91a00; }
 .pager .pages li { display:inline-block;vertical-align: middle;line-height: 18px;font-family: arial }
 .pager .pages .current {background:#d84328; text-decoration:none;color: #fff;padding: 0 6px;}
 .pager .pages .i-previous,
-.pager .pages .i-next {margin: 0;z-index: 55;background: #d84328;text-decoration:none !important; vertical-align:middle;float: left;position: absolute;bottom: 0;height: 50px;line-height: 50px;font-size: 28px;text-transform: capitalize;color: #fff;padding: 0 15px ;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.pager .pages .i-next {margin: 0;z-index: 55;background: #d84328;text-decoration:none !important; vertical-align:middle;float: left;position: absolute;bottom: 0;height: 50px;line-height: 50px;font-size: 28px;text-transform: capitalize;color: #fff;padding: 0 15px ;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .pager .pages .i-previous {left: 0}
 .pager .pages .i-next {right:0}
 .pager .pages a:hover,
@@ -572,7 +572,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 /* Misc */
 .link-rss { background:url(../images/icon_rss.gif) 100% 1px no-repeat; padding-right:18px; white-space:nowrap; }
 .link-rss:hover { color:#f58550; }
-.link-print { border-left: 15px solid #fff; background: #cc6731 url(../images/cart-icon.png) 10px -30px no-repeat; color: #fff;font-size: 22px;text-transform: capitalize;text-decoration: none; height: 36px;line-height: 36px;padding:0 15px 0 45px; white-space:nowrap;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; }
+.link-print { border-left: 15px solid #fff; background: #cc6731 url(../images/cart-icon.png) 10px -30px no-repeat; color: #fff;font-size: 22px;text-transform: capitalize;text-decoration: none; height: 36px;line-height: 36px;padding:0 15px 0 45px; white-space:nowrap;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; }
 .link-print:hover {text-decoration: underline}
 .link-cart { font-size:11px; font-weight:bold; color:#c73615; text-decoration:underline; }
 .link-cart:hover { color:#c73615; text-decoration:none; }
@@ -632,11 +632,11 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 #invitation-send-link a, x:-moz-any-link { background-position:3px -2px; }/* FireFox 2 fix */
 #invitation-send-link a, x:-moz-any-link, x:default { background-position:3px 6px; }/* FireFox 3 restore */
 
-.header-panel { background:#fff url(../images/bg-top-header.png) repeat;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;line-height:24px;float: left;width: 100%;color: #000;font-size: 13px;height: auto;min-height: 27px}
+.header-panel { background:#fff url(../images/bg-top-header.png) repeat;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;line-height:24px;float: left;width: 100%;color: #000;font-size: 13px;height: auto;min-height: 27px}
 .header-panel .welcome-msg {float:right; }
 .header-panel .welcome-msg .welcome-msg-logout {color: #376cc4;font-weight: bold}
 .header-panel .links { float:right;white-space:nowrap; }
-.header-panel .links li a { color:#1e75b4;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size: 13px;}
+.header-panel .links li a { color:#1e75b4;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 13px;}
 .header-panel .links li a:hover { color:#d33911; }
 .header-panel .quick-access {float: right;margin: 0 0 0 25px}
 .header-panel .quick-access .checkout-link {float: right;width: auto}
@@ -671,11 +671,11 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .header .search-header { float:right;position: relative;width: 245px;}
 .header .form-search {height: 30px;}
 .header .header-top-right {margin:  4px 0 0 0}
-.header .header-phone {float: left;font-size: 20px;color: #323232;width: auto;margin: 0 0 0 2px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;}
+.header .header-phone {float: left;font-size: 20px;color: #323232;width: auto;margin: 0 0 0 2px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;}
 .header .search-header .btn-chat {float: right;width: auto;margin: 2px 0 0 0}
 .header .search-header .btn-chat a:hover img {-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";filter: alpha(opacity=80);-moz-opacity:0.8;-khtml-opacity: 0.8;opacity: 0.8;}
 .header .form-search label { display:none; }
-.header .form-search input.input-text {float: right;padding: 0 34px 0 6px;width:200px;height: 26px;line-height: 26px;color: #a0a0a0;border: 2px solid #e1e1e1;-moz-border-radius: 2px;/*Firefox*/-webkit-border-radius: 2px;/*Safari, Chrome*/border-radius: 2px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.header .form-search input.input-text {float: right;padding: 0 34px 0 6px;width:200px;height: 26px;line-height: 26px;color: #a0a0a0;border: 2px solid #e1e1e1;-moz-border-radius: 2px;/*Firefox*/-webkit-border-radius: 2px;/*Safari, Chrome*/border-radius: 2px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .header .form-search a { display:none; }
 .header .form-search button.button { float: left;height: 24px;width: 24px;padding: 0;margin: 0; position: absolute;z-index: 9;background: url("../images/btn-search.png") no-repeat;top: 3px;right: 4px}
 .header .form-search button.button span {display: none;}
@@ -699,7 +699,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 
 /* 1st Level (Top Level) */
 #nav li.level-top { float:left; height:44px;}
-#nav a.level-top { float:left; height:44px;padding: 0 10px; color:#323232;font-size: 17px;text-transform: capitalize;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 300; }
+#nav a.level-top { float:left; height:44px;padding: 0 10px; color:#323232;font-size: 17px;text-transform: capitalize;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 300; }
 #nav a.level-top span { float:left;line-height: 40px; white-space:nowrap;background:url(../images/arr-nav.png)  no-repeat right 19px ;padding: 0 11px 4px 0 }
 
 #nav li.over a.level-top,
@@ -717,7 +717,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 #nav div.sub-navigation dl.brand-menu {width: 312px}
 #nav div.sub-navigation dl.categories-menu {width: 255px}
 #nav div.sub-navigation dl.other-menu {width: 350px;}
-#nav div.sub-navigation dl dt {text-transform: capitalize;font-size: 26px;color: #333;line-height: 30px;display: block;padding: 0 0 8px 0;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;}
+#nav div.sub-navigation dl dt {text-transform: capitalize;font-size: 26px;color: #333;line-height: 30px;display: block;padding: 0 0 8px 0;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;}
 #nav div.sub-navigation dl dd {display: block;padding: 0 0 0 28px}
 #nav div.sub-navigation dl dd ol,
 #nav div.sub-navigation dl dd ul {display: block;float: none !important;}
@@ -728,7 +728,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 #nav div.software dd {border-right: 1px solid #000}
 #nav div.software dd.categories-menu-ul {height: auto; min-height: 214px}
 #nav div.software dd.other-menu-ul {border: none}
-#nav div.sub-navigation dl dd .categories-menu-end a {float: left !important;background: #323232;color: #fff !important;font-size: 14px;text-transform: capitalize;width: auto !important;padding: 0 5px;height: 30px !important;line-height: 30px !important;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+#nav div.sub-navigation dl dd .categories-menu-end a {float: left !important;background: #323232;color: #fff !important;font-size: 14px;text-transform: capitalize;width: auto !important;padding: 0 5px;height: 30px !important;line-height: 30px !important;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 #nav div.sub-navigation dl dd .categories-menu-end a:hover {color: yellow !important;}
 
 /********** Navigation > */
@@ -893,7 +893,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 /* Block: Account */
 .sidebar .block-account { background:#f5f5f5 url(../images/bkg_block.gif) repeat-x 0 0; display: block;margin: 25px 0 0 0}
 .sidebar .block-account .block-title { padding:12px 17px; border-bottom:1px solid #fff;background: #323232 }
-.sidebar .block-account .block-title strong { font-size:24px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; text-transform: capitalize;line-height:24px; color:#fff; }
+.sidebar .block-account .block-title strong { font-size:24px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; text-transform: capitalize;line-height:24px; color:#fff; }
 .sidebar .block-account .block-content { padding:0; }
 .sidebar .block-account li { background:url(../images/bkg_dots.gif) repeat-x 0 100%; font-size:12px; padding-bottom:1px; }
 .sidebar .block-account li a { color:#666; text-decoration:none; display:block; padding:5px 13px 4px; }
@@ -908,7 +908,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .sidebar .block-layered-nav .block-subtitle { display:none; }
 .sidebar .block-layered-nav .block-content { padding:0; }
 .sidebar .block-layered-nav dl {}
-.sidebar .block-layered-nav dt { font-size:25px;text-transform: capitalize; color:#fff;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 700; }
+.sidebar .block-layered-nav dt { font-size:25px;text-transform: capitalize; color:#fff;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 700; }
 .sidebar .block-layered-nav dd { margin:0; color:#000;background: #e5e5e5;display: block ;font-size: 14px;text-transform: capitalize}
 .sidebar .block-layered-nav dd.last { margin:0; }
 .sidebar .block-layered-nav dd li {padding: 0 5px;line-height: 25px;border-top: 1px solid #b8b8b8}
@@ -1085,18 +1085,18 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .products-grid .product-image { display:block;text-decoration:none !important; margin:0 auto 10px; position:relative; width:100%;text-align: center }
 .products-grid .product-image img {width: auto;max-width: 100%;height: auto;}
 .products-grid .product-name {word-wrap:break-word; font-weight: normal;margin: 0 0 12px 0}
-.products-grid .product-name a {font-size: 16px;text-transform: capitalize;color: #333;text-decoration: none;line-height: 20px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.products-grid .product-name a {font-size: 16px;text-transform: capitalize;color: #333;text-decoration: none;line-height: 20px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .products-grid .product-name a:hover {color: #ce6633}
 .products-grid .price-box p {display: block;margin: 0;padding: 0;line-height: 22px}
 .products-grid .price-box {float: left;width: 100%}
 .products-grid .price-box .price-label,
 .products-grid .price-box .label {display: none}
 .products-grid .price-from .price-label {display: inline-block;vertical-align: top;margin: 0 4px 0 0}
-.products-grid .price-box .price {color: #323232;font-size: 22px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size: 25px;}
+.products-grid .price-box .price {color: #323232;font-size: 22px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 25px;}
 .products-grid .price-box .old-price {text-decoration: none}
 .products-grid .price-box .old-price .price,
 .products-grid .price-box .price-from .price{font-size: 13px;font-family: arial}
-.products-grid .price-box .special-price .price {color: #ce6633;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size: 25px;}
+.products-grid .price-box .special-price .price {color: #ce6633;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 25px;}
 .products-grid .rating-box ,
 .products-grid .ratings {margin: 0;}
 .products-grid .ratings {position: absolute;right: 6px;bottom: 13px}
@@ -1110,7 +1110,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .products-list .product-image img {width: auto;max-width: 100%;height: auto;}
 .products-list .product-shop {float: right;width: 650px }
 .products-list .product-name { margin-bottom:12px;font-weight: normal;font-size: 16px;line-height: 20px}
-.products-list .product-name a {text-decoration: none;color: #333;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.products-list .product-name a {text-decoration: none;color: #333;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .products-list .product-name a:hover {color: #ce6633}
 .products-list .price-box {float: left;width: 100%;padding: 0 0 10px 0}
 .products-list .price-box .price-from,
@@ -1176,7 +1176,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 
 .collateral-tabs { padding: 0 0 20px 0; margin:0; }
 .collateral-tabs .tab { position:relative; z-index:1 !important;background: #fff;margin: 0 18px 0 0;padding: 5px 0 0 0;border: 2px solid #dedede;}
-.collateral-tabs .tab span {padding: 0 16px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;font-size: 22px; line-height: 25px; color: #737373;float: left}
+.collateral-tabs .tab span {padding: 0 16px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;font-size: 22px; line-height: 25px; color: #737373;float: left}
 .collateral-tabs .last {}
 .collateral-tabs .active {padding: 0;z-index: 3 !important;border-color: #cacaca;border-bottom:none;padding-bottom: 2px}
 .collateral-tabs .active span {border-top: 5px solid #d26734;color: #000; }
@@ -1263,7 +1263,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .list_ymal li .item .product-image img {width: auto;max-width: 100%; height: auto;max-height: 250px}
 .list_ymal li .item .new-description {float: left;width: 100%;padding: 10px 0 0 0;margin: 0}
 .list_ymal li .item .new-description h3 {display: block;font-size: 15px;font-weight: normal;line-height: 22px;margin: 0 0 12px 0;}
-.list_ymal li .item .new-description h3 a {color: #333;text-decoration: none;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.list_ymal li .item .new-description h3 a {color: #333;text-decoration: none;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .list_ymal li .item .new-description h3 a:hover {color: #ff6600;}
 .list_ymal li .item .price-box p {display: block;margin: 0;padding: 0;line-height: 22px}
 .list_ymal li .item .price-box {float: left;}
@@ -1285,7 +1285,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .avg-review .ratings p.rating-links label{float: left;font-size: 14px;color: #9e9e9e;line-height: 18px;padding: 0 0 0 2px}
 .avg-review .ratings label {padding: 0 8px 0 60px}
 .avg-review a,
-.product-add-review .close-btn {float: left;position: absolute;right: 24px;top: 0;background: #323232;color: #fff;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size:15px; line-height:22px;padding: 2px 10px 0 10px;text-transform: capitalize;text-decoration: none}
+.product-add-review .close-btn {float: left;position: absolute;right: 24px;top: 0;background: #323232;color: #fff;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size:15px; line-height:22px;padding: 2px 10px 0 10px;text-transform: capitalize;text-decoration: none}
 
 .review-detail {float: left;width: 1149px;padding: 0 25px 0 24px;}
 .box-reviews #product-reviews-list {list-style: none;margin-left: -1px !important;}
@@ -1360,7 +1360,7 @@ p.product-image { cursor:default !important; }
 .product-view .product-shop .price-box .price-as-configured .price { color:#e55100; font-size:14px; }
 .product-view .product-shop .price-box .price-including-tax .price,
 .product-view .product-shop .price-box .regular-price .price ,
-.product-view .product-shop .price-box .special-price .price { color:#d26734; font-size:32px;line-height: 40px; font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 700;}
+.product-view .product-shop .price-box .special-price .price { color:#d26734; font-size:32px;line-height: 40px; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 700;}
 .product-view .product-shop .price-box .special-price .price-label { font-size:16px; color:#000; }
 .product-view .product-shop .price-box .price-as-configured .price-including-tax .price { color:#e55100; }
 .product-view .product-shop .price-box .price-as-configured .price-excluding-tax .price { color:#222; font-size:11px; }
@@ -1375,7 +1375,7 @@ p.product-image { cursor:default !important; }
 .product-view .short-description h2 { margin:0 0 5px; font-size:13px; }
 .product-view .product-shop .add-to-cart { float:left; padding:2px 15px 10px 0; }
 
-.product-view .product-shop .product-style {float: left;width: 100%;padding-bottom: 3px;line-height: 30px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 300;font-size: 16px;color: #000;}
+.product-view .product-shop .product-style {float: left;width: 100%;padding-bottom: 3px;line-height: 30px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 300;font-size: 16px;color: #000;}
 .product-view .product-shop .product-style label {float:right; margin-right:10px;}
 .product-view .product-shop .product-style span {float:right;text-align: right;font-family: arial;}
 .product-view .product-shop .product-style p {font-size:22px; font-weight:bold;float:left;width:50px;text-align: center;font-family: arial;}
@@ -1543,7 +1543,7 @@ button.btn-cart span {}
 .product-options { margin:10px 0 0; }
 .product-options div.selector {height: auto;min-height: 28px;}
 .product-options div.selector span {background-color: #f4f4f4}
-.product-options dt label { font-size:16px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 300;color: #000; }
+.product-options dt label { font-size:16px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 300;color: #000; }
 .product-options dt .required em {display: none }
 .product-options dd .qty-holder { display:block; padding:10px 0; }
 .product-options dd .qty-holder label { vertical-align:middle; }
@@ -1579,7 +1579,7 @@ button.btn-cart span {}
     background: none repeat scroll 0 0 #D26734;
     border: medium none;
     color: #FFFFFF;
-    font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif;
+    font-family: 'Carrois Gothic', 'Duru Sans',sans-serif;
     font-style: normal;
     font-weight: 400;
     height: 67px;
@@ -1944,7 +1944,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .cart .checkout-types fieldset { display:inline; }
 .cart .checkout-types .btn-proceed-checkout {padding: 7px 18px 7px 15px;background: #cc6731}
 .cart .checkout-types .btn-proceed-checkout span { background:url(../images/arrow-checkout.png) no-repeat right center; height:23px !important;line-height: 23px !important; padding:0 21px 0 0 !important; }
-.cart .checkout-types .btn-proceed-checkout span span { border: none !important;border-right: 1px solid #fff !important; background:none; padding:0 12px 0 0 !important; color:#fff; font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; font-size: 20px; line-height: 28px !important; height:23px !important; text-transform:capitalize; margin:0 !important;}
+.cart .checkout-types .btn-proceed-checkout span span { border: none !important;border-right: 1px solid #fff !important; background:none; padding:0 12px 0 0 !important; color:#fff; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; font-size: 20px; line-height: 28px !important; height:23px !important; text-transform:capitalize; margin:0 !important;}
 .cart .title-buttons .checkout-types li { float:left; padding:0 26px 0 18px; }
 .cart-checkout-bottom {position: relative}
 .cart-checkout-bottom .checkout-types {width: 290px;position: absolute;right: 0;top: -3px;padding: 0 25px 0 0}
@@ -1955,14 +1955,14 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 /* Shopping Cart Table */
 .cart-table { border: none;border-spacing: 0;border-collapse: collapse}
 .cart-table .item-msg { font-size:10px; }
-.cart-table thead th { vertical-align:middle;background: #323232;color: #fff;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600; font-size: 18px; line-height: 28px;padding: 0 15px;text-align: center ;text-transform: capitalize;border: 1px solid #fff;border-bottom: none}
+.cart-table thead th { vertical-align:middle;background: #323232;color: #fff;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600; font-size: 18px; line-height: 28px;padding: 0 15px;text-align: center ;text-transform: capitalize;border: 1px solid #fff;border-bottom: none}
 .cart-table thead th.a-left {padding: 0 25px;}
 .cart-table tbody td { padding: 22px 18px;text-align: center;background: #e5e5e5;border: 1px solid #fff;border-top: none;text-align: center !important; font-size: 16px;color: #000;line-height: 28px}
 .cart-table tbody tr.last td {border: 1px solid #fff;border-bottom: none}
 .cart-table tbody td.cart-img-product {padding: 15px 18px}
 .cart-table tbody td .product-name {display: block;text-align: left;font-size: 16px;font-weight: normal;padding: 0 8px}
 .cart-table tbody td .product-name a {color: #0b66cc}
-.cart-table tfoot tr td {background: #323232;border: 1px solid #fff;font-size: 25px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;text-transform: capitalize;color: #fff;padding: 6px 25px}
+.cart-table tfoot tr td {background: #323232;border: 1px solid #fff;font-size: 25px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;text-transform: capitalize;color: #fff;padding: 6px 25px}
 .cart-table tfoot tr td.cart_subtotal span {padding: 0 0 0 38px}
 .cart-table tfoot tr.last td {background: #fff;padding: 22px 0 33px 0}
 .cart-table button.button {background: #323232;height: 32px;line-height: 32px;padding: 0 10px 0 8px;float: left;margin: 0 17px 0 0;overflow: hidden}
@@ -1972,7 +1972,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .cart-table button.btn-print span { background-position: 1px -32px;padding: 4px 0 4px 33px;height: 24px;line-height: 24px}
 .cart-table button.btn-save span { background-position: left -64px;padding: 4px 0 4px 32px;height: 24px;line-height: 24px}
 .cart-table button.btn-refresh span { background-position: 2px -96px;padding: 4px 0 4px 31px;height: 24px;line-height: 24px}
-.cart-table button.button span span {padding: 0 0 0 9px;border-left:1px solid #a1a1a1;height: 24px;line-height: 26px;color: #fff;font-size: 16px ;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; background: none}
+.cart-table button.button span span {padding: 0 0 0 9px;border-left:1px solid #a1a1a1;height: 24px;line-height: 26px;color: #fff;font-size: 16px ;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; background: none}
 .cart-table {background-color: #ffffff;}
 .cart-table input.qty {width: 68px !important;border: none;height: 28px;line-height: 28px;text-align: center;padding: 0;font-size: 16px}
 .cart-table .btn-remove {margin: 4px auto 0 auto}
@@ -1981,7 +1981,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 /* Shopping Cart Collateral boxes */
 
 .cart_total_code {float: left;width: 100%;padding: 0 0 15px 0}
-.cart_total_code h2 {font-size: 24px;color: #333;text-transform: uppercase;line-height: 24px;text-align: center; font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;margin: 2px 0 8px 0}
+.cart_total_code h2 {font-size: 24px;color: #333;text-transform: uppercase;line-height: 24px;text-align: center; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;margin: 2px 0 8px 0}
 .cart_total_code button.button ,
 .cart_total_code button.button span,
 .cart_total_code button.button span span {float: right;width: 100px;padding: 0;height: 30px;line-height: 30px;text-align: center}
@@ -2094,7 +2094,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 /* Block: Checkout Progress */
 .opc-progress-container { float:right; width:340px; }
 .opc-progress-container .opc-block-progress { background:#fff; }
-.opc-progress-container .opc-block-progress .block-title {border: none;margin: 0; background:#323232; color:#fff;font-size:24px; padding:6px 25px 7px 25px; line-height:24px; height:24px; text-transform:capitalize; font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.opc-progress-container .opc-block-progress .block-title {border: none;margin: 0; background:#323232; color:#fff;font-size:24px; padding:6px 25px 7px 25px; line-height:24px; height:24px; text-transform:capitalize; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .opc-progress-container .opc-block-progress .block-title strong { font-weight: normal }
 .opc-progress-container .opc-block-progress .block-content { padding:0;border: 2px solid #c5c5c5;border-top-width:1px;border-bottom: none;}
 .opc-progress-container .opc-block-progress dt { font-weight:normal; margin:0;line-height: 50px;padding: 0 23px;font-size: 14px;border-bottom: 2px solid #a1a1a1;color: #000 }
@@ -2117,7 +2117,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .opc .active .step-title { margin:0 0 0; padding:0 0 0 0; }
 .opc .active .step-title h2 ,
 .opc #opc-review.active .step-title h2 { background:#323232; color:#fff;border:none; cursor:default; }
-.opc .step { padding:25px 23px 12px 23px; min-height:100px; font-size:16px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; background:#fff; border-top:0;color: #404040 ;border-left: 2px solid #a6a6a6;border-right: 2px solid #a6a6a6}
+.opc .step { padding:25px 23px 12px 23px; min-height:100px; font-size:16px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; background:#fff; border-top:0;color: #404040 ;border-left: 2px solid #a6a6a6;border-right: 2px solid #a6a6a6}
 .opc .step .tool-tip { right:10px; }
 .opc .order-review {}
 .opc .order-review .authentication { margin:0 auto; width:570px; }
@@ -2127,7 +2127,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .opc .form-list .field ,
 .opc .form-list li.fields .field {float: left;width: 348px;padding: 0 42px 0 0;clear: none}
 .opc .form-list input.input-text,
-.opc .form-list textarea {width: 330px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size: 14px}
+.opc .form-list textarea {width: 330px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 14px}
 .opc .form-list input.regions {margin: 9px 0 0 0}
 .opc .form-list .input-box {width: 100%}
 .opc .form-list .add-field .input-box {margin: 0}
@@ -2141,7 +2141,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .opc .fieldset {margin: 0 0 6px 0}
 #checkout-shipping-method-load .price {font-weight: normal;color: #cc6731}
 
-.opc div.selector span {font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size: 14px}
+.opc div.selector span {font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 14px}
 
 .opc .gift-messages ,
 .opc .gift-messages-form ,
@@ -2213,7 +2213,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 
 .opc .button,
 .opc .button span ,
-.opc .button span span {font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size: 15px}
+.opc .button span span {font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 15px}
 
 #opc-shipping .form-list li.control {margin:  15px 0 0 0}
 
@@ -2257,7 +2257,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 #checkout-step-review .data-table tfoot td.last strong {font-weight: normal}
 #checkout-step-review button.button,
 #checkout-step-review button.button span {background: #cd6832;height: 48px;line-height: 48px}
-#checkout-step-review button.button span span {padding: 0 0 0 30px;background: #cd6832 url("../images/lock-orange.png") no-repeat left center;font-size: 26px;text-transform: capitalize;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;color: #fff;height: 48px;line-height: 48px}
+#checkout-step-review button.button span span {padding: 0 0 0 30px;background: #cd6832 url("../images/lock-orange.png") no-repeat left center;font-size: 26px;text-transform: capitalize;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;color: #fff;height: 48px;line-height: 48px}
 
 #checkout-step-review .buttons-set { padding:15px 0 0 0; margin:0; }
 #checkout-step-review .buttons-set .f-left,
@@ -2430,8 +2430,8 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .title-orange {background: #fff url("../images/line-title-orange.png") repeat-x center;float: left;width: 100%}
 .title-orange h3 {display: inline-block;margin: 0 0 0 42px;padding: 0 6px 0 3px;background: #fff;pdding: 0 4px;font-size: 28px;line-height: 32px; text-transform: capitalize;width: auto;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif !important; font-weight: normal; font-weight: 600 !important;}
 .need-help-block {padding: 35px 0}
-.need-help-block span {display: inline-block;padding: 0 0 0 48px;line-height: 35px;font-size: 27px;text-transform: capitalize;color: #000;margin: 0 5px 0 25px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
-.need-help-block span.phone {background:  url("../images/phone-icon.png") no-repeat left center;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;font-size: 24px}
+.need-help-block span {display: inline-block;padding: 0 0 0 48px;line-height: 35px;font-size: 27px;text-transform: capitalize;color: #000;margin: 0 5px 0 25px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
+.need-help-block span.phone {background:  url("../images/phone-icon.png") no-repeat left center;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 24px}
 .need-help-block span.chat {background:  url("../images/chat-icon.png") no-repeat left center;}
 .need-help-block span.email {background:  url("../images/email-icon.png") no-repeat left center;}
 .need-help-block span.satisfaction {background: url("../images/guaranteed-long.png") no-repeat;text-indent: -9999px;width: 299px;height: 41px;padding: 0;margin: 0 0 0 20px}
@@ -2463,7 +2463,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .compare-block .data-table td img {width: auto;max-width: 100%;}
 .compare-block .data-table td .product-name {padding: 10px 0;font-weight: normal}
 .compare-block .data-table td .product-name a {text-decoration: none;font-size: 16px;font-family: arial}
-.compare-block .data-table th {font-size: 22px;text-transform: capitalize;border: 1px solid #d9d9d9;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.compare-block .data-table th {font-size: 22px;text-transform: capitalize;border: 1px solid #d9d9d9;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .compare-block .data-table td p {padding: 4px 0}
 .compare-block button.button ,
 .compare-block button.button span ,
@@ -2489,7 +2489,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .my-account .pager .limiter div.selector span {height: 18px;line-height: 18px;padding: 0 28px 0 4px;background-position: right -854px;color: #000;font-size: 14px}
 .my-account .pager .limiter div.selector select {height: 18px}
 .my-account .pager .amount {position: relative;left: 0;bottom: inherit;top: 0;padding: 0 20px 0 0;font-size: 13px}
-.my-account .page-title a {float: right;background: #cc6731;color: #fff !important;font-size: 14px !important;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;height: 26px;line-height: 26px;padding: 0 10px;border-left: 10px solid #fff;text-decoration: none;text-transform: capitalize;margin: 6px 0 0 0}
+.my-account .page-title a {float: right;background: #cc6731;color: #fff !important;font-size: 14px !important;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;height: 26px;line-height: 26px;padding: 0 10px;border-left: 10px solid #fff;text-decoration: none;text-transform: capitalize;margin: 6px 0 0 0}
 .my-account .page-title a:hover {color: #fff !important;text-decoration: underline}
 .my-account .page-title .separator {display: none}
 
@@ -2906,7 +2906,7 @@ p.link-widget-sku a { color:#999; }
 
 .cms-index-index .main {width: 100%}
 .page-center {width: 1200px;margin: 0 auto;}
-.soft-gift-guide {background: #cc6731;color: #fff;font-size: 14px;text-align: center;line-height: 21px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.soft-gift-guide {background: #cc6731;color: #fff;font-size: 14px;text-align: center;line-height: 21px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .soft-gift-guide a {color: #fff}
 .soft-gift-guide a:hover {color: #000}
 .list_carousel {width: 100%;}
@@ -2932,7 +2932,7 @@ p.link-widget-sku a { color:#999; }
 .list_carousel li .item .product-image img {width: auto;max-width: 100%; height: auto;max-height: 250px}
 .list_carousel li .item .new-description {float: left;width: 100%;padding: 10px 0 0 0;margin: 0}
 .list_carousel li .item .new-description h3 {display: block;font-size: 15px;font-weight: normal;line-height: 22px;height: auto;max-height: 43px;overflow: hidden}
-.list_carousel li .item .new-description h3 a {color: #333;text-decoration: none;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.list_carousel li .item .new-description h3 a {color: #333;text-decoration: none;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .list_carousel li .item .new-description h3 a:hover {color: #ff6600;}
 .list_carousel li .item .price-box p {display: block;margin: 0;padding: 0;line-height: 22px}
 .list_carousel li .item .price-box {float: left;position: absolute;left: 10px;bottom: 2px;}
@@ -3035,7 +3035,7 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 .form-subscribe label { display:block; margin:6px 0; }
 .form-subscribe input.input-text { width:177px; display:block; }
 .form-subscribe button.button,
-.form-subscribe button.button span { margin:0; float:right;background: #666;color: #fff;font-size: 12px;padding: 0 9px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; }
+.form-subscribe button.button span { margin:0; float:right;background: #666;color: #fff;font-size: 12px;padding: 0 9px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; }
 .form-subscribe .validation-advice { width:100%; }
 .form-subscribe .v-fix { text-align:left;width: 390px }
 .form-subscribe a { color:#777; }
@@ -3043,10 +3043,10 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 .footer-container { margin:0; text-align:left; background:#333333; border-top:10px solid #d74329; padding:12px 0 0 0; color: #fff}
 .footer-block {width: 1200px;margin: 0 auto}
 .footer-top {float: left;width: 100%;border-bottom: 2px solid #fff;padding: 0 0 10px 0}
-.footer-top .free-shipping {float: left;width: 495px; padding: 0 0 0 128px;line-height: 44px; background: url("../images/car-icon.png") no-repeat 27px center;color: #fff;font-size: 35px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;text-transform: uppercase;text-decoration: none;}
+.footer-top .free-shipping {float: left;width: 495px; padding: 0 0 0 128px;line-height: 44px; background: url("../images/car-icon.png") no-repeat 27px center;color: #fff;font-size: 35px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;text-transform: uppercase;text-decoration: none;}
 .footer-top .free-shipping:hover {color: #D26734}
 .footer-top .footer-newsletter {float: left;width: 495px;}
-.footer-newsletter .text {float: left;padding: 0 0 2px 0; font-size: 20px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;text-transform: uppercase;width: 276px;}
+.footer-newsletter .text {float: left;padding: 0 0 2px 0; font-size: 20px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;text-transform: uppercase;width: 276px;}
 .footer-newsletter .social-footer {float: left}
 .footer-newsletter .social-footer a {float: left;width: 26px;height: 26px;background: url(../images/social-icon.png) no-repeat;margin: 0 4px 0 0;text-indent: -9999px;}
 .footer-newsletter .social-footer a.facebook {background-position: left top}
@@ -3060,13 +3060,13 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 .footer-top .footer-newsletter input.input-text {width: 372px;color: #969696;font-size: 14px}
 
 .footer-content {float: left;width: 100%;padding: 55px 0 48px 0}
-.footer-content .bx-links {float: left;width: 230px;padding: 0 0 0 70px;font-size: 14px;line-height: 22px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;}
+.footer-content .bx-links {float: left;width: 230px;padding: 0 0 0 70px;font-size: 14px;line-height: 22px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;}
 .footer-content .last-bx-links {padding: 0 0 0 30px;width: 260px;}
-.footer-content .bx-links h2 {color: #d26734;font-size: 28px;line-height: 30px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;margin: 0 0 18px 0}
+.footer-content .bx-links h2 {color: #d26734;font-size: 28px;line-height: 30px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;margin: 0 0 18px 0}
 .footer-content .bx-links h2 span {display: block;font-size: 30px}
-.footer-content .bx-links p {margin-bottom: 24px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;}
+.footer-content .bx-links p {margin-bottom: 24px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;}
 .footer-content .bx-links li {line-height: 34px;font-size: 24px}
-.footer-content .bx-links li a {color: #fff;font-weight: normal;text-decoration: none;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 600;}
+.footer-content .bx-links li a {color: #fff;font-weight: normal;text-decoration: none;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 600;}
 .footer-content .bx-links li a:hover {color: #d26734;}
 
 .footer-card {text-align: center;padding: 0 0 14px 0}
@@ -3077,7 +3077,7 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 .footer a:hover { text-decoration:none; }
 
 .copyright {float: left;width: 100%;padding: 0 0 40px 0;background: #fff}
-.copyright label {display: block;background: #eaeaea;color: #000;text-align: center;line-height: 37px;font-size: 16px;font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400;}
+.copyright label {display: block;background: #eaeaea;color: #000;text-align: center;line-height: 37px;font-size: 16px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 
 .footer .switcher-store { float:right; width:184px; background:url(../images/bkg_store-switch.gif) no-repeat 0 3px; padding-top:21px; }
 .footer .switcher-store label { display:none; }
@@ -3109,7 +3109,7 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 .restriction-index-stub .col-main { color:#dedede; height:auto !important; min-height:230px; height:230px; font-size:16px; background:#4a4a4a url(../images/logo-offline.gif) no-repeat 50% 95px; padding:170px 60px 40px; }
 .restriction-index-stub .page-title { margin:0 0 15px !important; padding:0 !important; border:0 !important; background:none; }
 .restriction-index-stub .col-main h1,
-.restriction-index-stub .col-main h2 { font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; font-size: 35px; color:#fff; }
+.restriction-index-stub .col-main h2 { font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; font-size: 35px; color:#fff; }
 .restriction-index-stub .header-container,
 .restriction-index-stub .footer-container { display:none; }
 .restriction-index-stub .copyright { background:url(../images/bkg_shadow-offline.gif) 50% 0 no-repeat; padding:15px 0 0; margin:0; }
@@ -3122,7 +3122,7 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 .private-sales-index .box .content p { text-align:center; }
 .private-sales-index .box .content a { color:#444444; }
 .private-sales-index .box .content h1 { background:url(../images/bkg_ps-logo.gif) no-repeat 50% 0; padding:60px 0 5px; font-size:29px; font-weight:normal; color:#ec4e00; }
-.private-sales-index .box .content .description { background:url(../images/bkg_ps-descr.gif) no-repeat 50% 0; margin:40px auto 0; width:433px; padding:30px 50px 30px; font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; font-size: 20px; font-style:italic; color:#817268; }
+.private-sales-index .box .content .description { background:url(../images/bkg_ps-descr.gif) no-repeat 50% 0; margin:40px auto 0; width:433px; padding:30px 50px 30px; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; font-size: 20px; font-style:italic; color:#817268; }
 
 .col1-layout .private-sales-index { margin:0 -20px -31px; height:auto !important; height:350px; min-height:350px; }
 
