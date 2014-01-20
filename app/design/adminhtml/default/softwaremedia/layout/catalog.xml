@@ -55,6 +55,12 @@
             <block type="adminhtml/catalog_product_edit_js" template="catalog/product/js.phtml" name="catalog_product_js"></block>
             <block type="core/template" template="catalog/wysiwyg/js.phtml"/>
         </reference>
+        <reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <name>softwaremedia/manufacterer.js</name>
+            </action>
+        </reference>
     </adminhtml_catalog_product_new>
 
     <adminhtml_catalog_product_edit>
