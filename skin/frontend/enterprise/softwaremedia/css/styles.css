@@ -2304,11 +2304,11 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .opc .sp-methods .sp-methods {width: 390px}
 .sp-methods dt { font-weight:normal; margin-bottom:5px; clear:both }
 .sp-methods dt label {display: inline-block;vertical-align: middle}
-.sp-methods dd { margin:0 0 7px; }
+.sp-methods dd { margin:0 0 30px; }
 .sp-methods dd li { margin:5px 0; }
 .sp-methods .price { font-weight:bold; }
 .sp-methods .form-list { padding:0; margin:15px 0;width: 390px;}
-.sp-methods .form-list li {float: left;width: 348px}
+.sp-methods .form-list li {width: 348px}
 .sp-methods .form-list li a {line-height: 30px}
 .sp-methods .disabled:after {opacity:0 !important;}
 

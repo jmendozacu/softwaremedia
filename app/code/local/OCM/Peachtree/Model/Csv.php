@@ -63,6 +63,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 array(
                     'ship_region' => 'region')
             )
+                       
+                ->joinLeft(
+                    'sales_flat_shipment_track as shipment_track',
+                    'shipment_track.order_id = main_table.order_id',
+                    array('ship_via' => 'title')
+                    )
         ;        
 
         foreach ($invoices as $invoice) {
@@ -96,7 +102,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'customer_id' => 'O'.date('my',strtotime( $invoice->getData('order_created_at') ) ),
                 'invoice_id'  => $invoice->getData('increment_id'),
                 'date'        => date('m/d/Y',strtotime( $invoice->getData('order_created_at') ) ),
-                'ship_via'    => self::SHIP_VIA,
+                'ship_via'    => $invoice->getData('ship_via'),
                 'ship_date'   => '', //item, tax, frieght
                 'displayed_terms' => self::DISPLAYED_TERMS,
                 'sales_rep_id'    => OCM_Peachtree_Model_Referer::getNameByCode( $invoice->getData('referer_id') ),
@@ -111,9 +117,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'unit_price' => 0, //item
                 'tax_type' => '', //item, tax, frieght - get from constant
                 'amount' => '', //item, tax, frieght - price x qty
-                'sales_tax_agency_id' => '',//($has_tax_line) ? self::SALES_TAX_ID : '',
+                'sales_tax_agency_id' => ''
             );
-            
+                        
+            if (OCM_Peachtree_Model_Referer::checkForUser( $invoice->getData('referer_id')))
+            	$common_values['customer_id'] = $common_values['customer_id'] . 'W';
+            	
             $i = 1;
             foreach($items as $item) {
                 $item_values = array(
