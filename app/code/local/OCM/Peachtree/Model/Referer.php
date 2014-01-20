@@ -37,5 +37,15 @@ class OCM_Peachtree_Model_Referer extends Mage_Core_Model_Abstract
 
     }
     
-    
+    public function loadByAttribute($attribute, $value, $additionalAttributes='*')
+    {
+        $collection = $this->getResourceCollection()
+            ->addFieldToSelect($additionalAttributes)
+            ->addFieldToFilter($attribute, $value);
+
+        foreach ($collection as $object) {
+            return $object;
+        }
+        return false;
+    }
 }

@@ -12,8 +12,6 @@ class OCM_Peachtree_Model_Observer
         $cookie_value = Mage::getModel('core/cookie')->get(self::COOKIE_NAME);
         $affiliate_codes = explode(',',Mage::getStoreConfig('catalog/cpc_price/affiliate_codes'));
         
-        
-        
         if ($request_value && in_array($request_value,$affiliate_codes) && $request_value != $cookie_value) {
             Mage::getModel('core/cookie')->set(self::COOKIE_NAME, $request_value, self::COOKIE_PERIOD);
             Mage::register(self::COOKIE_NAME,true);
@@ -32,6 +30,12 @@ class OCM_Peachtree_Model_Observer
             'order_id' => $order_id,
             'referer_id' => $cookie_value
         );
+        
+        $admin = Mage::getSingleton('admin/session')->getUser();
+		if ($admin->getId()){//check if the admin is logged in
+				$data['referer_id'] = $admin->getUsername();//add the class to the body.
+        }
+        
         
         try {
             $m = Mage::getModel('peachtree/referer')->setData($data)->save();
