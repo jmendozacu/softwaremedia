@@ -83,13 +83,6 @@ var manufacturerList = {
 	
 	}
 	],
-	"Bundle"		:	[
-	{
-		"ManufacturerID" 	: "",
-		"ManufacturerCode"	: ""
-	
-	}
-	],
 	"Bussiness Objects"		:	[
 	{
 		"ManufacturerID" 	: "1024365",
