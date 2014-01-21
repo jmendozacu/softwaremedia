@@ -31,11 +31,16 @@ class OCM_Peachtree_Model_Observer
             'referer_id' => $cookie_value
         );
         
-        $admin = Mage::getSingleton('admin/session')->getUser();
-		if ($admin->getId()){//check if the admin is logged in
-				$data['referer_id'] = $admin->getUsername();//add the class to the body.
-        }
-        
+
+        	Mage::getSingleton('core/session', array('name' => 'adminhtml')); 
+			$session = Mage::getSingleton('admin/session'); 
+			if ( $session->isLoggedIn() ){ 
+        		$admin = $session->getUser();
+				if ($admin->getId()){//check if the admin is logged in
+						$data['referer_id'] = $admin->getUsername();//add the class to the body.
+		        }
+		    }
+
         
         try {
             $m = Mage::getModel('peachtree/referer')->setData($data)->save();
