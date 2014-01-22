@@ -1275,7 +1275,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .list_ymal li .item .price-box .special-price .price {color: #ce6633}
 .list_ymal li .item .rating-box ,
 .list_ymal li .item .ratings {margin: 0;}
-.list_ymal li .item .ratings {position: absolute;bottom: -25px}
+.list_ymal li .item .ratings {position: absolute;margin-top: 355px}
 .list_ymal li .item .no-rating  {display: none}
 
 .avg-review {float: left;width: 100%;position: relative;padding-bottom: 26px}
