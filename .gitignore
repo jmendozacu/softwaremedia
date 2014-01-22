@@ -4,4 +4,5 @@
 /app/code/local/OCM/Devsite/
 /app/etc/modules/OCM_Devsite.xml
 /app/etc/local.xml
+/downloader/
 .DS_Store
