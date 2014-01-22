@@ -182,11 +182,14 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
             $_categories = $product->getCategoryIds();
             
             $categoryId = null;
-            
+            $fourthLevel = null;
             foreach($_categories as $_catId) {
 	            $_category = Mage::getModel('catalog/category')->load($_catId);
 	            if ($_category->getLevel() == 3) {
 		            $categoryId = $_category->getId();
+	            }
+	            if ($_category->getLevel() == 4) {
+		            $fourthLevel = $_category->getId();
 	            }
 	            if ($_category->getParentId() == 66 || $_category->getParentId() == 110) {
 	            	$categoryId = $_category->getId();
@@ -194,7 +197,10 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
 	            }
             }
             
-                        
+             if ($categoryId == null && $fourthLevel != null) {
+	             $categoryId = $fourthLevel;
+	             
+             }          
             
         //} else {
         //    $categoryId = $product->getCategoryId() && !$product->getDoNotUseCategoryId()
