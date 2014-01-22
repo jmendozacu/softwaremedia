@@ -1252,7 +1252,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .product-view .box-up-sell .title-orange {width: 1150px;margin: 0 0 0 25px;display: inline}
 .product-view .customer-review-product .title-orange {width: 1175px;float: right}
 
-.list_ymal {float: left;width: 100%;height: auto;position: relative;overflow: hidden;padding-bottom: 10px;height: auto;min-height: 230px}
+.list_ymal {float: left;width: 100%;height: auto;position: relative;overflow: hidden;padding-bottom: 35px;height: auto;min-height: 230px}
 .list_ymal.responsive {width: auto;margin-left: 0;}
 .list_ymal .caroufredsel_wrapper {margin: 0 !important;overflow: visible !important;}
 .list_ymal ul {width: 100%;float: left;list-style: none;  padding: 0 !important;height: auto !important;}
