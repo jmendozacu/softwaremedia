@@ -56,7 +56,6 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                 $product->setData('pt_qty',$line['qty']);
                 $product->setData('pt_avg_cost',$line['cost']);
                 $product->save();
-                echo $line['sku'] . " saved \n";
                 
             } catch (Exception $e) {
                 Mage::log($e->getMessage(),null,'peachtreeimport.log');

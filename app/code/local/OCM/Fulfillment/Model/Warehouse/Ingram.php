@@ -113,7 +113,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         $dir_name=Mage::getBaseDir().'/var/ingram_data/ingramdata';
         $zip_name=Mage::getBaseDir().'/var/ingram_data/ingramdata.zip';
         unlink($zip_name);
-        rrrmdir($dir_name);
+        rrrrmdir($dir_name);
         
     }
     
