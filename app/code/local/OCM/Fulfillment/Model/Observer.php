@@ -148,15 +148,17 @@ class OCM_Fulfillment_Model_Observer
 
     public function updatePricesQty() {
         try {
-            Mage::getModel('ocm_fulfillment/warehouse_ingram')->urlConnect();
-        } catch (Exception $e) {
-            Mage::log('Ingram Update Failed with : '.$e->getMessage());
-        }
-        try {
             Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();
         } catch (Exception $e) {
             Mage::log('Synnex Update Failed with : '.$e->getMessage());
         }
+        
+        try {
+            Mage::getModel('ocm_fulfillment/warehouse_ingram')->urlConnect();
+        } catch (Exception $e) {
+            Mage::log('Ingram Update Failed with : '.$e->getMessage());
+        }
+        
         return $this;
     }
 

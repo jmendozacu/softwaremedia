@@ -88,6 +88,14 @@
                     <model>ocm_fulfillment/observer::updateProductWarehouseData</model>
                 </run>
             </update_product_warehouse_data>
+            <update_peachtree_warehouse_data>
+                <schedule>
+                    <cron_expr>30 4,22 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ocm_fulfillment/warehouse_peachtree::updatePriceQtyFromCsv</model>
+                </run>
+            </update_peachtree_warehouse_data>
         </jobs>
     </crontab>
 

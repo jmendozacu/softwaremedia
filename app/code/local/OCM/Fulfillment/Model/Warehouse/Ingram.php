@@ -57,19 +57,21 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         } else { 
             Mage::log("Couldn't change directory\n");
         }
-        
+        Mage::log("Getting Zip: " . $local_file,null,'Ingram.log');
         // try to download $server_file and save to $local_file
         if (ftp_get($conn_id, $local_file, $server_file, FTP_BINARY)) {
-        
+        	Mage::log("Getting Zip: " . $local_file,null,'Ingram.log');
             $zip = new ZipArchive;
             $zip->open('../var/ingram_data/ingramdata.zip');
             $zip->extractTo('../var/ingram_data/ingramdata');
+            chmod('../var/ingram_data/ingramdata',0777);
+            chmod('../var/ingram_data/ingramdata/PRICE.TXT',0777);
             $zip->close();
     
         } else {
            Mage::log("There was a problem\n");
         }
-
+		Mage::log("Closing Connection\n",null,'Ingram.log');
         // close the connection
         ftp_close($conn_id);    
         $this->insertIngramData();
@@ -83,9 +85,13 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         $truncateQuery = "TRUNCATE TABLE ocm_fulfillment_ingram;";
         $writeConnection->query($truncateQuery);
 
+		Mage::log(Mage::getBaseDir()."/var/ingram_data/ingramdata/PRICE.TXT",null,"Ingram.log");
         $table = "ocm_fulfillment_ingram";
-        $file = fopen("../var/ingram_data/ingramdata/PRICE.TXT","r");
-
+        if (!$file = fopen(Mage::getBaseDir()."/var/ingram_data/ingramdata/PRICE.TXT","r"))
+			Mage::log("Error FOPEN",null,"Ingram.log");
+		else
+			Mage::log("File OPENED",null,"Ingram.log");
+			
         while(! feof($file)) {
             $fileArr=fgetcsv($file);
             $query = "insert into ocm_fulfillment_ingram (change_code,price_part_nbr,price_vendor_nbr,price_vendor_name,price_desc1,price_desc2,price_retail,price_vendor_part,weight,upc_code,length,width,height,cust_cost_c,cust_cost,product_key,avail_stock_flag,price_status,new_cpu_code,new_media,new_cat_sub,whse_has_stock_sw,cost_rebate_appl_sw) values ('".$fileArr[0]."','".$fileArr[1]."','".$fileArr[2]."','".$fileArr[3]."','".$fileArr[4]."','".$fileArr[5]."','".$fileArr[6]."','".$fileArr[7]."','".$fileArr[8]."','".$fileArr[9]."','".$fileArr[10]."','".$fileArr[11]."','".$fileArr[12]."','".$fileArr[13]."','".$fileArr[14]."','".$fileArr[15]."','".$fileArr[16]."','".$fileArr[17]."','".$fileArr[18]."','".$fileArr[19]."','".$fileArr[20]."','".$fileArr[21]."','".$fileArr[22]."');";
@@ -102,12 +108,13 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
             }
             rmdir($dir);
         }
+        fclose($file);
         
-        $dir_name='../var/ingram_data/ingramdata';
-        $zip_name='../var/ingram_data/ingramdata.zip';
+        $dir_name=Mage::getBaseDir().'/var/ingram_data/ingramdata';
+        $zip_name=Mage::getBaseDir().'/var/ingram_data/ingramdata.zip';
         unlink($zip_name);
         rrmdir($dir_name);
-        fclose($file);
+        
     }
     
     public function getQty($sku){
