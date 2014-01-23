@@ -99,10 +99,10 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         }
         
         //Empty the directory where the data is downloaded and unzipped
-        function rrmdir($dir) {
+        function rrrrmdir($dir) {
             foreach(glob($dir . '/*') as $file) {
                 if(is_dir($file))
-                    rrmdir($file);
+                    rrrmdir($file);
                 else
                     unlink($file);
             }
@@ -113,7 +113,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         $dir_name=Mage::getBaseDir().'/var/ingram_data/ingramdata';
         $zip_name=Mage::getBaseDir().'/var/ingram_data/ingramdata.zip';
         unlink($zip_name);
-        rrmdir($dir_name);
+        rrrmdir($dir_name);
         
     }
     

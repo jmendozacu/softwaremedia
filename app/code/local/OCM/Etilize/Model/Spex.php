@@ -56,6 +56,7 @@ abstract class Spex implements iSpex
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		
 		$result = curl_exec($ch);

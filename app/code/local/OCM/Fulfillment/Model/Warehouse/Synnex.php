@@ -73,7 +73,7 @@ class OCM_Fulfillment_Model_Warehouse_Synnex extends OCM_Fulfillment_Model_Wareh
         $writeConnection->query($truncateQuery);
 
         $table = "ocm_fulfillment_synnex";
-        $file = fopen(age::getBaseDir()."/var/ingram_data/synnex_data/520985.ap","r") or die('could not open file');
+        $file = fopen(Mage::getBaseDir()."/var/synnex_data/520985.ap","r") or die('could not open file');
         
         $query = "insert into ocm_fulfillment_synnex (synnex_sku,qty_on_hand_total,unit_cost) values ";
         $values = array();

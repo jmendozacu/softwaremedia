@@ -54,6 +54,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
    						
 			//This is where the attributes will be processed.
 			$attributes = $etilizeResult->getAttributes();
+			Mage::log($attributes,null,'SPEX.log');
             $this->buildAttributes($attributes, $product);
 			
 			$skus = $etilizeResult->getSkus();
