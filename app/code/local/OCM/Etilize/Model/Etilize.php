@@ -137,6 +137,9 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 						Mage::log($attributeLabel. " does exist", null, 'OCM_Spex.log');
 					}
 					else {
+						if (strlen($attributeCode) <2)
+							continue;
+							
 						Mage::log($attributeLabel. " does not exist", null, 'OCM_Spex.log');
 						Mage::log("Creating new attribute ".$attributeCode, null, 'OCM_Spex.log');
 						$this->createAttribute($attributeCode, $attributeLabel);

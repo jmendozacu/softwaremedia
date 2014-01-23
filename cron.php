@@ -38,6 +38,8 @@ $_SERVER['SCRIPT_FILENAME'] = str_replace(basename(__FILE__), 'index.php', $_SER
 
 Mage::app('admin')->setUseSessionInUrl(false);
 
+Mage::log('Cron Starter ' . now(), null, 'cron.log');
+
 umask(0);
 
 try {
