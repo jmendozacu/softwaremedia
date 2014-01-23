@@ -35,7 +35,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
     	->addAttributeToSelect('manufacturer_pn_2')
     	->addAttributeToSelect('etilize_manufactureid')
     	->addAttributeToFilter('etilize_updated',"No")
-    	->setPageSize(150);
+    	->setPageSize(100);
 
     	//Cycle through the collection of products
 		foreach ($collection as $product) {
