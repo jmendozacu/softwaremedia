@@ -7,7 +7,7 @@ $attributeId=$model->getAttribute('catalog_product','peachtree_updated');
 $allAttributeSetIds=$model->getAllAttributeSetIds('catalog_product');
 foreach ($allAttributeSetIds as $attributeSetId) {
 try{
-$attributeGroupId=$model->getAttributeGroup('catalog_product',$attributeSetId,'Warehouse Info');
+$attributeGroupId=$model->getAttributeGroup('catalog_product',$attributeSetId,'Warehouse info');
 }
 catch(Exception $e)
 {
