@@ -3,7 +3,7 @@
  * This is were values for internal are returned
  */
 class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Warehouse_Abstract
-{
+{	
     public function _construct() {
         parent::_construct();
     }
@@ -42,6 +42,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 
         $model = Mage::getModel('catalog/product');
 
+		$count = 0;
         while (($data = fgetcsv($file, 1000, ",")) !== FALSE) {
             
             $line = array_combine($headers, $data);
@@ -50,18 +51,39 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
             try {
             
                 $product = $model->load($product_id);
-                if(!$product->getId()) {
+                
+                if(!$product_id) {
                     throw new Exception('Failed to load: '.$line['sku']);
                 }
+				
+				//Update any values older than 23 hours
+                $target = time() - (60 * 60 * 23);
+                Mage::log(strtotime($product->getData('peachtree_updated')) . "->" . $target,null,'peachtreeimport.log');
+                $updated = $product->getData('peachtree_updated');
+                if (strtotime($updated) > $target && !empty($updated)) {
+                	Mage::log("Skipped -> " . $product->getId() . " -> " . $line['sku'],null,'peachtreeimport.log');
+                	continue;
+					
+				}
+				
+				$count++;
+		
+				Mage::log($line['sku'],null,'peachtreeimport.log');
+                $product->setData('peachtree_updated',now());
                 $product->setData('pt_qty',$line['qty']);
                 $product->setData('pt_avg_cost',$line['cost']);
                 $product->save();
+                
+                if ($count > 50) {
+                	Mage::log('Break',null,'peachtreeimport.log');
+                	break;
+                }
                 
             } catch (Exception $e) {
                 Mage::log($e->getMessage(),null,'peachtreeimport.log');
             }
         }
-        fclose($handle);
+        fclose($file);
         
     }
 

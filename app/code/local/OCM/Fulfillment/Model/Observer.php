@@ -1,7 +1,9 @@
 <?php
 class OCM_Fulfillment_Model_Observer
 {
-
+	const FULFILLMENT_PAGE_SIZE     = 100;
+	const FULFILLMENT_UPDATE_DELAY     = 3;
+	
     public function evaluateOrdersDaily()
     {
         $orders = Mage::getModel('sales/order')->getCollection();
@@ -165,7 +167,6 @@ class OCM_Fulfillment_Model_Observer
 
 
     protected function _selectCountPage() {
-        
         $catalog_size = Mage::getModel('catalog/product')->getCollection()->getSize();
         $page_size = ceil($catalog_size / 14);
         
@@ -175,7 +176,6 @@ class OCM_Fulfillment_Model_Observer
         $current_page = $day + $meridium;
         
         return array($page_size,$current_page);
-        
     }
 
 
@@ -187,19 +187,26 @@ class OCM_Fulfillment_Model_Observer
             $current_page = $page_override;
         }
     
+    $time = time();
+			$to = date('Y-m-d H:i:s', $time);
+		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY * 24*60*60); // 60*60*24
+		$from = date('Y-m-d H:i:s', $lastTime);
+
+		$target = time() - (60 * 60 * 23);
         $collection = Mage::getModel('catalog/product')->getCollection()
-/*
-            //->addattributeToFilter('tech_data',array('notnull'=>true))
-            //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
+			 ->addAttributeToSelect('warehouse_updated_at')
+            ->addattributeToFilter('warehouse_updated_at',array('lt' => $from))
+/*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
+           
             ->addAttributeToSelect('pt_avg_cost')
             ->addAttributeToSelect('pt_qty')
-            ->setPageSize($page_size)
-            ->setCurPage($current_page);
+            ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
+            //->setCurPage($current_page);
                     
             
         $techdata = Mage::getModel('ocm_fulfillment/warehouse_techdata')->loadCollectionArray($collection);
@@ -217,9 +224,12 @@ class OCM_Fulfillment_Model_Observer
         $stock_model = Mage::getModel('cataloginventory/stock_item');
        
        foreach($collection as $product) {
-       
+       		
+       		
            //skip products not in warehouse system
-           if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) continue;
+           if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) {				//Mage::log("NO Warehouse Data " . $product->getSku(),null,'fulfillment.log');
+           continue;
+           }
        
            $price_array = array();
            $qty = 0;
@@ -228,6 +238,7 @@ class OCM_Fulfillment_Model_Observer
            foreach (array('techdata','synnex','ingram') as $warehouse_name) {
            
                if(isset(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ])) {
+               	Mage::log("Match " . $warehouse_name . " -> " . $product->getSku() . ' -> '  . $product->getData(${$warehouse_name.'_sku_attr'}),null,'fulfillment.log');
                    $product->setData($warehouse_name.'_price',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price']);
                    $product->setData($warehouse_name.'_qty',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty']);
     
@@ -235,6 +246,11 @@ class OCM_Fulfillment_Model_Observer
                        $price_array[ $product->getData($warehouse_name.'_price') ] = true;
                        $qty += $product->getData($warehouse_name.'_qty');
                    }
+               } else {
+               	$sku = $product->getData(${$warehouse_name.'_sku_attr'});
+	           	if (isset($sku))
+	           		Mage::log("NO Match " . $warehouse_name . " -> " . $product->getSku() . ' -> '  . $product->getData(${$warehouse_name.'_sku_attr'}),null,'fulfillment.log');
+       		
                }
                
            }
