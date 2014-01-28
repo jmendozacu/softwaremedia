@@ -16,17 +16,7 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 ->addAttributeToSelect('warehouse_updated_at','left')
 ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true),array('eq' => '')));
 
-//->addAttributeToFilter('entity_id', array('gt'=>4637));
-			// ->addAttributeToSelect('warehouse_updated_at')
-            //->addAttributeToSelect('pt_avg_cost')
-            //->addAttributeToSelect('pt_qty')
-                        //;
-echo $collection->getSelect();
-   
-foreach ($collection as $entry) {
-  $entry->getWarehouseUpdatedAt();
-  die();
-}     
+
 //$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->loadCollectionArray($collection);
 //updatePriceQtyFromCsv            
 Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
