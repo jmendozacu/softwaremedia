@@ -1,8 +1,8 @@
 <?php
 class OCM_Fulfillment_Model_Observer
 {
-	const FULFILLMENT_PAGE_SIZE     = 100;
-	const FULFILLMENT_UPDATE_DELAY     = 3;
+	const FULFILLMENT_PAGE_SIZE     = 50;
+	const FULFILLMENT_UPDATE_DELAY     = 30;
 	
     public function evaluateOrdersDaily()
     {
@@ -155,12 +155,6 @@ class OCM_Fulfillment_Model_Observer
             Mage::log('Synnex Update Failed with : '.$e->getMessage());
         }
         
-        try {
-            Mage::getModel('ocm_fulfillment/warehouse_ingram')->urlConnect();
-        } catch (Exception $e) {
-            Mage::log('Ingram Update Failed with : '.$e->getMessage());
-        }
-        
         return $this;
     }
 
@@ -186,16 +180,18 @@ class OCM_Fulfillment_Model_Observer
         if ($page_override) {
             $current_page = $page_override;
         }
+        
+        Mage::log('RUNNING',null,'fulfillment.log');
     
-    $time = time();
-			$to = date('Y-m-d H:i:s', $time);
-		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY * 24*60*60); // 60*60*24
+		$time = time();
+		$to = date('Y-m-d H:i:s', $time);
+		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
 		$from = date('Y-m-d H:i:s', $lastTime);
 
 		$target = time() - (60 * 60 * 23);
         $collection = Mage::getModel('catalog/product')->getCollection()
-			 ->addAttributeToSelect('warehouse_updated_at')
-            ->addattributeToFilter('warehouse_updated_at',array('lt' => $from))
+			->addAttributeToSelect('warehouse_updated_at')
+            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
@@ -207,11 +203,14 @@ class OCM_Fulfillment_Model_Observer
             ->addAttributeToSelect('pt_qty')
             ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
             //->setCurPage($current_page);
-                    
             
+        Mage::log('Loading TechData',null,'fulfillment.log');        
         $techdata = Mage::getModel('ocm_fulfillment/warehouse_techdata')->loadCollectionArray($collection);
+        Mage::log('Loading Ingram',null,'fulfillment.log');      
         $ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->loadCollectionArray($collection);
+        Mage::log('Loading Synnex',null,'fulfillment.log');      
         $synnex = Mage::getModel('ocm_fulfillment/warehouse_synnex')->loadCollectionArray($collection);
+        Mage::log('Loading Done',null,'fulfillment.log');      
         
         $techdata_sku_attr = OCM_Fulfillment_Model_Warehouse_Techdata::TECH_DATA_SKU_ATTR;
         $synnex_sku_attr   = OCM_Fulfillment_Model_Warehouse_Synnex::SYNNEX_SKU_ATTR;
@@ -224,11 +223,20 @@ class OCM_Fulfillment_Model_Observer
         $stock_model = Mage::getModel('cataloginventory/stock_item');
        
        foreach($collection as $product) {
-       		
-       		
+       		$product->setData('warehouse_errors',"");
            //skip products not in warehouse system
-           if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) {				//Mage::log("NO Warehouse Data " . $product->getSku(),null,'fulfillment.log');
-           continue;
+           Mage::log('Updated At ' . $product->getWarehouseUpdatedAt(),null,'fulfillment.log');
+           if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) {	
+            	$product->setData('warehouse_errors',"No Warehouse SKUs Available");
+            	$product->setData('warehouse_updated_at',now());
+            	Mage::log('No Warehouse SKUs Available ' . $product->getSku(),null,'fulfillment.log');
+
+            try {
+               $product->save();
+			} catch (Exception $e) {
+            	   Mage::log($e->getMessage());
+			}
+			continue;
            }
        
            $price_array = array();
@@ -238,7 +246,6 @@ class OCM_Fulfillment_Model_Observer
            foreach (array('techdata','synnex','ingram') as $warehouse_name) {
            
                if(isset(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ])) {
-               	Mage::log("Match " . $warehouse_name . " -> " . $product->getSku() . ' -> '  . $product->getData(${$warehouse_name.'_sku_attr'}),null,'fulfillment.log');
                    $product->setData($warehouse_name.'_price',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price']);
                    $product->setData($warehouse_name.'_qty',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty']);
     
@@ -248,9 +255,10 @@ class OCM_Fulfillment_Model_Observer
                    }
                } else {
                	$sku = $product->getData(${$warehouse_name.'_sku_attr'});
-	           	if (isset($sku))
-	           		Mage::log("NO Match " . $warehouse_name . " -> " . $product->getSku() . ' -> '  . $product->getData(${$warehouse_name.'_sku_attr'}),null,'fulfillment.log');
-       		
+	           	if (isset($sku)) {
+	           		$product->setData('warehouse_errors','No Warehouse Match for SKU ' . $sku . " -> " . $warehouse_name);
+			   		Mage::log('No Warehouse Match for SKU ' . $product->getSku() . " -> " . $sku . " -> " . $warehouse_name,null,'fulfillment.log');
+	           	}
                }
                
            }

@@ -5,7 +5,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
     const INGRAM_SKU_ATTR = 'ingram_micro_usa';
     const INGRAM_PRICE_ATTR = 'cust_cost';
     const INGRAM_QTY_ATTR = 'avail_stock_flag';
-    const INGRAM_PRICE_NODE = 'price';
+    const INGRAM_PRICE_NODE = 'Price';
     
     protected $_collection;
 
@@ -18,24 +18,22 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         $qty = 0;
         
         // add up all warehouse data for complete qty
-        foreach ($item->branch as $warehouse) {
-            $qty += (int) $warehouse->availability;
+        foreach ($item->Branch as $warehouse) {
+        	if ((int) $warehouse->Availability > 0)
+            	$qty += (int) $warehouse->Availability;
         }
         return $qty;
         
     }
     
     protected function _getRequest($xml) {
-    
-    	echo $xml;
-
         $content_length=strlen($xml);
  
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
         curl_setopt($ch, CURLOPT_URL, 'https://newport.ingrammicro.com'); 
-        curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_VERBOSE, 0);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -43,8 +41,8 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         $ch_result = curl_exec($ch);
         
         curl_close($ch);
-		print_r($ch_result);
-		die();
+		//print_r($ch_result);
+		//die();
         return $ch_result;
     }
 
@@ -81,6 +79,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         ';  
 
         $result = $this->_getRequest($xml_builder);
+
         $xml = new SimpleXMLElement($result);
 
         $this->setData($sku,$xml->pnaresponse->priceandavailability);
@@ -92,7 +91,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         $collection->addAttributeToSelect(self::INGRAM_SKU_ATTR);
         $cloned_collection = clone $collection;
         
-        $xml_builder = '<PNARequest>';
+        $xml_builder = '<PNARequest> <Version>2.0</Version>';
         $xml_builder .= $this->_getHeader();
         //$xml_builder .= '<Detail>';
          
@@ -111,20 +110,18 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         ';  
 
         try {
-            //Mage::log($xml_builder,null,'techdata.log');
-            
-            $result = $this->_getRequest($xml_builder);
-            
-            //Mage::log($result,null,'techdata.log');
+			$result = $this->_getRequest($xml_builder);
             
             $xml = new SimpleXMLElement($result);
             
-            foreach($xml->priceandavailability as $item) {
-                $ingram_sku = (string) $item->attributes()->sku;
-                $this->_collection[ $ingram_sku ]['price'] = (string) str_replace('$','',$item->{ self::INGRAM_PRICE_NODE });
+            foreach($xml->PriceAndAvailability as $item) {
+            	if ($item->SKUStatus)
+            		continue;
+                $ingram_sku = (string) $item->attributes()->ManufacturerPartNumber;
+                $this->_collection[ $ingram_sku ]['price'] = $item->{ self::INGRAM_PRICE_NODE };
                 $this->_collection[ $ingram_sku ]['qty'] = $this->_getQty($item);
             }
-            
+ 
         } catch (Exception $e) {
             
             Mage::log($e->getMessage(),null,'techdata.log');
