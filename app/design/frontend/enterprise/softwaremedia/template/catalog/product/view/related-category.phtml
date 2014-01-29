@@ -10,7 +10,7 @@ $related_categories = $this->getRelated($product->getAttributeText('brand'));
         foreach($related_categories as $category) {
             $meta_title = $category->getMetaTitle();
             $name = empty($meta_title) ? $category->getName() : $meta_title;
-                echo "<li><a href='{$category->getUrl()}'> {$name }</a></li>";
+                echo "<li><a href='/{$category->getUrlPath()}'> {$name }</a></li>";
         }
         ?>
     </ul>

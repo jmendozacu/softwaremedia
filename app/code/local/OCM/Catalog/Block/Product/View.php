@@ -40,7 +40,7 @@ class OCM_Catalog_Block_Product_View extends Mage_Catalog_Block_Product_View {
     public function getRelated($brand) {
         $related_categories = Mage::getModel('catalog/category')->getCollection()
             ->addAttributeToSelect('name')
-            ->addAttributeToSelect('url')
+            ->addAttributeToSelect('url_path')
             ->addAttributeToFilter(array(
                 array('attribute' => 'parent_id','eq' => '66'), 
                 array('attribute' => 'parent_id', 'eq' => '110')))
@@ -63,8 +63,9 @@ class OCM_Catalog_Block_Product_View extends Mage_Catalog_Block_Product_View {
         $related_categories = Mage::getModel('catalog/category')->getCollection()
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('meta_title')
-            ->addAttributeToSelect('url');
-        $related_categories->getSelect()->where("find_in_set(`e`.`entity_id`, '$category_ids')");
+            ->addAttributeToSelect('url_path');
+            
+        $related_categories->getSelect()->where("find_in_set(`main_table`.`entity_id`, '$category_ids')");
         return $related_categories;
     }
 }
