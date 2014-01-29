@@ -32,11 +32,7 @@
  * @package    Mage_Dataflow
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-<<<<<<< HEAD
 class OCM_Fulfillment_Model_Adapter_Io extends Mage_Dataflow_Model_Convert_Adapter_Io
-=======
-class OCM_Fulfillment_Model_Adapter_Io extends Mage_Dataflow_Model_Convert_Adapter_Abstract
->>>>>>> warehouse
 {
     const XML_PATH_EXPORT_LOCAL_VALID_PATH = 'general/file/importexport_local_valid_paths';
 
@@ -167,7 +163,6 @@ class OCM_Fulfillment_Model_Adapter_Io extends Mage_Dataflow_Model_Convert_Adapt
         } else {
             $message = Mage::helper('dataflow')->__('Saved successfully: "%s" [%d byte(s)].', $filename, $batchModel->getIoAdapter()->getFileSize());
             if ($this->getVar('link')) {
-<<<<<<< HEAD
                 $message .= Mage::helper('dataflow')->__(' <a href="%s" target="_blank">Link (Right click to download)</a>', $this->getVar('link'));
             }
             $this->addException($message);
@@ -191,13 +186,6 @@ class OCM_Fulfillment_Model_Adapter_Io extends Mage_Dataflow_Model_Convert_Adapt
         $this->getResponse ()->sendHeaders ();
         readfile ( $filepath );
         exit;
-        
-=======
-                $message .= Mage::helper('dataflow')->__(' <strong><a href="%s" target="_blank">Link (Right-click to save)</a></strong>', $this->getVar('link'));
-            }
-            $this->addException($message);
-        }
->>>>>>> warehouse
         return $this;
     }
 }

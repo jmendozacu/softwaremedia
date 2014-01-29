@@ -28,8 +28,7 @@
 /**
  * Create account form template
  *
- * @var $this Mage_Customer_Block_Form_Register
- * @see app/design/frontend/enterprise/default/template/customer/form/register.phtml
+ * @see Mage_Customer_Block_Form_Register
  */
 ?>
 <div class="account-create">
@@ -38,6 +37,8 @@
     </div>
     <?php echo $this->getChildHtml('form_fields_before')?>
     <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php /* Extensions placeholder */ ?>
+    <?php echo $this->getChildHtml('customer.form.register.extra')?>
     <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="form-validate" enctype="multipart/form-data">
         <div class="fieldset">
             <input type="hidden" name="success_url" value="<?php echo $this->getSuccessUrl() ?>" />
@@ -59,6 +60,8 @@
                         <input type="checkbox" name="is_subscribed" title="<?php echo $this->__('Sign Up for Newsletter') ?>" value="1" id="is_subscribed"<?php if($this->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="checkbox" />
                     </div>
                     <label for="is_subscribed"><?php echo $this->__('Sign Up for Newsletter') ?></label>
+                    <?php /* Extensions placeholder */ ?>
+                    <?php echo $this->getChildHtml('customer.form.register.newsletter')?>
                 </li>
                 <?php endif ?>
             <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
@@ -190,9 +193,6 @@
             <button type="submit" class="button" title="<?php echo $this->__('Submit') ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
         </div>
         <p class="required"><?php echo $this->__('* Required Fields') ?></p>
-        <?php if (Mage::helper('checkout')->isContextCheckout()): ?>
-            <input name="context" type="hidden" value="checkout" />
-        <?php endif; ?>
     </form>
     <script type="text/javascript">
     //<![CDATA[
