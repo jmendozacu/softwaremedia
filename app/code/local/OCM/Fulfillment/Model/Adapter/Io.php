@@ -168,24 +168,6 @@ class OCM_Fulfillment_Model_Adapter_Io extends Mage_Dataflow_Model_Convert_Adapt
             $this->addException($message);
         }
 		
-		$filename = rtrim($this->getVar('path'), '\\/') . DS . $this->getVar('filename');
-        
-        $filepath = Mage::getBaseDir(). DS . $filename;
-		echo $filepath;
-        if (! is_file ( $filepath ) || ! is_readable ( $filepath )) {
-            throw new Exception ( );
-        }
-        $this->getResponse ()
-                    ->setHttpResponseCode ( 200 )
-                    ->setHeader ( 'Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true )
-                     ->setHeader ( 'Pragma', 'public', true )
-                    ->setHeader ( 'Content-type', 'application/force-download' )
-                    ->setHeader ( 'Content-Length', filesize($filepath) )
-                    ->setHeader ('Content-Disposition', 'attachment' . '; filename=' . basename($filepath) );
-        $this->getResponse ()->clearBody ();
-        $this->getResponse ()->sendHeaders ();
-        readfile ( $filepath );
-        exit;
         return $this;
     }
 }
