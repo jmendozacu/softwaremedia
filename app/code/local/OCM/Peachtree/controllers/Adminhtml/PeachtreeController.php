@@ -1,6 +1,6 @@
 <?php
 
-class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Controller_action
+class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Controller_Action
 {
 
 	protected function _initAction() {
