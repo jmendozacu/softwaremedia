@@ -27,17 +27,17 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
         $csv = '';
         
         $invoices = Mage::getModel('sales/order_invoice')->getCollection()
-
-            ->addFieldToFilter('main_table.created_at', array(
+            ->addFieldToFilter('order.updated_at', array(
                 'from' => $this->getFrom(),
                 'to' => $this->getTo(),
                 'date' => true, // specifies conversion of comparison values
             )
             )
+            ->addFieldToFilter('order.status', 'complete')
         ;
         
         $invoices->getSelect()
-        
+
             ->joinLeft(
                 'sales_flat_order as order',
                 'order.entity_id = main_table.order_id',
