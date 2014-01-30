@@ -25,11 +25,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
         }
         
         $csv = '';
-        
+
         $invoices = Mage::getModel('sales/order_invoice')->getCollection()
             ->addFieldToFilter('order.updated_at', array(
                 'from' => $this->getFrom(),
-                'to' => $this->getTo(),
+                'to' => date('Y-m-d',strtotime($this->getTo()) + 60 * 60 * 24),
                 'date' => true, // specifies conversion of comparison values
             )
             )
