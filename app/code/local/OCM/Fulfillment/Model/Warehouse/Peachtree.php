@@ -75,7 +75,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                 $product->setData('pt_avg_cost',$line['cost']);
                 $product->save();
                 
-                if ($count > 50) {
+                if ($count > 500) {
                 	Mage::log('Break',null,'peachtreeimport.log');
                 	break;
                 }
