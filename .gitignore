@@ -7,3 +7,5 @@
 /downloader/
 .DS_Store
 export
+export/
+/export/
