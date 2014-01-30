@@ -191,9 +191,9 @@ class OCM_Fulfillment_Model_Observer
 
 		$target = time() - (60 * 60 * 23);
         $collection = Mage::getModel('catalog/product')->getCollection()
-			//->addAttributeToSelect('warehouse_updated_at','left')
-            //->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
-            ->addAttributeToFilter('sku','AD-65096937')
+			->addAttributeToSelect('warehouse_updated_at','left')
+            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+            //->addAttributeToFilter('sku','AD-65096937')
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
@@ -227,7 +227,6 @@ class OCM_Fulfillment_Model_Observer
        foreach($collection as $product) {
        		$product->setData('warehouse_errors',"");
            //skip products not in warehouse system
-           Mage::log('Updated At ' . $product->getWarehouseUpdatedAt(),null,'fulfillment.log');
            if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) {	
             	$product->setData('warehouse_errors',"No Warehouse SKUs Available");
             	$product->setData('warehouse_updated_at',now());
@@ -240,7 +239,6 @@ class OCM_Fulfillment_Model_Observer
 			}
 			continue;
            }
-       
            $price_array = array();
            $qty = 0;
            
@@ -255,8 +253,7 @@ class OCM_Fulfillment_Model_Observer
                        $price_array[ $product->getData($warehouse_name.'_price') ] = true;
                        $qty += $product->getData($warehouse_name.'_qty');
                    }
-                   echo $warehouse_name . " SKU " . $product->getSku(); 
-                   print_r(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]);
+                   Mage::log('Updated ' . $product->getSku() . $warehouse_name,null,'fulfillment.log');
                } else {
                	$sku = $product->getData(${$warehouse_name.'_sku_attr'});
 	           	if (isset($sku)) {
@@ -267,7 +264,7 @@ class OCM_Fulfillment_Model_Observer
                }
                
            }
-           die();
+
            if ($product->getData('pt_qty')<1) {
                ksort($price_array);
                reset($price_array);

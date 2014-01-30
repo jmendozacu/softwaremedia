@@ -22,8 +22,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         	if ((int) $warehouse->Availability > 0)
             	$qty += (int) $warehouse->Availability;
         }
-        print_r($item);
-        echo "INGRAM QTY: " . $qty;
+
         return $qty;
         
     }
