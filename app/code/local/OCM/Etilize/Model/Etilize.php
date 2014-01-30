@@ -25,6 +25,8 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 		
 		Mage::log("\n\n************************ Etilize Updated Start at ".date("l, F d, Y h:i" ,time())." ************************", null, 'OCM_Spex.log');
 		
+		echo "starter";
+		
 		if ($this->_deleteAllEtilizeAttributes)
 			$this->deleteAllEtilizeAttributes();
         
@@ -35,7 +37,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
     	->addAttributeToSelect('manufacturer_pn_2')
     	->addAttributeToSelect('etilize_manufactureid')
     	->addAttributeToFilter('etilize_updated',"No")
-    	->setPageSize(100);
+    	->setPageSize(1);
 
     	//Cycle through the collection of products
 		foreach ($collection as $product) {
@@ -48,7 +50,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
    			
    			//Get data from Etilize
 			$etilizeResult = $this->getEtilizeData($product);
-			
+			echo $etilizeResult;
 			//testing
 			Mage::log($etilizeResult    , null, 'OCM_Spex.log');
    						
@@ -115,6 +117,8 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
    			}
 		}//end of product collection
 		Mage::log("\n\n************************ Etilize Updated Ended at ".date("l, F d, Y h:i" ,time())." ************************", null, 'OCM_Spex.log');
+		echo "end";
+		die();
 	}
 	
 	private function buildAttributes($attributes, $product)
