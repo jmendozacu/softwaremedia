@@ -12,13 +12,14 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 		$product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
 		$product = Mage::getModel('catalog/product')->load($product_id);
 		$stock = $product->toArray($product);
-		return (int)$stock['stock_item']['qty'];
+
+		return (int)$product->getPtQty();
 	}
 	
     public function getPrice($sku) {
 		$product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
 		$product = Mage::getModel('catalog/product')->load($product_id);
-        return $product->getCost();
+        return $product->getPtAvgCost();
     }
 
     public function updatePriceQtyFromCsv($file_path=null, $headers=array()) {

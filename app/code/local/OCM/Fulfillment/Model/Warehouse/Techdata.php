@@ -26,15 +26,18 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
     protected function _getRequest($xml) {
     
         $content_length=strlen($xml);
-        
-        $ch = curl_init('https://tdxml.techdata.com/xmlservlet');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml,Content-Length: '.$content_length.''));
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
+        curl_setopt($ch, CURLOPT_URL, 'https://tdxml.techdata.com/xmlservlet'); 
+        curl_setopt($ch, CURLOPT_VERBOSE, 0);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $ch_result = curl_exec($ch);
+
         curl_close($ch);
 
         return $ch_result;
@@ -79,6 +82,7 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
         ';  
 
         $result = $this->_getRequest($xml_builder);
+
         $xml = new SimpleXMLElement($result);
 
         $this->setData($sku,$xml->Detail->LineInfo);
@@ -139,26 +143,20 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
         
     }
 
-    public function getQty($sku){
-        
-        $this->_loadProduct($sku);
-        
-        if(isset($this->getData($sku)->WhseInfo->Qty)) {
-            return $this->_getQty($this->getData($sku));
-        }
-        return 0;
+	public function getQty($sku){
+		$product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
+		$product = Mage::getModel('catalog/product')->load($product_id);
+		$stock = $product->toArray($product);
+
+		return (int)$product->getTechdataQty();
+	}
+	
+    public function getPrice($sku) {
+		$product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
+		$product = Mage::getModel('catalog/product')->load($product_id);
+        return $product->getTechdataPrice();
     }
 
-    public function getPrice($sku){
-        
-        $this->_loadProduct($sku);
-
-        if(isset($this->getData($sku)->{ self::TECH_DATA_PRICE_NODE })) {
-        
-            return preg_replace('/[\$,]/', '', (string) $this->getData($sku)->{ self::TECH_DATA_PRICE_NODE });
-        }
-        return;
-    }
     
     
 }

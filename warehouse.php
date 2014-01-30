@@ -17,7 +17,7 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true),array('eq' => '')));
 
 
-//$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->loadCollectionArray($collection);
+//$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->getQty('AD-65158504AD01A00');
 //updatePriceQtyFromCsv            
 Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();

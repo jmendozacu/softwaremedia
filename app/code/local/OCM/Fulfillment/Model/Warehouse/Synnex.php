@@ -6,7 +6,7 @@ class OCM_Fulfillment_Model_Warehouse_Synnex extends OCM_Fulfillment_Model_Wareh
     const SYNNEX_QTY_ATTR = 'qty_on_hand_total';
     
     protected $_collection = array();
-
+	protected $_collectionList = array();
     public function _construct(){
         parent::_construct();
         $this->_init('ocm_fulfillment/warehouse_synnex');
@@ -119,14 +119,15 @@ class OCM_Fulfillment_Model_Warehouse_Synnex extends OCM_Fulfillment_Model_Wareh
 
           foreach ($cloned_collection as $product) {
             if($synnex_sku = $product->getData(self::SYNNEX_SKU_ATTR)) {
-                $this->_collection[$synnex_sku] = array('id'=>$product->getId(),'price'=>'','qty'=>'');
+                $this->_collectionList[$synnex_sku] = array('id'=>$product->getId(),'price'=>'','qty'=>'');
             }
           }
                     
         $col = $this->getCollection()
-            ->addFieldToFilter('synnex_sku',array('in'=>array_keys($this->_collection)));
+            ->addFieldToFilter('synnex_sku',array('in'=>array_keys($this->_collectionList)));
         foreach($col as $item) {
             $synnex_sku = trim($item->getData('synnex_sku'));
+            $this->_collection[ $synnex_sku ]['id'] = $this->_collectionList[$synnex_sku]['id'];
             $this->_collection[ $synnex_sku ]['price'] = str_replace('$','',$item->getData(self::SYNNEX_PRICE_ATTR));
             $this->_collection[ $synnex_sku ]['qty'] = $item->getData(self::SYNNEX_QTY_ATTR);
         }

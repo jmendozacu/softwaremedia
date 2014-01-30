@@ -24,6 +24,7 @@ class OCM_Fulfillment_Model_Warehouse extends Mage_Core_Model_Abstract
         foreach ($this->warehouses as $warehouse) {
             $model = $this->getWarehouseModel($warehouse);
             $products_data = $model->getAllItemsData($all_items);
+
             $this->setData($warehouse , $products_data );
             
             
@@ -33,7 +34,7 @@ class OCM_Fulfillment_Model_Warehouse extends Mage_Core_Model_Abstract
             
         }
         
-        $this->_updateProductWarehousePrices();
+        //$this->_updateProductWarehousePrices();
         return $this;
 
     }

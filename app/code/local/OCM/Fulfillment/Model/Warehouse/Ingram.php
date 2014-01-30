@@ -22,6 +22,8 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         	if ((int) $warehouse->Availability > 0)
             	$qty += (int) $warehouse->Availability;
         }
+        print_r($item);
+        echo "INGRAM QTY: " . $qty;
         return $qty;
         
     }
@@ -82,7 +84,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
 
         $xml = new SimpleXMLElement($result);
 
-        $this->setData($sku,$xml->pnaresponse->priceandavailability);
+        $this->setData($sku,$xml->PNARequest->PriceAndAvailability);
         return $this;
     }
     
@@ -115,8 +117,10 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
             $xml = new SimpleXMLElement($result);
             
             foreach($xml->PriceAndAvailability as $item) {
-            	if ($item->SKUStatus)
+            	if ($item->SKUStatus) {
+            		  unset($this->_collection[$ingram_sku]);
             		continue;
+            	}
                 $ingram_sku = (string) $item->attributes()->ManufacturerPartNumber;
                 $this->_collection[ $ingram_sku ]['price'] = $item->{ self::INGRAM_PRICE_NODE };
                 $this->_collection[ $ingram_sku ]['qty'] = $this->_getQty($item);
@@ -136,23 +140,20 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
 
     public function getQty($sku){
         
-        $this->_loadProduct($sku);
-        
-        if(isset($this->getData($sku)->branch->availability)) {
-            return $this->_getQty($this->getData($sku));
-        }
-        return 0;
+        $product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
+		$product = Mage::getModel('catalog/product')->load($product_id);
+		$stock = $product->toArray($product);
+
+		return (int)$product->getIngramQty();
     }
 
     public function getPrice($sku){
         
-        $this->_loadProduct($sku);
+        $product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
+		$product = Mage::getModel('catalog/product')->load($product_id);
+		$stock = $product->toArray($product);
 
-        if(isset($this->getData($sku)->{ self::INGRAM_PRICE_NODE })) {
-        
-            return preg_replace('/[\$,]/', '', (string) $this->getData($sku)->{ self::INGRAM_PRICE_NODE });
-        }
-        return;
+		return (int)$product->getIngramPrice();
     }
     
     

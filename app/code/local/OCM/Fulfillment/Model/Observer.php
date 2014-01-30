@@ -10,8 +10,6 @@ class OCM_Fulfillment_Model_Observer
         $orders->addFieldToFilter('status','processing');
 		//$orders->addFieldToFilter('state','new');
 
-
-
         foreach($orders as $order){
             $is_virtual = false;
             $items = $order->getAllVisibleItems();
@@ -21,7 +19,8 @@ class OCM_Fulfillment_Model_Observer
                     break;
                 }
             }
-            if($is_virtual){ //order has ANY virtual products
+            if($is_virtual){ 
+            	//order has ANY virtual products
                 $model = Mage::getModel('ocm_fulfillment/license')->getCollection()
                     ->addFieldToFilter('order_id',$order->getId())->getFirstItem();
                     
@@ -48,8 +47,8 @@ class OCM_Fulfillment_Model_Observer
                 // internal is first, and all others are in order of preference
                 $done = false;
                 foreach($warehouse_model->warehouses as $warehouse_name) {
+                	echo $warehouse_name . " - " . $warehouse_model->getData($warehouse_name)->getCanFulfill() . "<br />";
                     if ($warehouse_model->getData($warehouse_name)->getCanFulfill()) {
-                    
                         //fulfill with warehouse here
                         $warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
                         
@@ -59,7 +58,9 @@ class OCM_Fulfillment_Model_Observer
                         break;
                         
                     }
+                  
                  }
+                 
                 if ($done) continue;
                 
                 // check if shipping to California, Massachusetts, or Tennessee
@@ -190,8 +191,9 @@ class OCM_Fulfillment_Model_Observer
 
 		$target = time() - (60 * 60 * 23);
         $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+			//->addAttributeToSelect('warehouse_updated_at','left')
+            //->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+            ->addAttributeToFilter('sku','AD-65096937')
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
@@ -245,7 +247,7 @@ class OCM_Fulfillment_Model_Observer
            // Ingram MUST be the end of the array for this to work
            foreach (array('techdata','synnex','ingram') as $warehouse_name) {
            
-               if(isset(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ])) {
+               if(is_array(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ])) {
                    $product->setData($warehouse_name.'_price',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price']);
                    $product->setData($warehouse_name.'_qty',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty']);
     
@@ -253,16 +255,19 @@ class OCM_Fulfillment_Model_Observer
                        $price_array[ $product->getData($warehouse_name.'_price') ] = true;
                        $qty += $product->getData($warehouse_name.'_qty');
                    }
+                   echo $warehouse_name . " SKU " . $product->getSku(); 
+                   print_r(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]);
                } else {
                	$sku = $product->getData(${$warehouse_name.'_sku_attr'});
 	           	if (isset($sku)) {
 	           		$product->setData('warehouse_errors','No Warehouse Match for SKU ' . $sku . " -> " . $warehouse_name);
 			   		Mage::log('No Warehouse Match for SKU ' . $product->getSku() . " -> " . $sku . " -> " . $warehouse_name,null,'fulfillment.log');
 	           	}
+	           	//echo $sku . " SKU"; 
                }
                
            }
-           
+           die();
            if ($product->getData('pt_qty')<1) {
                ksort($price_array);
                reset($price_array);
