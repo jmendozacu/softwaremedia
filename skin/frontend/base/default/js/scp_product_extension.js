@@ -106,7 +106,6 @@ Product.Config.prototype.updateFormProductId = function(productId){
     $('product_addtocart_form').product.value = productId;
 };
 
-
 Product.Config.prototype.addParentProductIdToCartForm = function(parentProductId) {
     if (typeof $('product_addtocart_form').cpid != 'undefined') {
         return; //don't create it if we have one..
@@ -190,7 +189,7 @@ Product.Config.prototype.reloadPrice = function() {
         this.updateProductName(childProductId);
         this.updateProductAttributes(childProductId);
         this.updateFormProductId(childProductId);
-        this.addParentProductIdToCartForm(this.config.productId);
+        //this.addParentProductIdToCartForm(this.config.productId);
         this.showCustomOptionsBlock(childProductId, this.config.productId);
         if (usingZoomer) {
             this.showFullImageDiv(childProductId, this.config.productId);

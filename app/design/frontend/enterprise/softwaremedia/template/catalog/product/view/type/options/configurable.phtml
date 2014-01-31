@@ -61,7 +61,8 @@ $col = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterBy
 
 $productMap = array();
 foreach($col as $simpleProduct){
-    $productMap[$simpleProduct->getId()] = $simpleProduct->getSku();
+	$simpleProd = Mage::getModel('catalog/product')->load($simpleProduct->getId());
+    $productMap[$simpleProduct->getId()] = $simpleProd->getData('manufacturer_pn_2');
 }
 ?>
 
@@ -72,7 +73,7 @@ document.observe("dom:loaded", function() {
 });
 
 function changeSku(confAttributeId, sel) {
-/*    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
+   var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
         var options = spConfig.config.attributes[confAttributeId].options;
@@ -80,7 +81,7 @@ function changeSku(confAttributeId, sel) {
         $("sku-container").update("<strong>Part Number: </strong>" + productMap[productId]);
     } else {
         $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
-    }*/
+    }
 }
 
 jQuery(document).ready(function(){
