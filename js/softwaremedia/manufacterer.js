@@ -506,9 +506,11 @@ document.observe("dom:loaded", function() {
 function updateSKU() {
 	var brand = $('brand')[$('brand').selectedIndex].text;
 	var manufacturerNum = $('manufacturer_pn_2').value.replace(/[^a-zA-Z0-9]/g,'');
-	$('etilize_manufactureid').value = manufacturerList[brand][0].ManufacturerID;
-	if (manufacturerList[brand]) {
-		$('sku').value = manufacturerList[brand][0].ManufacturerCode + '-' + manufacturerNum;	
+	if (manufacturerList[brand] != undefined) {
+		$('etilize_manufactureid').value = manufacturerList[brand][0].ManufacturerID;
+		if (manufacturerList[brand]) {
+			$('sku').value = manufacturerList[brand][0].ManufacturerCode + '-' + manufacturerNum;	
+			}
 	}
 	
 }
