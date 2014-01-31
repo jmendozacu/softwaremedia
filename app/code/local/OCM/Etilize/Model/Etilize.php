@@ -529,6 +529,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	    	
 	    	try {
 	    		$ch = curl_init ($url);
+	    		echo $url;
 				curl_setopt($ch, CURLOPT_HEADER, 0);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
