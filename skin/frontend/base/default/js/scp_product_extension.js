@@ -188,7 +188,7 @@ Product.Config.prototype.reloadPrice = function() {
         this.updateProductDescription(childProductId);
         this.updateProductName(childProductId);
         this.updateProductAttributes(childProductId);
-        this.updateFormProductId(childProductId);
+        //this.updateFormProductId(childProductId);
         //this.addParentProductIdToCartForm(this.config.productId);
         this.showCustomOptionsBlock(childProductId, this.config.productId);
         if (usingZoomer) {
