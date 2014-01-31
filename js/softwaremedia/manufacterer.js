@@ -494,6 +494,12 @@ var manufacturerList = {
 		"ManufacturerCode"	: "VM"
 	
 	}
+	],
+	"SoftwareMedia"		:	[
+	{
+		"ManufacturerID" 	: "",
+		"ManufacturerCode"	: "SZ"
+	}
 	]
 };
 

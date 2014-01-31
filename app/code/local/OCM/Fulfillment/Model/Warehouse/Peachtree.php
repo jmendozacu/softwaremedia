@@ -24,8 +24,9 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 
     public function updatePriceQtyFromCsv($file_path=null, $headers=array()) {
         
+        chmod('../var/peachtree_import/pt_qty_cost.csv',0777);
         if (!$file_path) {
-            $file_path = Mage::getBaseDir() . DS . 'var' . DS . 'peachtree_import' . DS . 'pt_qty_cost.csv';
+            $file_path = Mage::getBaseDir() . '/var/peachtree_import/pt_qty_cost.csv';
         }
         
         if (!count($headers)) {
