@@ -19,15 +19,12 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 $collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('visibility')
             ->addAttributeToSelect('package_id')
-            ->addAttributeToFilter('sku','KA-KL4857AAMFS');
-foreach($collection as $product) {
-	$product->setData('warehouse_updated_at',now());
-	$product->save();
-	echo $product->getData('package_id');
-	echo "saved";
-}
+            ->addAttributeToSelect('ingram_micro_usa')
+            ->addAttributeToFilter('sku','SY-Z0TWWZF0EI1EE');
+            
+      
 
-//$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->getQty('AD-65158504AD01A00');
+$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->loadCollectionArray($collection);
 //updatePriceQtyFromCsv            
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
