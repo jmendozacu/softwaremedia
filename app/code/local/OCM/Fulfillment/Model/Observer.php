@@ -12,6 +12,7 @@ class OCM_Fulfillment_Model_Observer
 
         foreach($orders as $order){
             $is_virtual = false;
+            $is_physical = false;
             $items = $order->getAllVisibleItems();
             foreach($items as $item){
             	$prod = Mage::getModel('catalog/product')->load($item->getProductId());
@@ -19,12 +20,20 @@ class OCM_Fulfillment_Model_Observer
 		
                 if($prod->getData('package_id')==1084){
                     $is_virtual = true;
-                    break;
+                } else {
+	                $is_physical = true;
                 }
             }
 
             if($is_virtual){ 
-            	//order has ANY virtual product=
+            
+            	//Order has both physical and electronic items
+            	if ($is_physical) {
+	            	$order->setStatus('multipleproductorder')->save();
+	            	continue;
+            	}
+            	
+            	//order has ONLY virtual products
                 $model = Mage::getModel('ocm_fulfillment/license')->getCollection()
                     ->addFieldToFilter('order_id',$order->getId())->getFirstItem();
                     
@@ -33,7 +42,9 @@ class OCM_Fulfillment_Model_Observer
                     $model->save();
                 }
 				$order->setStatus('needslicense')->save();
+				continue;
             } else{ // order has ANY physical products:
+            
                 // check if shipping to California, Massachusetts, or Tennessee
                 $stop_states = $this->_getStopStates();
                 if (in_array($order->getShippingAddress()->getRegionId(),$stop_states)) {
@@ -49,32 +60,59 @@ class OCM_Fulfillment_Model_Observer
                 // decide delivery method
                 // check internal stock or if warehouse can complete
                 // internal is first, and all others are in order of preference
+                $warehousesFulfill = array();
+                
                 $done = false;
                 foreach($warehouse_model->warehouses as $warehouse_name) {
                 	echo $warehouse_name . " - " . $warehouse_model->getData($warehouse_name)->getCanFulfill() . "<br />";
                     if ($warehouse_model->getData($warehouse_name)->getCanFulfill()) {
+                    	$warehousesFulfill[$warehouse_name] = $warehouse_model->getData($warehouse_name)->getTotalCost();
                         //fulfill with warehouse here
-                        $warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
+                        //$warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
                         
+                        //if internal stock, always use
                         //set order to complete here
-                        $order->setStatus($warehouse_name)->save();
-                        $done = true;
-                        break;
+                        if ($warehouse_name == 'peachtree') {
+	                        $order->setStatus($warehouse_name)->save();
+	                        $done = true;
+	                        break;
+                        }
                         
                     }
                   
                  }
+                 if ($done) continue;
                  
+                 //Sort warehouses by cost
+                 asort($warehousesFulfill);
+                 $warehouseKeys = array_keys($warehousesFulfill);
+                 $warehouseCount = count($warehouseKeys);
+                 
+                 //If Multiple warehouses, check if cheapest is greater than threshhold
+                 if ($warehouseCount > 1) {
+	                 if ($warehousesFulfill[$warehouseKeys[$warehouseCount - 1]] - $warehousesFulfill[$warehouseKeys[0]] >= 10) 							{
+		                 $done = 1;
+		                 $order->setStatus($warehouseKeys[0])->save();
+		                 $warehouse_model->getWarehouseModel($warehouseKeys[0])->fulfill($order , $order->getAllItems());
+		                 continue;
+	                 }
+                
+                 }
+                 
+                 //If cheapest is not under threshhold, process in order of priority
+                 foreach($warehouse_model->warehouses as $warehouse_name) {
+                 	if (array_key_exists($warehouse_name, $warehousesFulfill)) {
+                 		$warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
+                        //set order to complete here
+                        $order->setStatus($warehouse_name)->save();
+                        $done = true;
+                        break;
+                 	}
+                 }
+                 
+	                
                 if ($done) continue;
-                
-                // check if shipping to California, Massachusetts, or Tennessee
-                $stop_states = $this->_getStopStates();
-                if (in_array($order->getShippingAddress()->getRegionId(),$stop_states)) {
-                    //set order to "Process Manually" here
-                    $order->setStatus('processmanually')->save();
-                    continue;
-                }
-                
+                                
                 // attempt to complete with multiple warehouses
               
                 // $multi_fulfillment = array();

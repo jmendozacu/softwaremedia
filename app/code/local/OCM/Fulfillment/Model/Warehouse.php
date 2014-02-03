@@ -14,16 +14,18 @@ class OCM_Fulfillment_Model_Warehouse extends Mage_Core_Model_Abstract
     public function loadWarehouseData($items){
     
         $all_items = array();
+        $all_items_qty = array();
         foreach($items as $item){
             if ($item->getParentItemId()) continue;
             $all_items[$item->getId()] = $item->getSku();
+            $all_items_qty[$item->getId()] = $item->getQtyOrdered();
             $this->items_for_update[$item->getSku()] = array();
 
         }
 
         foreach ($this->warehouses as $warehouse) {
             $model = $this->getWarehouseModel($warehouse);
-            $products_data = $model->getAllItemsData($all_items);
+            $products_data = $model->getAllItemsData($all_items, $all_items_qty);
 
             $this->setData($warehouse , $products_data );
             

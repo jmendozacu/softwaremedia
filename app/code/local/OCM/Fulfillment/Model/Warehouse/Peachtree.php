@@ -11,7 +11,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 	public function getQty($sku){
 		$product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
 		$product = Mage::getModel('catalog/product')->load($product_id);
-		$stock = $product->toArray($product);
+	
 
 		return (int)$product->getPtQty();
 	}
