@@ -1,6 +1,6 @@
 <?php
 
-require "app/Mage.php";
+require "../app/Mage.php";
 Mage::app('admin')->setUseSessionInUrl(false);
 
 //$file = fopen(Mage::getBaseDir()."/var/synnex_data/520985.ap","r") or die('could not open file');
@@ -16,8 +16,18 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 ->addAttributeToSelect('warehouse_updated_at','left')
 ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true),array('eq' => '')));
 
+$collection = Mage::getModel('catalog/product')->getCollection()
+			->addAttributeToSelect('visibility')
+            ->addAttributeToSelect('package_id')
+            ->addAttributeToFilter('sku','KA-KL4857AAMFS');
+foreach($collection as $product) {
+	$product->setData('warehouse_updated_at',now());
+	$product->save();
+	echo $product->getData('package_id');
+	echo "saved";
+}
 
 //$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->getQty('AD-65158504AD01A00');
 //updatePriceQtyFromCsv            
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
-Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
+//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
