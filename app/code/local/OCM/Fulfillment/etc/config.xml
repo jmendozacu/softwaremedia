@@ -83,7 +83,7 @@
             </update_prices_qty>
             <update_product_warehouse_data>
                 <schedule>
-                    <cron_expr>*/10 * * * *</cron_expr>
+                    <cron_expr>*/5 * * * *</cron_expr>
                 </schedule>
                 <run>
                     <model>ocm_fulfillment/observer::updateProductWarehouseData</model>
