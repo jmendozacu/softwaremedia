@@ -14,13 +14,17 @@ class OCM_Fulfillment_Model_Observer
             $is_virtual = false;
             $items = $order->getAllVisibleItems();
             foreach($items as $item){
-                if($item->getIsVirtual()==1){
+            	$prod = Mage::getModel('catalog/product')->load($item->getProductId());
+				//echo $item->getProductId();
+		
+                if($prod->getData('package_id')==1084){
                     $is_virtual = true;
                     break;
                 }
             }
+
             if($is_virtual){ 
-            	//order has ANY virtual products
+            	//order has ANY virtual product=
                 $model = Mage::getModel('ocm_fulfillment/license')->getCollection()
                     ->addFieldToFilter('order_id',$order->getId())->getFirstItem();
                     

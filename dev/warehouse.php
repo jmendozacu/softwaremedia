@@ -16,15 +16,16 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 ->addAttributeToSelect('warehouse_updated_at','left')
 ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true),array('eq' => '')));
 
+/*
 $collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('visibility')
             ->addAttributeToSelect('package_id')
             ->addAttributeToSelect('ingram_micro_usa')
             ->addAttributeToFilter('sku','SY-Z0TWWZF0EI1EE');
-            
+            */
       
 
-$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->loadCollectionArray($collection);
+Mage::getModel('ocm_fulfillment/observer')->evaluateOrdersDaily();
 //updatePriceQtyFromCsv            
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
