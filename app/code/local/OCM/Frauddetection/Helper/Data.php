@@ -36,6 +36,15 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         $collection = Mage::getModel('sales/order')->getCollection();
         $customerOrders = $collection->addFieldToFilter('customer_email',$customerEmail);
         
+		Mage::getSingleton('core/session', array('name' => 'adminhtml')); 
+		$session = Mage::getSingleton('admin/session'); 
+		if ( $session->isLoggedIn() ){ 
+			$admin = $session->getUser();
+			if ($admin->getId()){
+					return false;
+		    }
+		}
+		    
         //Only perform check if this is the first order for that customer
         if($customerOrders->getSize()==1){
         
