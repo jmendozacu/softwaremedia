@@ -88,8 +88,8 @@ class OCM_Fulfillment_Model_Observer
 	                        continue;
 	                	}
                 	}
-                    //set order to "Process Manually" here
-                    $order->setStatus('processing','ship_internal','Shipping to TN, CA, or MA. May need to reship from UT.', FALSE)->save();
+                    //set order to ship internal
+                    $order->setState('processing','ship_internal','Shipping to TN, CA, or MA. May need to reship from UT.', FALSE)->save();
                     continue;
                 }
                 
