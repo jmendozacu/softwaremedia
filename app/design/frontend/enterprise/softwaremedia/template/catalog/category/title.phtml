@@ -11,5 +11,7 @@
         $title = empty($title) ? $this->getCurrentCategory()->getName() : $title; 
     ?>
     <h1><?php echo $_helper->categoryAttribute($_category, $title, 'name') ?></h1>
+    <?php if ($_category->getThumbnail()) { ?>
     <img src="<?php echo Mage::getBaseUrl('media').'catalog/category/'.$_category->getThumbnail()  ?>" />
+    <?php } ?>
 </div>
