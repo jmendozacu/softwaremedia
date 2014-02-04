@@ -59,7 +59,7 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
                     || implode(',',$shippingAddress->getStreet())!=implode(',',$billingAddress->getStreet())){
                     $result = false;
                 } else {
-                    $result = true;
+                    $result = "Fraud Detection: Shipping address does not match billing address.";
                 }
             }
 
@@ -68,28 +68,28 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
             $maildomain = substr($customerEmail,$pos+1);
             if($result==false){
                 if(in_array($maildomain,$this->_allowMailDomain)){
-                    $result = true;
+                    $result = "Fraud Detection: E-mail address domain in potential blacklist";
                 }
             }
             
             // check order is an international order
             if($result==false){
                 if(Mage::getStoreConfig('general/country/default')!=$shippingAddress->getCountryId()){
-                    $result = true;
+                    $result = "Fraud Detection: International Order";
                 }
             }
             
             // check order is over $2,000
             if($result==false){
                 if($order->getSubtotal()>2000){
-                    $result = true;
+                    $result = "Fraud Detection: Order exceeds $2000";
                 }
             }
             
             // check order requires overnight shipping
             if($result==false){
                 if(in_array($order->getShippingMethod(),$this->_allowShippingMethod)){
-                    $result = true;
+                    $result = "Fraud Detection: Expedited shipping selected";
                 }
             }
         }
