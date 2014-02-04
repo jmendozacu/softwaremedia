@@ -29,7 +29,7 @@ class OCM_Fulfillment_Model_Observer
             
             	//Order has both physical and electronic items
             	if ($is_physical) {
-	            	$order->setStatus('multipleproductorder')->save();
+	            	$order->setState('processing','multipleproductorder','Order has both physical and electronic items. Please process manually.',FALSE)->save();
 	            	continue;
             	}
             	
@@ -41,17 +41,10 @@ class OCM_Fulfillment_Model_Observer
                     $model->setOrderId($order->getId())->setStatus('Not assigned');
                     $model->save();
                 }
-				$order->setStatus('needslicense')->save();
+				$order->setState('processing','needslicense','Order contains only electronic products. Needs Licensing.',FALSE)->save();
 				continue;
             } else{ // order has ANY physical products:
-            
-                // check if shipping to California, Massachusetts, or Tennessee
-                $stop_states = $this->_getStopStates();
-                if (in_array($order->getShippingAddress()->getRegionId(),$stop_states)) {
-                    //set order to "Process Manually" here
-                    $order->setStatus('processmanually')->save();
-                    continue;
-                }
+           
 			
                 // Get All warehouse availability 
                 $warehouse_model = Mage::getModel('ocm_fulfillment/warehouse');
@@ -73,7 +66,7 @@ class OCM_Fulfillment_Model_Observer
                         //if internal stock, always use
                         //set order to complete here
                         if ($warehouse_name == 'peachtree') {
-	                        $order->setStatus($warehouse_name)->save();
+	                        $order->setState('processing',$warehouse_name,'Product is available in warehouse, use internal stock.',FALSE)->save();
 	                        $done = true;
 	                        break;
                         }
@@ -83,6 +76,23 @@ class OCM_Fulfillment_Model_Observer
                  }
                  if ($done) continue;
                  
+                 
+                //check if shipping to California, Massachusetts, or Tennessee
+                $stop_states = $this->_getStopStates();
+                if (in_array($order->getShippingAddress()->getRegionId(),$stop_states)) {
+                
+                	//If shipping to Tennessee, use Synnex if available
+                	if ($order->getShippingAddress()->getRegionId() == $stop_states['TN']) {
+	                	if ($warehousesFulfill['synnex']) {
+		                	$order->setState('processing','synnex','Shipping to TN. Prioritize Synnex.',FALSE)->save();
+	                        continue;
+	                	}
+                	}
+                    //set order to "Process Manually" here
+                    $order->setStatus('processing','ship_internal','Shipping to TN, CA, or MA. May need to reship from UT.', FALSE)->save();
+                    continue;
+                }
+                
                  //Sort warehouses by cost
                  asort($warehousesFulfill);
                  $warehouseKeys = array_keys($warehousesFulfill);
@@ -90,9 +100,10 @@ class OCM_Fulfillment_Model_Observer
                  
                  //If Multiple warehouses, check if cheapest is greater than threshhold
                  if ($warehouseCount > 1) {
-	                 if ($warehousesFulfill[$warehouseKeys[$warehouseCount - 1]] - $warehousesFulfill[$warehouseKeys[0]] >= 10) 							{
+                 	$difference = $warehousesFulfill[$warehouseKeys[$warehouseCount - 1]] - $warehousesFulfill[$warehouseKeys[0]];
+	                 if ($difference >= 10) 							{
 		                 $done = 1;
-		                 $order->setStatus($warehouseKeys[0])->save();
+		                 $order->setState('processing',$warehouseKeys[0],'Order available $' . $difference . ' cheaper at ' . $warehouseKeys[0] . ' vs ' . $warehouseKeys[$warehouseCount - 1], FALSE)->save();
 		                 $warehouse_model->getWarehouseModel($warehouseKeys[0])->fulfill($order , $order->getAllItems());
 		                 continue;
 	                 }
@@ -154,7 +165,7 @@ class OCM_Fulfillment_Model_Observer
                 
                 //set order to "Process Manually" here
 				if(!$done){
-					$order->setStatus('processmanually')->save();
+					$order->setState('processing','multipleproductorder','No single warehouse has stock to fulfill entire order. Please process manually.', FALSE)->save();
 				}
             
             }
@@ -168,9 +179,9 @@ class OCM_Fulfillment_Model_Observer
         
         $stop_states = array();
         $model = Mage::getModel('directory/region');
-        $stop_states[] = $model->loadByCode('CA', 'US')->getId();
-        $stop_states[] = $model->loadByCode('MA', 'US')->getId();
-        $stop_states[] = $model->loadByCode('TN', 'US')->getId();
+        $stop_states['CA'] = $model->loadByCode('CA', 'US')->getId();
+        $stop_states['MA'] = $model->loadByCode('MA', 'US')->getId();
+        $stop_states['TN'] = $model->loadByCode('TN', 'US')->getId();
         
         return $stop_states;
         
