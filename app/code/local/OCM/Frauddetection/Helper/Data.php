@@ -20,9 +20,10 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         'FEDEX_EXPRESS_SAVER',
         'FIRST_OVERNIGHT',
         'STANDARD_OVERNIGHT',
-        'Express Mail',
-        'First-Class Mail Letter',
-        'Express Mail Flat-Rate Envelope Sunday/Holiday Guarantee',
+        'productmatrix_Priority_Overnight',
+        'productmatrix_Overnight_Saturday',
+        'productmatrix_Overnight',
+        'productmatrix_Standard_Overnight',
         '1DM',
         '1DML',
         '1DA',
@@ -47,7 +48,6 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
 		    
         //Only perform check if this is the first order for that customer
         if($customerOrders->getSize()==1){
-        
             // compare shippingaddress and billingaddress
             $shippingAddress = $order->getShippingAddress();
             $billingAddress = $order->getBillingAddress();
@@ -57,9 +57,10 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
                     || $shippingAddress->getCity()!=$billingAddress->getCity()
                     || $shippingAddress->getCountryId()!=$billingAddress->getCountryId()
                     || implode(',',$shippingAddress->getStreet())!=implode(',',$billingAddress->getStreet())){
-                    $result = false;
-                } else {
+                    
                     $result = "Fraud Detection: Shipping address does not match billing address.";
+                } else {
+                    
                 }
             }
 

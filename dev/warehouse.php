@@ -16,6 +16,15 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 ->addAttributeToSelect('warehouse_updated_at','left')
 ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true),array('eq' => '')));
 
+$order = Mage::getModel('sales/order')->load(121);
+
+		$result = Mage::helper('ocm_frauddetection')->isViolations($order);
+        if($result){
+            $order->setState('new','orders_suspect_hold',$result,false)->save();
+        } 
+
+die();
+
 /*
 $collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('visibility')
