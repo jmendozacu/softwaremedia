@@ -46,6 +46,11 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
         }
         $this->_removeButton('reset');
         $this->_updateButton('back', 'onclick', 'setLocation(\'' . $this->getBackUrl() . '\');');
+        $location = $this->getUrl('*/quotedispatch/new');
+         $this->_addButton('addQuote', array(
+            'label'     => Mage::helper('adminhtml')->__('Add Quote'),
+            'onclick'   => "setLocation('$location');"
+        ), -100);
     }
 
     /**

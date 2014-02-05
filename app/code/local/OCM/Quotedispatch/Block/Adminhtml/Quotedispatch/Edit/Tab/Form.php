@@ -44,7 +44,13 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
           'required'  => false,
           'name'      => 'phone',
       ));
-
+      
+      $fieldset->addField('note', 'textarea', array(
+          'label'     => Mage::helper('quotedispatch')->__('Note'),
+          'class'     => '',
+          'required'  => false,
+          'name'      => 'note',
+      ));
 
       $fieldset->addField('expire_time', 'date', array(
           'label'     => Mage::helper('quotedispatch')->__('Expire Date'),
