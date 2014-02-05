@@ -17,19 +17,54 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
       $collection = Mage::getModel('quotedispatch/quotedispatch')->getCollection()
         ->addFirstLastNameToSelect()
       ;
-      
+//      $collection->getSelect()
+//              ->join(array('ALIAS'=>'TABLE_NAME'),'main_table.order_id=ALIAS.entity_id',array('FIELD TO SELECT 1','FIELD TO SELECT 2'));
       $this->setCollection($collection);
       
       /////
-
+      
       
       return parent::_prepareCollection();
   }
 
   protected function _prepareColumns()
   {
-
-
+// if (!$this->hasData('all_items')) {
+//            
+//            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
+//            
+//            //die(var_dump($name_attr->getData()));
+//            
+//            $collection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()
+//                ->addFieldToFilter('quotedispatch_id',$this->getId())
+//                //->addFieldToFilter('email',$this->getEmail())
+//            ;
+//        
+//            $collection->getSelect()
+//                ->joinleft(
+//                    array('e' => 'catalog_product_entity'),
+//                    'main_table.product_id = e.entity_id'
+//                )
+//                ->joinleft(
+//                    array('pv' => 'catalog_product_entity_varchar'), 
+//                    'pv.entity_id=main_table.product_id', 
+//                    array('name' => 'value')
+//                )
+//                ->where('pv.attribute_id='.$name_attr->getAttributeId())
+//                ->columns(array(
+//                    'line_total' => new Zend_Db_Expr('main_table.price * main_table.qty')
+//                    )
+//                )
+//            ;
+//            
+//        
+//            //die(var_dump($collection->getSelect()));
+//        
+//            $this->setData('all_items', $collection);
+//        }
+//        return $this->getData('all_items');
+  
+        //die(var_dump($this->getData('all_items')));
       $this->addColumn('quotedispatch_id', array(
           'header'    => Mage::helper('quotedispatch')->__('ID'),
           'align'     =>'right',
@@ -37,11 +72,11 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'index'     => 'quotedispatch_id',
       ));
 
-      $this->addColumn('title', array(
-          'header'    => Mage::helper('quotedispatch')->__('Quote Name'),
-          'align'     =>'left',
-          'index'     => 'title',
-      ));
+//      $this->addColumn('title', array(
+//          'header'    => Mage::helper('quotedispatch')->__('Quote Name'),
+//          'align'     =>'left',
+//          'index'     => 'title',
+//      ));
 
       $this->addColumn('first_last_name', array(
           'header'    => Mage::helper('quotedispatch')->__('Name'),
@@ -61,9 +96,21 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'align'     =>'left',
           'index'     => 'email',
       ));
+      
+      $this->addColumn('products', array(
+          'header'    => Mage::helper('quotedispatch')->__('products'),
+          'align'     =>'left',
+          'index'     => $this->setCollection($collection),
+      ));
+      
+      
+       $this->addColumn('total', array(
+          'header'    => Mage::helper('quotedispatch')->__('total'),
+          'align'     =>'left',
+          'index'     => 'price',
+      ));
 
-
-        $this->addColumn('expire_time', array(
+      $this->addColumn('expire_time', array(
             'header'  => Mage::helper('quotedispatch')->__('Expires'),
             'index'   => 'expire_time',
             'type'    => 'date',
@@ -87,7 +134,10 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'type'      => 'options',
           'options'   => Mage::getModel('quotedispatch/adminuser')->getOptionArray(),
       ));
-
+      
+      $this->addExportType('*/*/exportCsv', Mage::helper('quotedispatch')->__('CSV'));
+      $this->addExportType('*/*/exportExcel', Mage::helper('quotedispatch')->__('Excel XML'));
+        
       return parent::_prepareColumns();
   }
 
@@ -122,7 +172,6 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
         $collection->getSelect()->where($condition);
 
     }
-
 
 
 }

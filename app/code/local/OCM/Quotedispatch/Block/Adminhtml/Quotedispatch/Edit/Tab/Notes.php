@@ -15,7 +15,14 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Notes extends Mag
           'wysiwyg'   => false,
           'required'  => false,
       ));
-     
+     $fieldset->addField('external_note', 'editor', array(
+          'name'      => 'note',
+          'label'     => Mage::helper('quotedispatch')->__('External Note'),
+          'title'     => Mage::helper('quotedispatch')->__('External Note'),
+          'style'     => 'width:300px; height:100px;',
+          'wysiwyg'   => false,
+          'required'  => false,
+      ));
       if ( Mage::getSingleton('adminhtml/session')->getQuotedispatchData() )
       {
           $form->setValues(Mage::getSingleton('adminhtml/session')->getQuotedispatchData());

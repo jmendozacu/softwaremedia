@@ -46,9 +46,11 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
 			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('quotedispatch')->__('Item does not exist'));
 			$this->_redirect('*/*/');
 		}
+           
 	}
  
 	public function newAction() {
+            
 		$this->_forward('edit');
 	}
  
@@ -220,6 +222,18 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
         $this->renderLayout();
         
     }
-
+    
+    public function exportCsvAction()
+{
+   $fileName   = 'quote_dispatch.csv';
+   $grid       = $this->getLayout()->createBlock('quotedispatch/adminhtml_quotedispatch_grid');
+   $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
+}
+public function exportExcelAction()
+    {
+        $fileName   = 'invoices.xml';
+        $grid       = $this->getLayout()->createBlock('quotedispatch/adminhtml_quotedispatch_grid');
+        $this->_prepareDownloadResponse($fileName, $grid->getExcelFile($fileName));
+    }
 
 }

@@ -9,29 +9,25 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
      
       $fieldset->addField('title', 'text', array(
           'label'     => Mage::helper('quotedispatch')->__('Quote Name'),
-          'class'     => 'required-entry',
-          'required'  => true,
+          'required'  => false,
           'name'      => 'title',
       ));
 
       $fieldset->addField('firstname', 'text', array(
           'label'     => Mage::helper('quotedispatch')->__('First Name'),
-          'class'     => 'required-entry',
-          'required'  => true,
+          'required'  => false,
           'name'      => 'firstname',
       ));
 
       $fieldset->addField('lastname', 'text', array(
           'label'     => Mage::helper('quotedispatch')->__('Last Name'),
-          'class'     => 'required-entry',
-          'required'  => true,
+          'required'  => false,
           'name'      => 'lastname',
       ));
 
       $fieldset->addField('company', 'text', array(
           'label'     => Mage::helper('quotedispatch')->__('Company'),
-          'class'     => 'required-entry',
-          'required'  => true,
+          'required'  => false,
           'name'      => 'company',
       ));
 

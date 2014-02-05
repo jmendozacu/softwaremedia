@@ -9,4 +9,8 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch extends Mage_Adminhtml_Blo
     $this->_addButtonLabel = Mage::helper('quotedispatch')->__('Add Quote');
     parent::__construct();
   }
+//  public function _prepareLayout() {
+//      $breadcrumbs = $this->getLayout()->getBlock('breadcrumbs')->toHtml();
+//      parent::_prepareLayout();
+//  }
 }
