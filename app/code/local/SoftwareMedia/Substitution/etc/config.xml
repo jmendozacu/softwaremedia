@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <SoftwareMedia_Substitution>
+            <version>0.1.0</version>
+        </softwaremedia_setup>
+    </modules>
+    <global>      
+        <resources>
+            <softwaremedia_setup>
+                <setup>
+                    <module>OCM_Setup</module>
+                    <class>Mage_Catalog_Model_Resource_Setup</class>
+                </setup>
+            </softwaremedia_setup>
+        </resources> 
+    </global>
+</config>
