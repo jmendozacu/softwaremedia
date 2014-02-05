@@ -53,7 +53,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
             $captureTxResponse = $this->_paymentProcessor->sendRequest(self::CAPTURE);
         } else 
         {
-           $this->_paymentProcessor->buildCaptureRequest($payment, $amount);
+           $this->_paymentProcessor->buildRequest($payment, $amount);
            $captureTxResponse = $this->_paymentProcessor->sendRequest(self::SALE);
         }
           

@@ -102,16 +102,24 @@ class OCM_Fulfillment_Model_Warehouse_Synnex extends OCM_Fulfillment_Model_Wareh
         fclose($file);
     }
         
+
     public function getQty($sku){
-        $this->load($sku,'synnex_sku');
-        return $this->getData(self::SYNNEX_QTY_ATTR);
-    }
-    
-    public function getPrice($sku) {
-        $this->load($sku,'synnex_sku');
-        return $this->getData(self::SYNNEX_PRICE_ATTR);
+        
+        $product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
+		$product = Mage::getModel('catalog/product')->load($product_id);
+		$stock = $product->toArray($product);
+
+		return (int)$product->getSynnexQty();
     }
 
+    public function getPrice($sku){
+        
+        $product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
+		$product = Mage::getModel('catalog/product')->load($product_id);
+		$stock = $product->toArray($product);
+
+		return (int)$product->getSynnexPrice();
+    }
     public function loadCollectionArray($collection) {
 
         $collection->addAttributeToSelect(self::SYNNEX_SKU_ATTR);

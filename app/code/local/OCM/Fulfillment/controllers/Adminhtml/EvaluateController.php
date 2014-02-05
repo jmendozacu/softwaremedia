@@ -7,9 +7,9 @@ class OCM_Fulfillment_Adminhtml_EvaluateController extends Mage_Adminhtml_Contro
     {
         $observer = Mage::getModel('ocm_fulfillment/observer');
         $observer->evaluateOrdersDaily();
-        echo "DONE.";
+
         $this->_getSession()->addSuccess($this->__('Your order(s) have been updated.'));
-        $this->_redirect();
+        $this->_redirect('adminhtml/sales_order/index');
 
     }
 

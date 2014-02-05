@@ -17,11 +17,12 @@ abstract class OCM_Fulfillment_Model_Warehouse_Abstract extends Mage_Core_Model_
     }
 
     // $items array(item_id => product_skus)
-    public function getAllItemsData($items) {
+    public function getAllItemsData($items, $items_qty) {
     
         $this->setItems($items);
         $all_items = array();
         $can_fulfill = true;
+        $totalCost = 0;
         foreach($items as $item_id => $sku) {
             $qty = $this->getQty($sku);
             $price = $this->getPrice($sku);
@@ -30,11 +31,13 @@ abstract class OCM_Fulfillment_Model_Warehouse_Abstract extends Mage_Core_Model_
                 'qty'   => $qty,
                 'price' => $price,
             ));
-            if ($qty < 1) $can_fulfill = false;
+            $totalCost += $price;
+            if ($qty < $items_qty[$item_id]) $can_fulfill = false;
         }
         
         $all_items_data = new Varien_Object(array(
             'allItems' => $all_items,
+            'total_cost' => $totalCost,
             'can_fulfill' => $can_fulfill,
         ));
         
