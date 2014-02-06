@@ -3,16 +3,41 @@
     <modules>
         <SoftwareMedia_Substitution>
             <version>0.1.0</version>
-        </softwaremedia_setup>
+        </SoftwareMedia_Substitution>
     </modules>
     <global>      
+    <blocks>
+    	<substitution>
+       	 <class>SoftwareMedia_Substitution_Block</class>
+		</substitution>
+	    <adminhtml>
+        <rewrite>
+             <catalog_product_edit_tabs>SoftwareMedia_Substitution_Block_Adminhtml_Tabs</catalog_product_edit_tabs>
+         </rewrite>
+     </adminhtml>
+
+	 </blocks>
         <resources>
             <softwaremedia_setup>
                 <setup>
-                    <module>OCM_Setup</module>
+                    <module>SoftwareMedia_Substitution</module>
                     <class>Mage_Catalog_Model_Resource_Setup</class>
                 </setup>
             </softwaremedia_setup>
         </resources> 
+        <helpers>
+            <softwaremedia_substitution>
+                <class>SoftwareMedia_Substitution_Helper</class>
+            </softwaremedia_substitution>
+        </helpers>
     </global>
+    <adminhtml>
+        <layout>
+            <updates>
+                <substitution>
+                    <file>substitution.xml</file>
+                </substitution>
+            </updates>
+        </layout>
+    </adminhtml>
 </config>
