@@ -76,7 +76,13 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
           'name'      => 'created_by',
           'values'    => $created_by_values
       ));
-
+      
+      $fieldset->addField('email_notes', 'textarea', array(
+          'label'     => Mage::helper('quotedispatch')->__('Email Notes'),
+          'class'     => '',
+          'required'  => false,
+          'name'      => 'email_notes',
+      ));
 
      
       if ( Mage::getSingleton('adminhtml/session')->getQuotedispatchData() )

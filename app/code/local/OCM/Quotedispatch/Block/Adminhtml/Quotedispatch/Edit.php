@@ -26,7 +26,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit extends Mage_Adminhtm
             'onclick'   => 'saveAndSendEmail()',
             //'class'     => 'save',
         ), -100);
-        $location = $this->getUrl('*/*/new');
+        $location = $this->getUrl('*/*/new',array('id'=>$this->getRequest()->getParam('id'),'partial'=>true));
          $this->_addButton('addQuote', array(
             'label'     => Mage::helper('adminhtml')->__('Add Quote'),
             'onclick'   => "setLocation('$location');",

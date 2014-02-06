@@ -44,8 +44,20 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
         } else {
             $this->_removeButton('save');
         }
+       
         $this->_removeButton('reset');
         $this->_updateButton('back', 'onclick', 'setLocation(\'' . $this->getBackUrl() . '\');');
+        $customerId=$this->getRequest()->getParam('customer');
+        $customer = Mage::getModel('sales/order_address')->getCollection()
+                ->addFieldToFilter('customer_id',$customerId);
+        $firstname = $customer->getFirstItem()->getFirstname();
+//        die(var_dump($firstname));
+        $lastname = $customer->getFirstItem()->getLastname();
+        $quote = Mage::getModel('quotedispatch/quotedispatch')->getCollection()
+                ->addFieldToSelect('quotedispatch_id')
+                ->addFieldToFilter('firstname',$firstname);
+//        $id = $quote->getFirstItem();
+//        die(var_dump($id));
         $location = $this->getUrl('*/quotedispatch/new');
          $this->_addButton('addQuote', array(
             'label'     => Mage::helper('adminhtml')->__('Add Quote'),

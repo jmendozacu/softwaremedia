@@ -56,8 +56,10 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
 //                    )
 //                )
 //            ;
-//            
-//        
+//        $collection->joinAttribute('name','catalog_product/name', 'entity_id', 'entity_id','left', 0);
+//        $collection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()
+//                ->addFieldToFilter('quotedispatch_id',$this->getId())
+//        $collection->getSelect()->joinRight('catalog_product_flat_1','catalog_product_flat_1.entity_id= `ocm_quotedispatch`.product_id','');
 //            //die(var_dump($collection->getSelect()));
 //        
 //            $this->setData('all_items', $collection);
@@ -103,12 +105,21 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'index'     => $this->setCollection($collection),
       ));
       
-      
-       $this->addColumn('total', array(
-          'header'    => Mage::helper('quotedispatch')->__('total'),
-          'align'     =>'left',
-          'index'     => 'price',
-      ));
+       $this->addColumn('total',
+            array(
+                'header'=> Mage::helper('catalog')->__('Total'),
+                'type'  => 'price',
+                'name'  => 'total',
+//                'currency_code' => $store->getBaseCurrency()->getCode(),
+                'editable'  => 1,
+                'index' => 'cost',
+        ));
+             
+//       $this->addColumn('total', array(
+//          'header'    => Mage::helper('quotedispatch')->__('total'),
+//          'align'     =>'left',
+//          'index'     => 'price',
+//      ));
 
       $this->addColumn('expire_time', array(
             'header'  => Mage::helper('quotedispatch')->__('Expires'),
