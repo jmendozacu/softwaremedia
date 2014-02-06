@@ -14,12 +14,14 @@ $from = date('Y-m-d H:i:s', $lastTime);
 		
 		
 		
-$product = Mage::getModel('catalog/product')->load(7166);
-
-$collection =Mage::getResourceModel('catalog/product_collection')->addAttributeToFilter('sku', array('like'=>array('%KA-KL1843ACCFS%')));
+$product = Mage::getModel('catalog/product')->load(7169);
+echo $product->setData('etilize_manufactureid','Test1');
+	$product->save();
+	
+$collection =Mage::getResourceModel('catalog/product_collection')->addAttributeToFilter('sku', array('like'=>array('%KA-KL1843ACCFS%')))->addAttributeToSelect('*');
 foreach($collection as $item) {
-	echo $item->setData('etilize_manufactureid','Test');
-	$item->save();
+	//echo $item->setData('etilize_manufactureid','Test');
+	//$item->save();
 }
 die();
 $order = Mage::getModel('sales/order')->load(121);
