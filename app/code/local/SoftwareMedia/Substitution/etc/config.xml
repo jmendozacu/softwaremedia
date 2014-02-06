@@ -5,7 +5,22 @@
             <version>0.1.0</version>
         </SoftwareMedia_Substitution>
     </modules>
-    <global>      
+    <global>
+    <rewrite>
+        <!-- This is an identifier for your rewrite that should be unique -->
+        <!-- THIS IS THE CLASSNAME IN YOUR OWN CONTROLLER -->
+        <softwaremedia_substitution_adminhtml_catalog_substitution>
+            <from><![CDATA[#^/admin/catalog_product/#]]></from>
+            <!--
+                - mymodule matches the router frontname below
+                - checkout_cart matches the path to your controller
+
+                Considering the router below, "/mymodule/checkout_cart/" will be
+                "translated" to "/MyNameSpace/MyModule/controllers/Checkout/CartController.php" (?)
+            -->
+            <to>/substitution/adminhtml_catalog_substitution/</to>
+        </softwaremedia_substitution_adminhtml_catalog_substitution>
+    </rewrite>      
     <blocks>
     	<substitution>
        	 <class>SoftwareMedia_Substitution_Block</class>
@@ -31,6 +46,19 @@
             </softwaremedia_substitution>
         </helpers>
     </global>
+    <admin>
+    	<routers>
+    		        <softwaremedia_substitution>
+            <!-- should be set to "admin" when overloading admin stuff (?) -->
+            <use>admin</use>
+            <args>
+                <module>SoftwareMedia_Substitution</module>
+                <!-- This is used when "catching" the rewrite above -->
+                <frontName>substitution</frontName>
+            </args>
+        </softwaremedia_substitution>
+    	</routers>
+    </admin>
     <adminhtml>
         <layout>
             <updates>

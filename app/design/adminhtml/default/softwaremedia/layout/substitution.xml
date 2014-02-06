@@ -1,7 +1,23 @@
 <!-- To add a tab on new product page -->
 <layout>
-    <adminhtml_catalog_product_new>
 
-    </adminhtml_catalog_product_new>
+	<adminhtml_catalog_product_substitution>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="substitution/adminhtml_substitution" name="catalog.product.edit.tab.substitution"/>
+            <block type="adminhtml/widget_grid_serializer" name="related_grid_serializer">
+                <reference name="related_grid_serializer">
+                    <action method="initSerializerBlock">
+                        <grid_block_name>catalog.product.edit.tab.substitution</grid_block_name>
+                        <data_callback>getSelectedRelatedProducts</data_callback>
+                        <hidden_input_name>links[substitution]</hidden_input_name>
+                        <reload_param_name>products_substitution</reload_param_name>
+                    </action>
+                    <action method="addColumnInputName">
+                        <input_name>position</input_name>
+                    </action>
+                </reference>
+            </block>
+        </block>
+    </adminhtml_catalog_product_substitution>
 
 </layout>

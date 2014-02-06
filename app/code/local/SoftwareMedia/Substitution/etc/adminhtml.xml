@@ -4,7 +4,7 @@
                 <children>
                     <substitution translate="title" module="softwaremedia_substitution">
                         <title>Substitution</title>
-                        <action>adminhtml/catalog_substitution</action>
+                        <action>substitution/adminhtml_catalog_substitution</action>
                         <sort_order>11</sort_order>
                     </substitution>
                 </children>
@@ -20,13 +20,7 @@
                         <sales translate="title" module="sales">
                             <title>Sales</title>
                             <sort_order>11</sort_order>
-                            <children>
-                                <items module="softwaremedia_substitution">
-                                    <title>Subsitution</title>
-                                    <sort_order>0</sort_order>
-                                    <action>adminhtml/catalog_substitution</action>
-                                </items>
-                            </children>
+
                         </sales>
                     </children>
                 </admin>
