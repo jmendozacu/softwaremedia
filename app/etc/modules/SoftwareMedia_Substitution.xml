@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <SoftwareMedia_Substitution>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Adminhtml/>
+                <Mage_Admin/>
+                <Mage_Sales/>
+            </depends>
+        </SoftwareMedia_Substitution>
+    </modules>
+</config>
