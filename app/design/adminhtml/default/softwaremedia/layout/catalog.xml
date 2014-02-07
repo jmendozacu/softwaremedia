@@ -50,22 +50,6 @@
 	            	        
             </block>
         </reference>
-       	 <block type="core/text_list" name="subblock">
-            	<block type="substitution/adminhtml_substitution" name="catalog.product.edit.tab.sub"/>
-	            <block type="adminhtml/widget_grid_serializer" name="related_grid_serializer">
-	                <reference name="related_grid_serializer">
-	                    <action method="initSerializerBlock">
-	                        <grid_block_name>catalog.product.edit.tab.sub</grid_block_name>
-	                        <data_callback>getSelectedRelatedProducts</data_callback>
-	                        <hidden_input_name>links[substitute]</hidden_input_name>
-	                        <reload_param_name>products_related</reload_param_name>
-	                    </action>
-	                    <action method="addColumnInputName">
-	                        <input_name>qty</input_name>
-	                    </action>
-	                </reference>
-	            </block>
-	        </block>
 
         <reference name="left">
             <block type="adminhtml/catalog_product_edit_tabs" name="product_tabs"></block>
@@ -88,22 +72,6 @@
         <reference name="content">
             <block type="adminhtml/catalog_product_edit" name="product_edit"></block>
         </reference>
-            <block type="core/text_list" name="subblock">
-            	<block type="substitution/adminhtml_substitution" name="catalog.product.edit.tab.sub"/>
-	            <block type="adminhtml/widget_grid_serializer" name="related_grid_serializer">
-	                <reference name="related_grid_serializer">
-	                    <action method="initSerializerBlock">
-	                        <grid_block_name>catalog.product.edit.tab.sub</grid_block_name>
-	                        <data_callback>getSelectedRelatedProducts</data_callback>
-	                        <hidden_input_name>links[substitute]</hidden_input_name>
-	                        <reload_param_name>products_related</reload_param_name>
-	                    </action>
-	                    <action method="addColumnInputName">
-	                        <input_name>qty</input_name>
-	                    </action>
-	                </reference>
-	            </block>
-	        </block>
         <reference name="left">
             <block type="adminhtml/store_switcher" name="store_switcher" before="-"></block>
             <block type="adminhtml/catalog_product_edit_tabs" name="product_tabs"></block>
@@ -156,6 +124,7 @@
         </block>
     </adminhtml_catalog_product_grid>
 
+    
     <adminhtml_catalog_product_related>
         <block type="core/text_list" name="root" output="toHtml">
             <block type="adminhtml/catalog_product_edit_tab_related" name="catalog.product.edit.tab.related"/>

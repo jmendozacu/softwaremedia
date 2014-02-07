@@ -1,7 +1,0 @@
-<!-- To add a tab on new product page -->
-<layout>
-    <adminhtml_catalog_product_new>
-
-    </adminhtml_catalog_product_new>
-
-</layout>
