@@ -84,6 +84,8 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'header'    => Mage::helper('quotedispatch')->__('products'),
           'align'     =>'left',
           'index'	=> 'item_list',
+          'type'        => 'text',
+           'filter' => false
       ));
       
        $this->addColumn('total',
@@ -91,9 +93,10 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
                 'header'=> Mage::helper('catalog')->__('Total'),
                 'type'  => 'price',
                 'name'  => 'subtotal',
-//                'currency_code' => $store->getBaseCurrency()->getCode(),
+ //               'currency_code' => $store->getBaseCurrency()->getCode(),
                 'editable'  => 1,
                 'index' => 'subtotal',
+                'filter' => false
         ));
              
 //       $this->addColumn('total', array(

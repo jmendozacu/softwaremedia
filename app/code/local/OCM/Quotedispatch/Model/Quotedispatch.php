@@ -26,6 +26,7 @@ class OCM_Quotedispatch_Model_Quotedispatch extends OCM_Quotedispatch_Model_Abst
             
             $collection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()
                 ->addFieldToFilter('quotedispatch_id',$this->getId())
+                    ->addFieldToSelect('qty')
                 //->addFieldToFilter('email',$this->getEmail())
             ;
         
@@ -45,10 +46,11 @@ class OCM_Quotedispatch_Model_Quotedispatch extends OCM_Quotedispatch_Model_Abst
                     )
                 )
             ;
-            
+            //var_dump($collection->getSelect());
             $itemList ="";
             foreach($collection as $item) {
-	            $itemList .= $item->getName();
+	            $itemList .= $item->getName() .  " - (".$item->getQty() .")". "<br />";
+                    
             }
         
             //die($collection->getSelect());
