@@ -11,8 +11,14 @@
               <rewrite>
                   <product>SoftwareMedia_Substitution_Model_Catalog_Product</product>
                   <product_link>SoftwareMedia_Substitution_Model_Catalog_Product_Link</product_link>
+                  <resource_product_link>SoftwareMedia_Substitution_Model_Resource_Product_Link</resource_product_link>
               </rewrite>
           </catalog>
+          <catalog_resource>
+              <rewrite>
+              	<product_link>SoftwareMedia_Substitution_Model_Resource_Product_Link</product_link>
+              </rewrite>
+          </catalog_resource>
     </models>
     <rewrite>
         <!-- This is an identifier for your rewrite that should be unique -->

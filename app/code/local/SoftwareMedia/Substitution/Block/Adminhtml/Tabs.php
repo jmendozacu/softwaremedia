@@ -17,7 +17,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Tabs extends Mage_Adminhtml_Blo
 		if (!($setId = $product->getAttributeSetId())) {
 			$setId = $this->getRequest()->getParam('set', null);
 		}
-
+		$this->parent = parent::_prepareLayout();
 		if ($setId) {
 			//add new tab
 			$this->addTab('substitution', array(
@@ -27,6 +27,6 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Tabs extends Mage_Adminhtml_Blo
 			));
 		}
 		
-		return parent::_prepareLayout();
+		return $this->parent;
 	}
 }

@@ -83,7 +83,8 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             }
             $collection->addFieldToFilter('entity_id', array('in' => $productIds));
         }
-
+		
+		//die ($collection->joinAttributes()->getSelect());
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
