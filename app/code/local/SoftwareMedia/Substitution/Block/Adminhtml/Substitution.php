@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog product subtitution block
+ * Catalog product Substitution block
  *
  * @category   SoftwareMedia
  * @package    SoftwareMedia_Substition
@@ -71,11 +71,11 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
      */
     protected function _prepareCollection()
     {
-        $collection = Mage::getModel('catalog/product_link')->useRelatedLinks()
+        $collection = Mage::getModel('catalog/product_link')->useSubstitutionLinks()
             ->getProductCollection()
             ->setProduct($this->_getProduct())
             ->addAttributeToSelect('*');
-
+		
         if ($this->isReadonly()) {
             $productIds = $this->_getSelectedProducts();
             if (empty($productIds)) {
@@ -95,7 +95,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
      */
     public function isReadonly()
     {
-        return $this->_getProduct()->getRelatedReadonly();
+        return $this->_getProduct()->getSubstitutionReadonly();
     }
 
     /**
@@ -180,12 +180,12 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
 
         $this->addColumn('qty', array(
             'header'            => Mage::helper('catalog')->__('Quantity'),
-            'name'              => 'position',
+            'name'              => 'qty',
             'type'              => 'number',
             'validate_class'    => 'validate-number',
             'index'             => 'qty',
             'width'             => 60,
-            'editable'          => !$this->_getProduct()->getRelatedReadonly(),
+            'editable'          => !$this->_getProduct()->getSubstitutionReadonly(),
             'edit_only'         => !$this->_getProduct()->getId()
         ));
 
@@ -201,7 +201,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
     {
         return $this->getData('grid_url')
             ? $this->getData('grid_url')
-            : $this->getUrl('*/*/relatedGrid', array('_current' => true));
+            : $this->getUrl('*/*/substitutionGrid', array('_current' => true));
     }
 
     /**
@@ -211,9 +211,9 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
      */
     protected function _getSelectedProducts()
     {
-        $products = $this->getProductsRelated();
+        $products = $this->getProductsSubstitution();
         if (!is_array($products)) {
-            $products = array_keys($this->getSelectedRelatedProducts());
+            $products = array_keys($this->getSelectedSubstitutionProducts());
         }
         return $products;
     }
@@ -223,10 +223,12 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
      *
      * @return array
      */
-    public function getSelectedRelatedProducts()
+    public function getSelectedSubstitutionProducts()
     {
         $products = array();
-        foreach (Mage::registry('current_product')->getRelatedProducts() as $product) {
+        $prod = Mage::registry('current_product');
+        //Mage::log('Prod Id: ' . $prod->getId());
+        foreach (Mage::registry('current_product')->getSubstitutionProducts() as $product) {
             $products[$product->getId()] = array('position' => $product->getPosition());
         }
         return $products;

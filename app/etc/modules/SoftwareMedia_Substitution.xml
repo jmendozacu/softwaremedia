@@ -7,7 +7,7 @@
             <depends>
                 <Mage_Adminhtml/>
                 <Mage_Admin/>
-                <Mage_Sales/>
+                <Mage_Catalog/>
             </depends>
         </SoftwareMedia_Substitution>
     </modules>

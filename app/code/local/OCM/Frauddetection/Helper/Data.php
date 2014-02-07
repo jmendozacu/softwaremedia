@@ -9,7 +9,7 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         'yahoo.com',
         'ymail.com', 
         'rocketmail.com', 
-        'earlink.net', 
+        'earthlink.net', 
         'aol.com', 
         'live.com'
     );
