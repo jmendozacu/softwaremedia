@@ -1,3 +1,4 @@
+<!--@subject Quote "{{var quote_name}}" is ready for purchase @-->
 <body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
 <div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
 <table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -12,13 +13,13 @@
                 </a></td>
             </tr>
              [ middle starts here] -->
-            <tr>
+            <tr><img src="{{skin url='images/thankyou-email-header.jpg' _area='frontend' _package='enterprise' _theme='softwaremedia' }}" width="650">
                 <td valign="top">
                     <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;">Hello, {{var customer_name}}</h1>
                     <p style="font-size:12px; line-height:16px; margin:0;">
                         Thank you for contacting SoftwareMedia.com. We are proud to provide you with the highest level of service and the most competitive prices around. The quote you requested is below.
                         You may complete the order for this quote by <a href="{{var view_quote_url}}" style="color:#1E7EC8;">clicking here</a>.<br/><br/>
-                        {{email_notes}}<br/>
+                        {{var email_notes}}<br/>
                         This quote expires on {{var expires_at}}. (If expired, please call us for an updated quote)<br/><br/>
 
                       
@@ -27,7 +28,7 @@
             </tr>
             <tr>
                 <td>
-                    <h2 style="font-size:18px; font-weight:normal; margin:0;">Your Quote {{var quote_name}}</h2>
+                    <h2 style="font-size:18px; font-weight:normal; margin:0;">Your Quote #{{var quote_name}}</h2>
                 </td>
             </tr>
             <tr>
@@ -50,9 +51,9 @@
              For your convenience, you may place your order right online. Please let me know if there is anything else I can do to assist you. <br/><br/>
 Thank you for your consideration.<br/><br/>
 {{config path="trans_email/ident_sales/name"}}<br/><br/>
-<a href="mailto:{{config path='trans_email/ident_support/email'}}?subject=Quote" style="color:#1E7EC8;">{{config path='trans_email/ident_support/email'}}</a>
+<a href="mailto:{{config path='trans_email/ident_support/email'}}?subject=Quote" style="color:#1E7EC8;">{{config path='trans_email/ident_support/email'}}</a></br>
 
-                    </p></td>
+                    </p><img src="{{skin url='images/email-signature-sales.jpg' _area='frontend' _package='enterprise' _theme='softwaremedia' }}" align="left" ></br></td>
                               <td></td>
                         </tr>
             <!--

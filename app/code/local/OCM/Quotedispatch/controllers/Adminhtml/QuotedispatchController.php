@@ -19,6 +19,7 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
 
     public function editAction() {
         $id = $this->getRequest()->getParam('id');
+        $currentAdmin = Mage::getSingleton('admin/session')->getUser();
         $model = Mage::getModel('quotedispatch/quotedispatch')->load($id);
         if ($model->getId() || $id == 0) {
             $data = Mage::getSingleton('adminhtml/session')->getFormData(true);
@@ -32,6 +33,64 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
                 $new_model->save();
 
                 $id = $new_model->getId();
+                $this->_redirect('*/*/*/id/' . $id . '/');
+            } else if ($addFromCart = $this->getRequest()->getParam('addFromCart')) {
+                $now = new DateTime('now', new DateTimeZone('America/Denver'));
+                $now->add(new DateInterval('P1M'));
+                $expire_time = $now->format('Y-m-d H:i:s');
+                $customerId = $this->getRequest()->getParam('customerId');
+                $customer = Mage::getModel('customer/customer')->load($customerId);
+                $customerPhone = $customer->getPrimaryBillingAddress()->getTelephone();
+                $customerCompany = $customer->getPrimaryBillingAddress()->getCompany();
+                        
+                $itemsModel = Mage::getModel('quotedispatch/quotedispatch_items');
+                $cart = Mage::getSingleton('enterprise_checkout/cart')
+                        ->setSession(Mage::getSingleton('adminhtml/session'))
+                        ->setContext(Enterprise_Checkout_Model_Cart::CONTEXT_ADMIN_CHECKOUT)
+                        ->setCurrentStore($this->getRequest()->getPost('store'));
+
+                $cart->setCustomer($customer);
+                $quote = $cart->getQuote();
+                $items = array();
+                foreach ($quote->getAllItems() as $item) {
+                    $item_arr = array();
+                    $item_arr['product_id'] = $item->getProductId();
+                    $item_arr['qty'] = $item->getQty();
+                    $item_arr['price'] = $item->getBaseRowTotal();
+
+                    $items[] = $item_arr;
+                }
+                //die(var_dump($customerPhone));
+                // TODO: Add proper information
+                $quote_info = array(
+                    'title'             => '',
+                    'email'             => $customer->getEmail(),
+                    'available_time'    => '',
+                    'created_by'        => $currentAdmin->getUsername(),
+                    'expire_time'       => $expire_time,
+                    'firstname'         => $customer->getFirstname(),
+                    'lastname'          => $customer->getLastname(),
+                    'company'           => $customerCompany,
+                    'phone'             => $customerPhone,
+                    'status'            => '',
+                    'notes'             => '',
+                    'email_notes'       => '',
+                );
+
+                $new_model = Mage::getModel('quotedispatch/quotedispatch');
+                $new_model->setData($quote_info);
+                $new_model->save();
+                
+                
+                // TODO: Add items to quote
+
+                $id = $new_model->getId();
+                foreach($items as $item) {
+                    $itemsModel = Mage::getModel('quotedispatch/quotedispatch_items');
+                    $itemsModel->setData($item);
+                    $itemsModel->setQuotedispatchId($id);
+                    $itemsModel->save();
+                }
                 $this->_redirect('*/*/*/id/' . $id . '/');
             } else {
                 Mage::register('quotedispatch_data', $model);
@@ -210,13 +269,13 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
 
         $this->loadLayout();
         $partial = $this->getRequest()->getParam('partial');
-        if ($partial != "1") {
-            $this->getLayout()->getBlock('quoteitems.grid')
-                    ->setQuoteitems($this->getRequest()->getPost('quoteitems', null));
-        } else {
-            $this->getLayout()->getBlock('quoteitems.grid')
-                    ->setQuoteitems(null);
-        }
+//        if ($partial != "1") {
+//            $this->getLayout()->getBlock('quoteitems.grid')
+//                    ->setQuoteitems($this->getRequest()->getPost('quoteitems', null));
+//        } else {
+//            $this->getLayout()->getBlock('quoteitems.grid')
+//                    ->setQuoteitems(null);
+//        }
         $this->renderLayout();
     }
 

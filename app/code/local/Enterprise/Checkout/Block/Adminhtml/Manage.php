@@ -47,24 +47,15 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
        
         $this->_removeButton('reset');
         $this->_updateButton('back', 'onclick', 'setLocation(\'' . $this->getBackUrl() . '\');');
-        $customerId=$this->getRequest()->getParam('customer');
-        $customer = Mage::getModel('sales/order_address')->getCollection()
-                ->addFieldToFilter('customer_id',$customerId);
-        $firstname = $customer->getFirstItem()->getFirstname();
-//        die(var_dump($firstname));
-        $lastname = $customer->getFirstItem()->getLastname();
-        $quote = Mage::getModel('quotedispatch/quotedispatch')->getCollection()
-                ->addFieldToSelect('quotedispatch_id')
-                ->addFieldToFilter('firstname',$firstname);
-//        $id = $quote->getFirstItem();
-//        die(var_dump($id));
-        $location = $this->getUrl('*/quotedispatch/new');
-         $this->_addButton('addQuote', array(
+        $customerId= $this->_getCustomer()->getId();
+        $location = $this->getUrl('*/quotedispatch/new',array('addFromCart'=>true,'customerId'=>$customerId));
+
+        $this->_addButton('addQuote', array(
             'label'     => Mage::helper('adminhtml')->__('Add Quote'),
             'onclick'   => "setLocation('$location');"
         ), -100);
     }
-
+   
     /**
      * Prepare layout, create buttons
      *
@@ -214,6 +205,7 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
 
     public function getOrderDataJson()
     {
+        
         $actionUrls = array(
             'cart' => $this->getActionUrl('cart'),
             'applyCoupon' => $this->getActionUrl('applyCoupon'),
@@ -230,7 +222,6 @@ class Enterprise_Checkout_Block_Adminhtml_Manage extends Mage_Adminhtml_Block_Wi
             'customer_id' => $this->_getCustomer()->getId(),
             'store_id' => $this->_getStore()->getId()
         );
-
         return Mage::helper('core')->jsonEncode($data);
     }
 

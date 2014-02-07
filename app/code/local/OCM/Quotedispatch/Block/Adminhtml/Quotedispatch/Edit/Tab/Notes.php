@@ -48,7 +48,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Notes extends Mag
 
         
         if ($id) {
-            $iframe = '<iframe src="data:text/html;charset=utf-8,';
+            $iframe = '<iframe width="800" height="500"  src="data:text/html; charset=utf-8,';
             $html =  '<table cellspacing="0" class="form-list"><tbody>';
             $collection = Mage::getModel('quotedispatch/quotedispatch_notes')->getCollection()
                 ->addFieldToFilter('quotedispatch_id',$id)
@@ -58,9 +58,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Notes extends Mag
                 $html .= '<tr><td class="label">'.$note->getCreatedBy().'</td><td class="value"><div style="background:#eaeaea;padding:5px">'.$note->getContent().'</div></td></tr>';
             }
             $html .= '</tbody></table>';
-            die(print_r($note));
             $iframe .= $this->encodeURI($html) . '"></iframe>';
-            //die(print_r($html));
         }
         return $iframe;
     }

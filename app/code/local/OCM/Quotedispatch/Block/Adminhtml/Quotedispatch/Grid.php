@@ -32,36 +32,14 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
 // if (!$this->hasData('all_items')) {
 //            
 //            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
-//            
-//            //die(var_dump($name_attr->getData()));
-//            
-//            $collection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()
-//                ->addFieldToFilter('quotedispatch_id',$this->getId())
-//                //->addFieldToFilter('email',$this->getEmail())
-//            ;
+      $collection = Mage::getModel('quotedispatch/quotedispatch')->getCollection()->getData();
+      $itemscollection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()->getData();
+ $itemscollection->join(array(‘prod_name'=>’TABLE_NAME'),'main_table.product_id=prod_name.entity_id',array('name'));
+        //$collection->joinAttribute('name','catalog_product/name', 'entity_id', 'entity_id','left', 0);
 //        
-//            $collection->getSelect()
-//                ->joinleft(
-//                    array('e' => 'catalog_product_entity'),
-//                    'main_table.product_id = e.entity_id'
-//                )
-//                ->joinleft(
-//                    array('pv' => 'catalog_product_entity_varchar'), 
-//                    'pv.entity_id=main_table.product_id', 
-//                    array('name' => 'value')
-//                )
-//                ->where('pv.attribute_id='.$name_attr->getAttributeId())
-//                ->columns(array(
-//                    'line_total' => new Zend_Db_Expr('main_table.price * main_table.qty')
-//                    )
-//                )
-//            ;
-//        $collection->joinAttribute('name','catalog_product/name', 'entity_id', 'entity_id','left', 0);
-//        $collection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()
-//                ->addFieldToFilter('quotedispatch_id',$this->getId())
 //        $collection->getSelect()->joinRight('catalog_product_flat_1','catalog_product_flat_1.entity_id= `ocm_quotedispatch`.product_id','');
 //            //die(var_dump($collection->getSelect()));
-//        
+//        die(var_dump());  
 //            $this->setData('all_items', $collection);
 //        }
 //        return $this->getData('all_items');
@@ -112,7 +90,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
                 'name'  => 'total',
 //                'currency_code' => $store->getBaseCurrency()->getCode(),
                 'editable'  => 1,
-                'index' => 'cost',
+                'index' => 'price',
         ));
              
 //       $this->addColumn('total', array(

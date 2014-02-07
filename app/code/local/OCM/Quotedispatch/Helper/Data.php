@@ -76,7 +76,7 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
         $items_list = Mage::app()->getLayout()->createBlock('quotedispatch/view_list','item.list')->setTemplate('ocm/quotedispatch/list.phtml')->setQuote($object)->toHtml();
         
         $variables = array(
-            'quote_name' => $object->getTitle(),
+            'quote_name' => $object->getId(),
             'expires_at' => Mage::helper('core')->formatDate($object->getExpireTime(),'medium',false),
             'sender_email' => $sender_email,
             'customer_email' => $object->getEmail(),
@@ -94,6 +94,7 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
             $model->setQuotedispatchId($object->getId());
             $model->save();
             $mail->send($object->getEmail(),$customer_name, $variables);
+            
            
          } catch (Exception $e) {
              Mage::log($e->getMessage(),null,'exception.log');
