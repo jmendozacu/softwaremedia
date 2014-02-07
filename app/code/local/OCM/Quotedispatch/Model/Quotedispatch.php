@@ -16,6 +16,47 @@ class OCM_Quotedispatch_Model_Quotedispatch extends OCM_Quotedispatch_Model_Abst
         $this->_init('quotedispatch/quotedispatch');
     }
     
+    public function getItemList() {
+        
+        if (!$this->hasData('item_list')) {
+            
+            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
+            
+            //die(print_r(array_keys($name_attr->getData())));
+            
+            $collection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()
+                ->addFieldToFilter('quotedispatch_id',$this->getId())
+                //->addFieldToFilter('email',$this->getEmail())
+            ;
+        
+            $collection->getSelect()
+                ->joinleft(
+                    array('e' => 'catalog_product_entity'),
+                    'main_table.product_id = e.entity_id'
+                )
+                ->joinleft(
+                    array('pv' => 'catalog_product_entity_varchar'), 
+                    'pv.entity_id=main_table.product_id', 
+                    array('name' => 'value')
+                )
+                ->where('pv.attribute_id='.$name_attr->getAttributeId())
+                ->columns(array(
+                    'line_total' => new Zend_Db_Expr('main_table.price * main_table.qty')
+                    )
+                )
+            ;
+            
+            $itemList ="";
+            foreach($collection as $item) {
+	            $itemList .= $item->getName();
+            }
+        
+            //die($collection->getSelect());
+        
+            $this->setData('item_list', $itemList);
+        }  
+    }
+    
     public function getAllItems() {
         
         if (!$this->hasData('all_items')) {

@@ -21,13 +21,12 @@ class OCM_Quotedispatch_Model_Mysql4_Quotedispatch_Collection extends Mage_Core_
                 array( 'subtotal' => new Zend_Db_Expr('SUM(i.price * i.qty)') )
             )
         ;
-
+		
         $this->getSelect()->joinLeft(
             array('item'=>$subtotal),
             'main_table.quotedispatch_id = item.quotedispatch_id',
             array('subtotal')
         );
-        //die($this->getSelect());
 
         return $this;
     }

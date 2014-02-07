@@ -16,9 +16,12 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
   {
       $collection = Mage::getModel('quotedispatch/quotedispatch')->getCollection()
         ->addFirstLastNameToSelect()
+        ->addQuoteSubtotal()
       ;
-//      $collection->getSelect()
-//              ->join(array('ALIAS'=>'TABLE_NAME'),'main_table.order_id=ALIAS.entity_id',array('FIELD TO SELECT 1','FIELD TO SELECT 2'));
+
+		foreach($collection as $item) {
+			$item->getItemList();
+		}
       $this->setCollection($collection);
       
       /////
@@ -34,7 +37,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
 //            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
       $collection = Mage::getModel('quotedispatch/quotedispatch')->getCollection()->getData();
       $itemscollection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()->getData();
- $itemscollection->join(array(‘prod_name'=>’TABLE_NAME'),'main_table.product_id=prod_name.entity_id',array('name'));
+ //$itemscollection->join(array(‘prod_name'=>’TABLE_NAME'),'main_table.product_id=prod_name.entity_id',array('name'));
         //$collection->joinAttribute('name','catalog_product/name', 'entity_id', 'entity_id','left', 0);
 //        
 //        $collection->getSelect()->joinRight('catalog_product_flat_1','catalog_product_flat_1.entity_id= `ocm_quotedispatch`.product_id','');
@@ -77,20 +80,20 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'index'     => 'email',
       ));
       
-      $this->addColumn('products', array(
+      $this->addColumn('item_list', array(
           'header'    => Mage::helper('quotedispatch')->__('products'),
           'align'     =>'left',
-          'index'     => $this->setCollection($collection),
+          'index'	=> 'item_list',
       ));
       
        $this->addColumn('total',
             array(
                 'header'=> Mage::helper('catalog')->__('Total'),
                 'type'  => 'price',
-                'name'  => 'total',
+                'name'  => 'subtotal',
 //                'currency_code' => $store->getBaseCurrency()->getCode(),
                 'editable'  => 1,
-                'index' => 'price',
+                'index' => 'subtotal',
         ));
              
 //       $this->addColumn('total', array(
