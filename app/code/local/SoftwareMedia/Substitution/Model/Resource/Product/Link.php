@@ -34,6 +34,7 @@
  */
 class SoftwareMedia_Substitution_Model_Resource_Product_Link extends Mage_Catalog_Model_Resource_Product_Link
 {
+
     /**
      * Save Product Links process
      *
@@ -93,7 +94,9 @@ class SoftwareMedia_Substitution_Model_Resource_Product_Link extends Mage_Catalo
                 $attributeTable = $this->getAttributeTypeTable($attributeInfo['type']);
                 if ($attributeTable) {
                     if (isset($linkInfo[$attributeInfo['code']])) {
-                    	if ($attributeInfo['id'] == 9 && $linkInfo[$attributeInfo['code']] == '')
+                    
+                    	//Set default value for QTY attribute to 1
+                    	if ($attributeInfo['id'] == 9 && !$linkInfo[$attributeInfo['code']])
                     		$linkInfo[$attributeInfo['code']] = 1;
                     		
                         $value = $this->_prepareAttributeValue($attributeInfo['type'],

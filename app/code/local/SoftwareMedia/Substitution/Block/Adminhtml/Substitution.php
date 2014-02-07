@@ -84,7 +84,6 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             $collection->addFieldToFilter('entity_id', array('in' => $productIds));
         }
 		
-		//die ($collection->joinAttributes()->getSelect());
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -179,7 +178,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             'index'         => 'price'
         ));
 
-        $this->addColumn('qty', array(
+		$this->addColumn('qty', array(
             'header'            => Mage::helper('catalog')->__('Quantity'),
             'name'              => 'qty',
             'type'              => 'number',
@@ -188,6 +187,17 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             'width'             => 60,
             'editable'          => !$this->_getProduct()->getSubstitutionReadonly(),
             'edit_only'         => !$this->_getProduct()->getId()
+        ));
+        
+        $this->addColumn('price_sync', array(
+            'header'            => Mage::helper('catalog')->__('Sync Price'),
+            'name'              => 'price_sync',
+            'type'              => 'select',
+            'options'			=> array(0=>'No',1=>'Yes'),
+            'index'             => 'price_sync',
+            'filter'			=> false,
+            'editable'          => !$this->_getProduct()->getSubstitutionReadonly(),
+            'width'             => 70
         ));
 
         return parent::_prepareColumns();
@@ -230,7 +240,11 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
         $prod = Mage::registry('current_product');
         //Mage::log('Prod Id: ' . $prod->getId());
         foreach (Mage::registry('current_product')->getSubstitutionProducts() as $product) {
-            $products[$product->getId()] = array('position' => $product->getPosition());
+            $products[$product->getId()] = array('qty' => $product->getQty(), 'price_sync' => $product->getPriceSync());
+			Mage::log("ID: " . $product->getId());
+			Mage::log("PS: " . $product->getPriceSync());
+			Mage::log("Qty: " . $product->getQty());
+		
         }
         return $products;
     }

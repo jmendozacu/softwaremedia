@@ -15,6 +15,9 @@
                     <action method="addColumnInputName">
                         <input_name>qty</input_name>
                     </action>
+                    <action method="addColumnInputName">
+                        <input_name>price_sync</input_name>
+                    </action>
                 </reference>
             </block>
         </block>
