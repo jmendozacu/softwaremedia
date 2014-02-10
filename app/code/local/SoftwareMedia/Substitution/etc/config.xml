@@ -14,6 +14,7 @@
                   <resource_product_link>SoftwareMedia_Substitution_Model_Resource_Product_Link</resource_product_link>
               </rewrite>
           </catalog>
+          
           <catalog_resource>
               <rewrite>
               	<product_link>SoftwareMedia_Substitution_Model_Resource_Product_Link</product_link>
@@ -42,6 +43,7 @@
 	    <adminhtml>
         <rewrite>
              <catalog_product_edit_tabs>SoftwareMedia_Substitution_Block_Adminhtml_Tabs</catalog_product_edit_tabs>
+             <sales_order_view_tab_invoices>SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Tab_Invoices</sales_order_view_tab_invoices>
          </rewrite>
      </adminhtml>
 

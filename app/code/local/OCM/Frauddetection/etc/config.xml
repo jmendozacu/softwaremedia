@@ -10,11 +10,7 @@
             <ocm_frauddetection>
                 <class>OCM_Frauddetection_Block</class>
             </ocm_frauddetection>
-            <adminhtml>
-                <rewrite>
-                    <sales_order_view_tab_invoices>OCM_Frauddetection_Block_Adminhtml_Sales_Order_View_Tab_Invoices</sales_order_view_tab_invoices>
-                </rewrite>
-            </adminhtml>
+
         </blocks>
         <models>
             <ocm_frauddetection>

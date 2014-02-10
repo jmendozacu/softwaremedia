@@ -43,7 +43,7 @@ class SoftwareMedia_Substitution_Model_Catalog_Product extends Mage_Catalog_Mode
             }
             $this->setSubstitutionProductIds($ids);
         }
-        return $this->getData('related_product_ids');
+        return $this->getData('substitution_product_ids');
     }
 
     /**

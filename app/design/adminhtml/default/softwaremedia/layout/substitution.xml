@@ -28,4 +28,15 @@
         </block>
     </adminhtml_catalog_product_substitutiongrid>
 
+	<adminhtml_sales_order_view>
+	    <reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <name>softwaremedia/substitution.js</name>
+            </action>
+        </reference>
+        <reference name="invoice_items">
+        	<action method="addColumnRender"><column>name</column><block>softwaremedia/adminhtml_sales_items_column_name</block><template>sales/items/column/name.phtml</template></action>
+        </reference>
+    </adminhtml_sales_order_view>
 </layout>
