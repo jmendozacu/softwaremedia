@@ -92,6 +92,7 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
             $formatted = $mail->getProcessedTemplate($variables);
             $model->setContent($formatted);
             $model->setQuotedispatchId($object->getId());
+            $model->setCreatedBy($sender_name);
             $model->save();
             $mail->send($object->getEmail(),$customer_name, $variables);
             

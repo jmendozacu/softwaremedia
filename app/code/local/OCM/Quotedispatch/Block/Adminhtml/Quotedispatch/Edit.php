@@ -51,7 +51,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit extends Mage_Adminhtm
     public function getHeaderText()
     {
         if( Mage::registry('quotedispatch_data') && Mage::registry('quotedispatch_data')->getId() ) {
-            return Mage::helper('quotedispatch')->__("Edit Quote '%s'", $this->htmlEscape(Mage::registry('quotedispatch_data')->getTitle()));
+            return Mage::helper('quotedispatch')->__("Edit Quote No.'%s'", $this->htmlEscape(Mage::registry('quotedispatch_data')->getQuotedispatchId()));
         } else {
             return Mage::helper('quotedispatch')->__('Add Quote');
         }

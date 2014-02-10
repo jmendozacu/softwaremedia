@@ -27,6 +27,7 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
                 $model->setData($data);
             }
             if ($partial = $this->getRequest()->getParam('partial')) {
+                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('quotedispatch')->__('New quote added. Please add products'));
                 $new_model = Mage::getModel('quotedispatch/quotedispatch');
                 $new_model->setData($model->getData());
                 $new_model->setId(null);

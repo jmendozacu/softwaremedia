@@ -7,10 +7,10 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
       $this->setForm($form);
       $fieldset = $form->addFieldset('quotedispatch_form', array('legend'=>Mage::helper('quotedispatch')->__('General')));
      
-      $fieldset->addField('title', 'text', array(
-          'label'     => Mage::helper('quotedispatch')->__('Quote Name'),
+      $fieldset->addField('quotedispatch_id', 'label', array(
+          'label'     => Mage::helper('quotedispatch')->__('Quote Id'),
           'required'  => false,
-          'name'      => 'title',
+          'name'      => 'quotedispatch_id',
       ));
 
       $fieldset->addField('firstname', 'text', array(
@@ -46,7 +46,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
       ));
       
       $fieldset->addField('notes', 'textarea', array(
-          'label'     => Mage::helper('quotedispatch')->__('Notes'),
+          'label'     => Mage::helper('quotedispatch')->__('Notes From Customer'),
           'class'     => '',
           'required'  => false,
           'name'      => 'notes',
@@ -78,7 +78,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
       ));
       
       $fieldset->addField('email_notes', 'textarea', array(
-          'label'     => Mage::helper('quotedispatch')->__('Email Notes'),
+          'label'     => Mage::helper('quotedispatch')->__('Email Notes To Customer'),
           'class'     => '',
           'required'  => false,
           'name'      => 'email_notes',

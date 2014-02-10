@@ -55,7 +55,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Notes extends Mag
                 ->setOrder('quotedispatch_note_id','ASC');
             
             foreach ($collection as $note) {
-                $html .= '<tr><td class="label">'.$note->getCreatedBy().'</td><td class="value"><div style="background:#eaeaea;padding:5px">'.$note->getContent().'</div></td></tr>';
+                $html .= '<tr><td class="label">'.$note->getCreatedBy().'<br/>'.$note->getCreatedDate().'</td><td class="value"><div style="background:#eaeaea;padding:5px">'.$note->getContent().'</div></td></tr>';
             }
             $html .= '</tbody></table>';
             $iframe .= $this->encodeURI($html) . '"></iframe>';
