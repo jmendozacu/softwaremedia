@@ -247,7 +247,7 @@ class OCM_Fulfillment_Model_Observer
 			->addAttributeToSelect('warehouse_updated_at','left')
             ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
-            //->addAttributeToFilter('sku','AD-65096937')
+//            ->addAttributeToFilter('sku','SY-21252243')
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
@@ -291,7 +291,7 @@ class OCM_Fulfillment_Model_Observer
 			} catch (Exception $e) {
             	   Mage::log($e->getMessage());
 			}
-			continue;
+			//continue;
            }
            $price_array = array();
            $qty = 0;
@@ -318,7 +318,8 @@ class OCM_Fulfillment_Model_Observer
                }
                
            }
-
+		   $qty += $product->getData('pt_qty');
+		   Mage::log('PT QTY:' . $product->getSku() . ' - ' . $product->getData('pt_qty'), null, "fullfillment.log");
            if ($product->getData('pt_qty')<1) {
                ksort($price_array);
                reset($price_array);
@@ -330,6 +331,19 @@ class OCM_Fulfillment_Model_Observer
            $product->setData('warehouse_updated_at',now());
            
            $stock_model->loadByProduct($product->getId());
+           
+           //Update QTY for sub items 
+           $subItems = $product->getSubstitutionProducts();
+           
+           foreach($subItems as $item) {
+	       		foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
+	       			$prod = Mage::getModel('catalog/product')->load($item->getId());
+	       			$qty+=$prod->getData($warehouse_name.'_qty');
+	       			Mage::log("QTY " . $prod->getSku() . '-' . $warehouse_name . ": " . $prod->getData($warehouse_name.'_qty'), null, "fullfillment.log");
+	       		}
+	       		$qty+=$item->getData('pt_qty');
+           }
+		   Mage::log("QTY " . $qty, null, "fullfillment.log");
            $stock_model->setData('qty',$qty);
            if($qty) $stock_model->setData('is_in_stock',1);
 
