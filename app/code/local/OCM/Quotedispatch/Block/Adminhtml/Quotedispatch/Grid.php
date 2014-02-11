@@ -90,7 +90,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
                 'editable'  => 1,
                 'index' => 'subtotal',
                 'filter' => false,
-                //'text'  => $this->getData('subtotal'),
+                
         ));
 
       $this->addColumn('expire_time', array(
