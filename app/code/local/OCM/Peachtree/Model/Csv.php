@@ -125,6 +125,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             	
             $i = 1;
             foreach($items as $item) {
+            	$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
+            	if ($orderItem->getParentItemId())
+            		continue;
                 $item_values = array(
                     'ship_date'   => date('m/d/Y', strtotime( $item->getData('item_ship_date') ) ), 
                     'invoice_cm_distributions' => $i++,

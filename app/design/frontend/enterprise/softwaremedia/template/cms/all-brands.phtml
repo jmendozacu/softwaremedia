@@ -40,8 +40,9 @@ $categoryIds = $root_category->getChildren();
                         <?php
                             $cat_col = Mage::getModel('catalog/category')
                                 ->getCollection()
+                                ->addAttributeToFilter('parent_id',array('in' => array(66,110)))
+                                ->addAttributeToFilter('is_active',1)
                                 ->addAttributeToSelect('name')
-                                ->addAttributeToFilter(array(array('attribute' => 'parent_id', 'eq' => '66'), array('attribute' => 'parent_id', 'eq' => '110')))
                                 ->addAttributeToSort('name');
 
                             foreach ($cat_col as $cat) :
