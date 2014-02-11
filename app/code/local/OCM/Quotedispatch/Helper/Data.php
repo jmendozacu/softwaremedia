@@ -52,12 +52,11 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
  */
     
     public function sendEmail($object, $subject = null){
-
+        
         // FORCE THAT ALL DATA IS AVAILABLE WITH OBJECT : TODO FIND BETTER WAY
         $object = Mage::getModel('quotedispatch/quotedispatch')->load($object->getId());
-
         $mail  = Mage::getModel('core/email_template')->loadDefault('ocm_quotedispatch_request_processed');
-        
+        $model = Mage::getModel('quotedispatch/quotedispatch_notes');
         $user = Mage::getModel('admin/user')->load($object->getCreatedBy(),'username');
         if($user->getId()) {
             $sender_name = implode(' ',array($user->getFirstname(),$user->getLastname()));
@@ -77,10 +76,11 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
         $items_list = Mage::app()->getLayout()->createBlock('quotedispatch/view_list','item.list')->setTemplate('ocm/quotedispatch/list.phtml')->setQuote($object)->toHtml();
         
         $variables = array(
-            'quote_name' => $object->getTitle(),
+            'quote_name' => $object->getId(),
             'expires_at' => Mage::helper('core')->formatDate($object->getExpireTime(),'medium',false),
             'sender_email' => $sender_email,
             'customer_email' => $object->getEmail(),
+            'email_notes'     => $object->getEmailNotes(),
             'customer_name' => $customer_name,
             'items_list' => $items_list,
             'subtotal' => Mage::helper('core')->currency($object->getSubtotal(),true,false),
@@ -89,11 +89,19 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
          try {
+            $formatted = $mail->getProcessedTemplate($variables);
+            $model->setContent($formatted);
+            $model->setQuotedispatchId($object->getId());
+            $model->setCreatedBy($sender_name);
+            $model->save();
             $mail->send($object->getEmail(),$customer_name, $variables);
+            
+           
          } catch (Exception $e) {
              Mage::log($e->getMessage(),null,'exception.log');
          }
-
+         
+         //die(var_dump($mail));
         
         return $this;
     }

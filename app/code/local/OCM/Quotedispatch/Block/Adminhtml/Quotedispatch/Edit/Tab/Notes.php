@@ -5,9 +5,9 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Notes extends Mag
   {
       $form = new Varien_Data_Form();
       $this->setForm($form);
-      $fieldset = $form->addFieldset('quotedispatch_form', array('legend'=>Mage::helper('quotedispatch')->__('Internal Notes')));
+      $fieldset = $form->addFieldset('quotedispatch_form', array('legend'=>Mage::helper('quotedispatch')->__('Notes')));
      
-      $fieldset->addField('note', 'editor', array(
+     $fieldset->addField('Note', 'editor', array(
           'name'      => 'note',
           'label'     => Mage::helper('quotedispatch')->__('Note'),
           'title'     => Mage::helper('quotedispatch')->__('Note'),
@@ -45,20 +45,41 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Notes extends Mag
     protected function getNotesHtml() {
     
         $id = Mage::app()->getRequest()->getParam('id');
-    
+
+        
         if ($id) {
-            $html = '<table cellspacing="0" class="form-list"><tbody>';
+            $iframe = '<iframe width="800" height="500"  src="data:text/html; charset=utf-8,';
+            $html =  '<table cellspacing="0" class="form-list"><tbody>';
             $collection = Mage::getModel('quotedispatch/quotedispatch_notes')->getCollection()
                 ->addFieldToFilter('quotedispatch_id',$id)
                 ->setOrder('quotedispatch_note_id','ASC');
             
             foreach ($collection as $note) {
-                $html .= '<tr><td class="label">'.$note->getCreatedBy().'</td><td class="value"><div style="background:#eaeaea;padding:5px">'.$note->getContent().'</div></td></tr>';
+                $html .= '<tr><td class="label">'.$note->getCreatedBy().'<br/>'.$note->getCreatedDate().'</td><td class="value"><div style="background:#eaeaea;padding:5px">'.$note->getContent().'</div></td></tr>';
             }
-            
             $html .= '</tbody></table>';
+            $iframe .= $this->encodeURI($html) . '"></iframe>';
         }
-        return $html;
+        return $iframe;
     }
     
+    protected function encodeURI($url) {
+    // http://php.net/manual/en/function.rawurlencode.php
+    // https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURI
+    $unescaped = array(
+        '%2D'=>'-','%5F'=>'_','%2E'=>'.','%21'=>'!', '%7E'=>'~',
+        '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')'
+    );
+    $reserved = array(
+        '%3B'=>';','%2C'=>',','%2F'=>'/','%3F'=>'?','%3A'=>':',
+        '%40'=>'@','%26'=>'&','%3D'=>'=','%2B'=>'+','%24'=>'$'
+    );
+    $score = array(
+        '%23'=>'#'
+    );
+    return strtr(rawurlencode($url), array_merge($reserved,$unescaped,$score));
+
 }
+    
+}
+     

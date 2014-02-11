@@ -7,31 +7,27 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
       $this->setForm($form);
       $fieldset = $form->addFieldset('quotedispatch_form', array('legend'=>Mage::helper('quotedispatch')->__('General')));
      
-      $fieldset->addField('title', 'text', array(
-          'label'     => Mage::helper('quotedispatch')->__('Quote Name'),
-          'class'     => 'required-entry',
-          'required'  => true,
-          'name'      => 'title',
+      $fieldset->addField('quotedispatch_id', 'label', array(
+          'label'     => Mage::helper('quotedispatch')->__('Quote Id'),
+          'required'  => false,
+          'name'      => 'quotedispatch_id',
       ));
 
       $fieldset->addField('firstname', 'text', array(
           'label'     => Mage::helper('quotedispatch')->__('First Name'),
-          'class'     => 'required-entry',
-          'required'  => true,
+          'required'  => false,
           'name'      => 'firstname',
       ));
 
       $fieldset->addField('lastname', 'text', array(
           'label'     => Mage::helper('quotedispatch')->__('Last Name'),
-          'class'     => 'required-entry',
-          'required'  => true,
+          'required'  => false,
           'name'      => 'lastname',
       ));
 
       $fieldset->addField('company', 'text', array(
           'label'     => Mage::helper('quotedispatch')->__('Company'),
-          'class'     => 'required-entry',
-          'required'  => true,
+          'required'  => false,
           'name'      => 'company',
       ));
 
@@ -48,7 +44,13 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
           'required'  => false,
           'name'      => 'phone',
       ));
-
+      
+      $fieldset->addField('notes', 'textarea', array(
+          'label'     => Mage::helper('quotedispatch')->__('Notes From Customer'),
+          'class'     => '',
+          'required'  => false,
+          'name'      => 'notes',
+      ));
 
       $fieldset->addField('expire_time', 'date', array(
           'label'     => Mage::helper('quotedispatch')->__('Expire Date'),
@@ -74,7 +76,13 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
           'name'      => 'created_by',
           'values'    => $created_by_values
       ));
-
+      
+      $fieldset->addField('email_notes', 'textarea', array(
+          'label'     => Mage::helper('quotedispatch')->__('Email Notes To Customer'),
+          'class'     => '',
+          'required'  => false,
+          'name'      => 'email_notes',
+      ));
 
      
       if ( Mage::getSingleton('adminhtml/session')->getQuotedispatchData() )
