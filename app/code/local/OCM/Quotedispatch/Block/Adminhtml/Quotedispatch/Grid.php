@@ -18,20 +18,22 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
         ->addFirstLastNameToSelect()
         ->addQuoteSubtotal()
       ;
-
-		foreach($collection as $item) {
-			$item->getItemList();
-		}
       $this->setCollection($collection);
-      
-      /////
-      
-      
       return parent::_prepareCollection();
   }
-
+  
+  protected function _afterLoadCollection()
+  {
+      $collection = $this->getCollection();
+      foreach($collection as $item) {
+		$item->getItemList();
+	}
+      return parent::_afterLoadCollection();
+  }
+  
   protected function _prepareColumns()
   {
+       
 // if (!$this->hasData('all_items')) {
 //            
 //            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
@@ -75,7 +77,8 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'align'     =>'left',
           'index'	=> 'item_list',
           'type'        => 'text',
-           'filter' => false
+           'filter' => false,
+          'sortable'=>false
       ));
       
        $this->addColumn('total',
