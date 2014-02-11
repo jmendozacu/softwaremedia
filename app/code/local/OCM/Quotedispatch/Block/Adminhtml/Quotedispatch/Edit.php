@@ -26,9 +26,14 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit extends Mage_Adminhtm
             'onclick'   => 'saveAndSendEmail()',
             //'class'     => 'save',
         ), -100);
-
-
+        $location = $this->getUrl('*/*/new',array('id'=>$this->getRequest()->getParam('id'),'partial'=>true));
+         $this->_addButton('addQuote', array(
+            'label'     => Mage::helper('adminhtml')->__('Add Quote'),
+            'onclick'   => "setLocation('$location');",
+            //'class'     => 'save',
+        ), -100);
         $this->_formScripts[] = "
+            
             function saveAndContinueEdit(){
                 editForm.submit($('edit_form').action+'back/edit/');
             }
@@ -46,7 +51,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit extends Mage_Adminhtm
     public function getHeaderText()
     {
         if( Mage::registry('quotedispatch_data') && Mage::registry('quotedispatch_data')->getId() ) {
-            return Mage::helper('quotedispatch')->__("Edit Quote '%s'", $this->htmlEscape(Mage::registry('quotedispatch_data')->getTitle()));
+            return Mage::helper('quotedispatch')->__("Edit Quote No.'%s'", $this->htmlEscape(Mage::registry('quotedispatch_data')->getQuotedispatchId()));
         } else {
             return Mage::helper('quotedispatch')->__('Add Quote');
         }

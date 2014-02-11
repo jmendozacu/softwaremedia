@@ -16,20 +16,30 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
   {
       $collection = Mage::getModel('quotedispatch/quotedispatch')->getCollection()
         ->addFirstLastNameToSelect()
+        ->addQuoteSubtotal()
       ;
-      
       $this->setCollection($collection);
-      
-      /////
-
-      
       return parent::_prepareCollection();
   }
-
+  
+  protected function _afterLoadCollection()
+  {
+      $collection = $this->getCollection();
+      foreach($collection as $item) {
+		$item->getItemList();
+	}
+      return parent::_afterLoadCollection();
+  }
+  
   protected function _prepareColumns()
   {
-
-
+       
+// if (!$this->hasData('all_items')) {
+//            
+//            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
+      $collection = Mage::getModel('quotedispatch/quotedispatch')->getCollection()->getData();
+      $itemscollection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()->getData();
+      
       $this->addColumn('quotedispatch_id', array(
           'header'    => Mage::helper('quotedispatch')->__('ID'),
           'align'     =>'right',
@@ -37,11 +47,11 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'index'     => 'quotedispatch_id',
       ));
 
-      $this->addColumn('title', array(
-          'header'    => Mage::helper('quotedispatch')->__('Quote Name'),
-          'align'     =>'left',
-          'index'     => 'title',
-      ));
+//      $this->addColumn('title', array(
+//          'header'    => Mage::helper('quotedispatch')->__('Quote Name'),
+//          'align'     =>'left',
+//          'index'     => 'title',
+//      ));
 
       $this->addColumn('first_last_name', array(
           'header'    => Mage::helper('quotedispatch')->__('Name'),
@@ -61,13 +71,33 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'align'     =>'left',
           'index'     => 'email',
       ));
+      
+      $this->addColumn('item_list', array(
+          'header'    => Mage::helper('quotedispatch')->__('products'),
+          'align'     =>'left',
+          'index'	=> 'item_list',
+          'type'        => 'text',
+           'filter' => false,
+          'sortable'=>false
+      ));
+      
+       $this->addColumn('total',
+            array(
+                'header'=> Mage::helper('catalog')->__('Total'),
+                'type'  => 'price',
+                'name'  => 'subtotal',
+ //               'currency_code' => $store->getBaseCurrency()->getCode(),
+                'editable'  => 1,
+                'index' => 'subtotal',
+                'filter' => false,
+                
+        ));
 
-
-        $this->addColumn('expire_time', array(
+      $this->addColumn('expire_time', array(
             'header'  => Mage::helper('quotedispatch')->__('Expires'),
             'index'   => 'expire_time',
             'type'    => 'date',
-            'width'   => '100px'
+            'width'   => '100px',
         ));
 
       $this->addColumn('status', array(
@@ -87,10 +117,13 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
           'type'      => 'options',
           'options'   => Mage::getModel('quotedispatch/adminuser')->getOptionArray(),
       ));
-
+      
+      $this->addExportType('*/*/exportCsv', Mage::helper('quotedispatch')->__('CSV'));
+      $this->addExportType('*/*/exportExcel', Mage::helper('quotedispatch')->__('Excel XML'));
+        
       return parent::_prepareColumns();
   }
-
+  
     protected function _prepareMassaction()
     {
         $this->setMassactionIdField('quotedispatch_id');
@@ -124,5 +157,15 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
     }
 
 
-
 }
+
+//class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid_Renderer_Subtotal
+//    extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
+//{
+//    public function render(Varien_Object $row)
+//    {
+//        $value = $row->getData('price');
+//        
+//        return $value;
+//    }
+//}

@@ -18,18 +18,17 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tabs extends Mage_Adm
           'title'     => Mage::helper('quotedispatch')->__('General'),
           'content'   => $this->getLayout()->createBlock('quotedispatch/adminhtml_quotedispatch_edit_tab_form')->toHtml(),
       ));
-
       $this->addTab('form_section_items', array(
           'label'     => Mage::helper('quotedispatch')->__('Items'),
           'title'     => Mage::helper('quotedispatch')->__('Items'),
-          //'content'   => $this->getLayout()->createBlock('quotedispatch/adminhtml_quotedispatch_edit_tab_grid')->toHtml(),
-          'url'       => $this->getUrl('*/*/quoteitems', array('_current' => true)),
+//          'content'   => $this->getLayout()->createBlock('quotedispatch/adminhtml_quotedispatch_edit_tab_grid')->toHtml(),
+          'url'       => $this->getUrl('*/*/quoteitems', array('_current' => true,'partial'=>Mage::registry('quotedispatch_partial'))),
           'class'     => 'ajax',
       ));
       
       $this->addTab('form_section_notes', array(
-          'label'     => Mage::helper('quotedispatch')->__('Internal Notes'),
-          'title'     => Mage::helper('quotedispatch')->__('Internal Notes'),
+          'label'     => Mage::helper('quotedispatch')->__('Notes'),
+          'title'     => Mage::helper('quotedispatch')->__('Notes'),
           'content'   => $this->getLayout()->createBlock('quotedispatch/adminhtml_quotedispatch_edit_tab_notes')->toHtml(),
       ));
 
