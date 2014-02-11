@@ -13,7 +13,7 @@ $lastTime = $time - (3*60*60); // 60*60*24
 $from = date('Y-m-d H:i:s', $lastTime);
 		
 		
-		
+/*	
 $product = Mage::getModel('catalog/product')->load(7169);
 echo $product->setData('etilize_manufactureid','Test1');
 	$product->save();
@@ -42,7 +42,7 @@ $collection = Mage::getModel('catalog/product')->getCollection()
             */
       
 
-Mage::getModel('ocm_fulfillment/observer')->evaluateOrdersDaily();
+//Mage::getModel('ocm_fulfillment/observer')->evaluateOrdersDaily();
 //updatePriceQtyFromCsv            
-//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
