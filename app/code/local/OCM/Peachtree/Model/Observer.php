@@ -12,13 +12,11 @@ class OCM_Peachtree_Model_Observer
         $cookie_value = Mage::getModel('core/cookie')->get(self::COOKIE_NAME);
         $affiliate_codes = explode(',',Mage::getStoreConfig('catalog/cpc_price/affiliate_codes'));
         
-        if ($request_value && in_array($request_value,$affiliate_codes) && $request_value != $cookie_value && $cookie_value != 'Direct') {
+        if ($request_value && in_array($request_value,$affiliate_codes) && $request_value != $cookie_value) {
             Mage::getModel('core/cookie')->set(self::COOKIE_NAME, $request_value, self::COOKIE_PERIOD);
             Mage::register(self::COOKIE_NAME,true);
-        } elseif (!$cookie_value) {
-	        Mage::getModel('core/cookie')->set(self::COOKIE_NAME, "Direct", self::COOKIE_PERIOD);
-            Mage::register(self::COOKIE_NAME,true);
         }
+        Mage::log($cookie_value);
 		$cookie_value = Mage::getModel('core/cookie')->get(self::COOKIE_NAME);
     }
     
