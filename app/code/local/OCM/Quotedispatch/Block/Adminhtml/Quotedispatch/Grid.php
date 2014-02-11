@@ -37,17 +37,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
 //            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
       $collection = Mage::getModel('quotedispatch/quotedispatch')->getCollection()->getData();
       $itemscollection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()->getData();
- //$itemscollection->join(array(‘prod_name'=>’TABLE_NAME'),'main_table.product_id=prod_name.entity_id',array('name'));
-        //$collection->joinAttribute('name','catalog_product/name', 'entity_id', 'entity_id','left', 0);
-//        
-//        $collection->getSelect()->joinRight('catalog_product_flat_1','catalog_product_flat_1.entity_id= `ocm_quotedispatch`.product_id','');
-//            //die(var_dump($collection->getSelect()));
-//        die(var_dump());  
-//            $this->setData('all_items', $collection);
-//        }
-//        return $this->getData('all_items');
-  
-        //die(var_dump($this->getData('all_items')));
+      
       $this->addColumn('quotedispatch_id', array(
           'header'    => Mage::helper('quotedispatch')->__('ID'),
           'align'     =>'right',
@@ -96,20 +86,15 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
  //               'currency_code' => $store->getBaseCurrency()->getCode(),
                 'editable'  => 1,
                 'index' => 'subtotal',
-                'filter' => false
+                'filter' => false,
+                //'text'  => $this->getData('subtotal'),
         ));
-             
-//       $this->addColumn('total', array(
-//          'header'    => Mage::helper('quotedispatch')->__('total'),
-//          'align'     =>'left',
-//          'index'     => 'price',
-//      ));
 
       $this->addColumn('expire_time', array(
             'header'  => Mage::helper('quotedispatch')->__('Expires'),
             'index'   => 'expire_time',
             'type'    => 'date',
-            'width'   => '100px'
+            'width'   => '100px',
         ));
 
       $this->addColumn('status', array(
@@ -135,7 +120,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
         
       return parent::_prepareColumns();
   }
-
+  
     protected function _prepareMassaction()
     {
         $this->setMassactionIdField('quotedispatch_id');
@@ -170,3 +155,14 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
 
 
 }
+
+//class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid_Renderer_Subtotal
+//    extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
+//{
+//    public function render(Varien_Object $row)
+//    {
+//        $value = $row->getData('price');
+//        
+//        return $value;
+//    }
+//}
