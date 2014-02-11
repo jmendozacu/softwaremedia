@@ -46,8 +46,11 @@
     <adminhtml_catalog_product_new>
         <update handle="editor"/>
         <reference name="content">
-            <block type="adminhtml/catalog_product_edit" name="product_edit"></block>
+            <block type="adminhtml/catalog_product_edit" name="product_edit">
+	            	        
+            </block>
         </reference>
+
         <reference name="left">
             <block type="adminhtml/catalog_product_edit_tabs" name="product_tabs"></block>
         </reference>
@@ -61,6 +64,7 @@
                 <name>softwaremedia/manufacterer.js</name>
             </action>
         </reference>
+        
     </adminhtml_catalog_product_new>
 
     <adminhtml_catalog_product_edit>
@@ -120,6 +124,7 @@
         </block>
     </adminhtml_catalog_product_grid>
 
+    
     <adminhtml_catalog_product_related>
         <block type="core/text_list" name="root" output="toHtml">
             <block type="adminhtml/catalog_product_edit_tab_related" name="catalog.product.edit.tab.related"/>

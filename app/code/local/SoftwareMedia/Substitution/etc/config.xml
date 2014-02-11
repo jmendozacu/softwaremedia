@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <SoftwareMedia_Substitution>
+            <version>0.1.1</version>
+        </SoftwareMedia_Substitution>
+    </modules>
+    <global>
+    <helpers>
+            <substitution>
+                <class>SoftwareMedia_Substitution_Helper</class>
+            </substitution>
+        </helpers>
+    <models>
+          <catalog>
+              <rewrite>
+                  <product>SoftwareMedia_Substitution_Model_Catalog_Product</product>
+                  <product_link>SoftwareMedia_Substitution_Model_Catalog_Product_Link</product_link>
+                  <resource_product_link>SoftwareMedia_Substitution_Model_Resource_Product_Link</resource_product_link>
+              </rewrite>
+          </catalog>
+          
+          <catalog_resource>
+              <rewrite>
+              	<product_link>SoftwareMedia_Substitution_Model_Resource_Product_Link</product_link>
+              </rewrite>
+          </catalog_resource>
+    </models>
+    <rewrite>
+        <!-- This is an identifier for your rewrite that should be unique -->
+        <!-- THIS IS THE CLASSNAME IN YOUR OWN CONTROLLER -->
+        <softwaremedia_substitution_adminhtml_catalog_substitution>
+            <from><![CDATA[#^/admin/catalog_product/#]]></from>
+            <!--
+                - mymodule matches the router frontname below
+                - checkout_cart matches the path to your controller
+
+                Considering the router below, "/mymodule/checkout_cart/" will be
+                "translated" to "/MyNameSpace/MyModule/controllers/Checkout/CartController.php" (?)
+            -->
+            <to>/substitution/adminhtml_catalog_substitution/</to>
+        </softwaremedia_substitution_adminhtml_catalog_substitution>
+    </rewrite>      
+    <blocks>
+    	<substitution>
+       	 <class>SoftwareMedia_Substitution_Block</class>
+		</substitution>
+	    <adminhtml>
+        <rewrite>
+             <catalog_product_edit_tabs>SoftwareMedia_Substitution_Block_Adminhtml_Tabs</catalog_product_edit_tabs>
+             <sales_order_view_tab_invoices>SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Tab_Invoices</sales_order_view_tab_invoices>
+         </rewrite>
+     </adminhtml>
+
+	 </blocks>
+        <resources>
+            <softwaremedia_setup>
+                <setup>
+                    <module>SoftwareMedia_Substitution</module>
+                    <class>Mage_Catalog_Model_Resource_Setup</class>
+                </setup>
+            </softwaremedia_setup>
+        </resources> 
+        <helpers>
+            <softwaremedia_substitution>
+                <class>SoftwareMedia_Substitution_Helper</class>
+            </softwaremedia_substitution>
+        </helpers>
+    </global>
+    <admin>
+    	<routers>
+    		        <softwaremedia_substitution>
+            <!-- should be set to "admin" when overloading admin stuff (?) -->
+            <use>admin</use>
+            <args>
+                <module>SoftwareMedia_Substitution</module>
+                <!-- This is used when "catching" the rewrite above -->
+                <frontName>substitution</frontName>
+            </args>
+        </softwaremedia_substitution>
+    	</routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <substitution>
+                    <file>substitution.xml</file>
+                </substitution>
+            </updates>
+        </layout>
+    </adminhtml>
+</config>

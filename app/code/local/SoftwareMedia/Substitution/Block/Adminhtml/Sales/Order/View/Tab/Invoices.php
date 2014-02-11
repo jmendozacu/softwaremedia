@@ -1,6 +1,6 @@
 <?php
 
-class OCM_Frauddetection_Block_Adminhtml_Sales_Order_View_Tab_Invoices extends Mage_Adminhtml_Block_Sales_Order_View_Tab_Invoices
+class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Tab_Invoices extends Mage_Adminhtml_Block_Sales_Order_View_Tab_Invoices
 {
     protected function _prepareCollection()
     {
@@ -59,7 +59,7 @@ class OCM_Frauddetection_Block_Adminhtml_Sales_Order_View_Tab_Invoices extends M
         $this->addColumn('product_addsub', array(
             'header'    => Mage::helper('sales')->__('Add Sub'),
             'filter'    => false,
-            'renderer'  => 'OCM_Frauddetection_Block_Adminhtml_Sales_Order_View_Renderer_Addsub',
+            'renderer'  => 'SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Addsub',
             'index'     => 'parent_id',
         ));
 
@@ -81,7 +81,7 @@ class OCM_Frauddetection_Block_Adminhtml_Sales_Order_View_Tab_Invoices extends M
             array(
                 'header'    => Mage::helper('sales')->__('Action'),
                 'filter'    => false,
-                'renderer'  => 'OCM_Frauddetection_Block_Adminhtml_Sales_Order_View_Renderer_Action',
+                'renderer'  => 'SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Action',
                 'index'     => 'parent_id',
             ));
 

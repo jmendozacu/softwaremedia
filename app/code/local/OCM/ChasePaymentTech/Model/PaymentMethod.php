@@ -72,7 +72,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
     
     public function refund(Varien_Object $payment, $amount)
     {
-        $this->_paymentProcessor->buildReverseRequest($payment, $amount);
+        $this->_paymentProcessor->buildRequest($payment, $amount);
         $voidTxResponse = $this->_paymentProcessor->sendRequest(self::REFUND);
         $this->_processResponse($payment, $voidTxResponse,1,1);
         

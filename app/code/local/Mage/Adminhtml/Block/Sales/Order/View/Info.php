@@ -72,7 +72,9 @@ class Mage_Adminhtml_Block_Sales_Order_View_Info extends Mage_Adminhtml_Block_Sa
     public function getReferer()
     {
         if ($this->getOrder()) {
-            return Mage::getModel('peachtree/referer')->loadByAttribute('order_id',(int)$this->getOrder()->getId())->getRefererId();
+         $peach = Mage::getModel('peachtree/referer')->loadByAttribute('order_id',(int)$this->getOrder()->getId());
+         	if ($peach)
+            	return $peach->getRefererId();
         }
         return null;
     }
