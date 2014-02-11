@@ -111,7 +111,9 @@ div.selector {
   height: 28px;
   padding: 1px 0;
   position: relative;
-  overflow: hidden;width: 168px;}
+  overflow: hidden;
+  width: 168px;
+  float:right;}
 
 div.selector span {
   text-overflow: ellipsis;
