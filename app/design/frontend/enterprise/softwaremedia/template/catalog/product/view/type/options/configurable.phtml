@@ -35,7 +35,7 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
         <dt><label class="required"><em>*</em><?php echo $_attribute->getLabel() ?></label></dt>
         <dd<?php if ($_attribute->decoratedIsLast){?> class="last"<?php }?>>
             <div class="input-box">
-                <select style="width:168px" onchange="updateUniform(); return changeSku(<?php echo $_attribute->getAttributeId() ?>, this);" name="super_attribute[<?php echo $_attribute->getAttributeId() ?>]" id="attribute<?php echo $_attribute->getAttributeId() ?>" class="required-entry super-attribute-select">
+                <select onchange="updateUniform(); return changeSku(<?php echo $_attribute->getAttributeId() ?>, this);" name="super_attribute[<?php echo $_attribute->getAttributeId() ?>]" id="attribute<?php echo $_attribute->getAttributeId() ?>" class="required-entry super-attribute-select">
                 	<?php if ($_product->getData('delivery_option')): ?>
                 	<option><?php echo $this->__('Download...') ?></option>
                 	<?php else: ?>
