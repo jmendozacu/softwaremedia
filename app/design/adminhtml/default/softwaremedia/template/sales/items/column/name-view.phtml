@@ -31,10 +31,20 @@
 ?>
 
 <?php if ($_item = $this->getItem()): ?>
-    <h5 class="title"><span id="order_item_<?php echo $_item->getId() ?>_title"><?php echo $this->htmlEscape($_item->getName()) ?></span></h5>
+	<?php $invoiceItem = $this->helper('substitution')->getInvoiceItemFromOrderItem($_item->getId()); ?>
+
+        <h5 class="title"><span id="order_item_<?php echo $_item->getId() ?>_title"><?php echo $this->htmlEscape($_item->getName()) ?></span></h5>
+
     <div><strong><?php echo $this->helper('sales')->__('SKU') ?>:</strong> <?php echo implode('<br />', Mage::helper('catalog')->splitSku($this->htmlEscape($this->getSku()))); ?></div>
-    <?php if ($this->getOrderOptions()): ?>
+    <?php if ($this->getOrderOptions() || $invoiceItem): ?>
         <dl class="item-options">
+            <?php if ($invoiceItem): ?>
+
+	<?php    if ($_item->getName() != $invoiceItem->getName())
+	    	echo "<dt>Subbed</dt><dd> " . $invoiceItem->getName() . "</dd>";
+    ?>
+    <?php endif; ?>
+    
         <?php foreach ($this->getOrderOptions() as $_option): ?>
             <dt><?php echo $_option['label'] ?></dt>
             <dd>

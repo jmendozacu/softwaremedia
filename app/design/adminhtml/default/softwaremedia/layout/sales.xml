@@ -88,7 +88,7 @@
                     <block type="adminhtml/sales_order_view_items" name="order_items" template="sales/order/view/items.phtml">
                         <action method="addItemRender"><type>default</type><block>adminhtml/sales_order_view_items_renderer_default</block><template>sales/order/view/items/renderer/default.phtml</template></action>
                         <action method="addColumnRender"><column>qty</column><block>adminhtml/sales_items_column_qty</block><template>sales/items/column/qty.phtml</template></action>
-                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>sales/items/column/name.phtml</template></action>
+                        <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name</block><template>sales/items/column/name-view.phtml</template></action>
                         <action method="addColumnRender"><column>name</column><block>adminhtml/sales_items_column_name_grouped</block><template>sales/items/column/name.phtml</template><type>grouped</type></action>
                         <block type="core/text_list" name="order_item_extra_info" />
                     </block>
@@ -300,7 +300,7 @@
                     <block type="adminhtml/sales_order_shipment_create_items" name="order_items" template="sales/order/shipment/create/items.phtml">
                         <action method="addItemRender"><type>default</type><block>adminhtml/sales_items_renderer_default</block><template>sales/order/shipment/create/items/renderer/default.phtml</template></action>
                         <action method="addColumnRender"><column>qty</column><block>adminhtml/sales_items_column_qty</block><template>sales/items/column/qty.phtml</template></action>
-                        <action method="addColumnRender"><column>name</column><block>substitution/adminhtml_sales_items_column_name</block><template>sales/items/column/name-invoice.phtml</template></action>
+                        <action method="addColumnRender"><column>name</column><block>substitution/adminhtml_sales_items_column_name</block><template>sales/items/column/name.phtml</template></action>
                         <block type="core/text_list" name="order_item_extra_info"></block>
                     </block>
                     <block type="adminhtml/sales_order_shipment_packaging" name="shipment_packaging" template="sales/order/shipment/packaging/popup.phtml" />

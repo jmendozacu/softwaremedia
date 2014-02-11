@@ -6,6 +6,11 @@
         </SoftwareMedia_Substitution>
     </modules>
     <global>
+    <helpers>
+            <substitution>
+                <class>SoftwareMedia_Substitution_Helper</class>
+            </substitution>
+        </helpers>
     <models>
           <catalog>
               <rewrite>

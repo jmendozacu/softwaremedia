@@ -8,7 +8,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Addsu
         $prodId = $row->getData('product_id');
         $product = Mage::getModel('catalog/product')->load($prodId);
         $subs = $product->getSubstitutionProductIds();
-        if ($subs) {
+        if ($subs && !$this->helper('substitution')->isComplete($row->getData('parent_id'))) {
         	$value = "<select name='sub_" . $id . "' id='sub_" . $id . "'>";
         	$value .= "<option value=''></option>";
 	        foreach ($subs as $subId) {

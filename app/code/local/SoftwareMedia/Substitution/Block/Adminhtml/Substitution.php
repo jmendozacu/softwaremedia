@@ -74,6 +74,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
         $collection = Mage::getModel('catalog/product_link')->useSubstitutionLinks()
             ->getProductCollection()
             ->setProduct($this->_getProduct())
+            ->addAttributeToFilter('type_id', array('in' => array('simple','grouped')))
             ->addAttributeToSelect('*');
 		
         if ($this->isReadonly()) {
@@ -133,7 +134,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             'width'     => 100,
             'index'     => 'type_id',
             'type'      => 'options',
-            'options'   => Mage::getSingleton('catalog/product_type')->getOptionArray(),
+            'options'   => array('simple' => 'Simple', 'grouped' => 'Grouped'),
         ));
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
