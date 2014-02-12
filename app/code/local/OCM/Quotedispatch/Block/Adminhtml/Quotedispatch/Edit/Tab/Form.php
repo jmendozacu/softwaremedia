@@ -94,12 +94,12 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
       } elseif ( Mage::registry('quotedispatch_data') ) {
           $form->setValues(Mage::registry('quotedispatch_data')->getData());
       }
-      if (!Mage::registry('quotedispatch_data')->getExpireTime()) {
-      $now = new DateTime('now', new DateTimeZone('America/Denver'));
-      $now->add(new DateInterval('P1M'));
-      $expire_time = $now->format('Y-m-d H:i:s');
-      $form->setValues(array('expire_time'=>$expire_time));
-      }
+//      if (!Mage::registry('quotedispatch_data')->getExpireTime()) {
+//      $now = new DateTime('now', new DateTimeZone('America/Denver'));
+//      $now->add(new DateInterval('P1M'));
+//      $expire_time = $now->format('Y-m-d H:i:s');
+//      $form->setValues(array('expire_time'=>$expire_time));
+//      }
       //die(var_dump($form->setValues(Mage::getSingleton('adminhtml/session')->getQuotedispatchData())));
       
       return parent::_prepareForm();
