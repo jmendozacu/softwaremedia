@@ -104,7 +104,7 @@ textarea.uniform:focus {
   background: url("../images/bg-input-focus.png") repeat-x 0 0; }
 
 /* Select */
-div.selector {
+  #uniform-billing-address-select {
   background-position: center -80px;
   background-repeat: repeat-x ;
   line-height: 28px;
@@ -114,7 +114,19 @@ div.selector {
   overflow: hidden;
   width: 100%;
   }
-
+  
+div.selector {
+  background-position: center -80px;
+  background-repeat: repeat-x ;
+  line-height: 28px;
+  height: 28px;
+  padding: 1px 0;
+  position: relative;
+  overflow: hidden;
+  width: 168px;
+  float:right;
+  }
+  
 div.selector span {
   text-overflow: ellipsis;
   display: block;
@@ -137,7 +149,7 @@ div.selector select {
   height: 28px;
   top: 2px;
   left: 0px;
-  width: 168px; }
+  width: 100%; }
 
 .validation-error div.selector {background-position: center -196px;}
 .validation-error div.selector span {border-left: 1px solid #f47d4e; border-right: 1px solid #f47d4e;}
