@@ -1,0 +1,12 @@
+diff -aurBb /home/httpd/htdocs/enterprise/ent101/var/ait_patch_orig/button.phtml /home/httpd/htdocs/enterprise/ent101/var/ait_patch_modif/button.phtml
+--- /home/httpd/htdocs/enterprise/ent101/var/ait_patch_orig/button.phtml    2011-03-24 08:03:28.000000000 +0200
++++ /home/httpd/htdocs/enterprise/ent101/var/ait_patch_modif/button.phtml    2011-04-26 10:26:49.000000000 +0300
+@@ -24,4 +24,7 @@
+  * @license     http://www.magentocommerce.com/license/enterprise-edition
+  */
+ ?>
+-<button type="submit" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" onclick="review.save();"><span><span><?php echo $this->__('Place Order') ?></span></span></button>
++<?php /* START AITOC COMMENTING        
++         <button type="submit" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" onclick="review.save();"><span><span><?php echo $this->__('Place Order') ?></span></span></button> 
++FINISH AITOC COMMENTING */ ?>            
++        <button type="submit" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" onclick="if(customreview.save()) review.save(); "><span><span><?php echo $this->__('Place Order') ?></span></span></button>

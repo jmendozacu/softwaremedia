@@ -1,0 +1,49 @@
+diff -aurBb /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare64312946736884d2b2718b7613 /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare64312946736884d2b2718b7613
+--- /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare64312946736884d2b2718b7613	2011-01-10 17:34:48.000000000 +0200
++++ /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare64312946736884d2b2718b7613	2011-01-10 17:34:48.000000000 +0200
+@@ -29,6 +29,22 @@
+ </div>
+ <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+ <form action="<?php echo $this->getUrl('customer/account/editPost') ?>" method="post" id="form-validate">
++
++
++
++<!--     START AITOC REGISTRATION ATTRIBUTES     -->
++        <?php if($fieldList = $this->getCustomFieldsList(1)){ ?>
++			<div class="fieldset">
++    	        <h2 class="legend"><?php echo Mage::getStoreConfig('aitcheckoutfields/settings/aitcheckoutfields_reg_label_top', $this->getStoreId()) ?></h2>
++    	        <ul class="form-list">
++    	            <?php foreach ($fieldList as $field){
++    	                echo $this->getAttributeHtml($field,'aitreg','register');	
++    	            } ?>
++    	        <ul class="form-list">
++    	    </div>
++        <?php } ?>
++<!--     FINISH AITOC REGISTRATION ATTRIBUTES     -->
++
+     <div class="fieldset">
+         <?php echo $this->getBlockHtml('formkey')?>
+         <h2 class="legend"><?php echo $this->__('Account Information') ?></h2>
+@@ -84,6 +100,22 @@
+             </li>
+         </ul>
+     </div>
++
++
++    
++<!--     START AITOC REGISTRATION ATTRIBUTES     -->
++        <?php if($fieldList = $this->getCustomFieldsList(2)){ ?>
++			<div class="fieldset">
++    	        <h2 class="legend"><?php echo Mage::getStoreConfig('aitcheckoutfields/settings/aitcheckoutfields_reg_label_bottom', $this->getStoreId()) ?></h2>
++    	        <ul class="form-list">
++    	            <?php foreach ($fieldList as $field){
++    	                echo $this->getAttributeHtml($field,'aitreg','register');	
++    	            } ?>
++    	        <ul class="form-list">
++    	    </div>
++        <?php } ?>
++<!--     FINISH AITOC REGISTRATION ATTRIBUTES     -->
++    
+     <div class="buttons-set">
+         <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+         <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>

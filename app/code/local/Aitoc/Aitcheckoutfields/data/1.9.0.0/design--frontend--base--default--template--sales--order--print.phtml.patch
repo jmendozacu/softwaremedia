@@ -1,0 +1,31 @@
+diff -aurBb /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare20712946736884d2b2718a2df8 /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare20712946736884d2b2718a2df8
+--- /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare20712946736884d2b2718a2df8	2011-01-10 17:34:48.000000000 +0200
++++ /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare20712946736884d2b2718a2df8	2011-01-10 17:34:48.000000000 +0200
+@@ -53,6 +53,27 @@
+         <?php echo $this->getPaymentInfoHtml() ?>
+     </div>
+ </div>
++
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++<?php if ($aCustomAtrrList = $this->getOrderCustomData()) : ?>
++    <!--Account Information-->
++<div class="col2-set">
++        <h2><?php echo Mage::getStoreConfig('aitcheckoutfields/common_settings/aitcheckoutfields_additionalblock_label', $this->getStoreId()); ?></h2>
++                <table cellspacing="0" class="print" width="100%">
++                
++    <?php foreach ($aCustomAtrrList as $aItem): ?>
++                <tr>
++                    <td class="label" width="50%"><label><?php echo $aItem['label']; ?></label></td>
++                    <td><?php echo $aItem['value'] ?></td>
++                </tr>
++    <?php endforeach; ?>
++                
++                </table>
++</div>
++
++<?php endif; ?>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
++
+ <h2><?php echo $this->__('Items Ordered') ?></h2>
+ <table class="data-table" id="my-orders-table">
+     <col />

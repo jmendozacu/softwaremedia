@@ -1,0 +1,43 @@
+diff -aurBb /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare68112946736884d2b2718e065a /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare68112946736884d2b2718e065a
+--- /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare68112946736884d2b2718e065a	2011-01-10 17:34:48.000000000 +0200
++++ /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare68112946736884d2b2718e065a	2011-01-10 17:34:48.000000000 +0200
+@@ -25,6 +25,19 @@
+  */
+ ?>
+ <form action="" id="co-shipping-form">
++
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++    <?php if ($aFieldList = $this->getCustomFieldList(1)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->          
++
+ <fieldset>
+     <ul class="form-list">
+     <?php if ($this->customerHasAddresses()): ?>
+@@ -142,6 +155,19 @@
+         </li>
+     </ul>
+ </fieldset>
++
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++    <?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
++
+ <div class="buttons-set form-buttons" id="shipping-buttons-container">
+     <p class="back-link"><a href="#" onclick="checkout.back(); return false;"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+     <button type="button" class="button" onclick="shipping.save()"><span><span><?php echo $this->__('Continue') ?></span></span></button>

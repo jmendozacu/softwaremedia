@@ -1,0 +1,94 @@
+diff -aurBb /home/httpd/htdocs/enterprise/ent101/var/ait_patch_orig/review.phtml /home/httpd/htdocs/enterprise/ent101/var/ait_patch_modif/review.phtml
+--- /home/httpd/htdocs/enterprise/ent101/var/ait_patch_orig/review.phtml    2011-03-24 08:03:28.000000000 +0200
++++ /home/httpd/htdocs/enterprise/ent101/var/ait_patch_modif/review.phtml    2011-04-26 10:29:27.000000000 +0300
+@@ -24,6 +24,90 @@
+  * @license     http://www.magentocommerce.com/license/enterprise-edition
+  */
+ ?>
++<!-------------------------    START AITOC CHECKOUT ATTRIBUTES          ---------------------------->
++    <div id = 'co-customreview-form'>
++    <?php if ($aFieldList = $this->getCustomFieldList(1)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++<!------------------------------    FINISH AITOC CHECKOUT ATTRIBUTES         --------------------------->   
+ <div class="order-review" id="checkout-review-load">
+     <?php echo $this->getChildHtml('info') ?>
++<!-------------------------    START AITOC CHECKOUT ATTRIBUTES          ---------------------------->
++<script type="text/javascript">
++    //<![CDATA[
++<!-------------------------    START AITOC CHECKOUT ATTRIBUTES          ---------------------------->
++
++var Customreview = Class.create();
++Customreview.prototype = {
++    initialize: function(form){
++        this.form = form;
++        this.validator = new Validation(this.form);
++    },
++
++    save: function(){
++        if (checkout.loadWaiting!=false) return;
++
++        var validator = new Validation(this.form);   
++        if (validator.validate()) {
++            return true;
++        }
++        else 
++        {
++            return false;
++        }
++    },
++
++    resetLoadWaiting: function(transport){
++        checkout.setLoadWaiting(false);
++    }
++
++}
++
++    var customreview = new Customreview('co-customreview-form');
++    
++    // override parent class function to add our data to request   
++
++    Review.prototype.save = function(){
++        if (checkout.loadWaiting!=false) return;
++        checkout.setLoadWaiting('review');
++        var params = Form.serialize(payment.form);
++        if (this.agreementsForm) {
++            params += '&'+Form.serialize(this.agreementsForm);
++        }
++        
++        params += '&'+Form.serialize($('co-customreview-form'));
++        
++        params.save = true;
++        var request = new Ajax.Request(
++            this.saveUrl,
++            {
++                method:'post',
++                parameters:params,
++                onComplete: this.onComplete,
++                onSuccess: this.onSave,
++                onFailure: checkout.ajaxFailure.bind(checkout)
++            }
++        );
++    }
++<!------------------------------    FINISH AITOC CHECKOUT ATTRIBUTES         ---------------------------> 
++     //]]>  
++</script>
++</div>
++    <?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++<div>      </div>
++<!------------------------------    FINISH AITOC CHECKOUT ATTRIBUTES         --------------------------->   
+ </div>

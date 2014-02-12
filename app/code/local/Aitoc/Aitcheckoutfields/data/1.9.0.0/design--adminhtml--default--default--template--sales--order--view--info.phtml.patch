@@ -1,0 +1,53 @@
+diff -aurBb /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare38912946736884d2b271868469 /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare38912946736884d2b271868469
+--- /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare38912946736884d2b271868469	2011-01-10 17:34:48.000000000 +0200
++++ /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare38912946736884d2b271868469	2011-01-10 17:34:48.000000000 +0200
+@@ -145,6 +145,49 @@
+ </div>
+ <div class="clear"></div>
+ 
++
++
++
++
++
++
++
++<!--     START CHECKOUT ATTRIBUTES     -->
++
++<?php 
++$aCustomAtrrList = $this->getOrderCustomData();
++$editUrl = $this->getEditUrl();
++?>
++    <!--Custom Attributes Information-->
++<div class="clear"></div>    
++    <div class="entry-edit">
++        <div class="entry-edit-head">
++            <h4 class="icon-head head-account"><?php echo Mage::getStoreConfig('aitcheckoutfields/common_settings/aitcheckoutfields_additionalblock_label', $this->getStoreId()); if($editUrl && (!$this->getIsInvoice())){ ?> <span class="separator">|</span> <a href="<?php echo $this->getEditUrl() ?>"><?php echo $this->__('Change') ?></a><?php } ?></h4>
++        </div>
++        <div class="fieldset">
++            <div class="hor-scroll">
++                <table cellspacing="0" class="form-list">
++                
++    <?php foreach ($aCustomAtrrList as $aItem):
++        if($aItem['value']){
++     ?>
++                <tr>
++                    <td class="label"><label><?php echo $aItem['label']; ?></label></td>
++                    <td><strong><?php echo $aItem['value'] ?></strong></td>
++                </tr>
++    <?php }
++        endforeach; ?>
++                
++                </table>
++            </div>
++        </div>
++    </div>
++<div class="clear"></div>
++
++<!--     FINISH CHECKOUT ATTRIBUTES     -->
++
++
++
+ <div class="box-left">
+     <!--Billing Address-->
+     <div class="entry-edit">
