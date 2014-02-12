@@ -6,6 +6,17 @@
         </SoftwareMedia_Substitution>
     </modules>
     <global>
+    <events>
+     <catalog_product_save_after>
+            <observers>
+                <substitution>
+                    <type>singleton</type>
+                    <class>SoftwareMedia_Substitution_Model_Observer</class>
+                    <method>catalog_product_save_after</method>
+                </substitution>
+            </observers>
+        </catalog_product_save_after>
+    </events>
     <helpers>
             <substitution>
                 <class>SoftwareMedia_Substitution_Helper</class>
