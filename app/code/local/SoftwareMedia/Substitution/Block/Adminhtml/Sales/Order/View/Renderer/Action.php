@@ -9,7 +9,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Actio
         $prodId = $row->getData('product_id');
         $product = Mage::getModel('catalog/product')->load($prodId);
         $subs = $product->getSubstitutionProductIds();
-        
+        $html = '';
 	    if ($subs && !$this->helper('substitution')->isComplete($id)) {
 	    	$subUrl = $this->getUrl('substitution/adminhtml_substitution/add');
 	        $html = '<a href="javascript:void(0)" onclick="addSub(\'' . $subUrl . '\',\''.$value.'\');">Add Sub</a>';
