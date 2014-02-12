@@ -112,8 +112,8 @@ div.selector {
   padding: 1px 0;
   position: relative;
   overflow: hidden;
-  width: 168px;
-  float:right;}
+  width: 100%;
+  }
 
 div.selector span {
   text-overflow: ellipsis;
@@ -137,7 +137,7 @@ div.selector select {
   height: 28px;
   top: 2px;
   left: 0px;
-  width: 100%; }
+  width: 168px; }
 
 .validation-error div.selector {background-position: center -196px;}
 .validation-error div.selector span {border-left: 1px solid #f47d4e; border-right: 1px solid #f47d4e;}
