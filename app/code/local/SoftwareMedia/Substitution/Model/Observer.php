@@ -16,8 +16,6 @@ class SoftwareMedia_Substitution_Model_Observer
         $links = Mage::getResourceModel('catalog/product_link');
         $linkModel = Mage::getModel('catalog/product_link');
         
-        $linkList = $links->getParentIdsByChild($product->getId(),6);
-        
         //Get collection of all substitution links that use this product
         $dollection = $linkModel->setLinkTypeId(6)->getLinkCollection()->addFieldToFilter('linked_product_id', $product->getId());
         $dollection->joinAttributes();
@@ -27,7 +25,7 @@ class SoftwareMedia_Substitution_Model_Observer
 			$syncProd = Mage::getModel('catalog/product')->load($link->getProductId());
 			
 			//Only save product if prices are different to prcent potential loops
-			if ($product->getPrice() != $syncProd->getPrice() || $product->getCpcPrice() != $syncProd->getCpcPrice() || $product->getMsrp() != $syncProd->getMsrp()) {
+			if ($product->getPrice() != $syncProd->getPrice() || $product->getCpcPrice() != $syncProd->getCpcPrice() || $product->getMsrp() != $syncProd->getMsrp() || $product->getCost() != $syncProd->getCost()) {
 				$syncProd->setPrice($product->getPrice());
 				$syncProd->setCpcPrice($product->getCpcPrice());
 				$syncProd->setMsrp($product->getMsrp());
@@ -36,5 +34,50 @@ class SoftwareMedia_Substitution_Model_Observer
 	        }
         }
 
+    }
+    public function catalog_product_save_before($observer)
+    {
+        $product = $observer->getProduct();
+        $priceCount = 0;
+        $autoCount = 0;
+        if (!$product->getSubstitutionLinkData())
+        	return $observer;
+        	
+        foreach($product->getSubstitutionLinkData() as $link) {
+	        $priceCount += $link['price_sync'];
+	        $autoCount += $link['auto'];
+        }
+        if ($priceCount > 1) {
+	        Mage::throwException(Mage::helper('adminhtml')->__('Please select only one substitution to sync price'));
+        }
+        if ($autoCount > 1) {
+	        Mage::throwException(Mage::helper('adminhtml')->__('Please select only one substitution to auto sub'));
+        }
+       // die(var_dump($product->getSubstitutionLinkData()));
+        
+    }
+    
+    public function sales_order_invoice_save_after($observer) {
+    	$invoice = $observer->getInvoice();
+    	//die($invoice->getId());   
+    	$invoiceItems = Mage::getModel('sales/order_invoice_item')->getCollection()->addFieldToFilter('parent_id',$invoice->getId());
+    	
+    	$linkModel = Mage::getModel('catalog/product_link');
+    	
+    	foreach($invoiceItems as $invoiceItem) {
+    		Mage::log('Invoice Item: ' . $invoiceItem->getId() . ' Product: ' . $invoiceItem->getProductId());
+	    	//Get collection of all substitution links that use this product
+			$dollection = $linkModel->setLinkTypeId(6)->getLinkCollection()->addFieldToFilter('product_id', $invoiceItem->getProductId());
+			$dollection->joinAttributes();
+			foreach($dollection as $link) {
+				Mage::log('Invoice Link Item: ' . $link->getId() . ' Invoice Product Item: ' . $link->getLinkedProductId());
+	       		if ($link->getAuto()) {
+	       			Mage::helper('substitution')->addSub($invoiceItem->getId(),$link->getLinkedProductId());
+			   	}
+			}
+    	}
+    	
+        
+        
     }
 }

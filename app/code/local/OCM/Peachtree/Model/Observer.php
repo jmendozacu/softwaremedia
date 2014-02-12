@@ -16,7 +16,7 @@ class OCM_Peachtree_Model_Observer
             Mage::getModel('core/cookie')->set(self::COOKIE_NAME, $request_value, self::COOKIE_PERIOD);
             Mage::register(self::COOKIE_NAME,true);
         }
-        Mage::log($cookie_value);
+      
 		$cookie_value = Mage::getModel('core/cookie')->get(self::COOKIE_NAME);
     }
     

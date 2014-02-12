@@ -30,7 +30,8 @@ class SoftwareMedia_Substitution_Adminhtml_SubstitutionController extends Mage_A
 		
 		$invoice = Mage::getModel('sales/order_invoice')->load($invoiceItem->getParentId());
 		$orderId = $invoice->getOrderId();
-			
+		
+		Mage::getSingleton('adminhtml/session')->addSuccess("Substitution Added Successfully"); 
 			
         $json = json_encode($output);
 

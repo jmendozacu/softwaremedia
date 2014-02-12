@@ -157,7 +157,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             'type'      => 'options',
             'options'   => Mage::getSingleton('catalog/product_status')->getOptionArray(),
         ));
-
+/*
         $this->addColumn('visibility', array(
             'header'    => Mage::helper('catalog')->__('Visibility'),
             'width'     => 90,
@@ -165,7 +165,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             'type'      => 'options',
             'options'   => Mage::getSingleton('catalog/product_visibility')->getOptionArray(),
         ));
-
+*/
         $this->addColumn('sku', array(
             'header'    => Mage::helper('catalog')->__('SKU'),
             'width'     => 80,
@@ -200,7 +200,18 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
             'editable'          => !$this->_getProduct()->getSubstitutionReadonly(),
             'width'             => 70
         ));
-
+        
+		$this->addColumn('auto', array(
+            'header'            => Mage::helper('catalog')->__('Auto'),
+            'name'              => 'auto',
+            'type'              => 'select',
+            'options'			=> array(0=>'No',1=>'Yes'),
+            'index'             => 'auto',
+            'filter'			=> false,
+            'editable'          => !$this->_getProduct()->getSubstitutionReadonly(),
+            'width'             => 70
+        ));
+        
         return parent::_prepareColumns();
     }
 
@@ -241,10 +252,10 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
         $prod = Mage::registry('current_product');
         //Mage::log('Prod Id: ' . $prod->getId());
         foreach (Mage::registry('current_product')->getSubstitutionProducts() as $product) {
-            $products[$product->getId()] = array('qty' => $product->getQty(), 'price_sync' => $product->getPriceSync());
-			Mage::log("ID: " . $product->getId());
-			Mage::log("PS: " . $product->getPriceSync());
-			Mage::log("Qty: " . $product->getQty());
+            $products[$product->getId()] = array('qty' => $product->getQty(), 'price_sync' => $product->getPriceSync(), 'auto' => $product->getAuto());
+			//Mage::log("ID: " . $product->getId());
+			//Mage::log("PS: " . $product->getPriceSync());
+			//Mage::log("Qty: " . $product->getQty());
 		
         }
         return $products;

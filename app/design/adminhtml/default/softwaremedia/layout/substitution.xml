@@ -18,6 +18,9 @@
                     <action method="addColumnInputName">
                         <input_name>price_sync</input_name>
                     </action>
+                    <action method="addColumnInputName">
+                        <input_name>auto</input_name>
+                    </action>
                 </reference>
             </block>
         </block>
@@ -39,4 +42,13 @@
         	<action method="addColumnRender"><column>name</column><block>softwaremedia/adminhtml_sales_items_column_name</block><template>sales/items/column/name.phtml</template></action>
         </reference>
     </adminhtml_sales_order_view>
+    
+    <adminhtml_catalog_product_edit>
+   	 <reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <name>softwaremedia/substitution.js</name>
+            </action>
+        </reference>
+    </adminhtml_catalog_product_edit>
 </layout>

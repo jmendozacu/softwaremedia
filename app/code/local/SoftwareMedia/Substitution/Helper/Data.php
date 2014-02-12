@@ -63,8 +63,18 @@ class SoftwareMedia_Substitution_Helper_Data extends Mage_Core_Helper_Abstract {
 				}
 			}
 
+			//Remove any child invoice items after subbed
+			$childItems = Mage::getModel('sales/order_item')->getCollection()->addFieldToFilter('parent_item_id',$orderItem->getId());
+			foreach($childItems as $childItem) {
+				$childInvoiceItems = Mage::getModel('sales/order_invoice_item')->getCollection()->addFieldToFilter('order_item_id',$childItem->getId());
+				if ($childInvoiceItems) {
+					foreach($childInvoiceItems as $childInvoiceItem) {
+						$childInvoiceItem->delete();
+					}
+				}
+			}
 			//Save Order Invoice Item
-			Mage::getSingleton('adminhtml/session')->addSuccess("Substitution Added Successfully"); 
+			
 			
 			$invoice = Mage::getModel('sales/order_invoice')->load($invoiceItem->getParentId());
 			$orderId = $invoice->getOrderId();

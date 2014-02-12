@@ -40,7 +40,7 @@
         <dl class="item-options">
             <?php if ($invoiceItem): ?>
 
-	<?php    if ($_item->getName() != $invoiceItem->getName())
+	<?php    if ($_item->getName() != $invoiceItem->getName() && $invoiceItem->getName())
 	    	echo "<dt>Subbed</dt><dd> " . $invoiceItem->getName() . "</dd>";
     ?>
     <?php endif; ?>

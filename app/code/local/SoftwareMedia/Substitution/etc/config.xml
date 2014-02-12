@@ -2,11 +2,20 @@
 <config>
     <modules>
         <SoftwareMedia_Substitution>
-            <version>0.1.1</version>
+            <version>0.1.2</version>
         </SoftwareMedia_Substitution>
     </modules>
     <global>
     <events>
+    <sales_order_invoice_save_after>
+            <observers>
+                <substitution>
+                    <type>singleton</type>
+                    <class>SoftwareMedia_Substitution_Model_Observer</class>
+                    <method>sales_order_invoice_save_after</method>
+                </substitution>
+            </observers>
+        </sales_order_invoice_save_after>
      <catalog_product_save_after>
             <observers>
                 <substitution>
@@ -16,6 +25,24 @@
                 </substitution>
             </observers>
         </catalog_product_save_after>
+    <catalog_product_save_before>
+            <observers>
+                <substitution>
+                    <type>singleton</type>
+                    <class>SoftwareMedia_Substitution_Model_Observer</class>
+                    <method>catalog_product_save_before</method>
+                </substitution>
+            </observers>
+        </catalog_product_save_before>
+    <sales_order_invoice_save_after>
+            <observers>
+                <substitution>
+                    <type>singleton</type>
+                    <class>SoftwareMedia_Substitution_Model_Observer</class>
+                    <method>sales_order_invoice_save_after</method>
+                </substitution>
+            </observers>
+        </sales_order_invoice_save_after>
     </events>
     <helpers>
             <substitution>
