@@ -9,8 +9,8 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Notes extends Mag
      
      $fieldset->addField('Note', 'editor', array(
           'name'      => 'note',
-          'label'     => Mage::helper('quotedispatch')->__('Note'),
-          'title'     => Mage::helper('quotedispatch')->__('Note'),
+          'label'     => Mage::helper('quotedispatch')->__('Internal Notes (not viewable by customer)'),
+          'title'     => Mage::helper('quotedispatch')->__('Internal Notes'),
           'style'     => 'width:300px; height:100px;',
           'wysiwyg'   => false,
           'required'  => false,
