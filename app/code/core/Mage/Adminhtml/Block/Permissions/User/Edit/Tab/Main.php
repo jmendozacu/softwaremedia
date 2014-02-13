@@ -87,7 +87,7 @@ class Mage_Adminhtml_Block_Permissions_User_Edit_Tab_Main extends Mage_Adminhtml
             'class' => 'required-entry validate-email',
             'required' => true,
         ));
-
+        
         if ($model->getUserId()) {
             $fieldset->addField('password', 'password', array(
                 'name'  => 'new_password',
