@@ -28,8 +28,12 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
             }
             if ($partial = $this->getRequest()->getParam('partial')) {
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('quotedispatch')->__('New quote added. Please add products'));
+                $now = new DateTime('now', new DateTimeZone('America/Denver'));
+                $now->add(new DateInterval('P1M'));
+                $expire_time = $now->format('Y-m-d H:i:s');
                 $new_model = Mage::getModel('quotedispatch/quotedispatch');
                 $new_model->setData($model->getData());
+                $new_model->setExpireTime($expire_time);
                 $new_model->setId(null);
                 $new_model->save();
 

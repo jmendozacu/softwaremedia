@@ -84,22 +84,26 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
           'required'  => false,
           'name'      => 'email_notes',
       ));
-
-     
+      $data = array();
       if ( Mage::getSingleton('adminhtml/session')->getQuotedispatchData() )
       {
-          $form->setValues(Mage::getSingleton('adminhtml/session')->getQuotedispatchData());
-          
+//          $form->setValues(Mage::getSingleton('adminhtml/session')->getQuotedispatchData());
+          $data = Mage::getSingleton('adminhtml/session')->getQuotedispatchData();
           Mage::getSingleton('adminhtml/session')->setQuotedispatchData(null);
       } elseif ( Mage::registry('quotedispatch_data') ) {
-          $form->setValues(Mage::registry('quotedispatch_data')->getData());
+//          $form->setValues(Mage::registry('quotedispatch_data')->getData());
+          $data = Mage::registry('quotedispatch_data')->getData();
       }
-//      if (!Mage::registry('quotedispatch_data')->getExpireTime()) {
-//      $now = new DateTime('now', new DateTimeZone('America/Denver'));
-//      $now->add(new DateInterval('P1M'));
-//      $expire_time = $now->format('Y-m-d H:i:s');
+      
+      if (!Mage::registry('quotedispatch_data')->getExpireTime()) {
+      $now = new DateTime('now', new DateTimeZone('America/Denver'));
+      $now->add(new DateInterval('P1M'));
+      $expire_time = $now->format('Y-m-d H:i:s');
+      $data['expire_time']=$expire_time;
 //      $form->setValues(array('expire_time'=>$expire_time));
-//      }
+//      $form->setData('expire_time', $expire_time);
+      }
+      $form->setValues($data);
       //die(var_dump($form->setValues(Mage::getSingleton('adminhtml/session')->getQuotedispatchData())));
       
       return parent::_prepareForm();
