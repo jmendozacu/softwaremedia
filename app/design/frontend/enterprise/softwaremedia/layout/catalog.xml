@@ -106,6 +106,7 @@ Category default layout
         </reference>
         <reference name="product_list_toolbar">
         <action method="setDefaultDirection"><dir>desc</dir></action>
+        <action method="setDefaultOrder"><field>created_at</field></action>
         </reference>
     </catalog_category_default>
 
