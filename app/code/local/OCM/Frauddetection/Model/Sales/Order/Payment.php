@@ -38,7 +38,7 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         	$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE;
         else
         	$action = $methodInstance->getConfigPaymentAction();
-        Mage::log('Result: ' . $result,null,'fraud.log');	
+       
         Mage::log('ACTION: ' . $action,null,'fraud.log');
         if ($action) {
             if ($methodInstance->isInitializeNeeded()) {
@@ -66,9 +66,9 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
                 }
             }
         }
-
+		Mage::log('Result: ' . $result,null,'fraud.log');	
         $this->_createBillingAgreement();
-
+		Mage::log('Step 1',null,'fraud.log');	
         $orderIsNotified = null;
         if ($stateObject->getState() && $stateObject->getStatus()) {
             $orderState      = $stateObject->getState();
@@ -105,7 +105,7 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         elseif (($order->getState() != $orderState) || ($order->getStatus() != $orderStatus) || $message) {
             $order->setState($orderState, $orderStatus, $message, $isCustomerNotified);
         }
-
+		Mage::log('Step 2',null,'fraud.log');	
         Mage::dispatchEvent('sales_order_payment_place_end', array('payment' => $this));
 
         return $this;
