@@ -87,7 +87,19 @@ class Mage_Adminhtml_Block_Permissions_User_Edit_Tab_Main extends Mage_Adminhtml
             'class' => 'required-entry validate-email',
             'required' => true,
         ));
-        
+                
+        $fieldset->addField('admin_phone', 'text',
+            array(
+                'name'  => 'admin_phone',
+                'label' => Mage::helper('adminhtml')->__('Admin Phone'),
+                'id'    => 'admin_phone',
+                'title' => Mage::helper('adminhtml')->__('Admin Phone'),
+                'class' => 'required-entry',
+                'required' => true,
+            )
+        );
+
+
         if ($model->getUserId()) {
             $fieldset->addField('password', 'password', array(
                 'name'  => 'new_password',
