@@ -1,0 +1,106 @@
+diff -aurBb D:/__AITOC__/projects/RAU-333648__cfm_ee_11200/patch_original/billing.phtml D:/__AITOC__/projects/RAU-333648__cfm_ee_11200/patch_modified/billing.phtml
+--- D:/__AITOC__/projects/RAU-333648__cfm_ee_11200/patch_original/billing.phtml	Thu Apr 19 17:39:02 2012
++++ D:/__AITOC__/projects/RAU-333648__cfm_ee_11200/patch_modified/billing.phtml	Wed May 02 18:42:32 2012
+@@ -25,6 +25,19 @@
+  */
+ ?>
+ <form id="co-billing-form" action="">
++
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++    <?php if ($aFieldList = $this->getCustomFieldList(1)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->          
++
+ <fieldset>
+     <ul class="form-list">
+     <?php if ($this->customerHasAddresses()): ?>
+@@ -167,7 +180,13 @@
+                     <?php $customerAttributes->setFieldNameFormat('billing[%1$s]')->setShowContainer(false);?>
+                     <?php echo $customerAttributes->setExcludeFileAttributes(true)->toHtml()?>
+                 <?php endif;?>
++                
++<?php /* START AITOC COMMENTING                
+                 <li class="fields" id="register-customer-password">
++FINISH AITOC COMMENTING */ ?>
++
++            <li id="register-customer-password"><ul>               
++                <li class="fields">                
+                     <div class="field">
+                         <label for="billing:customer_password" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+                         <div class="input-box">
+@@ -181,6 +200,16 @@
+                         </div>
+                     </div>
+                 </li>
++                
++                <!--     START AITOC CHECKOUT ATTRIBUTES     -->
++                <?php if ($aFieldList = $this->getRegCustomFieldList()): ?>
++                    <?php foreach ($aFieldList as $aField): ?>
++                        <?php echo $this->getFieldHtml($aField); ?>
++                    <?php endforeach; ?>
++                <?php endif; ?>
++                <!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
++                
++            </ul></li>                
+                 <?php endif; ?>
+                 <?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+                     <li class="control">
+@@ -213,12 +242,33 @@
+         </li>
+     <?php endif; ?>
+     </ul>
++
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++    <?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->                
++    
+     <?php if (!$this->canShip()): ?>
+         <input type="hidden" name="billing[use_for_shipping]" value="1" />
+     <?php endif; ?>
+ </fieldset>
+ <div class="buttons-set form-buttons btn-only" id="billing-buttons-container">
++
++<?php /* START AITOC COMMENTING    
+     <button type="button" class="button" onclick="billing.save()"><span><span><?php echo $this->__('Continue') ?></span></span></button>
++FINISH AITOC COMMENTING */ ?>
++
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++    <button type="button" class="button" onclick="checkShippReqAttrib(); billing.save()"><span><span><?php echo $this->__('Continue') ?></span></span></button>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
++    
+     <span id="billing-please-wait" class="please-wait" style="display:none;">
+         <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="" class="v-middle" /> <?php echo $this->__('Loading next step...') ?>
+     </span>
+@@ -234,5 +284,17 @@
+     $('billing-address-select') && billing.newAddress(!$('billing-address-select').value);
+ 
+     var billingRegionUpdater = new RegionUpdater('billing:country_id', 'billing:region', 'billing:region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'billing:postcode');
++
++//     START AITOC CHECKOUT ATTRIBUTES
++   function checkShippReqAttrib()
++   {
++       var bHashRequered = '<?php echo $this->checkStepHasRequired(); ?>';
++       if (!bHashRequered) return true;
++       if ($('billing:use_for_shipping_yes')) $('billing:use_for_shipping_yes').checked = false;
++       if ($('billing:use_for_shipping_no')) $('billing:use_for_shipping_no').checked = true;
++       if ($('billing:same_as_billing')) $('shipping:same_as_billing').checked = false;
++   }
++//     FINISH AITOC CHECKOUT ATTRIBUTES
++    
+ //]]>
+ </script>

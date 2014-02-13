@@ -1,0 +1,37 @@
+diff -aurBb /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare32512946608164d2af4d0a2ee3 /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare32512946608164d2af4d0a2ee3
+--- /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare32512946608164d2af4d0a2ee3	2011-01-10 14:00:16.000000000 +0200
++++ /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare32512946608164d2af4d0a2ee3	2011-01-10 14:00:16.000000000 +0200
+@@ -92,4 +92,33 @@
+         </div>
+     </div>
+ </div>
++
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++<?php if ($aCustomAtrrList = $this->getOrderCustomData()) : ?>
++    <!--Account Information-->
++<div class="col2-set">
++        <div class="info-box">
++
++            <h2 class="box-title"><?php echo Mage::getStoreConfig('aitcheckoutfields/common_settings/aitcheckoutfields_additionalblock_label', $this->getStoreId()); ?></h2>
++
++            <div class="box-content">
++
++                <table cellspacing="0" class="form-list" width="100%">
++                
++    <?php foreach ($aCustomAtrrList as $aItem): if(!empty($aItem['value'])){ ?>
++                <tr>
++                    <td class="label" width="50%"><?php echo $aItem['label']; ?></td>
++                    <td>&nbsp;</td>
++                    <td><label style="text-align: left;"><?php echo $aItem['value'] ?></label></td>
++                </tr>
++    <?php } endforeach; ?>
++                
++                </table>
++</div>
++</div>
++</div>
++
++<?php endif; ?>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
++
+ </div>

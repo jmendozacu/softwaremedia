@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<config>
+	<menu>
+		<system>
+			<children>
+				<aitcheckoutfields> 
+					<title>Checkout Attributes</title>
+					<action>aitcheckoutfields</action>
+					<sort_order>20</sort_order>           
+				</aitcheckoutfields> 
+			</children>
+		</system>
+	</menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <aitcheckoutfields translate="title" module="aitcheckoutfields">
+                                <title>Manage Aitoc Checkout Attributes</title>
+                                <sort_order>1</sort_order>
+                            </aitcheckoutfields>
+                            <config>
+                                <children>
+                                    <aitcheckoutfields translate="title" module="aitcheckoutfields">
+                                        <title>Manage Aitoc Checkout Attributes</title>
+                                    </aitcheckoutfields>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
+
+<!--
+/**
+ * Checkout Fields Manager
+ *
+ * @category:    Aitoc
+ * @package:     Aitoc_Aitcheckoutfields
+ * @version      10.5.3
+ * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
+ * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
+ */
+-->
