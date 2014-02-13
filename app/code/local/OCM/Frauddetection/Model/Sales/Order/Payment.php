@@ -88,7 +88,7 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
 			$orderState = 'new';
 			$orderStatus = 'orders_suspect_hold';
 			$message = $result;
-			Mage::log('Fraud');
+			Mage::log('Fraud',null,'fraud.log');
 		}
 		
         // add message if order was put into review during authorization or capture
