@@ -115,6 +115,18 @@ textarea.uniform:focus {
   width: 100%;
   }
   
+  #uniform-shipping-address-select {
+  background-position: center -80px;
+  background-repeat: repeat-x ;
+  line-height: 28px;
+  height: 28px;
+  padding: 1px 0;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  }
+  
+  
 div.selector {
   background-position: center -80px;
   background-repeat: repeat-x ;
