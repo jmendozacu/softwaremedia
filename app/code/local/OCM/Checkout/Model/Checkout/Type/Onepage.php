@@ -20,6 +20,7 @@ class OCM_Checkout_Model_Checkout_Type_Onepage extends Mage_Checkout_Model_Type_
         $dataForm = Mage::app()->getRequest()->getPost();
         
         //Redirect Canadian Orders
+        Mage::log("Country Id: "  . $dataForm['billing']['country_id'], null, 'fraud.log');
 		if ($dataForm['billing']['country_id'] == 'CA') {
                 $model = Mage::getModel('quotedispatch/quotedispatch');
                 $item_model = Mage::getModel('quotedispatch/quotedispatch_items');
