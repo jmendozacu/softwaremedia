@@ -167,7 +167,7 @@ class OCM_Quotedispatch_IndexController extends Mage_Core_Controller_Front_Actio
                 $model = Mage::getModel('quotedispatch/quotedispatch');
                 $item_model = Mage::getModel('quotedispatch/quotedispatch_items');
                 //die(var_dump($post));
-                $model->setNotes('Test Note');
+               
                 $model->setData($post);
                 $model->setStatus(0);
                 $model->save();
