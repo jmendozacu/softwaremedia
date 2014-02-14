@@ -34,7 +34,8 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         
         //Check for fraud
         $result = Mage::helper('ocm_frauddetection')->isViolations($order);
-        if ($result && $methodInstance->getConfigPaymentAction() == 'authorize_capture')
+        Mage::log($methodInstance->getConfigPaymentAction(),null,'fraud.log');
+        if ($result)
         	$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE;
         else
         	$action = $methodInstance->getConfigPaymentAction();
