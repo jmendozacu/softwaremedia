@@ -94,8 +94,8 @@ class Mage_Adminhtml_Block_Permissions_User_Edit_Tab_Main extends Mage_Adminhtml
                 'label' => Mage::helper('adminhtml')->__('Admin Phone'),
                 'id'    => 'admin_phone',
                 'title' => Mage::helper('adminhtml')->__('Admin Phone'),
-                'class' => 'required-entry',
-                'required' => true,
+                
+                'required' => false,
             )
         );
 
