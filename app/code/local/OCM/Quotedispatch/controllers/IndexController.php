@@ -180,7 +180,7 @@ class OCM_Quotedispatch_IndexController extends Mage_Core_Controller_Front_Actio
                     }
                 }
                 
-                $this->_redirect('*/*/success');
+                $this->_redirect('quote-thank-you');
                 return;
                 
             } catch (Exception $e) {
