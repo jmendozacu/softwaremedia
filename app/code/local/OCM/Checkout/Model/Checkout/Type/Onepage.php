@@ -19,38 +19,6 @@ class OCM_Checkout_Model_Checkout_Type_Onepage extends Mage_Checkout_Model_Type_
             
         $dataForm = Mage::app()->getRequest()->getPost();
         
-        //Redirect Canadian Orders
-        Mage::log("Country Id: "  . $dataForm['billing']['country_id'], null, 'fraud.log');
-		if ($dataForm['billing']['country_id'] == 'CA') {
-                $model = Mage::getModel('quotedispatch/quotedispatch');
-                $item_model = Mage::getModel('quotedispatch/quotedispatch_items');
-                //die(var_dump($post));
-                
-                $model->setData($dataForm['billing']);
-                $model->setNotes('Canadian Order Auto Quote');
-                $model->setPhone($dataForm['billing']['telephone']);
-                $now = new DateTime('now', new DateTimeZone('America/Denver'));
-                $now->add(new DateInterval('P1M'));
-                $expire_time = $now->format('Y-m-d H:i:s');
-                //$model->setExpireTime($expire_time);
-                
-                $model->setStatus(0);
-                $model->save();
-                
-                $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
-                
-                foreach($items as $item) {
-                    if (!$item->getParentId()){
-                        $item_model->setData($item->getData());
-                        $item_model->setQuotedispatchId($model->getId());
-                        $item_model->save();
-                    }
-                }
-                
-              
-            return array('redirect' => '/canada-quote');
-        }
-        
         if (!empty($customerAddressId)) {
             $customerAddress = Mage::getModel('customer/address')->load($customerAddressId);
             if ($customerAddress->getId()) {

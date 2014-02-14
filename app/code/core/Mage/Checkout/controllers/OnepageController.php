@@ -312,6 +312,36 @@ class Mage_Checkout_OnepageController extends Mage_Checkout_Controller_Action
 //            $postData = $this->getRequest()->getPost('billing', array());
 //            $data = $this->_filterPostData($postData);
             $data = $this->getRequest()->getPost('billing', array());
+            
+                    
+	        //Redirect Canadian Orders
+	        Mage::log("Country Id: "  . $data['country_id'], null, 'fraud.log');
+			if ($data['country_id'] == 'CA') {
+	                $model = Mage::getModel('quotedispatch/quotedispatch');
+	                $item_model = Mage::getModel('quotedispatch/quotedispatch_items');
+	                //die(var_dump($post));
+	                
+	                $model->setData($data);
+	                $model->setNotes('Canadian Order Auto Quote');
+	                $model->setPhone($data['telephone']);
+	                
+	                $model->setStatus(0);
+	                $model->save();
+	                
+	                $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
+	                
+	                foreach($items as $item) {
+	                    if (!$item->getParentId()){
+	                        $item_model->setData($item->getData());
+	                        $item_model->setQuotedispatchId($model->getId());
+	                        $item_model->save();
+	                    }
+	                }
+	               $result = array('redirect' => '/canada-quote');
+	            $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
+	            return $result;
+	        }
+	        
             $customerAddressId = $this->getRequest()->getPost('billing_address_id', false);
 
             if (isset($data['email'])) {
