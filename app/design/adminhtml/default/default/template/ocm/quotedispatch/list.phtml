@@ -20,11 +20,11 @@
         <tbody>
             <?php foreach ($this->getAllItems() as $item) : ?>
                 <tr class="">
-                    <td><?php echo $item->getSku(); ?></td>
-                    <td><span class="nobr"><?php echo $item->getName(); ?></span></td>
-                    <td><span class="price"><?php echo $core_helper->currency($item->getPrice(),true,false); ?></span></td>
-                    <td><span class="nobr"><?php echo $item->getQty(); ?></span></td>
-                    <td><span class="nobr"><?php echo $core_helper->currency( ( $item->getPrice() * $item->getQty() ) ,true,false); ?></span></td>
+                    <td style="padding:10px;"><?php echo $item->getSku(); ?></td>
+                    <td style="padding:10px;"><span class="nobr"><?php echo $item->getName(); ?></span></td>
+                    <td style="padding:10px;"><span class="price"><?php echo $core_helper->currency($item->getPrice(),true,false); ?></span></td>
+                    <td style="padding:10px;"><span class="nobr"><?php echo $item->getQty(); ?></span></td>
+                    <td style="padding:10px;"><span class="nobr"><?php echo $core_helper->currency( ( $item->getPrice() * $item->getQty() ) ,true,false); ?></span></td>
                     
                 </tr>
             <?php endforeach ?>
