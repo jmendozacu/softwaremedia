@@ -25,7 +25,6 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Substitution extends Mage_Admin
         if ($this->isReadonly()) {
             $this->setFilterVisibility(false);
         }
-    
     }
 
     /**
