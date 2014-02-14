@@ -21,14 +21,13 @@ function addSub(url, invoiceId)
 serializerController.prototype['rowClick'] = function(grid, event) {
 		//alert(Event.element(event).tagName);
         var trElement = Event.findElement(event, 'tr');
-        var isInput   = Event.element(event).tagName == 'INPUT';
-         var isEditable = Event.element(event).tagName == 'OPTION';
-         var isSelect = Event.element(event).tagName == 'SELECT';        //=
-          Event.element(event).tagName == 'SELECT';
+        var isInput   = (['a', 'input', 'select', 'option'].indexOf(Event.element(event).tagName.toLowerCase())!=-1);
+         
+         
         if(trElement){
             var checkbox = Element.select(trElement, 'input');
             if(checkbox[0] && !checkbox[0].disabled){
-                var checked = (isInput || isSelect || isEditable) ? checkbox[0].checked : !checkbox[0].checked;
+                var checked = (isInput) ? checkbox[0].checked : !checkbox[0].checked;
                 this.grid.setCheckboxChecked(checkbox[0], checked);
             }
         }
