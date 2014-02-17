@@ -93,6 +93,13 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
                 
         ));
 
+      $this->addColumn('created_time', array(
+            'header'  => Mage::helper('quotedispatch')->__('Created Time'),
+            'index'   => 'created_time',
+            'type'    => 'date',
+            'width'   => '100px',
+      ));
+      
       $this->addColumn('expire_time', array(
             'header'  => Mage::helper('quotedispatch')->__('Expires'),
             'index'   => 'expire_time',

@@ -159,6 +159,8 @@ class OCM_Quotedispatch_IndexController extends Mage_Core_Controller_Front_Actio
         //die(print_r($this->getRequest()->getParams()));
         $post = $this->getRequest()->getParams();
         $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
+        $now = new DateTime('now', new DateTimeZone('America/Denver'));
+        $created_time = $now->format('Y-m-d H:i:s');
 
         
         if(isset($post['email']) && count($items)) {
@@ -168,6 +170,7 @@ class OCM_Quotedispatch_IndexController extends Mage_Core_Controller_Front_Actio
                 $item_model = Mage::getModel('quotedispatch/quotedispatch_items');
                 //die(var_dump($post));
                 $model->setNotes('Test Note');
+                $model->setCreatedTime($created_time);
                 $model->setData($post);
                 $model->setStatus(0);
                 $model->save();

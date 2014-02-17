@@ -68,7 +68,6 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
                 //die(var_dump($customerPhone));
                 // TODO: Add proper information
                 $quote_info = array(
-                    'title'             => '',
                     'email'             => $customer->getEmail(),
                     'available_time'    => '',
                     'created_by'        => $currentAdmin->getUsername(),
