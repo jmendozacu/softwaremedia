@@ -46,14 +46,15 @@ class OCM_Quotedispatch_Model_Quotedispatch extends OCM_Quotedispatch_Model_Abst
                     )
                 )
             ;
-            //var_dump($collection->getSelect());
+            
             $itemList ="";
+            $collection->addFieldToFilter('type_id',array('neq'=>"configurable"));
             foreach($collection as $item) {
+                    //if $item->get
 	            $itemList .= $item->getName() .  " - (".$item->getQty() .")". "<br />";
-                    
             }
-        
-            //die($collection->getSelect());
+            
+            
         
             $this->setData('item_list', $itemList);
         }  
