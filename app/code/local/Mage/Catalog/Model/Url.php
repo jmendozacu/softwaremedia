@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -714,18 +714,16 @@ class Mage_Catalog_Model_Url
         }
 
         $categoryUrlSuffix = $this->getCategoryUrlSuffix($category->getStoreId());
-        Mage::log($parentPath);
-
         if (null === $parentPath) {
             $parentPath = $this->getResource()->getCategoryParentPath($category);
-        } elseif ($parentPath == '/') {
+        }
+        elseif ($parentPath == '/') {
             $parentPath = '';
         }
-
+        
         $parentPath = str_replace("more_brands/", "", $parentPath);
         $parentPath = str_replace("brands/", "", $parentPath);
         $parentPath = str_replace("software/", "", $parentPath);
-        
         
         $parentPath = Mage::helper('catalog/category')->getCategoryUrlPath($parentPath,
                                                                            true, $category->getStoreId());
