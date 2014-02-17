@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -126,7 +126,7 @@ class Mage_Customer_Helper_Address extends Mage_Core_Helper_Abstract
             if($lines <= 0) {
                 $lines = 2;
             }
-            $this->_streetLines[$websiteId] = min(4, $lines);
+            $this->_streetLines[$websiteId] = min(20, $lines);
         }
 
         return $this->_streetLines[$websiteId];

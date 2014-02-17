@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Http
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -199,7 +199,7 @@ class Varien_Http_Adapter_Curl implements Zend_Http_Client_Adapter_Interface
         $response = curl_exec($this->_getResource());
 
         // Remove 100 and 101 responses headers
-        if (Zend_Http_Response::extractCode($response) == 100 || Zend_Http_Response::extractCode($response) == 101) {
+        while (Zend_Http_Response::extractCode($response) == 100 || Zend_Http_Response::extractCode($response) == 101) {
             $response = preg_split('/^\r?$/m', $response, 2);
             $response = trim($response[1]);
         }

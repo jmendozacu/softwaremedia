@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_PageCache
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -60,17 +60,52 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
     const XML_PATH_CRAWLER_ENABLED     = 'system/page_crawl/enable';
     const XML_PATH_CRAWLER_THREADS     = 'system/page_crawl/threads';
     const XML_PATH_CRAWL_MULTICURRENCY = 'system/page_crawl/multicurrency';
+
+    /**
+     * Batch size
+     */
+    const BATCH_SIZE = 500;
+
     /**
      * Crawler user agent name
      */
     const USER_AGENT = 'MagentoCrawler';
 
     /**
-     * Store visited URLs by crawler
+     * Application instance
      *
-     * @var array
+     * @var Mage_Core_Model_App
      */
-    protected $_visitedUrls = array();
+    protected $_app;
+
+    /**
+     * Factory
+     *
+     * @var Mage_Core_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * Adapter factory.
+     * Provides http adapter instance
+     *
+     * @var Enterprise_PageCache_Model_Adapter_Factory
+     */
+    protected $_adapterFactory;
+
+    /**
+     * Initialize application, adapter factory
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_app = !empty($args['app']) ? $args['app'] : Mage::app();
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('core/factory');
+        $this->_adapterFactory = !empty($args['adapter_factory']) ? $args['adapter_factory'] :
+            Mage::getSingleton('enterprise_pagecache/adapter_factory');
+        parent::__construct($args);
+    }
 
     /**
      * Set resource model
@@ -118,15 +153,16 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
     public function getStoresInfo()
     {
         $baseUrls = array();
-        foreach (Mage::app()->getStores() as $store) {
-            $website               = Mage::app()->getWebsite($store->getWebsiteId());
+        foreach ($this->_app->getStores() as $store) {
+            /** @var $store Mage_Core_Model_Store */
+            $website = $this->_app->getWebsite($store->getWebsiteId());
             if ($website->getIsStaging()
                 || Mage::helper('enterprise_websiterestriction')->getIsRestrictionEnabled($store)
             ) {
                 continue;
             }
-            $baseUrl               = Mage::app()->getStore($store)->getBaseUrl();
-            $defaultCurrency       = Mage::app()->getStore($store)->getDefaultCurrencyCode();
+            $baseUrl               = $this->_app->getStore($store)->getBaseUrl();
+            $defaultCurrency       = $this->_app->getStore($store)->getDefaultCurrencyCode();
             $defaultWebsiteStore   = $website->getDefaultStore();
             $defaultWebsiteBaseUrl = $defaultWebsiteStore->getBaseUrl();
 
@@ -164,52 +200,109 @@ class Enterprise_PageCache_Model_Crawler extends Mage_Core_Model_Abstract
      */
     public function crawl()
     {
-        if (!Mage::app()->useCache('full_page')) {
+        if (!$this->_app->useCache('full_page')) {
             return $this;
         }
-        $storesInfo  = $this->getStoresInfo();
-        $adapter     = new Varien_Http_Adapter_Curl();
 
-        foreach ($storesInfo as $info) {
-            $options = array(CURLOPT_USERAGENT => self::USER_AGENT);
-            $storeId = $info['store_id'];
-            $this->_visitedUrls = array();
+        $adapter = $this->_adapterFactory->getHttpCurlAdapter();
 
-            if (!Mage::app()->getStore($storeId)->getConfig(self::XML_PATH_CRAWLER_ENABLED)) {
+        foreach ($this->getStoresInfo() as $storeInfo) {
+            if (!$this->_isCrawlerEnabled($storeInfo['store_id'])) {
                 continue;
             }
 
-            $threads = (int)Mage::app()->getStore($storeId)->getConfig(self::XML_PATH_CRAWLER_THREADS);
-            if (!$threads) {
-                $threads = 1;
-            }
-            if (!empty($info['cookie'])) {
-                $options[CURLOPT_COOKIE] = $info['cookie'];
-            }
-            $urls       = array();
-            $baseUrl    = $info['base_url'];
-            $urlsCount  = $totalCount = 0;
-            $urlsPaths  = $this->_getResource()->getUrlsPaths($storeId);
-            foreach ($urlsPaths as $urlPath) {
-                $url = $baseUrl . $urlPath;
-                $urlHash = md5($url);
-                if (isset($this->_visitedUrls[$urlHash])) {
-                    continue;
-                }
+            $this->_executeRequests($storeInfo, $adapter);
+        }
+        return $this;
+    }
+
+    /**
+     * Prepares and executes requests by given request_paths values
+     *
+     * @param array $info
+     * @param Varien_Http_Adapter_Curl $adapter
+     */
+    protected function _executeRequests(array $info, Varien_Http_Adapter_Curl $adapter)
+    {
+        $storeId = $info['store_id'];
+        $options = array(
+            CURLOPT_USERAGENT      => self::USER_AGENT,
+            CURLOPT_SSL_VERIFYPEER => 0,
+        );
+        $threads = $this->_getCrawlerThreads($storeId);
+        if (!$threads) {
+            $threads = 1;
+        }
+        if (!empty($info['cookie'])) {
+            $options[CURLOPT_COOKIE] = $info['cookie'];
+        }
+        $urls = array();
+
+        $offset = 0;
+        while ($rewrites = $this->_getResource()->getRequestPaths($storeId, self::BATCH_SIZE, $offset)) {
+            foreach ($rewrites as $rewriteRow) {
+                $url = $this->_getUrlByRewriteRow($rewriteRow, $info['base_url'], $storeId);
                 $urls[] = $url;
-                $this->_visitedUrls[$urlHash] = true;
-                $urlsCount++;
-                $totalCount++;
-                if ($urlsCount == $threads) {
+                if (count($urls) == $threads) {
                     $adapter->multiRequest($urls, $options);
-                    $urlsCount = 0;
                     $urls = array();
                 }
             }
-            if (!empty($urls)) {
-                $adapter->multiRequest($urls, $options);
-            }
+            $offset += self::BATCH_SIZE;
         }
-        return $this;
+        if (!empty($urls)) {
+            $adapter->multiRequest($urls, $options);
+        }
+    }
+
+    /**
+     * Get url by rewrite row
+     *
+     * @param array $rewriteRow
+     * @param string $baseUrl
+     * @param int $storeId
+     * @return string
+     * @throws Exception
+     */
+    protected function _getUrlByRewriteRow($rewriteRow, $baseUrl, $storeId)
+    {
+        switch ($rewriteRow['entity_type']) {
+            case Enterprise_Catalog_Model_Product::URL_REWRITE_ENTITY_TYPE:
+                $url = $baseUrl . $this->_factory->getHelper('enterprise_catalog')->getProductRequestPath(
+                    $rewriteRow['request_path'], $storeId, $rewriteRow['category_id']
+                );
+                break;
+            case Enterprise_Catalog_Model_Category::URL_REWRITE_ENTITY_TYPE:
+                $url = $baseUrl . $this->_factory->getHelper('enterprise_catalog')->getCategoryRequestPath(
+                    $rewriteRow['request_path'], $storeId
+                );
+                break;
+            default:
+                throw new Exception('Unknown entity type ' . $rewriteRow['entity_type']);
+                break;
+        }
+        return $url;
+    }
+
+    /**
+     * Retrieves number of crawler threads
+     *
+     * @param int $storeId
+     * @return int
+     */
+    protected function _getCrawlerThreads($storeId)
+    {
+        return (int)$this->_app->getStore($storeId)->getConfig(self::XML_PATH_CRAWLER_THREADS);
+    }
+
+    /**
+     * Checks whether crawler is enabled for given store
+     *
+     * @param int $storeId
+     * @return null|string
+     */
+    protected function _isCrawlerEnabled($storeId)
+    {
+        return (bool)(string)$this->_app->getStore($storeId)->getConfig(self::XML_PATH_CRAWLER_ENABLED);
     }
 }

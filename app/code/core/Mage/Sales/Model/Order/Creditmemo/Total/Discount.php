@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -74,16 +74,16 @@ class Mage_Sales_Model_Order_Creditmemo_Total_Discount extends Mage_Sales_Model_
                     );
                 }
 
+                $totalDiscountAmount += $discount;
+                $baseTotalDiscountAmount += $baseDiscount;
+
                 $item->setDiscountAmount($discount);
                 $item->setBaseDiscountAmount($baseDiscount);
-
-                $totalDiscountAmount += $discount;
-                $baseTotalDiscountAmount+= $baseDiscount;
             }
         }
 
-        $creditmemo->setDiscountAmount($totalDiscountAmount);
-        $creditmemo->setBaseDiscountAmount($baseTotalDiscountAmount);
+        $creditmemo->setDiscountAmount(-$totalDiscountAmount);
+        $creditmemo->setBaseDiscountAmount(-$baseTotalDiscountAmount);
 
         $creditmemo->setGrandTotal($creditmemo->getGrandTotal() - $totalDiscountAmount);
         $creditmemo->setBaseGrandTotal($creditmemo->getBaseGrandTotal() - $baseTotalDiscountAmount);

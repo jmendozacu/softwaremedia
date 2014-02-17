@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Persistent
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -116,7 +116,7 @@ class Mage_Persistent_IndexController extends Mage_Core_Controller_Front_Action
 
     /**
      * Add appropriate session message and redirect to shopping cart
-     * used for google checkout and paypal express checkout
+     * used for paypal express checkout
      */
     public function expressCheckoutAction()
     {

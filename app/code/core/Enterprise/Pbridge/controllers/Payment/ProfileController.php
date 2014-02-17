@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -54,7 +54,7 @@ class Enterprise_Pbridge_Payment_ProfileController extends Mage_Core_Controller_
      */
     public function indexAction()
     {
-        if(!Mage::getSingleton('customer/session')->getCustomerId()) {
+        if (!Mage::getSingleton('customer/session')->getCustomerId()) {
             Mage::getSingleton('customer/session')->authenticate($this);
             return;
         }

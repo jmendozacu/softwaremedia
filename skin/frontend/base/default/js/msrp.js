@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     base_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 if (!window.Catalog) {
@@ -128,9 +128,9 @@ Catalog.Map = {
         if (helpBox.parentNode != bodyNode) {
             helpBox.remove();
             bodyNode.insert(helpBox);
-			// Fix for FF4-FF5 bug with missing alt text after DOM manipulations
-			var paypalImg = helpBox.select('.paypal-logo > a > img')[0];
-			if (paypalImg) paypalImg.src = paypalImg.src;
+            // Fix for FF4-FF5 bug with missing alt text after DOM manipulations
+            var paypalImg = helpBox.select('.paypal-logo > a > img')[0];
+            if (paypalImg) paypalImg.src = paypalImg.src;
         }
 
         if (this != Catalog.Map && Catalog.Map.active != this.link) {
@@ -262,11 +262,12 @@ Catalog.Map = {
             productAddToCartFormOld = productAddToCartForm;
             productAddToCartForm = new VarienForm('product_addtocart_form_from_popup');
             productAddToCartForm.submitLight = productAddToCartFormOld.submitLight;
-        }else if(!$('product_addtocart_form_from_popup')) {
+        } else if(!$('product_addtocart_form_from_popup')) {
             return false;
         } else if ('undefined' == typeof productAddToCartForm) {
             productAddToCartForm = new VarienForm('product_addtocart_form_from_popup');
         }
+
         productAddToCartForm.submit = function(button, url) {
             if (('undefined' != typeof productAddToCartFormOld) && productAddToCartFormOld) {
                 if (Catalog.Map.active) {
@@ -314,7 +315,7 @@ Catalog.Map = {
                     button.disabled = true;
                 }
             }
-        }.bind(productAddToCartForm);
+        };
     }
 };
 

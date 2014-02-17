@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -38,7 +38,7 @@ Whoops, it looks like you have an invalid PHP version.</h3></div><p>Magento supp
  * Error reporting
  */
 error_reporting(E_ALL | E_STRICT);
-ini_set('display_errors', 1);
+
 /**
  * Compilation includes configuration file
  */
@@ -70,11 +70,11 @@ require_once $mageFilename;
 
 #Varien_Profiler::enable();
 
-//if (true || isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
-    //Mage::setIsDeveloperMode(true);
-//}
+if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
+    Mage::setIsDeveloperMode(true);
+}
 
-//ini_set('display_errors', 1);
+#ini_set('display_errors', 1);
 
 umask(0);
 

@@ -20,7 +20,7 @@
  *
  * @category    Varien
  * @package     Varien_Object
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -310,7 +310,7 @@ class Varien_Object implements ArrayAccess
     public function unsetOldData($key=null)
     {
         if (is_null($key)) {
-            foreach ($this->_syncFieldsMap as $key => $newFieldName) {
+            foreach ($this->_oldFieldsMap as $key => $newFieldName) {
                 unset($this->_data[$key]);
             }
         } else {
@@ -380,7 +380,8 @@ class Varien_Object implements ArrayAccess
                 return null;
             } elseif (is_string($value)) {
                 $arr = explode("\n", $value);
-                return (isset($arr[$index]) && (!empty($arr[$index]) || strlen($arr[$index]) > 0)) ? $arr[$index] : null;
+                return (isset($arr[$index]) && (!empty($arr[$index]) || strlen($arr[$index]) > 0))
+                    ? $arr[$index] : null;
             } elseif ($value instanceof Varien_Object) {
                 return $value->getData($index);
             }

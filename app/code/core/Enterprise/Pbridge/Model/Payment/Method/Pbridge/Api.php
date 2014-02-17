@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -107,6 +107,45 @@ class Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api extends Enterprise_Pbr
     public function doVoid($request)
     {
         $request->setData('payment_action', 'void');
+        $this->_call($request->getData());
+        return $this;
+    }
+
+    /**
+     * Accept payment transaction
+     *
+     * @param Varien_Object $request
+     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api
+     */
+    public function doAccept($request)
+    {
+        $request->setData('payment_action', 'accept');
+        $this->_call($request->getData());
+        return $this;
+    }
+
+    /**
+     * Deny payment transaction
+     *
+     * @param Varien_Object $request
+     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api
+     */
+    public function doDeny($request)
+    {
+        $request->setData('payment_action', 'deny');
+        $this->_call($request->getData());
+        return $this;
+    }
+
+    /**
+     * Fetch transaction info
+     *
+     * @param Varien_Object $request
+     * @return Enterprise_Pbridge_Model_Payment_Method_Pbridge_Api
+     */
+    public function doFetchTransactionInfo($request)
+    {
+        $request->setData('payment_action', 'fetch');
         $this->_call($request->getData());
         return $this;
     }

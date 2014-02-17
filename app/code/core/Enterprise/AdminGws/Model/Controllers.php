@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -782,7 +782,7 @@ class Enterprise_AdminGws_Model_Controllers extends Enterprise_AdminGws_Model_Ob
     {
         $id = $this->_request->getParam('id');
         if ($id) {
-            $object = Mage::getModel('core/url_rewrite')->load($id);
+            $object = Mage::getSingleton('core/factory')->getUrlRewriteInstance()->load($id);
             if ($object && $object->getId()) {
                 if (!$this->_role->hasStoreAccess($object->getStoreId())) {
                     $this->_forward();
@@ -1275,5 +1275,44 @@ class Enterprise_AdminGws_Model_Controllers extends Enterprise_AdminGws_Model_Ob
         }
 
         return $this->validateRmaAttributeEditAction($controller);
+    }
+
+    /**
+     * Block editing of RMA on disallowed stores
+     *
+     * @param Mage_Adminhtml_Controller_Action $controller
+     * @return bool|void
+     */
+    public function validateRmaEditAction($controller)
+    {
+        $id = $controller->getRequest()->getParam('id');
+        if (!$id) {
+            $this->_forward();
+            return false;
+        }
+
+        $store = $this->_getEnterpriseRMA($id)->getStoreId();
+        try {
+            if (empty($store) || !$this->_role->hasStoreAccess($store)) {
+                $this->_forward();
+                return false;
+            }
+        } catch (Mage_Core_Exception $e) {
+            $this->_forward();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Loads the Enterprise RMA
+     *
+     * @param string $id
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _getEnterpriseRMA($id)
+    {
+        return Mage::getModel('enterprise_rma/rma')->load($id);
     }
 }

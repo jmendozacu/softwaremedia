@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -137,8 +137,8 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Giftwrapping extends Mage_Sales_
             $wrappingPrice = $this->_store->convertPrice($wrappingBasePrice);
             $item->setGwBasePrice($wrappingBasePrice);
             $item->setGwPrice($wrappingPrice);
-            $wrappingForItemsBaseTotal += $wrappingBasePrice;
-            $wrappingForItemsTotal += $wrappingPrice;
+            $wrappingForItemsBaseTotal += $wrappingBasePrice * $item->getQty();
+            $wrappingForItemsTotal += $wrappingPrice * $item->getQty();
         }
         $address->setGwItemsBasePrice($wrappingForItemsBaseTotal);
         $address->setGwItemsPrice($wrappingForItemsTotal);

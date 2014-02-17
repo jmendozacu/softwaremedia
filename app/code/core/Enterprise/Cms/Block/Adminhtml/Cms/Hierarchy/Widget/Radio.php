@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -149,7 +149,14 @@ class Enterprise_Cms_Block_Adminhtml_Cms_Hierarchy_Widget_Radio extends Mage_Adm
     public function getParameters()
     {
         if (empty($this->_params)) {
-            $this->_params = Mage::registry('current_widget_instance')->getWidgetParameters();
+            $this->_params = array();
+            $widget = Mage::registry('current_widget_instance');
+            $block = $this->getLayout()->getBlock('wysiwyg_widget.options');
+            if ($widget) {
+                $this->_params = $widget->getWidgetParameters();
+            } elseif ($block) {
+                $this->_params = $block->getWidgetValues();
+            }
         }
         return $this->_params;
     }

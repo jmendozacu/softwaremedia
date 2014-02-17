@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -55,8 +55,8 @@ class Enterprise_GiftWrapping_Model_Total_Invoice_Giftwrapping extends Mage_Sale
                 && $orderItem->getGwBasePrice() != $orderItem->getGwBasePriceInvoiced()) {
                 $orderItem->setGwBasePriceInvoiced($orderItem->getGwBasePrice());
                 $orderItem->setGwPriceInvoiced($orderItem->getGwPrice());
-                $baseInvoiced += $orderItem->getGwBasePrice();
-                $invoiced += $orderItem->getGwPrice();
+                $baseInvoiced += $orderItem->getGwBasePrice() * $invoiceItem->getQty();
+                $invoiced += $orderItem->getGwPrice() * $invoiceItem->getQty();
             }
         }
         if ($invoiced > 0 || $baseInvoiced > 0) {

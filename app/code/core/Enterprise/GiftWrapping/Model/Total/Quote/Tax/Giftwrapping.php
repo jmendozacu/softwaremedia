@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -207,8 +207,8 @@ class Enterprise_GiftWrapping_Model_Total_Quote_Tax_Giftwrapping extends Mage_Sa
             $item->setGwBaseTaxAmount($wrappingBaseTaxAmount);
             $item->setGwTaxAmount($wrappingTaxAmount);
 
-            $wrappingForItemsBaseTaxAmount += $wrappingBaseTaxAmount;
-            $wrappingForItemsTaxAmount += $wrappingTaxAmount;
+            $wrappingForItemsBaseTaxAmount += $wrappingBaseTaxAmount * $item->getQty();
+            $wrappingForItemsTaxAmount += $wrappingTaxAmount * $item->getQty();
         }
         $address->setGwItemsBaseTaxAmount($wrappingForItemsBaseTaxAmount);
         $address->setGwItemsTaxAmount($wrappingForItemsTaxAmount);

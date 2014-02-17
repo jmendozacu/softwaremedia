@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -321,7 +321,6 @@ class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
                 ->getAttributesUsedForSortBy();
             Mage::getSingleton('eav/config')
                 ->importAttributesData($entityType, $attributesData);
-
             foreach ($attributesData as $attributeData) {
                 $attributeCode = $attributeData['attribute_code'];
                 $this->_usedForSortBy[$attributeCode] = Mage::getSingleton('eav/config')
@@ -330,21 +329,25 @@ class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
         }
         return $this->_usedForSortBy;
     }
-public function getAttributeUsedForSortByArray()
-{
-    $options = array(
-        'position'  => Mage::helper('catalog')->__('Position'),
 
-        // HERE IS OUR NEW OPTION
-        'created_at' => Mage::helper('catalog')->__('Date')
-    );
-    foreach ($this->getAttributesUsedForSortBy() as $attribute) {
-        /* @var $attribute Mage_Eav_Model_Entity_Attribute_Abstract */
-        $options[$attribute->getAttributeCode()] = $attribute->getStoreLabel();
+    /**
+     * Retrieve Attributes Used for Sort by as array
+     * key = code, value = name
+     *
+     * @return array
+     */
+    public function getAttributeUsedForSortByArray()
+    {
+        $options = array(
+            'position'  => Mage::helper('catalog')->__('Position')
+        );
+        foreach ($this->getAttributesUsedForSortBy() as $attribute) {
+            /* @var $attribute Mage_Eav_Model_Entity_Attribute_Abstract */
+            $options[$attribute->getAttributeCode()] = $attribute->getStoreLabel();
+        }
+
+        return $options;
     }
-
-    return $options;
-}
 
     /**
      * Retrieve Product List Default Sort By

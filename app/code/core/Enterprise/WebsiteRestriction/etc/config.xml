@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_WebsiteRestriction
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -106,6 +106,7 @@
                         <customer_account_confirmation/>
                         <customer_account_resetpassword/>
                         <customer_account_resetpasswordpost/>
+                        <core_index_noCookies/>
                         <paypal_ipn_standard/>
                         <paypal_ipn_express/>
                         <paypal_ipn_direct/>
@@ -114,8 +115,6 @@
                         <paypaluk_ipn_direct/>
                         <paypal_payflow_silentPost/>
                         <paypal_payflowadvanced_silentPost/>
-                        <googlecheckout_api_index/>
-                        <googlecheckout_api_beacon/>
                         <amazonpayments_cba_callback/>
                         <amazonpayments_cba_notification/>
                         <amazonpayments_asp_notification/>

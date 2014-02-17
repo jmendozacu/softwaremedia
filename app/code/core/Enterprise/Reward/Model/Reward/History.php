@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reward
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -46,6 +46,8 @@
  * @method Enterprise_Reward_Model_Reward_History setPointsDelta(int $value)
  * @method int getPointsUsed()
  * @method Enterprise_Reward_Model_Reward_History setPointsUsed(int $value)
+ * @method int getPointsVoided()
+ * @method Enterprise_Reward_Model_Reward_History setPointsVoided(int $value)
  * @method float getCurrencyAmount()
  * @method Enterprise_Reward_Model_Reward_History setCurrencyAmount(float $value)
  * @method float getCurrencyDelta()
