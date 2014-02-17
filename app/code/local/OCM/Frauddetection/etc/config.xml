@@ -10,12 +10,17 @@
             <ocm_frauddetection>
                 <class>OCM_Frauddetection_Block</class>
             </ocm_frauddetection>
-
+			
         </blocks>
         <models>
             <ocm_frauddetection>
                 <class>OCM_Frauddetection_Model</class>
             </ocm_frauddetection>
+            <sales>
+              <rewrite>
+                  <order_payment>OCM_Frauddetection_Model_Sales_Order_Payment</order_payment>
+              </rewrite>
+          </sales>
         </models>
         <helpers>
             <ocm_frauddetection>

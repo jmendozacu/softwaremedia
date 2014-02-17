@@ -45,8 +45,10 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
 					return false;
 		    }
 		}
-		    
+	
+		  
         //Only perform check if this is the first order for that customer
+        Mage::log('Customer Orders: ' . $customerOrders->getSize(),null,'fraud.log');
         if($customerOrders->getSize()==1){
             // compare shippingaddress and billingaddress
             $shippingAddress = $order->getShippingAddress();

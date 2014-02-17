@@ -10,17 +10,15 @@ class OCM_Checkout_Model_Checkout_Type_Onepage extends Mage_Checkout_Model_Type_
     public $_newCustomer = array();
     public function saveBilling($data, $customerAddressId)
     {
-        if (empty($data)) {
-            return array('error' => -1, 'message' => Mage::helper('checkout')->__('Invalid data.'));
-        }
-
         $address = $this->getQuote()->getBillingAddress();
         /* @var $addressForm Mage_Customer_Model_Form */
         $addressForm = Mage::getModel('customer/form');
         $addressForm->setFormCode('customer_address_edit')
             ->setEntityType('customer_address')
             ->setIsAjaxRequest(Mage::app()->getRequest()->isAjax());
-
+            
+        $dataForm = Mage::app()->getRequest()->getPost();
+        
         if (!empty($customerAddressId)) {
             $customerAddress = Mage::getModel('customer/address')->load($customerAddressId);
             if ($customerAddress->getId()) {

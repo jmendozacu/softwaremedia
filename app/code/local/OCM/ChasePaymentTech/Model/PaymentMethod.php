@@ -96,6 +96,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
             case "Error":
                 Mage::throwException(Mage::helper('paygate')->__('Error #'.$txResponse["ErrorCode"]));
         }
+        return $this; 
     }
 
 	

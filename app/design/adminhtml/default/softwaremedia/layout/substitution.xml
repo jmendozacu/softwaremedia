@@ -4,8 +4,8 @@
 	<adminhtml_catalog_product_substitution>
         <block type="core/text_list" name="root" output="toHtml">
             <block type="substitution/adminhtml_substitution" name="catalog.product.edit.tab.substitution"/>
-            <block type="adminhtml/widget_grid_serializer" name="related_grid_serializer">
-                <reference name="related_grid_serializer">
+            <block type="adminhtml/widget_grid_serializer" name="substitution_grid_serializer">
+                <reference name="substitution_grid_serializer">
                     <action method="initSerializerBlock">
                         <grid_block_name>catalog.product.edit.tab.substitution</grid_block_name>
                         <data_callback>getSelectedSubstitutionProducts</data_callback>

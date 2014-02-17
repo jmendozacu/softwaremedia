@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<config>
+    <template>
+        <adminhtml>
+            <file path="design--adminhtml--default--default--template--sales--order--view--info"></file>
+        </adminhtml>
+        
+        <frontend>
+            <file path="design--frontend--base--default--template--checkout--multishipping--addresses"></file>
+            <file path="design--frontend--base--default--template--checkout--multishipping--billing"></file>
+            <file path="design--frontend--base--default--template--checkout--multishipping--overview"></file>
+            <file path="design--frontend--base--default--template--checkout--multishipping--shipping"></file>
+            
+            <file path="design--frontend--base--default--template--checkout--onepage--billing"></file>
+            <file path="design--frontend--base--default--template--checkout--onepage--payment"></file>
+            <file path="design--frontend--base--default--template--checkout--onepage--review" version="1.10.0.0" operator="lt"></file>
+            <file path="design--frontend--base--default--template--checkout--onepage--review--info" version="1.10.0.0" operator="ge"></file>
+            <file path="design--frontend--base--default--template--checkout--onepage--shipping"></file>
+            <file path="design--frontend--base--default--template--checkout--onepage--shipping_method"></file>
+            
+            <file path="design--frontend--base--default--template--sales--order--print"></file>
+            <file path="design--frontend--base--default--template--sales--order--view"></file>
+            
+            <file path="design--frontend--base--default--template--customer--form--register"></file>
+            <file path="design--frontend--base--default--template--customer--form--edit"></file>
+            
+            <file path="design--frontend--base--default--template--paypal--express--review"></file>
+            <file path="design--frontend--base--default--template--paypaluk--express--review" version="1.12.0.0" operator="ge"></file>
+            
+            <file path="design--frontend--enterprise--default--template--checkout--multishipping--addresses"></file>
+            <file path="design--frontend--enterprise--default--template--checkout--multishipping--billing"></file>
+            <file path="design--frontend--enterprise--default--template--checkout--multishipping--overview"></file>
+            <file path="design--frontend--enterprise--default--template--checkout--multishipping--shipping"></file>
+            
+            <file path="design--frontend--enterprise--default--template--checkout--onepage--billing"></file>
+            <file path="design--frontend--enterprise--default--template--checkout--onepage--payment"></file>
+            <file path="design--frontend--enterprise--default--template--checkout--onepage--shipping"></file>
+
+            <file path="design--frontend--enterprise--default--template--sales--order--info"></file>
+            
+            <file path="design--frontend--enterprise--default--template--customer--form--register"></file>
+            <file path="design--frontend--enterprise--default--template--customer--form--edit"></file>
+        </frontend>
+    </template>
+</config>
+<!--
+/**
+ * Checkout Fields Manager
+ *
+ * @category:    Aitoc
+ * @package:     Aitoc_Aitcheckoutfields
+ * @version      10.5.3
+ * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
+ * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
+ */
+-->
