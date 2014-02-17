@@ -982,14 +982,14 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .top-cart .block-content table td { text-align:left; padding:0;vertical-align: middle;width: 75%;line-height: 15px }
 .top-cart .block-content .subtotal { background:#fff url(../images/bkg_dots.gif) repeat-x 0 0; padding:4px 5px; text-align:center; }
 
-.top-cart .actions { background:#e3e3e3 url(../images/bkg_dots.gif) repeat-x 0 -1px; text-align:center; padding:10px 11px; text-align:right; }
+.top-cart .actions { background:#e3e3e3 url(../images/bkg_dots.gif) repeat-x 0 -1px; text-align:center; padding:10px 11px;}
 .top-cart .actions a { float:left; line-height:23px;margin: 4px 0 0 0;color: #000}
 .top-cart .actions a:hover {color: #cc6731}
 .top-cart .actions button { float:none; }
 .top-cart .actions button.button span,
 .top-cart .actions button.button span span { }
-.top-cart .paypal-logo a { float:right; }
-.top-cart .paypal-logo .paypal-or { clear:both; display:block; margin: 5px 33px 5px 0px; }
+.top-cart .paypal-logo a {float: none; }
+.top-cart .paypal-logo .paypal-or { clear:both; display:block; margin: 5px 5px 5px 0px; text-align:center; }
 
 /* Block: Wishlist */
 .block-wishlist {}
