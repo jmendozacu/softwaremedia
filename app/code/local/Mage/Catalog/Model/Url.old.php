@@ -697,6 +697,7 @@ class Mage_Catalog_Model_Url
      */
     public function getCategoryRequestPath($category, $parentPath)
     {
+    	 	Mage::log("getCategoryRequestPath " . $$parentPath,null,'url.log');
         $storeId = $category->getStoreId();
         $idPath  = $this->generatePath('id', null, $category);
         $suffix  = $this->getCategoryUrlSuffix($storeId);

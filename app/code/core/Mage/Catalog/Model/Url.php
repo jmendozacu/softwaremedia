@@ -720,6 +720,9 @@ class Mage_Catalog_Model_Url
         elseif ($parentPath == '/') {
             $parentPath = '';
         }
+         $parentPath = str_replace("more_brands/", "", $parentPath);
+        $parentPath = str_replace("brands/", "", $parentPath);
+        $parentPath = str_replace("software/", "", $parentPath);
         $parentPath = Mage::helper('catalog/category')->getCategoryUrlPath($parentPath,
                                                                            true, $category->getStoreId());
 

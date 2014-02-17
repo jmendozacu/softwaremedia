@@ -284,12 +284,11 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
     
     public function getUrl(Mage_Catalog_Model_Product $product, $params = array())
     {
-    	Mage::log("getURL " . $params,null,'url.log');
+   
         $url = $product->getData('url');
         if (!empty($url)) {
-            //return $url;
+            return $url;
         }
-Mage::log("cats " . $params,null,'url.log');
 		    $_categories = $product->getCategoryIds();
             
             $categoryId = $this->_getCategoryIdForUrl($product, $params);
@@ -314,11 +313,9 @@ Mage::log("cats " . $params,null,'url.log');
              }   
              
         $requestPath = $product->getData('request_path');
-        Mage::log("R path " . $requestPath,null,'url.log');
         if (empty($requestPath)) {
         	
             $requestPath = $this->_getRequestPath($product, $this->_getCategoryIdForUrl($product, $categoryId));
-            Mage::log("empty " . $requestPath,null,'url.log');
             $product->setRequestPath($requestPath);
         }
 
@@ -336,11 +333,8 @@ Mage::log("cats " . $params,null,'url.log');
         if (!isset($params['_query'])) {
             $params['_query'] = array();
         }
-		Mage::log("getUrlInstance",null,'url.log');
         $this->getUrlInstance()->setStore($storeId);
-        Mage::log("prod url " . $productUrl,null,'url.log');
         $productUrl = $this->_getProductUrlNew($product, $requestPath, $params);
-        Mage::log("prod url " . $productUrl,null,'url.log');
         $product->setData('url', $productUrl);
         return $product->getData('url');
     }
@@ -436,55 +430,6 @@ Mage::log("cats " . $params,null,'url.log');
         return $this->getUrlInstance()->getUrl('catalog/product/view', $routeParams);
     }
     
-    /**
-     * Retrieve product URL based on requestPath param
-     *
-     * @param Mage_Catalog_Model_Product $product
-     * @param string $requestPath
-     * @param array $routeParams
-     *
-     * @return string
-     */
-    protected function _getProductUrl($product, $requestPath, $routeParams)
-    {
-    	Mage::log("get Product URL " . $requestPath,null,'url.log');
-        if (!empty($requestPath)) {
-            return $this->getUrlInstance()->getDirectUrl($requestPath, $routeParams);
-         
-        }
-        Mage::log("request path: " . $requestPath,null,'url.log');
-        $routeParams['id'] = $product->getId();
-        $routeParams['s'] = $product->getUrlKey();
-        $categoryId = $this->_getCategoryIdForUrl($product, $routeParams);
-        
-		    $_categories = $product->getCategoryIds();
-
-            $fourthLevel = null;
-            foreach($_categories as $_catId) {
-	            $_category = Mage::getModel('catalog/category')->load($_catId);
-	            if ($_category->getLevel() == 3) {
-		            $categoryId = $_category->getId();
-	            }
-	            if ($_category->getLevel() == 4) {
-		            $fourthLevel = $_category->getId();
-	            }
-	            if ($_category->getParentId() == 66 || $_category->getParentId() == 110) {
-	            	$categoryId = $_category->getId();
-	            	break;
-	            }
-            }
-            
-             if ($categoryId == null && $fourthLevel != null) {
-	             $categoryId = $fourthLevel;
-	             
-             }   
-             
-        if ($categoryId) {
-            $routeParams['category'] = $categoryId;
-             Mage::log("cat path: " . $categoryId,null,'url.log');
-        }
-        return $this->getUrlInstance()->getUrl('catalog/product/view', $routeParams);
-    }
 
     /**
      * Retrieve request path
