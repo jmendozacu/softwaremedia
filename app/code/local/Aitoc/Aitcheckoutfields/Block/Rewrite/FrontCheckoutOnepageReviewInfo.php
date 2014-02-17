@@ -30,7 +30,7 @@ class Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageReviewInfo exten
     {
         if (version_compare(Mage::getVersion(), '1.10.0.0', 'ge'))
         {
-            $this->setTemplate('aitcommonfiles/design--frontend--base--default--template--checkout--onepage--review--info.phtml');
+            $this->setTemplate('aitcheckoutfields/checkout/review.phtml');
         }
         return parent::_beforeToHtml();
     }

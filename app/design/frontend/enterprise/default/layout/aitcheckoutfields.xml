@@ -96,12 +96,12 @@
         	<action method="unsetChild"><name>head.calendar</name></action>
         	<block type="core/html_calendar" name="head.calendar" as="html_calendar" template="aitcheckoutfields/js/calendar.phtml"/>
         </reference>
-		<reference name="checkout.onepage.billing">
+		<!--reference name="checkout.onepage.billing">
             <action method="setTemplate"><template>aitcommonfiles/design--frontend--enterprise--default--template--checkout--onepage--billing.phtml</template></action>
-        </reference>
-        <reference name="checkout.onepage.shipping">
+        </reference-->
+        <!--reference name="checkout.onepage.shipping">
             <action method="setTemplate"><template>aitcommonfiles/design--frontend--enterprise--default--template--checkout--onepage--shipping.phtml</template></action>
-        </reference>
+        </reference-->
         <reference name="checkout.onepage.payment">
             <action method="setTemplate"><template>aitcommonfiles/design--frontend--enterprise--default--template--checkout--onepage--payment.phtml</template></action>
         </reference>
