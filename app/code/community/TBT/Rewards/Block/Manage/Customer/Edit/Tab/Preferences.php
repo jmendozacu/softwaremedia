@@ -46,7 +46,7 @@ class TBT_Rewards_Block_Manage_Customer_Edit_Tab_Preferences extends Mage_Adminh
      */
     public function showPreferences()
     {
-        return Mage::getStoreConfigFlag('rewards/display/allow_points_summary_email');
+        return Mage::getStoreConfigFlag('rewards/pointSummaryEmails/allow_points_summary_email');
     }
 	
 	/**

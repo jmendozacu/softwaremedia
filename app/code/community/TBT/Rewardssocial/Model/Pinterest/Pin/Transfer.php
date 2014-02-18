@@ -79,11 +79,11 @@ class TBT_Rewardssocial_Model_Pinterest_Pin_Transfer extends TBT_Rewards_Model_T
      */
     public function create($customerId, $pinId, $rule)
     {
-        $num_points = $rule->getPointsAmount();
+        $num_points  = $rule->getPointsAmount();
         $currency_id = $rule->getPointsCurrencyId();
-        $rule_id = $rule->getId();
-        $transfer = $this->initTransfer($num_points, $currency_id, $rule_id);
-        $store = Mage::app()->getStore();
+        $rule_id     = $rule->getId();
+        $transfer    = $this->initTransfer($num_points, $currency_id, $rule_id, $customerId, true);
+        $store       = Mage::app()->getStore();
 
         if (!$transfer) {
             return false;
@@ -105,7 +105,7 @@ class TBT_Rewardssocial_Model_Pinterest_Pin_Transfer extends TBT_Rewards_Model_T
         // This is not normal, but we found that a lot of people preferred to use the standard translation system insteaed of the
         // store view system so this lets them use both.
         $initial_transfer_msg = Mage::getStoreConfig('rewards/transferComments/pinterestPin', $store);
-        $comments = Mage::helper('rewardssocial')->__($initial_transfer_msg);
+        $comments             = Mage::helper('rewardssocial')->__($initial_transfer_msg);
 
         $this->setPinterestPinId($pinId)->setComments($comments)->setCustomerId($customerId)->save();
 

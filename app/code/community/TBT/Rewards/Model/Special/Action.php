@@ -79,9 +79,9 @@ self::ACTION_SIGN_UP => Mage::helper ( 'rewards' )->__ ( 'Signs up' ), self::ACT
 	
 	public function getActionOptionsArray() {
 		$this->loadSpecialModels ();
-		$base_actions = array ('grant_points' => Mage::helper ( 'salesrule' )->__ ( 'Give points to the customer' ) );
+		$base_actions = array ('grant_points' => Mage::helper ( 'salesrule' )->__ ( 'Give points to the customer' ));
 		foreach ( $this->getSpecialConfigModels () as $code => $scm ) {
-			$base_actions += $scm->getNewActions ();
+			$base_actions = array_merge($base_actions, $scm->getNewActions ());
 		}
 		return $base_actions;
 	}
@@ -133,6 +133,14 @@ self::ACTION_SIGN_UP => Mage::helper ( 'rewards' )->__ ( 'Signs up' ), self::ACT
 		$this->setSpecialConfigModels ( $sms );
 		$this->setHasLoadedSpecialConfigModels ( true );
 		return $this;
+	}
+
+	public function visitAdminTriggers(&$fieldset) {
+	    $this->loadSpecialModels ();
+	    foreach ( $this->getSpecialConfigModels () as $code => $scm ) {
+	        $scm->visitAdminTriggers ( $fieldset );
+	    }
+	    return $this;
 	}
 	
 	public function visitAdminActions(&$fieldset) {

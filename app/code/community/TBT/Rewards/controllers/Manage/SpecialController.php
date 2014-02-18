@@ -105,6 +105,7 @@ class TBT_Rewards_Manage_SpecialController extends TBT_Rewards_Admin_AbstractCon
 		}
 		
 		Mage::register ( 'global_manage_special_rule', $model );
+		Mage::dispatchEvent('tbtrewards_special_controller_edit_before', array('rewards_special_id', $model->getId()));
 		
 		$block = $this->getLayout()->createBlock('rewards/manage_special_edit');
 		
@@ -145,6 +146,10 @@ _addContent ( $block )->_addLeft ( $this->getLayout ()->createBlock ( 'rewards/m
 			if (isset ( $data ['rule'] ['actions'] )) {
 				$data ['actions'] = $data ['rule'] ['actions'];
 			}
+			if ($data['simple_action'] != 'by_percent'){
+			    $data['points_amount'] = floor($data['points_amount']);
+			}
+			
 			unset ( $data ['rule'] );
 			
 			try {
@@ -152,6 +157,11 @@ _addContent ( $block )->_addLeft ( $this->getLayout ()->createBlock ( 'rewards/m
 				
 				Mage::getSingleton ( 'adminhtml/session' )->setPageData ( $model->getData () );
 				$model->save ();
+				
+				$originalData = $this->getRequest ()->getPost ();
+				$originalData['rewards_special_id'] = $model->getId(); 
+				Mage::dispatchEvent( 'tbtrewards_special_controller_save_after' , $originalData );
+				
 				Mage::getSingleton ( 'adminhtml/session' )->addSuccess ( Mage::helper ( 'rewards' )->__ ( 'Rule was successfully saved' ) );
 				
 				if ($back = $this->getRequest ()->getParam ( 'back' )) {
@@ -164,7 +174,8 @@ _addContent ( $block )->_addLeft ( $this->getLayout ()->createBlock ( 'rewards/m
 			} catch ( Exception $e ) {
 				Mage::getSingleton ( 'adminhtml/session' )->addError ( $e->getMessage () );
 				Mage::getSingleton ( 'adminhtml/session' )->setPageData ( $data );
-				$this->_redirect ( '*/*/edit', array ('id' => $data ['rewards_special_id'] ) );
+				$param = isset($data ['rewards_special_id']) ? array ('id' => $data ['rewards_special_id'] ) : array();
+				$this->_redirect ( '*/*/edit', $param);
 				return;
 			}
 		}

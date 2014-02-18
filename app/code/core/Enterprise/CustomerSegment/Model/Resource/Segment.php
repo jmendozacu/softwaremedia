@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_CustomerSegment
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -137,10 +137,11 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
      * Save customer Ids matched by segment SQL select on specific website
      *
      * @param Enterprise_CustomerSegment_Model_Segment $segment
-     * @param int $websiteId
+     * @param int $websiteId (Abandoned) websiteId to use, fixed to $row['website_id']
      * @param string $select
      *
      * @return Enterprise_CustomerSegment_Model_Resource_Segment
+     * @throws Exception
      */
     public function saveCustomersFromSelect($segment, $websiteId, $select)
     {
@@ -158,7 +159,7 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
                 $data[] = array(
                     'segment_id'    => $segmentId,
                     'customer_id'   => $row['entity_id'],
-                    'website_id'    => $websiteId,
+                    'website_id'    => $row['website_id'],
                     'added_date'    => $now,
                     'updated_date'  => $now,
                 );
@@ -213,9 +214,16 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
         $adapter->beginTransaction();
         try {
             $this->deleteSegmentCustomers($segment);
-            foreach ($websiteIds as $websiteId) {
-                $query = $segment->getConditions()->getConditionsSql(null, $websiteId);
-                $this->saveCustomersFromSelect($segment, $websiteId, $query);
+            if (!empty($websiteIds)) {
+                if (Mage::getSingleton('customer/config_share')->isGlobalScope()) {
+                    $query = $segment->getConditions()->getConditionsSql(null, $websiteIds);
+                    $this->saveCustomersFromSelect($segment, $websiteIds, $query);
+                } else {
+                    foreach ($websiteIds as $websiteId) {
+                        $query = $segment->getConditions()->getConditionsSql(null, $websiteId);
+                        $this->saveCustomersFromSelect($segment, $websiteId, $query);
+                    }
+                }
             }
         } catch (Exception $e) {
             $adapter->rollback();
@@ -285,9 +293,6 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
      */
     public function createConditionSql($field, $operator, $value)
     {
-        $sqlOperator = $this->getSqlOperator($operator);
-        $condition = '';
-
         if (!is_array($value)) {
             $prepareValues = explode(',', $value);
             if (count($prepareValues) <= 1) {
@@ -299,6 +304,13 @@ class Enterprise_CustomerSegment_Model_Resource_Segment extends Mage_Rule_Model_
                 }
             }
         }
+
+        if (count($value) != 1 and in_array($operator, array('==', '!='))) {
+            $operator = $operator == '==' ? '()' : '!()';
+        }
+        $sqlOperator = $this->getSqlOperator($operator);
+        $condition = '';
+
         switch ($operator) {
             case '{}':
             case '!{}':

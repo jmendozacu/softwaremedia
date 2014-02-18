@@ -26,7 +26,8 @@ class TBT_Rewardssocial_Model_Pinterest_Pin extends TBT_Rewardssocial_Model_Abst
 
         $pin = Mage::getModel('rewardssocial/pinterest_pin');
         $pin->loadByCustomerAndUrl($customerId, $url);
-        return (bool) $pin->getId();
+
+        return (bool) $pin->getIsProcessed();
     }
 
     public function getTimeUntilNextPinAllowed($customer)
@@ -49,7 +50,7 @@ class TBT_Rewardssocial_Model_Pinterest_Pin extends TBT_Rewardssocial_Model_Abst
         return $minimumWaitUntilNextPin;
     }
 
-    public function isMaxDailyPinsReached($customer)
+    public function isMaxDailyPinsReached($customer, $includeLastPin = true)
     {
         $maxPins = Mage::helper('rewardssocial/pinterest_config')->getMaxPinRewardsPerDay($customer->getStore());
         $time24HoursAgo = time() - (60 * 60 * 24);
@@ -58,10 +59,10 @@ class TBT_Rewardssocial_Model_Pinterest_Pin extends TBT_Rewardssocial_Model_Abst
             ->addFilter('customer_id', $customer->getId())
             ->addFieldToFilter('UNIX_TIMESTAMP(created_time)', array('gteq' => $time24HoursAgo));
 
-        if ($allPinsInLastDay->getSize() >= $maxPins) {
-            return true;
-        }
+        $maxReached = ($includeLastPin)
+            ? $allPinsInLastDay->getSize() >= $maxPins
+            : $allPinsInLastDay->getSize() > $maxPins;
 
-        return false;
+        return $maxReached;
     }
 }

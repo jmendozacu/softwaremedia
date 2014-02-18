@@ -57,11 +57,17 @@ class  TBT_RewardsReferral_Model_Observer_Sales_Order_Save_After_Approve
             return $this;
         }
         // if this is not a Shipment creation, no need to continue
-        if (Mage::app()->getRequest()->getControllerName() != 'sales_order_shipment') {
+        $object = $observer->getObject();
+        if (!$object || !($object instanceof Mage_Sales_Model_Order_Shipment)) {
             return $this;
         }
 
-        $order = $observer->getEvent()->getOrder();
+        $order_id = $object->getOrderId();
+        if (!$order_id) {
+            return $this;
+        }
+
+        $order = Mage::getModel('sales/order')->load($order_id);
         if (! $order) {
             return $this;
         }

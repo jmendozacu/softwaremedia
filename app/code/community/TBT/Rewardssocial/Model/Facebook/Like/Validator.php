@@ -41,7 +41,7 @@ class TBT_Rewardssocial_Model_Facebook_Like_Validator extends TBT_Rewards_Model_
     {
 
         try {
-            $ruleCollection = $this->getApplicableRulesOnFacebookLike();
+            $ruleCollection = $this->getApplicableRules();
 
             if ($this->_likeExists($customer, $liked_url)) {
                 throw new Exception(Mage::helper('rewardssocial')->__("You've already Liked this page."), 110);
@@ -87,7 +87,7 @@ class TBT_Rewardssocial_Model_Facebook_Like_Validator extends TBT_Rewards_Model_
     public function cancelLikeRewards($facebook_account_id, $liked_url, $customer)
     {
         try {
-            $ruleCollection = $this->getApplicableRulesOnFacebookLike();
+            $ruleCollection = $this->getApplicableRules();
 
             // Only if a LIKE exists should we  cancel/revoke the LIKE and associated points.
             if (!$this->_likeExists($customer, $liked_url)) {
@@ -203,7 +203,21 @@ class TBT_Rewardssocial_Model_Facebook_Like_Validator extends TBT_Rewards_Model_
     }
 
     /**
+     * Returns all rules that apply when a customer likes something on Facebook.
+     * @return array(TBT_Rewards_Model_Special)
+     */
+    public function getApplicableRules($action = null, $orAction = null)
+    {
+        if ($action === null) {
+            $action = TBT_Rewardssocial_Model_Facebook_Like_Special_Config::ACTION_CODE;
+        }
+
+        return parent::getApplicableRules($action, $orAction);
+    }
+
+    /**
      * Returns all rules that apply wehn a customer likes something on facebook
+     * @deprecated  see getApplicableRules()
      * @return array(TBT_Rewards_Model_Special)
      */
     public function getApplicableRulesOnFacebookLike() {
@@ -219,7 +233,7 @@ class TBT_Rewardssocial_Model_Facebook_Like_Validator extends TBT_Rewards_Model_
     public function getPredictedFacebookLikePoints($page=null) {
 
         Varien_Profiler::start("TBT_Rewardssocial:: Predict Facebook Like Points");
-        $ruleCollection = $this->getApplicableRulesOnFacebookLike();
+        $ruleCollection = $this->getApplicableRules();
 
         $predict_array = array();
         foreach ($ruleCollection as $rule) {
@@ -237,4 +251,3 @@ class TBT_Rewardssocial_Model_Facebook_Like_Validator extends TBT_Rewards_Model_
     }
 
 }
-?>

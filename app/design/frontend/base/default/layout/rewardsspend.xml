@@ -117,13 +117,11 @@
     <checkout_cart_index>
         <!-- Mage_Checkout -->
         <reference name="checkout.cart.coupon">
-        
             <block type="core/template" name="rewards_js_points_captions" as="rewards_cartpoints_spender_js" template="rewards/js/captions.phtml" />
             <block type="rewards/checkout_cart" name="rewards_points_cart_minibox" as="rewards_cartpoints_spender" template="rewards/checkout/cartmini.phtml" >
                 <block type="rewards/checkout_cart_slider" name="points_cart_box.slider" as="points_slider" template="rewards/checkout/cart/slider.phtml" />
                 <block type="core/template" name="points_cart_box.js" as="minicart_js" template="rewards/checkout/minicart_js.phtml" />
             </block>
-            
         </reference> 
     </checkout_cart_index>
     <!-- @nelkaake END Shopping cart autointegrated content -->

@@ -21,4 +21,23 @@ class TBT_Rewardssocial_Helper_Twitter_Config extends Mage_Core_Helper_Abstract
     {
         return Mage::getStoreConfigFlag('rewards/twitter/enableTwitterTweet');
     }
+
+     /**
+     * Checks if Twitter Tweet counts is enabled in Sweet tooth configuration section.
+     *
+     * @return boolean True if button enabled, false otherwise
+     */
+    public function isTweetCountEnabled()
+    {
+        return Mage::getStoreConfigFlag('rewards/twitter/enableTweetCount');
+    }
+
+    /**
+     * Get default tweet message as configured in admin.
+     * @return string
+     */
+    public function getTweetedMessage()
+    {
+        return Mage::getStoreConfig('rewards/twitter/tweetedMessage');
+    }
 }

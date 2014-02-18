@@ -99,7 +99,7 @@ abstract class TBT_Rewards_Block_Product_List_Abstract extends Mage_Core_Block_T
     public function getPredictedPointsEarned()
     {
         if ($this->product) {
-            $earnable = $this->product->getEarnablePoints ();
+            $earnable = $this->product->getEarnablePoints();
         } else {
             $earnable = array ();
         }

@@ -143,7 +143,7 @@ class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Blo
     	    
 		}
 	    
-	    Mage::getSingleton('rewards/wikihints')->addWikiHint($status_field, "21411153", "Edit Points Transfer - Status" );
+	    Mage::getSingleton('rewards/wikihints')->addWikiHint($status_field, "21139428", "Edit Points Transfer - Status" );
 		
 		if (! isset ( $formData ['reason_id'] )) {
 			$availReasons = Mage::getSingleton ( 'rewards/transfer_reason' )->getManualReasons ();

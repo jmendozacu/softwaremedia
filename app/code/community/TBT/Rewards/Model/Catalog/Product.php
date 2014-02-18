@@ -77,19 +77,20 @@ class TBT_Rewards_Model_Catalog_Product extends Mage_Catalog_Model_Product {
 		}
 
 		Varien_Profiler::start ( "TBT_Rewards::Fetching earnable points for product (get rule ids)" );
-		$ruleIds = Mage::helper ( 'rewards/transfer' )->getCatalogRewardsRuleIdsForProduct ( $this->getId () );
+                $ruleIds = $this->getCatalogRewardsRuleIdsForProduct();
 		Varien_Profiler::stop ( "TBT_Rewards::Fetching earnable points for product (get rule ids)" );
-		$rules = array ();
 
+                $rules = array ();
 		if ($ruleIds) {
 			foreach ( $ruleIds as $ruleId ) {
 
 				Varien_Profiler::start ( "TBT_Rewards::Fetching earnable points for product (calculate catalog points for rule)" );
                 $pointsEarned = Mage::helper ( 'rewards/transfer' )->calculateCatalogPoints ( $ruleId, $this, false );
+                                Varien_Profiler::stop ( "TBT_Rewards::Fetching earnable points for product (calculate catalog points for rule)" );
 
                 if ($this->isGrouped()) {
                     $associated_prod = $this->getTypeInstance(true)->getAssociatedProducts($this);
-                    $amount=0;
+                    $amount = 0;
                     foreach ($associated_prod as $item){
                         $row = Mage::helper('rewards/transfer')->calculateCatalogPoints($ruleId, $item, false,true);
                         $amount = $row["amount"] + $amount;
@@ -97,7 +98,6 @@ class TBT_Rewards_Model_Catalog_Product extends Mage_Catalog_Model_Product {
                     $pointsEarned = array("amount" => $amount, "currency" => $row["currency"]);
                 }
 
-				Varien_Profiler::stop ( "TBT_Rewards::Fetching earnable points for product (calculate catalog points for rule)" );
 				if ($pointsEarned ['amount'] == 0) {
 					continue;
 				}
@@ -401,7 +401,7 @@ class TBT_Rewards_Model_Catalog_Product extends Mage_Catalog_Model_Product {
 		/* TODO: make this method return REWARDS-SYSTEM rule id's ONLY */
 		// look up all rule objects associated with this item
 		$now = ($date == null) ? Mage::helper ( 'rewards' )->now () : $date;
-                $wId = ($wId == null) ? Mage::app ()->getStore ()->getWebsiteId () : $wId;
+	$wId = ($wId == null) ? Mage::app ()->getStore ()->getWebsiteId () : $wId;
 
 		$gId = ($gId == null) ? Mage::getSingleton ( 'customer/session' )->getCustomerGroupId () : $gId;
 
@@ -414,7 +414,8 @@ class TBT_Rewards_Model_Catalog_Product extends Mage_Catalog_Model_Product {
             $rule_data = Mage::getResourceModel('catalogrule/rule')->getRulesFromProduct($now, $wId, $gId, $productId);
             if ($rule_data) {
                 foreach ( $rule_data as $ruleId => $rule ) {
-                    $rule_ids [] = (int)$rule ['rule_id'];
+			$rule = (array) $rule;
+                    $rule_ids [] = (int)$rule['rule_id'];
                 }
             }
 
@@ -423,6 +424,7 @@ class TBT_Rewards_Model_Catalog_Product extends Mage_Catalog_Model_Product {
             $rule_data = Mage::getResourceModel( 'catalogrule/rule')->getRuleProductsForDateRange($now, $now, $productId);
             if ($rule_data) {
                 foreach ( $rule_data as $ruleId => $rule ) {
+			$rule = (array) $rule;
                     if (($rule ['from_time'] != 0) && (strtotime ( $now ) < $rule ['from_time'])) {
                             continue;
                     }

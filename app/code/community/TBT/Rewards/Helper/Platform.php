@@ -138,11 +138,22 @@ class TBT_Rewards_Helper_Platform extends Mage_Core_Helper_Abstract
             $this->_createChannelForAccount($username, $password, $isDevMode);
             $this->_getSession()->addSuccess($this->__("Sweet Tooth account successfully connected to your Magento store."));
         } catch (SweetToothApiException $ex) {
-            if ($ex->getCode() == SweetToothApiException::FORBIDDEN ||
-                    $ex->getCode() == SweetToothApiException::NOT_FOUND ||
-                    $ex->getCode() == SweetToothApiException::UNAUTHORIZED) {
-
+            if ($ex->getCode() == SweetToothApiException::FORBIDDEN || $ex->getCode() == SweetToothApiException::UNAUTHORIZED) {
                 $this->_getSession()->addError($this->__("Username or password is invalid."));
+
+                return $this;
+            } elseif ($ex->getCode() == SweetToothApiException::NOT_FOUND) {
+                $this->_getSession()->addError($this->__("We're having trouble reaching Sweet Tooth servers at the moment."
+                    . "<br/>If you continue to see this message for longer than a few hours, please contact Sweet Tooth support."
+                ));
+
+                return $this;
+            } elseif ($ex->getCode() == 0) {
+                $this->_getSession()->addError($this->__("We're having trouble reaching Sweet Tooth servers at the moment."
+                . " Please check your server's connection to the internet."
+                . "<br/>If you still continue to see this message for longer than a few hours, please contact Sweet Tooth support."
+                ));
+
                 return $this;
             }
 
@@ -168,7 +179,7 @@ class TBT_Rewards_Helper_Platform extends Mage_Core_Helper_Abstract
         $client->setBaseDomain(Mage::getStoreConfig(TBT_Rewards_Model_Platform_Instance::CONFIG_API_URL));
 
         //if you can't get the account then doesn't exist throw error
-        $client->account()->get();
+        $account = $client->account()->get();
 
         $channelData['channel_type']     = 'magento';
         $channelData['channel_version']  = (string) Mage::getConfig()->getNode('modules/TBT_Rewards/version');
@@ -182,6 +193,14 @@ class TBT_Rewards_Helper_Platform extends Mage_Core_Helper_Abstract
         Mage::getModel('core/config')->saveConfig('rewards/platform/apikey', $channel['api_key']);
         Mage::getModel('core/config')->saveConfig('rewards/platform/secretkey', Mage::helper('core')->encrypt($channel['api_secret']));
         Mage::getModel('core/config')->saveConfig('rewards/platform/is_connected', 1);
+
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_USERNAME, $username);
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_EMAIL, $account['email']);
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_FIRSTNAME, $account['firstname']);
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_LASTNAME, $account['lastname']);
+        if (isset($account['options'])) {
+            Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_OPTIONS, json_encode($account['options']));
+        }
 
         // Set values on this helper in case these config options are subsequently saved so they don't override
         // these values.

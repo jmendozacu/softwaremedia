@@ -2,34 +2,34 @@
 
 /**
  * WDCA - Sweet Tooth
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
+ *
+ * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
- * The Sweet Tooth License is available at this URL: 
+ * The Sweet Tooth License is available at this URL:
  * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
- * The Open Software License is available at this URL: 
+ * The Open Software License is available at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
+ *
  * DISCLAIMER
- * 
- * By adding to, editing, or in any way modifying this code, WDCA is 
- * not held liable for any inconsistencies or abnormalities in the 
- * behaviour of this code. 
+ *
+ * By adding to, editing, or in any way modifying this code, WDCA is
+ * not held liable for any inconsistencies or abnormalities in the
+ * behaviour of this code.
  * By adding to, editing, or in any way modifying this code, the Licensee
- * terminates any agreement of support offered by WDCA, outlined in the 
- * provided Sweet Tooth License. 
- * Upon discovery of modified code in the process of support, the Licensee 
- * is still held accountable for any and all billable time WDCA spent 
+ * terminates any agreement of support offered by WDCA, outlined in the
+ * provided Sweet Tooth License.
+ * Upon discovery of modified code in the process of support, the Licensee
+ * is still held accountable for any and all billable time WDCA spent
  * during the support process.
- * WDCA does not guarantee compatibility with any other framework extension. 
+ * WDCA does not guarantee compatibility with any other framework extension.
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
- * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * If you did not receive a copy of the license, please send an email to
+ * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy
  * immediately.
- * 
+ *
  * @category   [TBT]
  * @package    [TBT_Rewards]
  * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
@@ -44,40 +44,42 @@
  * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
  */
 class TBT_Rewards_Helper_Currency extends Mage_Core_Helper_Abstract {
-	
+
 	/**
-	 * @deprecated 
+         * @deprecated
 	 *
 	 * @var array???
 	 */
 	protected $currency_captions = null;
-	
+
 	/**
-	 * Returns a map of currency_id=>caption.  
+         * Returns a map of currency_id=>caption.
 	 * @see getAvailCurrencyIds() to get a simple list of all available currency ids.
 	 * TODO: filter these currency ids for only this store.
-	 * 
+         *
 	 * @return array
 	 */
-	public function getAvailCurrencies() {
-		return Mage::getModel ( 'rewards/currency' )->getAvailCurrencies ();
+        public function getAvailCurrencies()
+        {
+                return Mage::getSingleton('rewards/currency')->getAvailCurrencies ();
 	}
-	
+
 	/**
 	 * Returns a list of currency ids
 	 * TODO: filter these currency ids for only this store.
-	 * 
+         *
 	 * @return array
 	 */
-	public function getAvailCurrencyIds() {
-		return Mage::getModel ( 'rewards/currency' )->getAvailCurrencyIds ();
+        public function getAvailCurrencyIds()
+        {
+                return Mage::getSingleton('rewards/currency')->getAvailCurrencyIds ();
 	}
-	
+
 	/**
-	 * Returns a list of currency options to be displayed in a SELECT box 
+         * Returns a list of currency options to be displayed in a SELECT box
 	 * @see getAvailCurrencyIds() to get a simple list of all available currency ids.
 	 * TODO: filter these currency ids for only this store.
-	 * 
+         *
 	 * @return array
 	 */
 	public function getAvailCurrencyOptions() {
@@ -88,12 +90,12 @@ class TBT_Rewards_Helper_Currency extends Mage_Core_Helper_Abstract {
 		}
 		return $cOptions;
 	}
-	
+
 	public function getActiveOptions() {
 		$activeOptions = array (1 => 'Yes', 0 => 'No' );
 		return $activeOptions;
 	}
-	
+
 	/**
 	 * Returns a string with *numeric value* *currency caption*
 	 *
@@ -105,17 +107,17 @@ class TBT_Rewards_Helper_Currency extends Mage_Core_Helper_Abstract {
 		if ($this->currency_captions == null) {
 			$this->currency_captions = $this->getAvailCurrencies ();
 		}
-		
+
 		return $points_qty . " " . $this->currency_captions [$currency_id];
 	}
-	
+
 	public function getCurrencyCaption($currency_id) {
 		if ($this->currency_captions == null) {
 			$this->currency_captions = $this->getAvailCurrencies ();
 		}
 		return $this->currency_captions [$currency_id];
 	}
-	
+
 	/**
 	 * Returns a string formatted to display the number of each in given array
 	 * @deprecated Use Mage::getModel('rewards/points')->set(points) instead...
@@ -162,9 +164,9 @@ class TBT_Rewards_Helper_Currency extends Mage_Core_Helper_Abstract {
 		}
 		return $points_array;
 	}
-	
+
 	/**
-	 * 
+         *
 	 * @deprecated Use Mage::getModel('rewards/points')->set(points) instead and set a custom template
 	 *
 	 * @param unknown_type $points_array

@@ -47,84 +47,101 @@
  * @package    TBT_Rewards
  * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
  */
-class TBT_Rewards_Helper_Expiry extends Mage_Core_Helper_Abstract {
+class TBT_Rewards_Helper_Expiry extends Mage_Core_Helper_Abstract
+{
 
-	/**
-	 * @nelkaake 31/01/2010 8:01:06 PM :
-	 * @return string
-	 */
-	public function isEnabled($storeId) {
-		$enabled = Mage::getStoreConfigFlag ( "rewards/expire/is_enabled", $storeId );
-		return $enabled;
-	}
+    /**
+     * @nelkaake 31/01/2010 8:01:06 PM :
+     * @return string
+     */
+    public function isEnabled($storeId)
+    {
+        $enabled = Mage::getStoreConfigFlag ( "rewards/expire/is_enabled", $storeId );
+        return $enabled;
+    }
 
-	/**
-	 * @nelkaake 31/01/2010 8:01:06 PM :
-	 * @return string
-	 */
-	public function getExpiryMsg($storeId) {
-		$days = $this->getDelayDays ( $storeId );
-		$msg = $this->__ ( Mage::getStoreConfig ( "rewards/transferComments/expired", $storeId ), $days );
-		return $msg;
-	}
+    /**
+     * @nelkaake 31/01/2010 8:01:06 PM :
+     * @return string
+     */
+    public function getExpiryMsg($storeId)
+    {
+        $days = $this->getDelayDays ( $storeId );
+        $msg = $this->__ ( Mage::getStoreConfig ( "rewards/transferComments/expired", $storeId ), $days );
 
-	public function getDelayDays($storeId) {
-		return ( int ) Mage::getStoreConfig ( "rewards/expire/delay_days", $storeId );
-	}
+        return $msg;
+    }
 
-	public function getWarning1Days($storeId) {
-		return ( int ) Mage::getStoreConfig ( "rewards/expire/email_warning1_days", $storeId );
-	}
+    public function getDelayDays($storeId)
+    {
+        return ( int ) Mage::getStoreConfig ( "rewards/expire/delay_days", $storeId );
+    }
 
-	public function getWarning1EmailTemplate($storeId) {
-		return Mage::getStoreConfig ( "rewards/expire/email_warning1_template", $storeId );
-	}
+    public function getWarning1Days($storeId)
+    {
+        return ( int ) Mage::getStoreConfig ( "rewards/expire/email_warning1_days", $storeId );
+    }
 
-	public function getWarning2EmailTemplate($storeId) {
-		return Mage::getStoreConfig ( "rewards/expire/email_warning2_template", $storeId );
-	}
+    public function getWarning1EmailTemplate($storeId)
+    {
+        return Mage::getStoreConfig ( "rewards/expire/email_warning1_template", $storeId );
+    }
 
-	public function getWarning2Days($storeId) {
-		return ( int ) Mage::getStoreConfig ( "rewards/expire/email_warning2_days", $storeId );
-	}
+    public function getWarning2EmailTemplate($storeId)
+    {
+        return Mage::getStoreConfig ( "rewards/expire/email_warning2_template", $storeId );
+    }
 
-	public function getSenderName($storeId) {
-		return Mage::getStoreConfig ( "trans_email/ident_support/name", $storeId );
-	}
+    public function getWarning2Days($storeId)
+    {
+        return ( int ) Mage::getStoreConfig ( "rewards/expire/email_warning2_days", $storeId );
+    }
 
-	public function getSenderEmail($storeId) {
-		return Mage::getStoreConfig ( "trans_email/ident_support/email", $storeId );
-	}
+    public function getSenderName($storeId)
+    {
+        $customSender = Mage::helper('rewards/config')->getCustomSender($storeId);
+        return Mage::getStoreConfig ( "trans_email/ident_" . $customSender . "/name", $storeId );
+    }
 
-	public function doLogExpiry($storeId) {
-		return Mage::getStoreConfigFlag ( "rewards/expire/log_when_points_expire", $storeId );
-	}
+    public function getSenderEmail($storeId)
+    {
+        $customSender = Mage::helper('rewards/config')->getCustomSender($storeId);
+        return Mage::getStoreConfig ( "trans_email/ident_" . $customSender . "/email", $storeId );
+    }
 
-	public function logExpiry($customer, $amount_expired, $time_since_str) {
-		$storeId = $customer->getStoreId ();
-		if ($this->doLogExpiry ( $storeId )) {
-			$a = $amount_expired; //@nelkaake this abcd is just for code cleanliness purposes
-			$b = $customer->getName ();
-			$c = $customer->getEmail ();
-			$d = $time_since_str;
-			$msg = $this->__ ( "The balance of %s for the customer %s with the e-mail %s has expired.  It was %s since his/her last activity.", $a, $b, $c, $d );
-			Mage::log ( $msg, null, $this->getExpiryLogFile () );
-		}
-	}
+    public function doLogExpiry($storeId)
+    {
+        return Mage::getStoreConfigFlag ( "rewards/expire/log_when_points_expire", $storeId );
+    }
 
-	public function logExpiryNotification($customer, $days_left) {
-		$storeId = $customer->getStoreId ();
-		if ($this->doLogExpiry ( $storeId )) {
-			$a = $customer->getName ();
-			$b = $customer->getEmail ();
-			$c = $days_left;
-			$msg = $this->__ ( "The customer %s with the e-mail %s was sent notification that his/her points will expire in %s days.", $a, $b, $c );
-			Mage::log ( $msg, null, $this->getExpiryLogFile () );
-		}
-	}
+    public function logExpiry($customer, $amount_expired, $time_since_str)
+    {
+        $storeId = $customer->getStoreId ();
+        if ($this->doLogExpiry ( $storeId )) {
+            $a = $amount_expired; //@nelkaake this abcd is just for code cleanliness purposes
+            $b = $customer->getName ();
+            $c = $customer->getEmail ();
+            $d = $time_since_str;
+            $msg = $this->__ ( "The balance of %s for the customer %s with the e-mail %s has expired.  It was %s since his/her last activity.", $a, $b, $c, $d );
+            Mage::log ( $msg, null, $this->getExpiryLogFile () );
+        }
+    }
 
-	public function getExpiryLogFile() {
-		return 'rewards_expire.log';
-	}
+    public function logExpiryNotification($customer, $days_left)
+    {
+        $storeId = $customer->getStoreId ();
+        if ($this->doLogExpiry ( $storeId )) {
+            $a = $customer->getName ();
+            $b = $customer->getEmail ();
+            $c = $days_left;
+            $msg = $this->__ ( "The customer %s with the e-mail %s was sent notification that his/her points will expire in %s days.", $a, $b, $c );
+            Mage::log ( $msg, null, $this->getExpiryLogFile () );
+        }
+    }
+
+    public function getExpiryLogFile()
+    {
+        return 'rewards_expire.log';
+    }
 
 }

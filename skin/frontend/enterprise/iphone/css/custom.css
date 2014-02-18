@@ -19,7 +19,7 @@
  *
  * @category    design
  * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 /* Theme options */
@@ -30,7 +30,7 @@ a { color:#1394ca; }
 /* Main color */
 body > header,
 body > footer ul,
-body > address.copyright { background-color:#323232; }
+body > address.copyright { background-color:#e76212; }
 
 /* Button Color */
 .map-popup-checkout button,
@@ -62,4 +62,4 @@ body > address.copyright { background-color:#323232; }
 #nav-container li a { color:#111; }
 
 /* Buttons background color */
-.form-subscribe button { background:#000; }
+.form-subscribe button { background:green; }

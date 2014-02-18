@@ -51,4 +51,12 @@
         </reference>
     </checkout_onepage_index>
 
+    <onestepcheckout_index_index>
+        <reference name="head">
+            <action method="addCss" ifconfig="rewards/autointegration/onepage_billing_register_referral_field">
+                <stylesheet>css/rewardsref/my_referrals.css</stylesheet>
+            </action>
+        </reference>
+    </onestepcheckout_index_index>
+
 </layout>

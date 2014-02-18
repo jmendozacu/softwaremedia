@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Reminder
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -119,7 +119,9 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
     {
         $conditionValue = (int) $this->getValue();
         if ($conditionValue < 0) {
-            Mage::throwException(Mage::helper('enterprise_reminder')->__('Root shopping cart condition should have days value at least 0.'));
+            Mage::throwException(
+                Mage::helper('enterprise_reminder')->__('Root shopping cart condition should have days value at least 0.')
+            );
         }
 
         $table = $this->getResource()->getTable('sales/quote');
@@ -134,21 +136,16 @@ class Enterprise_Reminder_Model_Rule_Condition_Cart
         $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
             ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
 
-        if ($operator == '=') {
-            $select->where($daysDiffSql . ' < ?', $conditionValue);
-            $select->where($daysDiffSql . ' > ?', $conditionValue - 1);
-        } else {
-            if ($operator == '>=') {
-                if ($conditionValue > 0) {
-                    $conditionValue--;
-                } else {
-                    $currentTime = Mage::getModel('core/date')->gmtDate();
-                    $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
-                        ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
-                }
+        if ($operator == '>=') {
+            if ($conditionValue > 0) {
+                $conditionValue--;
+            } else {
+                $currentTime = Mage::getModel('core/date')->gmtDate();
+                $daysDiffSql = Mage::getResourceHelper('enterprise_reminder')
+                    ->getDateDiff('quote.updated_at', $select->getAdapter()->formatDate($currentTime));
             }
-            $select->where($daysDiffSql . " {$operator} ?", $conditionValue);
         }
+        $select->where($daysDiffSql . " {$operator} ?", $conditionValue);
 
         $select->where('quote.is_active = 1');
         $select->where('quote.items_count > 0');

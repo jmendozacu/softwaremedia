@@ -4,7 +4,7 @@ $installer = $this;
 $installer->startSetup();
 
 // Create Twitter tweet table
-$installer->attemptQuery($installer, "
+$installer->attemptQuery("
     CREATE TABLE IF NOT EXISTS `{$this->getTable('rewardssocial/twitter_tweet')}` (
         `twitter_tweet_id` smallint(11) unsigned NOT NULL auto_increment,
         `customer_id` int(10) unsigned NOT NULL,

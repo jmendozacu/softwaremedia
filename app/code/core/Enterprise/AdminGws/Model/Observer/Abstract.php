@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_AdminGws
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -36,11 +36,30 @@ class Enterprise_AdminGws_Model_Observer_Abstract
     protected $_role;
 
     /**
+     * Factory instance
+     *
+     * @var Mage_Core_Model_Abstract
+     */
+    protected $_factory;
+
+    /**
      * Initialize helper
      *
+     * @param array $args
      */
-    public function __construct()
+    public function __construct(array $args = array())
     {
-        $this->_role = Mage::getSingleton('enterprise_admingws/role');
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('core/factory');
+        $this->_role = !empty($args['role']) ? $args['role'] : Mage::getSingleton('enterprise_admingws/role');
     }
+
+    /**
+     * @param \Enterprise_AdminGws_Model_Role $role
+     */
+    public function setRole($role)
+    {
+        $this->_role = $role;
+    }
+
+
 }

@@ -2,20 +2,22 @@
 <config>
     <modules>
         <TBT_Rewards>
-            <version>1.7.7.3</version>
+            <version>1.7.9.3</version>
         </TBT_Rewards>
     </modules>
+
     <admin>
         <routers>
             <rewardsadmin>
-                    <use>admin</use>
-                    <args>
-                        <module>TBT_Rewards</module>
-                        <frontName>rewardsadmin</frontName>
-                    </args>
+                <use>admin</use>
+                <args>
+                    <module>TBT_Rewards</module>
+                    <frontName>rewardsadmin</frontName>
+                </args>
             </rewardsadmin>
         </routers>
     </admin>
+
     <frontend>
         <routers>
             <rewards>
@@ -45,7 +47,6 @@
                 </TBT_Rewards>
             </modules>
         </translate>
-
     </frontend>
 
     <adminhtml>
@@ -57,184 +58,183 @@
             </updates>
         </layout>
         <translate>
-              <modules>
-                  <TBT_Rewards>
-                      <files>
-                          <default>TBT_Rewards.csv</default>
-                      </files>
-                  </TBT_Rewards>
-              </modules>
+            <modules>
+                <TBT_Rewards>
+                    <files>
+                        <default>TBT_Rewards.csv</default>
+                    </files>
+                </TBT_Rewards>
+            </modules>
         </translate>
 
-	    <menu>
-	        <rewards module="rewards" translate="title">
-	            <title><![CDATA[<span class="stadmin-menu_main">Rewards</span>]]></title>
-	            <sort_order>75</sort_order>
-	            <children>
-	                <rules module="rewards" translate="title">
-	                    <title>Point Rules</title>
-	                    <sort_order>20</sort_order>
-	                    <children>
-	                        <distribution module="rewards" translate="title">
-	                            <title>Earning Rules</title>
-	                            <sort_order>10</sort_order>
-	                            <children>
-	                                <catalog module="rewards" translate="title">
-	                                    <title>Catalog</title>
-	                                    <sort_order>10</sort_order>
-	                                    <action>rewardsadmin/manage_promo_catalog/index/type/1/</action>
-	                                </catalog>
-	                                <quote module="rewards" translate="title">
-	                                    <title>Shopping Cart</title>
-	                                    <sort_order>20</sort_order>
-	                                    <action>rewardsadmin/manage_promo_quote/index/type/1/</action>
-	                                </quote>
-	                                <special module="rewards" translate="title">
-	                                    <title>Customer Behavior</title>
-	                                    <sort_order>30</sort_order>
-	                                    <action>rewardsadmin/manage_special/index/type/1/</action>
-	                                </special>
-	                            </children>
-	                        </distribution>
-	                    </children>
-	                </rules>
-	                <customer module="rewards" translate="title">
-	                    <title>Customer Points</title>
-	                    <sort_order>30</sort_order>
-	                    <children>
-			                <transfers module="rewards" translate="title">
-			                    <title>Point Transfers</title>
-			                    <action>rewardsadmin/manage_transfer</action>
-			                    <sort_order>20</sort_order>
-			                    <children>
-	                                <othertransfers module="rewards" translate="title">
-	                                    <title>Manage Transfers</title>
-	                                    <sort_order>0</sort_order>
-	                                    <action>rewardsadmin/manage_transfer</action>
-	                                </othertransfers>
-			                        <createtransfer module="rewards" translate="title">
-			                            <title>Create New Transfer</title>
-			                            <sort_order>40</sort_order>
-			                            <action>rewardsadmin/manage_transfer/new</action>
-			                        </createtransfer>
-			                    </children>
-	                        </transfers>
-	                    </children>
-	                </customer>
-	                <cfg module="rewards" translate="title">
-	                    <title>Configuration</title>
-	                    <action>adminhtml/system_config/edit/section/rewards/</action>
-	                    <sort_order>60</sort_order>
-	                    <children>
-			                <currency module="rewards" translate="title">
-			                    <title>Points Currency</title>
-			                    <sort_order>10</sort_order>
-			                    <action>rewardsadmin/manage_currency</action>
-			                </currency>
-	                        <cfg module="rewards" translate="title">
-	                            <title>Other Configuration</title>
-	                            <action>adminhtml/system_config/edit/section/rewards/</action>
-	                            <sort_order>20</sort_order>
-	                        </cfg>
-	                    </children>
-	                </cfg>
-	            </children>
-	        </rewards>
-	    </menu>
+        <menu>
+            <rewards module="rewards" translate="title">
+                <title><![CDATA[<span class="stadmin-menu_main">Rewards</span>]]></title>
+                <sort_order>75</sort_order>
+                <children>
+                    <rules module="rewards" translate="title">
+                        <title>Reward Rules</title>
+                        <sort_order>20</sort_order>
+                        <children>
+                            <distribution module="rewards" translate="title">
+                                <title>Earning Rules</title>
+                                <sort_order>10</sort_order>
+                                <children>
+                                    <catalog module="rewards" translate="title">
+                                        <title>Catalog</title>
+                                        <sort_order>10</sort_order>
+                                        <action>rewardsadmin/manage_promo_catalog/index/type/1/</action>
+                                    </catalog>
+                                    <quote module="rewards" translate="title">
+                                        <title>Shopping Cart</title>
+                                        <sort_order>20</sort_order>
+                                        <action>rewardsadmin/manage_promo_quote/index/type/1/</action>
+                                    </quote>
+                                    <special module="rewards" translate="title">
+                                        <title>Customer Behavior</title>
+                                        <sort_order>30</sort_order>
+                                        <action>rewardsadmin/manage_special/index/type/1/</action>
+                                    </special>
+                                </children>
+                            </distribution>
+                        </children>
+                    </rules>
+                    <customer module="rewards" translate="title">
+                        <title>Customer Points</title>
+                        <sort_order>30</sort_order>
+                        <children>
+                            <transfers module="rewards" translate="title">
+                                <title>Point Transfers</title>
+                                <action>rewardsadmin/manage_transfer</action>
+                                <sort_order>20</sort_order>
+                                <children>
+                                    <othertransfers module="rewards" translate="title">
+                                        <title>Manage Transfers</title>
+                                        <sort_order>0</sort_order>
+                                        <action>rewardsadmin/manage_transfer</action>
+                                    </othertransfers>
+                                    <createtransfer module="rewards" translate="title">
+                                        <title>Create New Transfer</title>
+                                        <sort_order>40</sort_order>
+                                        <action>rewardsadmin/manage_transfer/new</action>
+                                    </createtransfer>
+                                </children>
+                            </transfers>
+                        </children>
+                    </customer>
+                    <cfg module="rewards" translate="title">
+                        <title>Configuration</title>
+                        <action>adminhtml/system_config/edit/section/rewards/</action>
+                        <sort_order>80</sort_order>
+                        <children>
+                            <currency module="rewards" translate="title">
+                                <title>Points Currency</title>
+                                <sort_order>10</sort_order>
+                                <action>rewardsadmin/manage_currency</action>
+                            </currency>
+                            <cfg module="rewards" translate="title">
+                                <title>Other Configuration</title>
+                                <action>adminhtml/system_config/edit/section/rewards/</action>
+                                <sort_order>20</sort_order>
+                            </cfg>
+                        </children>
+                    </cfg>
+                </children>
+            </rewards>
+        </menu>
 
-	    <acl>
-	        <resources>
-	            <all>
-	                <title>Allow Everything</title>
-	            </all>
-	            <admin>
-	                <children>
-	                    <rewards module="rewards" translate="title">
-	                        <title>Customer Rewards</title>
-	                        <sort_order>75</sort_order>
-	                        <children>
-	                            <rules module="rewards" translate="title">
-	                                <title>Point Rules</title>
-	                                <sort_order>20</sort_order>
-	                                <children>
-	                                    <distribution module="rewards" translate="title">
-	                                        <title>Earning Rules</title>
-	                                        <sort_order>10</sort_order>
-	                                        <children>
-	                                            <catalog module="rewards" translate="title">
-	                                                <title>Catalog Earning Rules</title>
-	                                                <sort_order>10</sort_order>
-	                                            </catalog>
-	                                            <quote module="rewards" translate="title">
-	                                                <title>Shopping Cart Earning Rules</title>
-	                                                <sort_order>20</sort_order>
-	                                            </quote>
-	                                            <special module="rewards" translate="title">
-	                                                <title>Customer Behavior Earning Rules</title>
-	                                                <sort_order>30</sort_order>
-	                                            </special>
-	                                        </children>
-	                                    </distribution>
-	                                </children>
-	                            </rules>
-	                            <customer module="rewards" translate="title">
-	                                <title>Customer Points</title>
-	                                <sort_order>30</sort_order>
-	                                <children>
-				                        <transfers module="rewards" translate="title">
-				                            <title>Point Transfers</title>
-				                            <sort_order>20</sort_order>
-				                            <children>
-				                                <othertransfers module="rewards" translate="title">
-				                                    <title>Manage Transfers</title>
-				                                    <sort_order>0</sort_order>
-				                                </othertransfers>
-				                                <createtransfer module="rewards" translate="title">
-				                                    <title>Create New Transfer</title>
-				                                    <sort_order>40</sort_order>
-				                                </createtransfer>
-				                            </children>
-				                        </transfers>
-	                                </children>
-	                            </customer>
-	                            <cfg module="rewards" translate="title">
-	                                <title>Configuration</title>
-	                                <sort_order>60</sort_order>
-	                                <children>
-			                            <currency module="rewards" translate="title">
-			                                <title>Points Currency</title>
-			                                <sort_order>10</sort_order>
-			                            </currency>
-	                                    <cfg module="rewards" translate="title">
-	                                        <title>Configuration</title>
-	                                        <sort_order>20</sort_order>
-	                                    </cfg>
-	                                </children>
-	                            </cfg>
-	                        </children>
-	                    </rewards>
-	                    <system>
-	                        <children>
-	                            <config>
-	                                <children>
-	                                    <rewards>
-	                                        <title>Rewards Section</title>
-	                                    </rewards>
-	                                </children>
-	                            </config>
-	                        </children>
-	                    </system>
-	                </children>
-	            </admin>
-	        </resources>
-	    </acl>
-
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <rewards module="rewards" translate="title">
+                            <title>Customer Rewards</title>
+                            <sort_order>75</sort_order>
+                            <children>
+                                <rules module="rewards" translate="title">
+                                    <title>Point Rules</title>
+                                    <sort_order>20</sort_order>
+                                    <children>
+                                        <distribution module="rewards" translate="title">
+                                            <title>Earning Rules</title>
+                                            <sort_order>10</sort_order>
+                                            <children>
+                                                <catalog module="rewards" translate="title">
+                                                    <title>Catalog Earning Rules</title>
+                                                    <sort_order>10</sort_order>
+                                                </catalog>
+                                                <quote module="rewards" translate="title">
+                                                    <title>Shopping Cart Earning Rules</title>
+                                                    <sort_order>20</sort_order>
+                                                </quote>
+                                                <special module="rewards" translate="title">
+                                                    <title>Customer Behavior Earning Rules</title>
+                                                    <sort_order>30</sort_order>
+                                                </special>
+                                            </children>
+                                        </distribution>
+                                    </children>
+                                </rules>
+                                <customer module="rewards" translate="title">
+                                    <title>Customer Points</title>
+                                    <sort_order>30</sort_order>
+                                    <children>
+                                        <transfers module="rewards" translate="title">
+                                            <title>Point Transfers</title>
+                                            <sort_order>20</sort_order>
+                                            <children>
+                                                <othertransfers module="rewards" translate="title">
+                                                    <title>Manage Transfers</title>
+                                                    <sort_order>0</sort_order>
+                                                </othertransfers>
+                                                <createtransfer module="rewards" translate="title">
+                                                    <title>Create New Transfer</title>
+                                                    <sort_order>40</sort_order>
+                                                </createtransfer>
+                                            </children>
+                                        </transfers>
+                                    </children>
+                                </customer>
+                                <cfg module="rewards" translate="title">
+                                    <title>Configuration</title>
+                                    <sort_order>60</sort_order>
+                                    <children>
+                                        <currency module="rewards" translate="title">
+                                            <title>Points Currency</title>
+                                            <sort_order>10</sort_order>
+                                        </currency>
+                                        <cfg module="rewards" translate="title">
+                                            <title>Configuration</title>
+                                            <sort_order>20</sort_order>
+                                        </cfg>
+                                    </children>
+                                </cfg>
+                            </children>
+                        </rewards>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <rewards>
+                                            <title>Rewards Section</title>
+                                        </rewards>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
     </adminhtml>
 
     <global>
         <events>
-        <!--// This is to accomodate compatibility with Amazon Payments //-->
-        <controller_action_predispatch_amazonpayments_cba_shortcut>
+            <!--// This is to accomodate compatibility with Amazon Payments //-->
+            <controller_action_predispatch_amazonpayments_cba_shortcut>
                 <observers>
                     <tbt_rewards_amazonpayments_cart_shortcut>
                         <type>singleton</type>
@@ -253,6 +253,15 @@
                     </rewards_model_observer_sagePay>
                 </observers>
             </sales_quote_payment_save_before>
+            <sales_quote_address_discount_item>
+                <observers>
+                    <tbt_rewards_model_salesrule_observer_setItemDiscountPrice>
+                        <type>singleton</type>
+                        <class>rewards/salesrule_observer</class>
+                        <method>setItemDiscountPrice</method>
+                    </tbt_rewards_model_salesrule_observer_setItemDiscountPrice>
+                </observers>
+            </sales_quote_address_discount_item>
             <salesrule_validator_process>
                 <observers>
                     <tbt_rewards_model_salesrule_observer_process>
@@ -289,19 +298,6 @@
                     </tbt_rewards_model_salesrule_observer_reset_labels>
                 </observers>
             </sales_quote_collect_totals_after>
-
-
-
-
-
-
-
-
-
-
-
-
-
             <checkout_cart_product_add_after>
                 <observers>
                     <tbt_rewards_model_catalogrule_observer_after_add>
@@ -347,105 +343,103 @@
                     </tbt_rewards_model_checkout_cart_observer>
                 </observers>
             </controller_action_postdispatch>
-          <catalogrule_after_apply>
-            <observers>
-              <tbt_rewards_model_observer_catalog_product_flat_update_product>
-                <type>singleton</type>
-                <class>rewards/observer_catalog_product_flat_update_product</class>
-                <method>updateCatalogRulesHash</method>
-              </tbt_rewards_model_observer_catalog_product_flat_update_product>
-            </observers>
-          </catalogrule_after_apply>
-          <sales_quote_save_before>
-            <observers>
-              <tbt_rewards_model_observer_sales_quote_save_before>
-                <type>singleton</type>
-                <class>rewards/observer_sales_quote_save_before</class>
-                <method>updateCatalogPoints</method>
-              </tbt_rewards_model_observer_sales_quote_save_before>
-            </observers>
-          </sales_quote_save_before>
-          <sales_convert_quote_to_order>
-            <observers>
-              <tbt_rewards_model_observer_sales_convert_quotetoorder>
-                <type>singleton</type>
-                <class>rewards/observer_sales_convert_quotetoorder</class>
-                <method>prepareCatalogPointsTransfers</method>
-              </tbt_rewards_model_observer_sales_convert_quotetoorder>
-            </observers>
-          </sales_convert_quote_to_order>
-          <sales_convert_quote_item_to_order_item>
-            <observers>
-              <tbt_rewards_model_observer_sales_convert_quotetoorder_item>
-                <type>singleton</type>
-                <class>rewards/observer_sales_convert_quotetoorder</class>
-                <method>savePointsInfoInOrder</method>
-              </tbt_rewards_model_observer_sales_convert_quotetoorder_item>
-            </observers>
-          </sales_convert_quote_item_to_order_item>
-          <sales_order_place_after>
-            <observers>
-              <tbt_rewards_model_observer_sales_order_place_after>
-                <type>singleton</type>
-                <class>rewards/observer_sales_order_place_after</class>
-                <method>prepareCartPointsTransfers</method>
-              </tbt_rewards_model_observer_sales_order_place_after>
-            </observers>
-          </sales_order_place_after>
-          <sales_order_save_commit_after>
-            <observers>
-            <!-- Annual Limit Feature
-              <tbt_rewards_model_checkout_cart_observer>
-                   <type>singleton</type>
-                   <class>rewards/checkout_cart_observer</class>
-                   <method>checkRedemptionLimit</method>
-               </tbt_rewards_model_checkout_cart_observer>
-            -->
-              <tbt_rewards_model_observer_sales_order_save_after_create>
-                <type>singleton</type>
-                <class>rewards/observer_sales_order_save_after_create</class>
-                <method>createPointsTransfers</method>
-              </tbt_rewards_model_observer_sales_order_save_after_create>
-            </observers>
-        </sales_order_save_commit_after>
-
-          <sales_order_payment_place_start>
-            <observers>
-              <tbt_rewards_model_observer_sales_order_save_after_create>
-                <type>singleton</type>
-                <class>rewards/observer_sales_order_save_after_create</class>
-                <method>createPointsTransfers</method>
-              </tbt_rewards_model_observer_sales_order_save_after_create>
-            </observers>
-        </sales_order_payment_place_start>
-
-        <model_save_commit_after>
-            <observers>
-              <tbt_rewards_model_observer_sales_order_save_after_approve>
-                <type>singleton</type>
-                <class>rewards/observer_sales_order_save_after_approve</class>
-                <method>approveAssociatedPendingTransfersOnShipment</method>
-              </tbt_rewards_model_observer_sales_order_save_after_approve>
-            </observers>
-          </model_save_commit_after>
-          <sales_order_invoice_save_commit_after>
-            <observers>
-              <tbt_rewards_model_observer_sales_order_invoice_pay>
-                <type>singleton</type>
-                <class>rewards/observer_sales_order_invoice_pay</class>
-                <method>approveAssociatedPendingTransfersOnInvoice</method>
-              </tbt_rewards_model_observer_sales_order_invoice_pay>
-            </observers>
-          </sales_order_invoice_save_commit_after>
-          <sales_order_payment_cancel>
-            <observers>
-              <rewards_sales_order_payment_cancel>
-                <type>singleton</type>
-                <class>rewards/sales_order_payment_observer</class>
-                <method>cancel</method>
-              </rewards_sales_order_payment_cancel>
-            </observers>
-          </sales_order_payment_cancel>
+            <catalogrule_after_apply>
+                <observers>
+                    <tbt_rewards_model_observer_catalog_product_flat_update_product>
+                        <type>singleton</type>
+                        <class>rewards/observer_catalog_product_flat_update_product</class>
+                        <method>updateCatalogRulesHash</method>
+                    </tbt_rewards_model_observer_catalog_product_flat_update_product>
+                </observers>
+            </catalogrule_after_apply>
+            <sales_quote_save_before>
+                <observers>
+                    <tbt_rewards_model_observer_sales_quote_save_before>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_quote_save_before</class>
+                        <method>updateCatalogPoints</method>
+                    </tbt_rewards_model_observer_sales_quote_save_before>
+                </observers>
+            </sales_quote_save_before>
+            <sales_convert_quote_to_order>
+                <observers>
+                    <tbt_rewards_model_observer_sales_convert_quotetoorder>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_convert_quotetoorder</class>
+                        <method>prepareCatalogPointsTransfers</method>
+                    </tbt_rewards_model_observer_sales_convert_quotetoorder>
+                </observers>
+            </sales_convert_quote_to_order>
+            <sales_convert_quote_item_to_order_item>
+                <observers>
+                    <tbt_rewards_model_observer_sales_convert_quotetoorder_item>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_convert_quotetoorder</class>
+                        <method>savePointsInfoInOrder</method>
+                    </tbt_rewards_model_observer_sales_convert_quotetoorder_item>
+                </observers>
+            </sales_convert_quote_item_to_order_item>
+            <sales_order_place_after>
+                <observers>
+                    <tbt_rewards_model_observer_sales_order_place_after>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_order_place_after</class>
+                        <method>prepareCartPointsTransfers</method>
+                    </tbt_rewards_model_observer_sales_order_place_after>
+                </observers>
+            </sales_order_place_after>
+            <sales_order_save_commit_after>
+                <observers>
+                    <!-- Annual Limit Feature
+                    <tbt_rewards_model_checkout_cart_observer>
+                        <type>singleton</type>
+                        <class>rewards/checkout_cart_observer</class>
+                        <method>checkRedemptionLimit</method>
+                    </tbt_rewards_model_checkout_cart_observer>
+                    -->
+                    <tbt_rewards_model_observer_sales_order_save_after_create>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_order_save_after_create</class>
+                        <method>createPointsTransfers</method>
+                    </tbt_rewards_model_observer_sales_order_save_after_create>
+                </observers>
+            </sales_order_save_commit_after>
+            <sales_order_payment_place_start>
+                <observers>
+                    <tbt_rewards_model_observer_sales_order_save_after_create>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_order_save_after_create</class>
+                        <method>createPointsTransfers</method>
+                    </tbt_rewards_model_observer_sales_order_save_after_create>
+                </observers>
+            </sales_order_payment_place_start>
+            <model_save_commit_after>
+                <observers>
+                    <tbt_rewards_model_observer_sales_order_save_after_approve>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_order_save_after_approve</class>
+                        <method>approveAssociatedPendingTransfersOnShipment</method>
+                    </tbt_rewards_model_observer_sales_order_save_after_approve>
+                </observers>
+            </model_save_commit_after>
+            <sales_order_invoice_save_commit_after>
+                <observers>
+                    <tbt_rewards_model_observer_sales_order_invoice_pay>
+                        <type>singleton</type>
+                        <class>rewards/observer_sales_order_invoice_pay</class>
+                        <method>approveAssociatedPendingTransfersOnInvoice</method>
+                    </tbt_rewards_model_observer_sales_order_invoice_pay>
+                </observers>
+            </sales_order_invoice_save_commit_after>
+            <sales_order_payment_cancel>
+                <observers>
+                    <rewards_sales_order_payment_cancel>
+                        <type>singleton</type>
+                        <class>rewards/sales_order_payment_observer</class>
+                        <method>cancel</method>
+                    </rewards_sales_order_payment_cancel>
+                </observers>
+            </sales_order_payment_cancel>
             <sales_order_payment_cancel>
                 <observers>
                     <rewards_sales_order_payment_cancel>
@@ -455,90 +449,88 @@
                     </rewards_sales_order_payment_cancel>
                 </observers>
             </sales_order_payment_cancel>
-          <sales_order_creditmemo_refund>
-            <observers>
-              <tbt_rewards_model_sales_order_creditmemo_refund>
-                <type>singleton</type>
-                <class>rewards/sales_order_creditmemo_observer</class>
-                <method>refund</method>
-              </tbt_rewards_model_sales_order_creditmemo_refund>
-            </observers>
-          </sales_order_creditmemo_refund>
-
-          <!-- @nelkaake 16/01/2010 6:20:18 PM points redemption coupon autoapply -->
-          <controller_action_postdispatch_checkout_cart_couponPost>
-            <observers>
-              <tbt_rewards_model_salesrule_redemption_coupon_apply_after>
-                <type>singleton</type>
-                <class>rewards/salesrule_observer</class>
-                <method>checkRedemptionCouponAfter</method>
-              </tbt_rewards_model_salesrule_redemption_coupon_apply_after>
-            </observers>
-          </controller_action_postdispatch_checkout_cart_couponPost>
-          <controller_action_predispatch_checkout_cart_couponPost>
-            <observers>
-              <tbt_rewards_model_salesrule_redemption_coupon_apply_before>
-                <type>singleton</type>
-                <class>rewards/salesrule_observer</class>
-                <method>checkRedemptionCouponBefore</method>
-              </tbt_rewards_model_salesrule_redemption_coupon_apply_before>
-            </observers>
-          </controller_action_predispatch_checkout_cart_couponPost>
-
-          <controller_action_predispatch_checkout_onepage_index>
-            <observers>
-              <tbt_rewards_refresh_cart_totals_before_checkout>
-                <type>singleton</type>
-                <class>rewards/observer_checkout_onepage</class>
-                <method>refreshCartBeforeCheckout</method>
-              </tbt_rewards_refresh_cart_totals_before_checkout>
-            </observers>
-          </controller_action_predispatch_checkout_onepage_index>
-          <controller_action_predispatch_adminhtml_sales_order_creditmemo_save>
-            <observers>
-              <rewards_adminhtml_controller_sales_order_creditmemo_save_predispatch>
-                <type>singleton</type>
-                <class>rewards/adminhtml_controller_sales_order_creditmemo_observer</class>
-                <method>savePreDispatch</method>
-              </rewards_adminhtml_controller_sales_order_creditmemo_save_predispatch>
-            </observers>
-          </controller_action_predispatch_adminhtml_sales_order_creditmemo_save>
-          <controller_action_postdispatch_adminhtml_sales_order_creditmemo_save>
-            <observers>
-              <rewards_adminhtml_controller_sales_order_creditmemo_save_postdispatch>
-                <type>singleton</type>
-                <class>rewards/adminhtml_controller_sales_order_creditmemo_observer</class>
-                <method>savePostDispatch</method>
-              </rewards_adminhtml_controller_sales_order_creditmemo_save_postdispatch>
-            </observers>
-          </controller_action_postdispatch_adminhtml_sales_order_creditmemo_save>
-          <controller_action_predispatch_adminhtml_sales_order_cancel>
-            <observers>
-              <rewards_adminhtml_controller_sales_order_cancel_predispatch>
-                <type>singleton</type>
-                <class>rewards/adminhtml_controller_sales_order_observer</class>
-                <method>cancelPreDispatch</method>
-              </rewards_adminhtml_controller_sales_order_cancel_predispatch>
-            </observers>
-          </controller_action_predispatch_adminhtml_sales_order_cancel>
-          <controller_action_postdispatch_adminhtml_sales_order_cancel>
-            <observers>
-              <rewards_adminhtml_controller_sales_order_cancel_postdispatch>
-                <type>singleton</type>
-                <class>rewards/adminhtml_controller_sales_order_observer</class>
-                <method>cancelPostDispatch</method>
-              </rewards_adminhtml_controller_sales_order_cancel_postdispatch>
-            </observers>
-          </controller_action_postdispatch_adminhtml_sales_order_cancel>
-          <adminhtml_customer_prepare_save>
-            <observers>
-                <rewards_adminhtml_customer_prepare_save>
-                    <type>singleton</type>
-                    <class>rewards/customer_observer</class>
-                    <method>adminhtmlCustomerPrepareSave</method>
-                </rewards_adminhtml_customer_prepare_save>
-            </observers>
-          </adminhtml_customer_prepare_save>
+            <sales_order_creditmemo_refund>
+                <observers>
+                    <tbt_rewards_model_sales_order_creditmemo_refund>
+                        <type>singleton</type>
+                        <class>rewards/sales_order_creditmemo_observer</class>
+                        <method>refund</method>
+                    </tbt_rewards_model_sales_order_creditmemo_refund>
+                </observers>
+            </sales_order_creditmemo_refund>
+            <!-- @nelkaake 16/01/2010 6:20:18 PM points redemption coupon autoapply -->
+            <controller_action_postdispatch_checkout_cart_couponPost>
+                <observers>
+                    <tbt_rewards_model_salesrule_redemption_coupon_apply_after>
+                        <type>singleton</type>
+                        <class>rewards/salesrule_observer</class>
+                        <method>checkRedemptionCouponAfter</method>
+                    </tbt_rewards_model_salesrule_redemption_coupon_apply_after>
+                </observers>
+            </controller_action_postdispatch_checkout_cart_couponPost>
+            <controller_action_predispatch_checkout_cart_couponPost>
+                <observers>
+                    <tbt_rewards_model_salesrule_redemption_coupon_apply_before>
+                        <type>singleton</type>
+                        <class>rewards/salesrule_observer</class>
+                        <method>checkRedemptionCouponBefore</method>
+                    </tbt_rewards_model_salesrule_redemption_coupon_apply_before>
+                </observers>
+            </controller_action_predispatch_checkout_cart_couponPost>
+            <controller_action_predispatch_checkout_onepage_index>
+                <observers>
+                    <tbt_rewards_refresh_cart_totals_before_checkout>
+                        <type>singleton</type>
+                        <class>rewards/observer_checkout_onepage</class>
+                        <method>refreshCartBeforeCheckout</method>
+                    </tbt_rewards_refresh_cart_totals_before_checkout>
+                </observers>
+            </controller_action_predispatch_checkout_onepage_index>
+            <controller_action_predispatch_adminhtml_sales_order_creditmemo_save>
+                <observers>
+                    <rewards_adminhtml_controller_sales_order_creditmemo_save_predispatch>
+                        <type>singleton</type>
+                        <class>rewards/adminhtml_controller_sales_order_creditmemo_observer</class>
+                        <method>savePreDispatch</method>
+                    </rewards_adminhtml_controller_sales_order_creditmemo_save_predispatch>
+                </observers>
+            </controller_action_predispatch_adminhtml_sales_order_creditmemo_save>
+            <controller_action_postdispatch_adminhtml_sales_order_creditmemo_save>
+                <observers>
+                    <rewards_adminhtml_controller_sales_order_creditmemo_save_postdispatch>
+                        <type>singleton</type>
+                        <class>rewards/adminhtml_controller_sales_order_creditmemo_observer</class>
+                        <method>savePostDispatch</method>
+                    </rewards_adminhtml_controller_sales_order_creditmemo_save_postdispatch>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_creditmemo_save>
+            <controller_action_predispatch_adminhtml_sales_order_cancel>
+                <observers>
+                    <rewards_adminhtml_controller_sales_order_cancel_predispatch>
+                        <type>singleton</type>
+                        <class>rewards/adminhtml_controller_sales_order_observer</class>
+                        <method>cancelPreDispatch</method>
+                    </rewards_adminhtml_controller_sales_order_cancel_predispatch>
+                </observers>
+            </controller_action_predispatch_adminhtml_sales_order_cancel>
+            <controller_action_postdispatch_adminhtml_sales_order_cancel>
+                <observers>
+                    <rewards_adminhtml_controller_sales_order_cancel_postdispatch>
+                        <type>singleton</type>
+                        <class>rewards/adminhtml_controller_sales_order_observer</class>
+                        <method>cancelPostDispatch</method>
+                    </rewards_adminhtml_controller_sales_order_cancel_postdispatch>
+                </observers>
+            </controller_action_postdispatch_adminhtml_sales_order_cancel>
+            <adminhtml_customer_prepare_save>
+                <observers>
+                    <rewards_adminhtml_customer_prepare_save>
+                        <type>singleton</type>
+                        <class>rewards/customer_observer</class>
+                        <method>adminhtmlCustomerPrepareSave</method>
+                    </rewards_adminhtml_customer_prepare_save>
+                </observers>
+            </adminhtml_customer_prepare_save>
             <api_user_delete_after>
                 <observers>
                     <rewards_model_observer_api_user_delete_after>
@@ -556,8 +548,8 @@
                         <method>afterDelete</method>
                     </rewards_model_observer_api_roles_delete_after>
                 </observers>
-              </model_delete_after>
-          <admin_system_config_changed_section_advanced>
+            </model_delete_after>
+            <admin_system_config_changed_section_advanced>
                 <observers>
                     <rewards_admin_system_config_changed_section_advanced>
                         <type>singleton</type>
@@ -565,8 +557,8 @@
                         <method>handleModuleDisabledOutput</method>
                     </rewards_admin_system_config_changed_section_advanced>
                 </observers>
-          </admin_system_config_changed_section_advanced>
-          <poll_vote_add>
+            </admin_system_config_changed_section_advanced>
+            <poll_vote_add>
                 <observers>
                     <tbt_rewards_poll_vote_add>
                         <type>singleton</type>
@@ -574,16 +566,25 @@
                         <method>afterPollVoteAdd16</method>
                     </tbt_rewards_poll_vote_add>
                 </observers>
-          </poll_vote_add>
-          <controller_action_postdispatch_poll_vote_add>
-            <observers>
-              <tbt_rewards_controller_action_postdispatch_poll_vote_add>
-                <type>singleton</type>
-                <class>rewards/poll_observer</class>
-                <method>afterPollVoteAddPrior16</method>
-              </tbt_rewards_controller_action_postdispatch_poll_vote_add>
-            </observers>
-          </controller_action_postdispatch_poll_vote_add>
+            </poll_vote_add>
+            <controller_action_postdispatch_poll_vote_add>
+                <observers>
+                    <tbt_rewards_controller_action_postdispatch_poll_vote_add>
+                        <type>singleton</type>
+                        <class>rewards/poll_observer</class>
+                        <method>afterPollVoteAddPrior16</method>
+                    </tbt_rewards_controller_action_postdispatch_poll_vote_add>
+                </observers>
+            </controller_action_postdispatch_poll_vote_add>
+            <rewards_transfer_save_commit_after>
+                <observers>
+                    <rewards_pagecache_registerpointschange>
+                        <type>singleton</type>
+                        <class>rewards/pageCache_observer</class>
+                        <method>registerPointsChange</method>
+                    </rewards_pagecache_registerpointschange>
+                </observers>
+            </rewards_transfer_save_commit_after>
         </events>
         <models>
             <rewards>
@@ -631,15 +632,15 @@
 
             <sales>
                 <rewrite>
-                        <order>TBT_Rewards_Model_Sales_Order</order>
-                        <quote>TBT_Rewards_Model_Sales_Quote</quote>
+                    <order>TBT_Rewards_Model_Sales_Order</order>
+                    <quote>TBT_Rewards_Model_Sales_Quote</quote>
                 </rewrite>
             </sales>
 
             <!-- For PayPal standard payment compatibility for Magento versions lower than 1.4.1.0, for newer versions see TBT_Rewards_Model_Paypal_Observer -->
             <paypal>
                 <rewrite>
-                        <standard>TBT_Rewards_Model_Paypal_Standard</standard>
+                    <standard>TBT_Rewards_Model_Paypal_Standard</standard>
                 </rewrite>
             </paypal>
 
@@ -723,7 +724,6 @@
                     </rewards>
                 </observers>
             </controller_front_init_routers>
-
             <core_block_abstract_to_html_before>
                 <observers>
                     <tbt_rewards_model_checkout_total_check_tax>
@@ -742,8 +742,6 @@
                     </tbt_rewards_model_checkout_total_check_grandtotal>
                 </observers>
             </core_block_abstract_to_html_before>
-
-            <!-- For PayPal standard payments for Magento versions >= 1.4.1.0, for older versions rewrite above is used -->
             <paypal_prepare_line_items>
                 <observers>
                     <tbt_rewards_model_paypal_standard_prepare>
@@ -795,8 +793,6 @@
                     </rewards>
                  </totals>
             </order>
-
-
             <order_invoice>
                 <totals>
                     <rewards>
@@ -825,11 +821,6 @@
                     <file>rewards/expiry_notice.html</file>
                     <type>html</type>
                 </rewards_expire_email_warning1_template>
-                <rewards_birthday_email_template translate="label" module="rewards">
-                    <label>Sweet Tooth - Behavior - birthday notice</label>
-                    <file>rewards/behavior_birthday.html</file>
-                    <type>html</type>
-                </rewards_birthday_email_template>
                 <rewards_display_friend_notification_email_template translate="label" module="rewards">
                     <label>Sweet Tooth - Send Points to a Friend - Notification</label>
                     <file>rewards/friend_notification.html</file>
@@ -845,6 +836,11 @@
                     <file>rewards/points_summary.html</file>
                     <type>html</type>
                 </rewards_pointSummaryEmails_point_summary_email_template>
+                <rewards_birthday_email_template translate="label" module="rewards">
+                    <label>Sweet Tooth - Birthday Points</label>
+                    <file>rewards/behavior_birthday.html</file>
+                    <type>html</type>
+                </rewards_birthday_email_template>
             </email>
         </template>
 
@@ -877,19 +873,19 @@
                 <schedule><cron_expr>0 0 * * *</cron_expr></schedule>
                 <run><model>rewards/observer_cron::checkPointsProbation</model></run>
             </rewards_checkpointsprobation>
-	        <rewards_checkcustomerbirthdays>
-	            <schedule><cron_expr>0 12 * * *</cron_expr></schedule>
-	            <run><model>rewards/birthday_observer::checkCustomerBirthdays</model></run>
-	        </rewards_checkcustomerbirthdays>
-	        <rewards_cfu>
-	            <schedule><cron_expr>0 8 * * *</cron_expr></schedule>
-	            <run><model>rewards/observer_cron::cfu</model></run>
-	        </rewards_cfu>
-	        <!-- Rewards Points Summary Email on 1st of every month -->
-	        <rewards_customer_points_summary>
-	            <schedule><cron_expr>0 0 1 * *</cron_expr></schedule>
-	            <run><model>rewards/customer_cron::sendPointNotifications</model></run>
-	        </rewards_customer_points_summary>
+            <rewards_checkcustomerbirthdays>
+                <schedule><cron_expr>0 12 * * *</cron_expr></schedule>
+                <run><model>rewards/birthday_observer::checkCustomerBirthdays</model></run>
+            </rewards_checkcustomerbirthdays>
+            <rewards_cfu>
+                <schedule><cron_expr>0 8 * * *</cron_expr></schedule>
+                <run><model>rewards/observer_cron::cfu</model></run>
+            </rewards_cfu>
+            <!-- Rewards Points Summary Email on 1st of every month -->
+            <rewards_customer_points_summary>
+                <schedule><cron_expr>0 0 1 * *</cron_expr></schedule>
+                <run><model>rewards/customer_cron::sendPointNotifications</model></run>
+            </rewards_customer_points_summary>
         </jobs>
     </crontab>
 
@@ -1106,6 +1102,15 @@
                     </tbt_rewards_model_customer_save_after>
                 </observers>
             </customer_save_after>
+            <customer_save_commit_after>
+                <observers>
+                    <tbt_rewards_model_customer_save_after>
+                        <type>singleton</type>
+                        <class>rewards/customer_observer</class>
+                        <method>customerAfterCommit</method>
+                    </tbt_rewards_model_customer_save_after>
+                </observers>
+            </customer_save_commit_after>
             <customer_load_after>
                 <observers>
                     <tbt_rewards_model_customer_load_after>
@@ -1124,7 +1129,6 @@
                     </tbt_rewards_model_customer_save_before>
                 </observers>
             </customer_save_before>
-
             <sales_convert_quote_to_order>
                 <observers>
                     <rewards_sales_convert_quote_to_order_setFlag>
@@ -1143,7 +1147,7 @@
                     </rewards_sales_model_service_quote_submit_after_dispatchCustomerCreation>
                 </observers>
             </sales_model_service_quote_submit_after>
-    	</events>
+        </events>
     </global>
     <!-- END Customer Rewards Components END -->
 
@@ -1171,8 +1175,6 @@
             </platform>
             <developer>
                 <apiurl><![CDATA[sweettoothapp.com]]></apiurl>
-                <defaultapiurl><![CDATA[sweettoothapp.com]]></defaultapiurl>
-                <defaultstagingurl><![CDATA[sweettoothstaging.com]]></defaultstagingurl>
                 <api_timeout>1250</api_timeout>
                 <debug_mode>0</debug_mode>
             </developer>

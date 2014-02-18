@@ -4,9 +4,11 @@ class TBT_Rewards_Manage_Config_PlatformController extends Mage_Adminhtml_Contro
 {
     public function disconnectAction()
     {
-        Mage::getConfig()->saveConfig('rewards/platform/username', '');
-        Mage::getConfig()->saveConfig('rewards/platform/email', '');
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_USERNAME, '');
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_EMAIL, '');
         Mage::getConfig()->saveConfig('rewards/platform/password', '');
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_FIRSTNAME, '');
+        Mage::getConfig()->saveConfig(TBT_Rewards_Helper_Platform_Account::XPATH_PLATFORM_LASTNAME, '');
 
         Mage::getConfig()->saveConfig('rewards/platform/apikey', '');
         Mage::getConfig()->saveConfig('rewards/platform/secretkey', '');

@@ -42,6 +42,9 @@
  * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
  */
 ?>
+<?php
+$shouldWarnGuest = $this->getShowWarningTextMessage();
+?>
 <?php if ($this->showEarnings()): ?>
     <tr>
         <td class="a-right cart-points-total_earned" colspan="<?php echo $this->getColspan(); ?>"> 
@@ -53,5 +56,24 @@
             </span>
         </td>
     </tr>
+
+<?php if($shouldWarnGuest): ?>
+    <tr>
+        <td colspan="<?php echo $this->getColspan()+1; ?>">
+            <div class="guest-rewards-warning-message">
+            <?php if ($this->hasDistributions() && $this->hasRedemptions()): ?>
+                <?php echo $this->__('Please create an account or log-in to claim your earnings and spend your points.'); ?>
+            <?php elseif($this->hasDistributions()): ?>
+                <?php echo $this->__('Please create an account or log-in to claim your earnings.'); ?>
+            <?php elseif($this->hasRedemptions()): ?>
+                <?php echo $this->__('Please create an account or log-in to spend your points.'); ?>
+            <?php else: ?>
+		    <?php /* No msg to display */ ?>
+            <?php endif; ?>
+            </div>
+        </td>
+    </tr>
+<?php endif; ?>
+
 <?php endif; ?>
 

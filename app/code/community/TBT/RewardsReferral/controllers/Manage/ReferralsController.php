@@ -1,8 +1,11 @@
 <?php
 
-class TBT_RewardsReferral_Manage_ReferralsController extends Mage_Adminhtml_Controller_Action {
+class TBT_RewardsReferral_Manage_ReferralsController extends Mage_Adminhtml_Controller_Action
+{
+    const EXPORT_FILE_NAME = 'rewards_referrals';
 
-    protected function _initAction() {
+    protected function _initAction()
+    {
         $this->loadLayout()
                 ->_setActiveMenu('rewards/referrals')
                 ->_addBreadcrumb(Mage::helper('rewardsref')->__('Referrals'), Mage::helper('rewardsref')->__('Referrals'));
@@ -10,13 +13,17 @@ class TBT_RewardsReferral_Manage_ReferralsController extends Mage_Adminhtml_Cont
         return $this;
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         $this->_initAction()
                 ->_addContent($this->getLayout()->createBlock('rewardsref/manage_referrals'))
                 ->renderLayout();
+
+        return $this;
     }
 
-    public function editAction() {
+    public function editAction()
+    {
         $id = $this->getRequest()->getParam('id');
 
         $model = Mage::getModel('rewardsref/referral')->load($id);
@@ -43,13 +50,17 @@ class TBT_RewardsReferral_Manage_ReferralsController extends Mage_Adminhtml_Cont
             Mage::getSingleton('adminhtml/session')->addError(Mage::helper('rewardsref')->__('No referral'));
             $this->_redirect('*/*/');
         }
+
+        return $this;
     }
 
-    public function newAction() {
+    public function newAction()
+    {
         $this->_forward('edit');
     }
 
-    public function saveAction() {
+    public function saveAction()
+    {
         $data = $this->getRequest()->getPost();
         if ($data) {
             $model = Mage::getModel('rewardsref/referral');
@@ -75,10 +86,14 @@ class TBT_RewardsReferral_Manage_ReferralsController extends Mage_Adminhtml_Cont
             }
         }
         Mage::getSingleton('adminhtml/session')->addError(Mage::helper('rewardsref')->__('Unable to save'));
+
         $this->_redirect('*/*/');
+
+        return $this;
     }
 
-    public function deleteAction() {
+    public function deleteAction()
+    {
         if ($this->getRequest()->getParam('id') > 0) {
             try {
                 $model = Mage::getModel('rewardsref/referral');
@@ -93,10 +108,14 @@ class TBT_RewardsReferral_Manage_ReferralsController extends Mage_Adminhtml_Cont
                 $this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
             }
         }
+
         $this->_redirect('*/*/');
+
+        return $this;
     }
 
-    public function massDeleteAction() {
+    public function massDeleteAction()
+    {
         $ruleIds = $this->getRequest()->getParam('rewardsref_referral_ids');
         if (!is_array($ruleIds)) {
             Mage::getSingleton('adminhtml/session')->addError(Mage::helper('rewardsref')->__('Please select referrals'));
@@ -113,7 +132,39 @@ class TBT_RewardsReferral_Manage_ReferralsController extends Mage_Adminhtml_Cont
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
         }
+
         $this->_redirect('*/*/index');
+
+        return $this;
+    }
+
+
+    /**
+     * Export referrals grid to CSV format
+     */
+    public function exportCsvAction()
+    {
+        $time = Mage::getModel('core/date')->date('Y-m-d_H:i:s');
+        $fileName = self::EXPORT_FILE_NAME . '-' . $time . '.csv';
+        $content    = $this->getLayout()->createBlock('rewardsref/manage_referrals_grid')
+            ->getCsvFile();
+
+        $this->_prepareDownloadResponse($fileName, $content);
+    }
+
+    /**
+     * Export referrals grid to XML format
+     */
+    public function exportXmlAction()
+    {
+        $time = Mage::getModel('core/date')->date('Y-m-d_H:i:s');
+        $fileName = self::EXPORT_FILE_NAME . '-' . $time . '.xml';
+        $content    = $this->getLayout()->createBlock('rewardsref/manage_referrals_grid')
+            ->getExcelFile();
+
+        $this->_prepareDownloadResponse($fileName, $content);
+
+        return $this;
     }
 
 }

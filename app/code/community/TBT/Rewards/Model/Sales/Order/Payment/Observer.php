@@ -87,6 +87,9 @@ class TBT_Rewards_Model_Sales_Order_Payment_Observer extends Varien_Object
         Mage::dispatchEvent('rewards_sales_order_payment_automatic_cancel',
             array('order' => $order));
 
+        Mage::dispatchEvent('rewards_sales_order_payment_automatic_cancel_done',
+            array('order' => $order));
+
         return $this;
     }
 

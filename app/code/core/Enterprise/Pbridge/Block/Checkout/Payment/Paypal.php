@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -34,4 +34,12 @@
  */
 class Enterprise_Pbridge_Block_Checkout_Payment_Paypal extends Enterprise_Pbridge_Block_Payment_Form_Abstract
 {
+    /**
+     * Return 3D validation flag
+     * @return bool
+     */
+    public function is3dSecureEnabled()
+    {
+        return (bool)$this->getMethod()->getConfigData('centinel');
+    }
 }

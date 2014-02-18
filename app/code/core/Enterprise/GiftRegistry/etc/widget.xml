@@ -21,7 +21,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftRegistry
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 -->
@@ -39,6 +39,11 @@
                 <source_model>enterprise_giftregistry/source_search</source_model>
             </types>
             <template>
+                <required>1</required>
+                <visible>1</visible>
+                <label>Template</label>
+                <type>select</type>
+                <value>giftregistry/search/widget/form.phtml</value>
                 <values>
                     <default_template translate="label">
                         <label>Default Template</label>

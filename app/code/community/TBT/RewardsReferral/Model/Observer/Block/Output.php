@@ -8,11 +8,11 @@ class TBT_RewardsReferral_Model_Observer_Block_Output extends Varien_Object
      */
     public function afterOutput($observer)
     {
-        $block = $observer->getEvent ()->getBlock ();
+        $block     = $observer->getEvent ()->getBlock ();
         $transport = $observer->getEvent ()->getTransport ();
 
         // Magento 1.4.0.1 and lower dont have this transport, so we can't do autointegration : (
-        if(empty($transport)) {
+        if (empty($transport)) {
             return $this;
         }
 
@@ -84,17 +84,23 @@ class TBT_RewardsReferral_Model_Observer_Block_Output extends Varien_Object
     {
         $block = $observer->getEvent()->getBlock();
 
-        if (! ( $block instanceof Mage_Customer_Block_Account_Navigation ) ) {
+        if (!($block instanceof Mage_Customer_Block_Account_Navigation)) {
             return $this;
         }
 
         // if TBT_RewardsReferral module output is disabled don't add the link
-        if ( Mage::getStoreConfigFlag('advanced/modules_disable_output/TBT_RewardsReferral' )) {
+        if (Mage::getStoreConfigFlag('advanced/modules_disable_output/TBT_RewardsReferral')) {
+            return $this;
+        }
+
+        //  if Referral Link Configuration is set to Hide then don't add the link
+        if (!Mage::getStoreConfigFlag('rewards/referral/referral_show')) {
             return $this;
         }
 
         $label = Mage::helper('rewardsref')->__("My Referrals");
         $block->addLink("rewardsref", "rewardsref/customer/index/", $label);
+
         return $this;
     }
 }

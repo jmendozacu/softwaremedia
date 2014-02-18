@@ -45,7 +45,7 @@
  $rewards = $this->getDistriRewards();
  ?>
 <script type="text/javascript">
-optionsPrice.productOldPrice = optionsPrice.productPrice;
+// optionsPrice.productOldPrice = optionsPrice.productPrice;
 <?php if($this->printOptionsPrice()): ?>
     // If we're running Magento 1.4 and the product is simple, we need refactor the JSON config.
     optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
@@ -104,7 +104,6 @@ document.observe("dom:loaded", function() {
             var group_id = <?php echo Mage::getSingleton('customer/session')->getCustomerGroupId();?>;
             param["product_id"] = <?php echo $this->getProduct()->getId();?>;
             param["qty"] = item.value;
-            optionsPrice.productPriceBeforeRedemptions = optionsPrice.productOldPrice;
             for (var key in tierprices) {
                 if (tierprices.hasOwnProperty(key)) {
                     obj = tierprices[key];
@@ -115,10 +114,11 @@ document.observe("dom:loaded", function() {
                     }
                 }
                 if (obj.price_qty <= parseInt(param["qty"])) {
-                    optionsPrice.productPriceBeforeRedemptions = obj.website_price;
+                    // make sure it's a number
+                    optionsPrice.productPriceBeforeRedemptions = +obj.website_price;
                 }
             }
-            updateUsesInterface();
+            syncWithCustomOptions();
         });
     })
 })

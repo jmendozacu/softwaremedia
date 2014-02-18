@@ -56,10 +56,9 @@ class TBT_Rewardssocial_Block_Google_PlusOne_Button extends TBT_Rewardssocial_Bl
         return $this->_predictedPoints;
     }
 
-    public function countEnabled()
+    public function isCounterEnabled()
     {
-        $countEnabled = Mage::getStoreConfig('rewards/twitter/showNumPageTweets');
-        return $countEnabled;
+        return Mage::helper('rewardssocial/google_config')->isGooglePlusCounterEnabled();
     }
 
     public function getPlusOneProcessingUrl()
@@ -74,11 +73,6 @@ class TBT_Rewardssocial_Block_Google_PlusOne_Button extends TBT_Rewardssocial_Bl
      */
     protected function _toHtml()
     {
-        // this code would prevent the Tweet button from appearing if
-        // no Twitter username is specified in the admin panel
-		/*if (!Mage::helper('rewardssocial/twitter_tweet')->isTweetingEnabled()) {
-		    return "";
-		}*/
         return parent::_toHtml();
     }
 

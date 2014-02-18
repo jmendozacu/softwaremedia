@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -49,4 +49,15 @@ class Enterprise_Pbridge_PbridgeIpnController extends Mage_Core_Controller_Front
         exit;
     }
 
+    /**
+     * Payone IPN action
+     */
+    public function payoneAction()
+    {
+        /** @var Enterprise_Pbridge_Model_Payment_Method_Payone_Ipn $ipn */
+        $ipn = Mage::getModel('enterprise_pbridge/payment_method_payone_ipn');
+        $ipn->setIpnFormData($this->getRequest()->getPost())
+            ->processIpnRequest();
+        exit;
+    }
 }

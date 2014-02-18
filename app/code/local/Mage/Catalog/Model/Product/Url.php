@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -37,18 +37,41 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
     const CACHE_TAG = 'url_rewrite';
 
     /**
-     * Static URL instance
+     * URL instance
      *
      * @var Mage_Core_Model_Url
      */
-    protected static $_url;
+    protected  $_url;
 
     /**
-     * Static URL Rewrite Instance
+     * URL Rewrite Instance
      *
      * @var Mage_Core_Model_Url_Rewrite
      */
-    protected static $_urlRewrite;
+    protected $_urlRewrite;
+
+    /**
+     * Factory instance
+     *
+     * @var Mage_Catalog_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * @var Mage_Core_Model_Store
+     */
+    protected $_store;
+
+    /**
+     * Initialize Url model
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('catalog/factory');
+        $this->_store = !empty($args['store']) ? $args['store'] : Mage::app()->getStore();
+    }
 
     /**
      * Retrieve URL Instance
@@ -57,10 +80,10 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
      */
     public function getUrlInstance()
     {
-        if (!self::$_url) {
-            self::$_url = Mage::getModel('core/url');
+        if (null === $this->_url) {
+            $this->_url = Mage::getModel('core/url');
         }
-        return self::$_url;
+        return $this->_url;
     }
 
     /**
@@ -70,10 +93,10 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
      */
     public function getUrlRewrite()
     {
-        if (!self::$_urlRewrite) {
-            self::$_urlRewrite = Mage::getModel('core/url_rewrite');
+        if (null === $this->_urlRewrite) {
+            $this->_urlRewrite = $this->_factory->getUrlRewriteInstance();
         }
-        return self::$_urlRewrite;
+        return $this->_urlRewrite;
     }
 
     /**
@@ -169,7 +192,8 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
      * @param array $params
      * @return string
      */
-    public function getUrl(Mage_Catalog_Model_Product $product, $params = array())
+     
+        public function getUrlNew(Mage_Catalog_Model_Product $product, $params = array())
     {
         $routePath      = '';
         $routeParams    = $params;
@@ -256,5 +280,177 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
 
         return $this->getUrlInstance()->setStore($storeId)
             ->getUrl($routePath, $routeParams);
+    }
+    
+    public function getUrl(Mage_Catalog_Model_Product $product, $params = array())
+    {
+   
+        $url = $product->getData('url');
+        if (!empty($url)) {
+            return $url;
+        }
+		    $_categories = $product->getCategoryIds();
+            
+            $categoryId = $this->_getCategoryIdForUrl($product, $params);
+            $fourthLevel = null;
+            foreach($_categories as $_catId) {
+	            $_category = Mage::getModel('catalog/category')->load($_catId);
+	            if ($_category->getLevel() == 3) {
+		            $categoryId = $_category->getId();
+	            }
+	            if ($_category->getLevel() == 4) {
+		            $fourthLevel = $_category->getId();
+	            }
+	            if ($_category->getParentId() == 66 || $_category->getParentId() == 110) {
+	            	$categoryId = $_category->getId();
+	            	break;
+	            }
+            }
+            
+             if ($categoryId == null && $fourthLevel != null) {
+	             $categoryId = $fourthLevel;
+	             
+             }   
+             
+        $requestPath = $product->getData('request_path');
+        if (empty($requestPath)) {
+        	
+            $requestPath = $this->_getRequestPath($product, $this->_getCategoryIdForUrl($product, $categoryId));
+            $product->setRequestPath($requestPath);
+        }
+
+        if (isset($params['_store'])) {
+            $storeId = $this->_getStoreId($params['_store']);
+        } else {
+            $storeId = $product->getStoreId();
+        }
+
+        if ($storeId != $this->_getStoreId()) {
+            $params['_store_to_url'] = true;
+        }
+
+        // reset cached URL instance GET query params
+        if (!isset($params['_query'])) {
+            $params['_query'] = array();
+        }
+        $this->getUrlInstance()->setStore($storeId);
+        $productUrl = $this->_getProductUrlNew($product, $requestPath, $params);
+        $product->setData('url', $productUrl);
+        return $product->getData('url');
+    }
+
+    /**
+     * Returns checked store_id value
+     *
+     * @param int|null $id
+     * @return int
+     */
+    protected function _getStoreId($id = null)
+    {
+        return Mage::app()->getStore($id)->getId();
+    }
+
+    /**
+     * Check product category
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $params
+     *
+     * @return int|null
+     */
+    protected function _getCategoryIdForUrl($product, $params)
+    {
+        if (isset($params['_ignore_category'])) {
+            return null;
+        } else {
+            return $product->getCategoryId() && !$product->getDoNotUseCategoryId()
+                ? $product->getCategoryId() : null;
+        }
+    }
+    /**
+     * Retrieve product URL based on requestPath param
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @param string $requestPath
+     * @param array $routeParams
+     *
+     * @return string
+     */
+    protected function _getProductUrlNew($product, $requestPath, $routeParams)
+    {
+        $categoryId = $this->_getCategoryIdForUrl($product, $routeParams);
+        
+		    $_categories = $product->getCategoryIds();
+
+            $fourthLevel = null;
+            foreach($_categories as $_catId) {
+	            $_category = Mage::getModel('catalog/category')->load($_catId);
+	            if ($_category->getLevel() == 3) {
+		            $categoryId = $_category->getId();
+	            }
+	            if ($_category->getLevel() == 4) {
+		            $fourthLevel = $_category->getId();
+	            }
+	            if ($_category->getParentId() == 66 || $_category->getParentId() == 110) {
+	            	$categoryId = $_category->getId();
+	            	break;
+	            }
+            }
+            
+             if ($categoryId == null && $fourthLevel != null) {
+	             $categoryId = $fourthLevel;
+	             
+             }   
+        if (!empty($requestPath)) {
+            if ($categoryId) {
+                $category = $this->_factory->getModel('catalog/category', array('disable_flat' => true))
+                    ->load($categoryId);
+                if ($category->getId()) {
+                    $categoryRewrite = $this->_factory->getModel('enterprise_catalog/category')
+                        ->loadByCategory($category);
+                    if ($categoryRewrite->getId()) {
+                        $requestPath = $categoryRewrite->getRequestPath() . '/' . $requestPath;
+                    }
+                }
+            }
+            $product->setRequestPath($requestPath);
+
+            $storeId = $this->getUrlInstance()->getStore()->getId();
+            $requestPath = $this->_factory->getHelper('enterprise_catalog')
+                ->getProductRequestPath($requestPath, $storeId);
+
+            return $this->getUrlInstance()->getDirectUrl($requestPath, $routeParams);
+        }
+
+        $routeParams['id'] = $product->getId();
+        $routeParams['s'] = $product->getUrlKey();
+        if ($categoryId) {
+            $routeParams['category'] = $categoryId;
+        }
+        return $this->getUrlInstance()->getUrl('catalog/product/view', $routeParams);
+    }
+    
+
+    /**
+     * Retrieve request path
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @param int $categoryId
+     * @return bool|string
+     */
+    protected function _getRequestPath($product, $categoryId)
+    {
+        $idPath = sprintf('product/%d', $product->getEntityId());
+        if ($categoryId) {
+            $idPath = sprintf('%s/%d', $idPath, $categoryId);
+        }
+        $rewrite = $this->getUrlRewrite();
+        $rewrite->setStoreId($product->getStoreId())
+            ->loadByIdPath($idPath);
+        if ($rewrite->getId()) {
+            return $rewrite->getRequestPath();
+        }
+
+        return false;
     }
 }

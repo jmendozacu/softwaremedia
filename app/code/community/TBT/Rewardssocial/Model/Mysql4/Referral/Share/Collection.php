@@ -6,6 +6,7 @@ class TBT_Rewardssocial_Model_Mysql4_Referral_Share_Collection extends Mage_Core
     {
         parent::_construct();
         $this->_init('rewardssocial/referral_share');
+
         return $this;
     }
 

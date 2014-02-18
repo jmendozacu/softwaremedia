@@ -28,8 +28,6 @@
         </reference>
     </rewardsadmin_manage_transfer_other_index>
 
-
-
     <rewardsadmin_manage_currency_index>
         <reference name="content">
             <block type="rewards/manage_currency" name="currency" template= "rewards/currency.phtml"/>
@@ -129,4 +127,11 @@
         </reference>
     </adminhtml_system_config_edit>
 
+    <adminhtml_dashboard_index>
+        <reference name="dashboard">
+            <block type="rewards/manage_dashboard" name="rewards_dashboard" as="rewards_dashboard" template="rewards/dashboard/dashboard.phtml">
+                <block type="rewards/manage_dashboard_usage" name="rewards_dashboard_usage" as="rewards_dashboard_usage" template="rewards/dashboard/usage.phtml" />
+            </block>
+        </reference>
+    </adminhtml_dashboard_index>
 </layout>

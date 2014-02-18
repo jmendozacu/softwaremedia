@@ -44,8 +44,11 @@
         <!-- Using the iFrame -->
         <iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo $this->getEncodedUrl() ?>&amp;layout=<?php echo $_layout ?>&amp;show_faces=<?php echo $_showFaces ?>&amp;width=<?php echo $_width ?>&amp;action=<?php echo $_verb ?>&amp;font=<?php echo $_font ?>&amp;colorscheme=<?php echo $_color ?>&amp;locale=<?php echo Mage::helper('evlike')->getFacebookLocale() ?><?php if($_ref) echo "&amp;ref=" . $_ref ?>" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; width:<?php echo $_width ?>px; height:<?php echo $_height ?>px"></iframe>
         <?php else: ?>
-        <!-- Using the JavaScript SDK -->
-        <fb:like class="rewardssocial-rewardable" href="<?php echo $this->getCurrentUrl() ?>" send="<?php echo $_showSend ?>" layout="<?php echo $_layout ?>" show_faces="<?php echo $_showFaces ?>" width="<?php echo $_width ?>" action="<?php echo $_verb ?>" font="<?php echo $_font ?>" colorscheme="<?php echo $_color ?>" <?php if($_ref) echo "ref=\"" . $_ref . "\"" ?>></fb:like>
-        <?php endif; ?>
+        <script type="text/javascript">
+        //<![CDATA[
+        document.write('<fb:like class="rewardssocial-rewardable" href="<?php echo $this->getCurrentUrl() ?>" send="<?php echo $_showSend ?>" layout="<?php echo $_layout ?>" show_faces="<?php echo $_showFaces ?>" width="<?php echo $_width ?>" action="<?php echo $_verb ?>" font="<?php echo $_font ?>" colorscheme="<?php echo $_color ?>" <?php if($_ref) echo "ref=\"" . $_ref . "\"" ?>></fb:like>');
+        //]]>
+        </script>
+       <?php endif; ?>
     <?php endif; ?>
 <?php endif; ?>

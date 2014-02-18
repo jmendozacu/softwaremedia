@@ -80,10 +80,64 @@ class TBT_Rewardssocial_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 
     /**
+     * Returns Sweet Tooth system configuration URL
+     * @return string backend system configuration url for Sweet Tooth
+     */
+    public function getConfigUrl()
+    {
+        return Mage::helper("adminhtml")->getUrl('adminhtml/system_config/edit', array('section' => 'rewards'));
+    }
+
+    /**
+     * Returns Retail Evolved Like system configuration URL
+     * @return string backend system configuration url for the Retail Evolved Like extension module screen
+     */
+    public function getREConfigUrl()
+    {
+        return Mage::helper("adminhtml")->getUrl('adminhtml/system_config/edit', array('section' => 'evlike'));
+    }
+
+    /**
      * @deprecated unused option
      */
     public function isEnabled() {
         return true;
+    }
+
+    /**
+     * Returns product's URL as configured in Magento admin.
+     * @return string Product URL
+     */
+    public function getProductUrl($product)
+    {
+        if (!$product) {
+            return null;
+        }
+        $url = Mage::getBaseUrl();
+
+        $rewrite = Mage::getModel('core/url_rewrite');
+
+        if ($product->getStoreId()) {
+            $rewrite->setStoreId($product->getStoreId());
+        } else {
+            $rewrite->setStoreId(Mage::app()->getStore()->getId());
+        }
+
+        $idPath = 'product/' . $product->getId();
+        if ($product->getCategoryId() && Mage::getStoreConfig('catalog/seo/product_use_categories')) {
+            $idPath .= '/' . $product->getCategoryId();
+        }
+
+        $rewrite->loadByIdPath($idPath);
+
+        if ($rewrite->getId()) {
+            $url .= $rewrite->getRequestPath();
+            return $url;
+        }
+
+        $url .= $product->getUrlKey() . Mage::helper('catalog/product')->getProductUrlSuffix();
+
+        return $url;
     }
 
 }

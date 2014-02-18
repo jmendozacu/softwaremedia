@@ -44,23 +44,9 @@
     <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
     <?php echo $this->getChildHtml('form_before') ?>
     <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
-        <fieldset class="cart-data-content">
-        
-        	<!-- START Mobile Cart -->
-        		<div class="mobile-cart-append show-mobile">
-        			<div class="mobile-cart-title">
-        				<p>Description</p>
-        			</div>
-        			<div class="mobile-cart-rows">
-        			</div>
-        			<div class="clear"></div>
-        			<div class="mobile-cart-subtotal">
-        			</div>
-        		</div>
-        	<!-- END Mobile Cart -->
-        	<div class="clear"></div>
-        
-            <table id="shopping-cart-table" class="data-table cart-table">
+        <?php echo $this->getBlockHtml('formkey'); ?>
+        <fieldset>
+            <table style="margin: 0 25px 0px; width: 1150px;" id="shopping-cart-table" class="data-table cart-table">
                 <col width="1" />
                 <col />
                 <col width="1" />
@@ -86,9 +72,13 @@
                 <thead>
                     <tr>
                         <th rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
-                        <th rowspan="<?php echo $mergedCells; ?>" class="a-left"><span class="nobr"><?php echo $this->__('Description') ?></span></th>
+                        <th rowspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Product Name') ?></span></th>
+                        <th rowspan="<?php echo $mergedCells; ?>"></th>
+                        <?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><span class="nobr"><?php echo $this->__('Move to Wishlist') ?></span></th>
+                        <?php endif ?>
                         <th class="a-center" colspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Unit Price') ?></span></th>
-                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Quantity') ?></th>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Qty') ?></th>
                         <th class="a-center" colspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Subtotal') ?></th>
                         <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Remove') ?></th>
                     </tr>
@@ -104,7 +94,7 @@
                 <tfoot>
                     <tr>
                     	
-                        <td colspan="6" class="cart_subtotal a-right">
+                        <td colspan="7" class="cart_subtotal a-right">
                         	<div class="f-left">
                                 <button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
                                 
@@ -149,7 +139,6 @@
                 </tfoot>
                 <tbody>
                 <?php foreach($this->getItems() as $_item): ?>
-                    <?php // Echo cart items ?>
                     <?php echo $this->getItemHtml($_item) ?>
                 <?php endforeach ?>
                 </tbody>

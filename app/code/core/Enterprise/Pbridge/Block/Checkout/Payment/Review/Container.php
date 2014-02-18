@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_Pbridge
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -43,7 +43,8 @@ class Enterprise_Pbridge_Block_Checkout_Payment_Review_Container extends Mage_Co
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         if ($quote) {
             $payment = $quote->getPayment();
-            if ($payment->getMethodInstance()->getIsDeferred3dCheck()) {
+            $method = $payment->getMethodInstance();
+            if ($method->getIsDeferred3dCheck() || $method->getIsPendingOrderRequired()) {
                 $this->setMethodCode($payment->getMethod());
                 return parent::_toHtml();
             }

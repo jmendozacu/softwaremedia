@@ -31,3 +31,17 @@ font-weight: bold;margin-top: -33px;padding: 0 8px;}
     /*margin-top: -20px;*/
     width: 100%;
 }
+
+.referral_share_limit p {
+    font-style: italic;
+    margin: 0px;
+}
+
+/** Onestepcheckout style matching */
+div.checkoutcontainer div.rewards_referral_information {
+    width: 100% !important;
+}
+
+div.checkoutcontainer div.rewards_referral_information .input-text {
+    width: 83%;
+}

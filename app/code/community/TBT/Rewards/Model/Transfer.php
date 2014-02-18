@@ -47,26 +47,34 @@
  */
 class TBT_Rewards_Model_Transfer extends TBT_Rewards_Model_Abstract
 {
-	/** Properties for event transfers **/
-	protected $_eventPrefix = 'rewards_transfer';
-	protected $_eventObject = 'rewards_transfer';
+    /** Properties for event transfers **/
+    protected $_eventPrefix = 'rewards_transfer';
+    protected $_eventObject = 'rewards_transfer';
 
-	protected $_references = null;
+    protected $_references = null;
 
-	protected $_isNew = false;
+    protected $_isNew    = false;
 
-	public function _construct() {
-		parent::_construct ();
-		$this->_init ( 'rewards/transfer' );
-		$this->loadReferenceInformation ();
-	}
+    /**
+     * When a new transfer is saved, in _afterSave() we need to re-save the transfer again to save 'source_reference_id'
+     * field. We use $_isResave to skip re-running some unnecesary code in _beforeSave, _afterSave and _afterLoad methods.
+     *
+     * @var bool
+     **/
+    protected $_isResave = false;
 
-	/**
-	 * Cancels this points tranfer if possible.
-	 * If success, saves the cancellation.
-	 * @return true if success, false otherwise.
-	 */
-	public function cancel() {
+    public function _construct() {
+        parent::_construct ();
+        $this->_init ( 'rewards/transfer' );
+        $this->loadReferenceInformation ();
+    }
+
+    /**
+     * Cancels this points tranfer if possible.
+     * If success, saves the cancellation.
+     * @return true if success, false otherwise.
+     */
+    public function cancel() {
         $status_change_result = $this->setStatus($this->getStatus(), TBT_Rewards_Model_Transfer_Status::STATUS_CANCELLED);
 
         if($status_change_result === false) {
@@ -76,139 +84,139 @@ class TBT_Rewards_Model_Transfer extends TBT_Rewards_Model_Abstract
         $this->save();
 
         return true;
-	}
+    }
 
-	/**
-	 * Adds to the comments of this points transfer, separated by a \n\r (does not save)
-	 * @param string $new_comment
-	 */
-	public function appendComments($new_comment) {
-	    $old_comments = $this->getComments();
+    /**
+     * Adds to the comments of this points transfer, separated by a \n\r (does not save)
+     * @param string $new_comment
+     */
+    public function appendComments($new_comment) {
+        $old_comments = $this->getComments();
         $this->setComments( $old_comments . "\n\r" . $new_comment );
         return $this;
-	}
+    }
 
-	public function setOrderId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER );
-		$this->setReferenceId ( $id );
-		$this->_data ['order_id'] = $id;
+    public function setOrderId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER );
+        $this->setReferenceId ( $id );
+        $this->_data ['order_id'] = $id;
 
-		return $this;
-	}
-
-
-	public function setRatingId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_RATING );
-		$this->setReferenceId ( $id );
-		$this->_data ['rating_id'] = $id;
-
-		return $this;
-	}
+        return $this;
+    }
 
 
-	public function setPollId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_POLL );
-		$this->setReferenceId ( $id );
-		$this->_data ['poll_id'] = $id;
+    public function setRatingId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_RATING );
+        $this->setReferenceId ( $id );
+        $this->_data ['rating_id'] = $id;
 
-		return $this;
-	}
-
-	public function setReferenceTransferId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_TRANSFER );
-		$this->setReferenceId ( $id );
-		$this->_data ['reference_transfer_id'] = $id;
-
-		return $this;
-	}
-
-	public function setAsSignup() {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_SIGNUP );
-		$this->setReferenceId ( - 1 );
-
-		return $this;
-	}
-
-	public function setToFriendId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND );
-		$this->setReferenceId ( $id );
-		$this->_data ['friend_id'] = $id;
-
-		return $this;
-	}
-
-	public function setFromFriendId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND );
-		$this->setReferenceId ( $id );
-		$this->_data ['friend_id'] = $id;
-
-		return $this;
-	}
-
-	public function getTransferId() {
-		return $this->_data ['reference_transfer_id'];
-	}
-
-	public function isOrder() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER) || isset ( $this->_data ['order_id'] );
-	}
+        return $this;
+    }
 
 
-	public function isRating() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_RATING) || isset ( $this->_data ['rating_id'] );
-	}
+    public function setPollId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_POLL );
+        $this->setReferenceId ( $id );
+        $this->_data ['poll_id'] = $id;
+
+        return $this;
+    }
+
+    public function setReferenceTransferId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_TRANSFER );
+        $this->setReferenceId ( $id );
+        $this->_data ['reference_transfer_id'] = $id;
+
+        return $this;
+    }
+
+    public function setAsSignup() {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_SIGNUP );
+        $this->setReferenceId ( - 1 );
+
+        return $this;
+    }
+
+    public function setToFriendId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND );
+        $this->setReferenceId ( $id );
+        $this->_data ['friend_id'] = $id;
+
+        return $this;
+    }
+
+    public function setFromFriendId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND );
+        $this->setReferenceId ( $id );
+        $this->_data ['friend_id'] = $id;
+
+        return $this;
+    }
+
+    public function getTransferId() {
+        return $this->_data ['reference_transfer_id'];
+    }
+
+    public function isOrder() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER) || isset ( $this->_data ['order_id'] );
+    }
 
 
-	public function isPoll() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_POLL) || isset ( $this->_data ['poll_id'] );
-	}
+    public function isRating() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_RATING) || isset ( $this->_data ['rating_id'] );
+    }
 
-	/**
-	 * True if transfer references transfer
-	 *
-	 * @return boolean
-	 */
-	public function isTransfer() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_TRANSFER) || isset ( $this->_data ['reference_transfer_id'] );
-	}
 
-	public function isSignup() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_SIGNUP);
-	}
+    public function isPoll() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_POLL) || isset ( $this->_data ['poll_id'] );
+    }
 
-	/**
-	 * Is this is a transfer to a friend? (-)
-	 *
-	 * @return boolean
-	 */
-	public function isToFriend() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND);
-	}
+    /**
+     * True if transfer references transfer
+     *
+     * @return boolean
+     */
+    public function isTransfer() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_TRANSFER) || isset ( $this->_data ['reference_transfer_id'] );
+    }
 
-	/**
-	 * Is this a transfer from a friend (+)
-	 *
-	 * @return boolean
-	 */
-	public function isFromFriend() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND);
-	}
+    public function isSignup() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_SIGNUP);
+    }
 
-	/**
-	 * Is this any kind of friend-to-friend transfer?
-	 *
-	 * @return boolean
-	 */
-	public function isFriendTransfer() {
-		return (($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND) || ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND)) || isset ( $this->_data ['friend_id'] );
-	}
+    /**
+     * Is this is a transfer to a friend? (-)
+     *
+     * @return boolean
+     */
+    public function isToFriend() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND);
+    }
+
+    /**
+     * Is this a transfer from a friend (+)
+     *
+     * @return boolean
+     */
+    public function isFromFriend() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND);
+    }
+
+    /**
+     * Is this any kind of friend-to-friend transfer?
+     *
+     * @return boolean
+     */
+    public function isFriendTransfer() {
+        return (($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND) || ($this->getReferenceType () == TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND)) || isset ( $this->_data ['friend_id'] );
+    }
 
     /**
      * Checks to see if this points transfer contains a reference that
@@ -232,7 +240,7 @@ class TBT_Rewards_Model_Transfer extends TBT_Rewards_Model_Abstract
      * reference ID of of that type.  If it is not provided, then it will return
      * back the reference_id stored in the model's data.
      *
-     * @param int $reference_type	numeric reference type ID
+     * @param int $reference_type   numeric reference type ID
      * @return int referece_ID of the reference found or NULL if no reference is found.
      */
     public function getReferenceId($reference_type = null) {
@@ -249,162 +257,180 @@ class TBT_Rewards_Model_Transfer extends TBT_Rewards_Model_Abstract
         return null;
     }
 
-	public function getTransfersAssociatedWithOrder($order_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER )->addFilter ( 'reference_id', $order_id );
-	}
+    public function getTransfersAssociatedWithOrder($order_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER )->addFilter ( 'reference_id', $order_id );
+    }
 
 
-	public function getTransfersAssociatedWithRating($rating_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_RATING )->addFilter ( 'reference_id', $rating_id );
-	}
+    public function getTransfersAssociatedWithRating($rating_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_RATING )->addFilter ( 'reference_id', $rating_id );
+    }
 
 
-	/**
-	 * @deprecated from version 1.7.6.3+
-	 */
-	public function getTransfersAssociatedWithPoll($poll_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_POLL )->addFilter ( 'reference_id', $poll_id );
-	}
+    /**
+     * @deprecated from version 1.7.6.3+
+     */
+    public function getTransfersAssociatedWithPoll($poll_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_POLL )->addFilter ( 'reference_id', $poll_id );
+    }
 
-	public function getTransfersAssociatedWithTransfer($transfer_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_TRANSFER )->addFilter ( 'reference_id', $transfer_id );
-	}
+    public function getTransfersAssociatedWithTransfer($transfer_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_TRANSFER )->addFilter ( 'reference_id', $transfer_id );
+    }
 
-	public function getTransfersAssociatedWithSignup($customer_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_SIGNUP )->addFilter ( 'customer_id', $customer_id );
-	}
+    public function getTransfersAssociatedWithSignup($customer_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_SIGNUP )->addFilter ( 'customer_id', $customer_id );
+    }
 
-	public function getTransfersSentToFriend($friend_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND )->addFilter ( 'reference_id', $friend_id );
-	}
+    public function getTransfersSentToFriend($friend_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND )->addFilter ( 'reference_id', $friend_id );
+    }
 
-	public function getTransfersSentFromFriend($friend_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND )->addFilter ( 'reference_id', $friend_id );
-	}
+    public function getTransfersSentFromFriend($friend_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND )->addFilter ( 'reference_id', $friend_id );
+    }
 
-	public function getTransfersAssociatedWithFriend($friend_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND || TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND )->addFilter ( 'reference_id', $friend_id );
-	}
+    public function getTransfersAssociatedWithFriend($friend_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_FROM_FRIEND || TBT_Rewards_Model_Transfer_Reference::REFERENCE_TO_FRIEND )->addFilter ( 'reference_id', $friend_id );
+    }
 
-	/**
-	 * Sets the status of the transfer if possible.
-	 * If the new transfer is illegal, returns false,
-	 * otherwise, updates the status and returns $this.
-	 * @return mixed boolean if false, or $this if OK
-	 */
-	public function setStatus($oldStatusId, $newStatusId) {
-		$availStatuses = Mage::getSingleton ( 'rewards/transfer_status' )->getAvailableNextStatuses ( $this->getStatus () );
-		if (array_search ( $newStatusId, $availStatuses ) !== false) {
-			//@nelkaake Changed on Thursday May 27, 2010:  changed parent::setStatus to $this->setData since some servers have trouble reading the former.
-			return $this->setData ( "status", $newStatusId );
-		} else {
-			return false;
-		}
-	}
+    /**
+     * Sets the status of the transfer if possible.
+     * If the new transfer is illegal, returns false,
+     * otherwise, updates the status and returns $this.
+     * @return mixed boolean if false, or $this if OK
+     */
+    public function setStatus($oldStatusId, $newStatusId) {
+        $availStatuses = Mage::getSingleton ( 'rewards/transfer_status' )->getAvailableNextStatuses ( $this->getStatus () );
+        if (array_search ( $newStatusId, $availStatuses ) !== false) {
+            //@nelkaake Changed on Thursday May 27, 2010:  changed parent::setStatus to $this->setData since some servers have trouble reading the former.
+            return $this->setData ( "status", $newStatusId );
+        } else {
+            return false;
+        }
+    }
 
-	public function _beforeSave() {
-		if ($this->getQuantity () == 0) {
-			throw new Exception ( "You must select a quantity of points not equal to (0)." . " If you want to void a transfer, set it's status to cancelled or revoked." );
-		}
-		if ($this->getCustomerId () == null || $this->getCustomerId () == '') {
-			throw new Exception ( "Please select a customer for this transfer." );
-		}
+    public function _beforeSave()
+    {
+        // automatically set the last updated timestamps to the current date/time
+        $this->setLastUpdateTs ( now () );
 
-		if ($customer = Mage::getModel ( 'rewards/customer' )->load ( $this->getCustomerId () )) {
-			$old_balance = $customer->getPointsBalance ( $this->getCurrencyId () );
-			$new_balance = $old_balance + $this->getQuantity ();
-			if ($new_balance < 0 && $old_balance >= 0) {
-				if (Mage::helper ( 'rewards/config' )->canHaveNegativePtsBalance ()) {
-					// warning, going into negative points!!
-				} else {
-					// not allowed to go into negative points!
-					throw new Exception ( "The transfer cannot be completed because the customer will have less than zero (0) points." );
-				}
-			}
-		} else {
-			throw new Exception ( "Transfer could not be completed because customer no longer exists!" );
-		}
+        if ($this->_isResave) {
+            return parent::_beforeSave();
+        }
 
-		if ($this->getStatus () == - 1) {
-			$this->setReferenceTransferId ( $this->getId () )->setStatus ( null, TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED )->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_SYSTEM_REVOKED )->setQuantity ( $this->getQuantity () * - 1 )->setId ( null );
-		}
+        if ($this->getQuantity () == 0) {
+            throw new Exception ( "You must select a quantity of points not equal to (0)." . " If you want to void a transfer, set it's status to cancelled or revoked." );
+        }
+        if ($this->getCustomerId () == null || $this->getCustomerId () == '') {
+            throw new Exception ( "Please select a customer for this transfer." );
+        }
 
-		$this->storeReferenceData ();
+        if ($customer = Mage::getModel ( 'rewards/customer' )->load ( $this->getCustomerId () )) {
+            $old_balance = $customer->getPointsBalance ( $this->getCurrencyId () );
+            $new_balance = $old_balance + $this->getQuantity ();
+            if ($new_balance < 0 && $old_balance >= 0) {
+                if (Mage::helper ( 'rewards/config' )->canHaveNegativePtsBalance ()) {
+                    // warning, going into negative points!!
+                } else {
+                    // not allowed to go into negative points!
+                    throw new Exception ( "The transfer cannot be completed because the customer will have less than zero (0) points." );
+                }
+            }
+        } else {
+            throw new Exception ( "Transfer could not be completed because customer no longer exists!" );
+        }
 
-		if ($this->getId ()) {
-		    $this->_isNew = false;
+        if ($this->getStatus () == - 1) {
+            $this->setReferenceTransferId ( $this->getId () )->setStatus ( null, TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED )->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_SYSTEM_REVOKED )->setQuantity ( $this->getQuantity () * - 1 )->setId ( null );
+        }
 
-			$om = Mage::getModel ( 'rewards/transfer' )->load ( $this->getId () );
-			$s = Mage::getSingleton ( 'rewards/transfer_status' );
+        $this->storeReferenceData ();
 
-			if (! $this->getStatus ()) {
-				$this->setStatus ( null, $om->getStatus () );
-			}
+        if ($this->getId ()) {
+            $this->_isNew = false;
 
-			$current_status = $om->getStatus ();
-			$next_status = $this->getStatus ();
+            $om = Mage::getModel ( 'rewards/transfer' )->load ( $this->getId () );
+            $s = Mage::getSingleton ( 'rewards/transfer_status' );
 
-			$availStat = $s->getAvailStatuses ( $current_status );
-			if (! isset ( $availStat [$next_status] )) {
-				throw new Exception ( "You cannot change the status from " . $s->getStatusCaption ( $current_status ) . " to " . $s->getStatusCaption ( $next_status ) . " for this transfer." );
-			}
+            if (! $this->getStatus ()) {
+                $this->setStatus ( null, $om->getStatus () );
+            }
 
-			try {
-				if (! $s->canAdjustQty ( $current_status ) && ($om->getQuantity () != $this->getQuantity ())) {
-					throw new Exception ( "quantity" );
-				}
-				if (! $s->canAdjustComments ( $current_status ) && ($om->getComments () != $this->getComments ())) {
-					throw new Exception ( "comments" );
-				}
-				if (! $s->canAdjustCustomer ( $current_status ) && ($om->getCustomerId () != $this->getCustomerId ())) {
-					throw new Exception ( "customer" );
-				}
-				if (! $s->canAdjustReference ( $current_status ) && ($om->getReferenceId () != $this->getReferenceId ())) {
-					//throw new Exception("{Current: [". $om->getReferenceId() ."]  New: [". $this->getReferenceId() ."]}");
-					throw new Exception ( "associated reference" );
-				}
-			} catch ( Exception $e ) {
-				$attr = $e->getMessage ();
-				throw new Exception ( "You cannot change the $attr for this transfer because of the " . "current status that it is in.  Instead, make a new transfer as an adjustment." );
-			}
-			if (! $s->canAdjustStatus ( $current_status, $next_status )) {
-				throw new Exception ( "You cannot change the status from $current_status to $next_status." );
-			}
-		} else {
-			$this->_isNew = true;
+            $current_status = $om->getStatus ();
+            $next_status = $this->getStatus ();
 
-			// if this is a new transfer then automatically set the created timestamps to the current date/time
-			$creation_ts = $this->getCreationTs ();
-			if (empty ( $creation_ts )) {
-				$this->setCreationTs ( now () );
-			}
+            $availStat = $s->getAvailStatuses ( $current_status );
+            if (! isset ( $availStat [$next_status] )) {
+                throw new Exception ( "You cannot change the status from " . $s->getStatusCaption ( $current_status ) . " to " . $s->getStatusCaption ( $next_status ) . " for this transfer." );
+            }
 
-			//get On-Hold initial status override
-			if ($this->getRuleId() && $this->getReferenceType() != TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER) {
-				$rule = Mage::getModel('rewards/special')->load($this->getRuleId());
-				if ($rule->getOnholdDuration() > 0) {
-					$this->setEffectiveStart(date('Y-m-d H:i:s', strtotime("+{$rule->getOnholdDuration()} days")));
-					$this->setData('status', TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME);
-				}
-			}
-		}
-		// automatically set the last updated timestamps to the current date/time
-		$this->setLastUpdateTs ( now () );
+            try {
+                if (! $s->canAdjustQty ( $current_status ) && ($om->getQuantity () != $this->getQuantity ())) {
+                    throw new Exception ( "quantity" );
+                }
+                if (! $s->canAdjustComments ( $current_status ) && ($om->getComments () != $this->getComments ())) {
+                    throw new Exception ( "comments" );
+                }
+                if (! $s->canAdjustCustomer ( $current_status ) && ($om->getCustomerId () != $this->getCustomerId ())) {
+                    throw new Exception ( "customer" );
+                }
+                if (! $s->canAdjustReference ( $current_status ) && ($om->getReferenceId () != $this->getReferenceId ())) {
+                    //throw new Exception("{Current: [". $om->getReferenceId() ."]  New: [". $this->getReferenceId() ."]}");
+                    throw new Exception ( "associated reference" );
+                }
+            } catch ( Exception $e ) {
+                $attr = $e->getMessage ();
+                throw new Exception ( "You cannot change the $attr for this transfer because of the " . "current status that it is in.  Instead, make a new transfer as an adjustment." );
+            }
+            if (! $s->canAdjustStatus ( $current_status, $next_status )) {
+                throw new Exception ( "You cannot change the status from $current_status to $next_status." );
+            }
+        } else {
+            $this->_isNew = true;
 
-		return parent::_beforeSave ();
-	}
+            // if this is a new transfer then automatically set the created timestamps to the current date/time
+            $creation_ts = $this->getCreationTs ();
+            if (empty ( $creation_ts )) {
+                $this->setCreationTs ( now () );
+            }
 
-	public function _afterSave() {
-		// Order was not changed, so it must be new or existing.
+            //get On-Hold initial status override
+            if ($this->getRuleId() && $this->getReferenceType() != TBT_Rewards_Model_Transfer_Reference::REFERENCE_ORDER) {
+                $rule = Mage::getModel('rewards/special')->load($this->getRuleId());
+                if ($rule->getOnholdDuration() > 0) {
+                    $this->setEffectiveStart(date('Y-m-d H:i:s', strtotime("+{$rule->getOnholdDuration()} days")));
+                    $this->setData('status', TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME);
+                }
+            }
+        }
 
 
-		Mage::getSingleton ( 'rewards/transfer_types' )->transferBeforeSave ( $this );
+        return parent::_beforeSave ();
+    }
 
-		$ref = Mage::getModel ( 'rewards/transfer_reference' )->loadReferenceByTransferId ( $this->getId () )->setData ( $this->getData () )->setId ( $this->_data ['reference_data'] ['id'] )->setReferenceId ( $this->getReferenceId () )->setReferenceType ( $this->getReferenceType () )->setRuleId ( $this->_data ['reference_data'] ['rule_id'] )->save ();
-
-		Mage::getSingleton ( 'rewards/transfer_types' )->transferAfterSave ( $this );
+    public function _afterSave()
+    {
+        if ($this->_isResave) {
+            return parent::_afterSave();
+        }
 
         if ($this->_isNew) {
+            Mage::getSingleton ( 'rewards/transfer_types' )->transferBeforeSave ( $this );
+
+            $ref = Mage::getModel ( 'rewards/transfer_reference' )->loadReferenceByTransferId($this->getId())
+                ->setData($this->getData())
+                ->setId($this->_data['reference_data']['id'])
+                ->setReferenceId($this->getReferenceId())
+                ->setReferenceType($this->getReferenceType())
+                ->setRuleId($this->_data['reference_data']['rule_id'])
+                ->save();
+
+            Mage::getSingleton ( 'rewards/transfer_types' )->transferAfterSave ( $this );
+
+            // set _isResave flag
+            $this->_isResave = true;
+
             //if the transfer is new, save the 'source_reference_id' field in 'rewards_transfer' table
             $this->setSourceReferenceId($ref->getId())
                 ->save();
@@ -412,46 +438,54 @@ class TBT_Rewards_Model_Transfer extends TBT_Rewards_Model_Abstract
             Mage::dispatchEvent('rewards_transfer_new', array('rewards_transfer' => $this));
         }
 
-		if ($this->getReasonId() == TBT_Rewards_Model_Transfer_Reason_SystemRevoked::REASON_TYPE_ID) {
-			Mage::dispatchEvent('rewards_transfer_revoke', array(
-				'rewards_transfer' => Mage::getModel('rewards/transfer')->load($this->getReferenceId()),
-				'new_transfer' => $this
-			));
-		}
+        if ($this->getReasonId() == TBT_Rewards_Model_Transfer_Reason_SystemRevoked::REASON_TYPE_ID) {
+            Mage::dispatchEvent('rewards_transfer_revoke', array(
+                'rewards_transfer' => Mage::getModel('rewards/transfer')->load($this->getReferenceId()),
+                'new_transfer' => $this
+            ));
+        }
 
-		return parent::_afterSave ();
-	}
+        return parent::_afterSave ();
+    }
 
-	public function _afterLoad() {
-		$this->loadReferenceInformation ();
-		return parent::_afterLoad ();
-	}
+    public function _afterLoad()
+    {
+        if ($this->_isResave) {
+            // reset isResave flag
+            $this->_isResave = false;
+            return parent::_afterLoad();
+        }
 
-	public function _beforeDelete() {
-		throw new Exception ( "You cannot delete a transfer. You may however cancel or revoke an " . "existing transfer to achieve the same effect." );
-		return parent::_beforeSave ();
-	}
+        $this->loadReferenceInformation ();
 
-	// TODO: Finish this method...
-	public function setReference(TBT_Rewards_Model_Transfer_Reference $ref) {
-		$ref_data = array ('id' => $ref->getId (), 'rule_id' => $ref->getRuleId () );
-		$this->setData ( 'reference_data', $ref_data );
-		return $this;
-	}
+        return parent::_afterLoad ();
+    }
 
-	private function loadReferenceInformation() {
-		if ($this->getId ()) {
-			$this->clearReferences ();
+    public function _beforeDelete() {
+        throw new Exception ( "You cannot delete a transfer. You may however cancel or revoke an " . "existing transfer to achieve the same effect." );
+        return parent::_beforeSave ();
+    }
 
-			$ref = Mage::getModel ( 'rewards/transfer_reference' )->loadReferenceByTransferId ( $this->getId () );
+    // TODO: Finish this method...
+    public function setReference(TBT_Rewards_Model_Transfer_Reference $ref) {
+        $ref_data = array ('id' => $ref->getId (), 'rule_id' => $ref->getRuleId () );
+        $this->setData ( 'reference_data', $ref_data );
+        return $this;
+    }
 
-			$this->storeReferenceData ();
+    private function loadReferenceInformation() {
+        if ($this->getId ()) {
+            $this->clearReferences ();
 
-			$this->setReferenceType ( $ref->getReferenceType () );
-			$this->setReferenceId ( $ref->getReferenceId () );
-			Mage::getSingleton ( 'rewards/transfer_types' )->loadReferenceInformation ( $this );
-		}
-	}
+            $ref = Mage::getModel ( 'rewards/transfer_reference' )->loadReferenceByTransferId ( $this->getId () );
+
+            $this->storeReferenceData ();
+
+            $this->setReferenceType ( $ref->getReferenceType () );
+            $this->setReferenceId ( $ref->getReferenceId () );
+            Mage::getSingleton ( 'rewards/transfer_types' )->loadReferenceInformation ( $this );
+        }
+    }
 
     /**
      * Fetches the transfer reference collection for this transfer.
@@ -479,99 +513,102 @@ class TBT_Rewards_Model_Transfer extends TBT_Rewards_Model_Abstract
             return Mage::getModel( 'rewards/transfer_reference' )->getCollection()->filterByTransfer( $this->getId() );
         }
 
-	private function storeReferenceData() {
-		$reference_data = array ();
-		$reference_data ['rule_id'] = null;
-		$reference_data ['id'] = null;
+    private function storeReferenceData() {
+        $reference_data = array ();
+        $reference_data ['rule_id'] = null;
+        $reference_data ['id'] = null;
 
 
-		if (! $this->getId ()) {
-			$this->_data ['reference_data'] = $reference_data;
-			return $this;
-		}
+        if (! $this->getId ()) {
+            $this->_data ['reference_data'] = $reference_data;
+            return $this;
+        }
 
-		$ref = Mage::getModel ( 'rewards/transfer_reference' )->loadReferenceByTransferId ( $this->getId () );
+        $ref = Mage::getModel ( 'rewards/transfer_reference' )->loadReferenceByTransferId ( $this->getId () );
 
-		if (! $ref->getId ()) {
-			$this->_data ['reference_data'] = $reference_data;
-			return $this;
-		}
+        if (! $ref->getId ()) {
+            $this->_data ['reference_data'] = $reference_data;
+            return $this;
+        }
 
-		$reference_data ['reference_type'] = $ref->getReferenceType ();
-		$reference_data ['reference_id'] = $ref->getReferenceId ();
-		$reference_data ['rule_id'] = $ref->getRuleId ();
-		$reference_data ['id'] = $ref->getId ();
+        $reference_data ['reference_type'] = $ref->getReferenceType ();
+        $reference_data ['reference_id'] = $ref->getReferenceId ();
+        $reference_data ['rule_id'] = $ref->getRuleId ();
+        $reference_data ['id'] = $ref->getId ();
 
-		$this->_data ['reference_data'] = $reference_data;
-		$this->_data ['reference_type'] = $ref->getReferenceType ();
-		$this->_data ['reference_id'] = $ref->getReferenceId ();
+        $this->_data ['reference_data'] = $reference_data;
+        $this->_data ['reference_type'] = $ref->getReferenceType ();
+        $this->_data ['reference_id'] = $ref->getReferenceId ();
 
 
 
-		return $this;
-	}
+        return $this;
+    }
 
-	protected function clearReferences() {
-		Mage::getSingleton ( 'rewards/transfer_types' )->clearReferences ( $this );
-		return $this;
-	}
+    protected function clearReferences() {
+        Mage::getSingleton ( 'rewards/transfer_types' )->clearReferences ( $this );
+        return $this;
+    }
 
-	/**
-	 * Initiates a transfer model based on given criteria and verifies usage.
-	 *
-	 * @param integer $num_points
-	 * @param integer $currency_id
-	 * @param integer $rule_id
-	 * @return TBT_Rewards_Model_Transfer
-	 */
-	public function initTransfer($num_points, $currency_id, $rule_id, $customerId = null) {
-		if (! Mage::getSingleton ( 'rewards/session' )->isCustomerLoggedIn () && ! Mage::getSingleton ( 'rewards/session' )->isAdminMode ()) {
-			return null;
-		}
-		// ALWAYS ensure that we only give an integral amount of points
-		$num_points = floor ( $num_points );
+    /**
+     * Initiates a transfer model based on given criteria and verifies usage.
+     *
+     * @param integer $num_points
+     * @param integer $currency_id
+     * @param integer $rule_id
+     * @return TBT_Rewards_Model_Transfer
+     */
+    public function initTransfer($num_points, $currency_id, $rule_id, $customerId = null, $skipChecks = false)
+    {
+        if (!Mage::getSingleton('rewards/session')->isCustomerLoggedIn() && !$skipChecks
+            && !Mage::getSingleton ( 'rewards/session' )->isAdminMode ()) {
+            return null;
+        }
 
-		if ($num_points == 0) {
-			return null;
-		}
+        // ALWAYS ensure that we only give an integral amount of points
+        $num_points = floor ( $num_points );
 
-		/**
-		 * the transfer model to work with is this model (because this function was originally from the transfer helper)
-		 * @var TBT_Rewards_Model_Transfer
-		 */
-		$transfer = &$this;
+        if ($num_points == 0) {
+            return null;
+        }
 
-		if ($num_points > 0) {
-			$transfer->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_CUSTOMER_DISTRIBUTION );
-		} else {
-			$customerId = $customerId ? $customerId : Mage::getSingleton('customer/session')->getCustomerId();
-			$customer = Mage::getModel ( 'rewards/customer' )->load ( $customerId );
-			if (($customer->getUsablePointsBalance ( $currency_id ) + $num_points) < 0) {
-				$points_balance_str = Mage::getModel ( 'rewards/points' )->set ( $currency_id, $customer->getUsablePointsBalance ( $currency_id ) );
-				$req_points_str = Mage::getModel ( 'rewards/points' )->set ( $currency_id, $num_points * - 1 );
-				$error = Mage::helper('rewards')->__ ( 'Not enough points for transaction. You have %s, but you need %s.', $points_balance_str, $req_points_str );
-				throw new Exception ( $error );
-			}
+        /**
+         * the transfer model to work with is this model (because this function was originally from the transfer helper)
+         * @var TBT_Rewards_Model_Transfer
+         */
+        $transfer = &$this;
 
-			$transfer->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_CUSTOMER_REDEMPTION );
-		}
+        if ($num_points > 0) {
+            $transfer->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_CUSTOMER_DISTRIBUTION );
+        } else {
+            $customerId = $customerId ? $customerId : Mage::getSingleton('customer/session')->getCustomerId();
+            $customer = Mage::getModel ( 'rewards/customer' )->load ( $customerId );
+            if (($customer->getUsablePointsBalance ( $currency_id ) + $num_points) < 0) {
+                $points_balance_str = Mage::getModel ( 'rewards/points' )->set ( $currency_id, $customer->getUsablePointsBalance ( $currency_id ) );
+                $req_points_str = Mage::getModel ( 'rewards/points' )->set ( $currency_id, $num_points * - 1 );
+                $error = Mage::helper('rewards')->__ ( 'Not enough points for transaction. You have %s, but you need %s.', $points_balance_str, $req_points_str );
+                throw new Exception ( $error );
+            }
 
-		$transfer->setId(null)
-			->setCreationTs(now())
-			->setLastUpdateTs(now())
-			->setCurrencyId($currency_id)
-			->setQuantity($num_points)
-			->setCustomerId($customerId)
-			->setRuleId($rule_id);
+            $transfer->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_CUSTOMER_REDEMPTION );
+        }
 
-		return $transfer;
-	}
+        $transfer->setId(null)
+            ->setCreationTs(now())
+            ->setLastUpdateTs(now())
+            ->setCurrencyId($currency_id)
+            ->setQuantity($num_points)
+            ->setCustomerId($customerId)
+            ->setRuleId($rule_id);
 
-	/**
-	 * Revokes a points transfer by creating an oposite, linked points transfer.
-	 * @throws Exception
-	 * @return TBT_Rewards_Model_Transfer the resulting REVOKED reason type points transfer
-	 */
+        return $transfer;
+    }
+
+    /**
+     * Revokes a points transfer by creating an oposite, linked points transfer.
+     * @throws Exception
+     * @return TBT_Rewards_Model_Transfer the resulting REVOKED reason type points transfer
+     */
     public function revoke() {
         $transfer = Mage::getModel('rewards/transfer');
 
@@ -609,90 +646,90 @@ class TBT_Rewards_Model_Transfer extends TBT_Rewards_Model_Abstract
         return $transfer;
     }
 
-	/**
-	 * This should be VERY avoided.
-	 * @param string $msg
-	 */
-	protected function __($msg) {
-		return Mage::helper ( 'rewards' )->__ ( $msg );
-	}
+    /**
+     * This should be VERY avoided.
+     * @param string $msg
+     */
+    protected function __($msg) {
+        return Mage::helper ( 'rewards' )->__ ( $msg );
+    }
 
 
-	/**
-	 * @deprecated
-	 */
-	public function setReviewId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Review_Reference::REFERENCE_TYPE_ID );
-		$this->setReferenceId ( $id );
-		$this->_data ['review_id'] = $id;
+    /**
+     * @deprecated
+     */
+    public function setReviewId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Review_Reference::REFERENCE_TYPE_ID );
+        $this->setReferenceId ( $id );
+        $this->_data ['review_id'] = $id;
 
-		return $this;
-	}
-	/**
-	 * @deprecated
-	 */
-	public function setTagId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Tag_Reference::REFERENCE_TYPE_ID );
-		$this->setReferenceId ( $id );
-		$this->_data ['tag_id'] = $id;
+        return $this;
+    }
+    /**
+     * @deprecated
+     */
+    public function setTagId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Tag_Reference::REFERENCE_TYPE_ID );
+        $this->setReferenceId ( $id );
+        $this->_data ['tag_id'] = $id;
 
-		return $this;
-	}
-	/**
-	 * @deprecated
-	 */
-	public function setNewsletterId($id) {
-		$this->clearReferences ();
-		$this->setReferenceType ( TBT_Rewards_Model_Newsletter_Subscription_Reference::REFERENCE_TYPE_ID );
-		$this->setReferenceId ( $id );
-		$this->_data ['newsletter_id'] = $id;
+        return $this;
+    }
+    /**
+     * @deprecated
+     */
+    public function setNewsletterId($id) {
+        $this->clearReferences ();
+        $this->setReferenceType ( TBT_Rewards_Model_Newsletter_Subscription_Reference::REFERENCE_TYPE_ID );
+        $this->setReferenceId ( $id );
+        $this->_data ['newsletter_id'] = $id;
 
-		return $this;
-	}
-
-
-	/**
-	 * @deprecated
-	 */
-	public function getTransfersAssociatedWithTag($tag_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Tag_Reference::REFERENCE_TYPE_ID )->addFilter ( 'reference_id', $tag_id );
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public function getTransfersAssociatedWithNewsletter($newsletter_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Newsletter_Subscription_Reference::REFERENCE_TYPE_ID )->addFilter ( 'reference_id', $newsletter_id );
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public function getTransfersAssociatedWithReview($review_id) {
-		return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Review_Reference::REFERENCE_TYPE_ID )->addFilter ( 'reference_id', $review_id );
-	}
+        return $this;
+    }
 
 
-	/**
-	 * @deprecated
-	 */
-	public function isNewsletter() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Newsletter_Subscription_Reference::REFERENCE_TYPE_ID) || isset ( $this->_data ['newsletter_id'] );
-	}
+    /**
+     * @deprecated
+     */
+    public function getTransfersAssociatedWithTag($tag_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Tag_Reference::REFERENCE_TYPE_ID )->addFilter ( 'reference_id', $tag_id );
+    }
 
-	/**
-	 * @deprecated
-	 */
-	public function isTag() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Tag_Reference::REFERENCE_TYPE_ID) || isset ( $this->_data ['tag_id'] );
-	}
+    /**
+     * @deprecated
+     */
+    public function getTransfersAssociatedWithNewsletter($newsletter_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Newsletter_Subscription_Reference::REFERENCE_TYPE_ID )->addFilter ( 'reference_id', $newsletter_id );
+    }
 
-	/**
-	 * @deprecated
-	 */
-	public function isReview() {
-		return ($this->getReferenceType () == TBT_Rewards_Model_Review_Reference::REFERENCE_TYPE_ID) || isset ( $this->_data ['review_id'] );
-	}
+    /**
+     * @deprecated
+     */
+    public function getTransfersAssociatedWithReview($review_id) {
+        return $this->getCollection ()->addFilter ( 'reference_type', TBT_Rewards_Model_Review_Reference::REFERENCE_TYPE_ID )->addFilter ( 'reference_id', $review_id );
+    }
+
+
+    /**
+     * @deprecated
+     */
+    public function isNewsletter() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Newsletter_Subscription_Reference::REFERENCE_TYPE_ID) || isset ( $this->_data ['newsletter_id'] );
+    }
+
+    /**
+     * @deprecated
+     */
+    public function isTag() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Tag_Reference::REFERENCE_TYPE_ID) || isset ( $this->_data ['tag_id'] );
+    }
+
+    /**
+     * @deprecated
+     */
+    public function isReview() {
+        return ($this->getReferenceType () == TBT_Rewards_Model_Review_Reference::REFERENCE_TYPE_ID) || isset ( $this->_data ['review_id'] );
+    }
 }

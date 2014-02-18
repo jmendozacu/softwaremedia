@@ -20,7 +20,7 @@
  *
  * @category    Enterprise
  * @package     Enterprise_GiftWrapping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
@@ -55,8 +55,8 @@ class Enterprise_GiftWrapping_Model_Total_Invoice_Tax_Giftwrapping extends Mage_
                 && $orderItem->getGwBaseTaxAmount() != $orderItem->getGwBaseTaxAmountInvoiced()) {
                 $orderItem->setGwBaseTaxAmountInvoiced($orderItem->getGwBaseTaxAmount());
                 $orderItem->setGwTaxAmountInvoiced($orderItem->getGwTaxAmount());
-                $baseInvoiced += $orderItem->getGwBaseTaxAmount();
-                $invoiced += $orderItem->getGwTaxAmount();
+                $baseInvoiced += $orderItem->getGwBaseTaxAmount() * $invoiceItem->getQty();
+                $invoiced += $orderItem->getGwTaxAmount() * $invoiceItem->getQty();
             }
         }
         if ($invoiced > 0 || $baseInvoiced > 0) {

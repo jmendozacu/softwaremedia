@@ -8,11 +8,9 @@
         $('payment-please-wait').show();
         $('shopping-cart-totals-table').hide();
         var checkoutLinks = $$('.checkout-types');
-        /*
         for (var i = 0; i < checkoutLinks.length; i++) {
             Element.extend(checkoutLinks[i]).hide();
         }
-        */
         if(last_slider_ajax_request) {
             last_slider_ajax_request.options.onSuccess = function(t) { /* do nothing because a new request has started */}
         }
@@ -37,8 +35,7 @@
                     checkoutMethods.remove();
 
                     $('co-shipping-method-form').insert({after:result.shipping_methods});
-                    $('co-shipping-method-form').remove();            
-                
+                    $('co-shipping-method-form').remove();                    
                 } 
             }
         );
