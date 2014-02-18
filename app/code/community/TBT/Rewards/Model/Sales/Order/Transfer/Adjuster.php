@@ -2,13 +2,13 @@
 
 class TBT_Rewards_Model_Sales_Order_Transfer_Adjuster extends Varien_Object
 {
-    const TRANSFER_STATUS_APPROVED = TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED;
+    const TRANSFER_STATUS_APPROVED         = TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED;
     const TRANSFER_STATUS_PENDING_APPROVAL = TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_APPROVAL;
-    const TRANSFER_STATUS_PENDING_EVENT = TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_EVENT;
-    const TRANSFER_STATUS_PENDING_TIME = TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME;
-    const TRANSFER_STATUS_CANCELLED = TBT_Rewards_Model_Transfer_Status::STATUS_CANCELLED;
+    const TRANSFER_STATUS_PENDING_EVENT    = TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_EVENT;
+    const TRANSFER_STATUS_PENDING_TIME     = TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME;
+    const TRANSFER_STATUS_CANCELLED        = TBT_Rewards_Model_Transfer_Status::STATUS_CANCELLED;
 
-    const TRANSFER_TYPE_EARNING = 'distribution';
+    const TRANSFER_TYPE_EARNING  = 'distribution';
     const TRANSFER_TYPE_SPENDING = 'redemption';
 
     protected $_isInitialized = false;
@@ -17,6 +17,7 @@ class TBT_Rewards_Model_Sales_Order_Transfer_Adjuster extends Varien_Object
     {
         parent::_construct();
         $this->setTransferComments("Points adjustment");
+
         return $this;
     }
 
@@ -123,6 +124,12 @@ class TBT_Rewards_Model_Sales_Order_Transfer_Adjuster extends Varien_Object
         // dispatching this event so we can hook aditional logic in Referral module
         Mage::dispatchEvent('rewards_sales_order_transfer_ajuster_execute',
             array('adjuster' => $this));
+
+        // this can be used for any processing, after order has been canceled (we use it for re-indexing points balance)
+        Mage::dispatchEvent('rewards_sales_order_transfer_ajuster_done',
+            array('order'     => $this->getOrder()
+                , 'transfers' => $this->getTransfers()
+        ));
 
         return $this;
     }

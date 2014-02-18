@@ -5,12 +5,11 @@ class TBT_Rewardssocial_Model_Google_PlusOne_Validator extends TBT_Rewards_Model
     /**
      * Loops through each Special rule. If the rule applies and the customer didn't
      * already earn points for this tweet, then create (a) new points transfer(s) for the tweet.
-     * @note: Adds messages to the session TODO: return messages instead of adding session messages
      */
     public function initReward($customerId, $plusOneId)
     {
         try {
-            $ruleCollection = $this->getApplicableRulesOnGooglePlusOne();
+            $ruleCollection = $this->getApplicableRules();
             $count = count($ruleCollection);
 
             $this->_doTransfer($ruleCollection, $customerId, $plusOneId);
@@ -37,7 +36,6 @@ class TBT_Rewardssocial_Model_Google_PlusOne_Validator extends TBT_Rewards_Model
      * @param array(TBT_Rewards_Model_Special) $ruleCollection
      * @param TBT_Rewards_Model_Customer $customer
      * @param TBT_Rewardssocial_Model_Twitter_Tweet $tweetModel
-     * @note: Adds messages to the session TODO: return messages instead of adding session messages
      */
     protected function _doTransfer($ruleCollection, $customerId, $plusOneId)
     {
@@ -62,7 +60,21 @@ class TBT_Rewardssocial_Model_Google_PlusOne_Validator extends TBT_Rewards_Model
     }
 
     /**
+     * Returns all rules that apply when a customer +1's something on Google.
+     * @return array(TBT_Rewards_Model_Special)
+     */
+    public function getApplicableRules($action = null, $orAction = null)
+    {
+        if ($action === null) {
+            $action = TBT_Rewardssocial_Model_Google_PlusOne_Special_Config::ACTION_CODE;
+        }
+
+        return parent::getApplicableRules($action, $orAction);
+    }
+
+    /**
      * Returns all rules that apply wehn a customer tweets something on twitter
+     * @deprecated  see getApplicableRules()
      * @return array(TBT_Rewards_Model_Special)
      */
     public function getApplicableRulesOnGooglePlusOne()
@@ -82,7 +94,7 @@ class TBT_Rewardssocial_Model_Google_PlusOne_Validator extends TBT_Rewards_Model
     {
 
         Varien_Profiler::start("TBT_Rewardssocial:: Predict Twitter Tweet Points");
-        $ruleCollection = $this->getApplicableRulesOnGooglePlusOne();
+        $ruleCollection = $this->getApplicableRules();
 
         $predictArray = array();
         foreach ($ruleCollection as $rule) {

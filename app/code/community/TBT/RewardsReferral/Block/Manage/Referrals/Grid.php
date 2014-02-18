@@ -17,9 +17,11 @@
  * @copyright  Copyright (c) 2009 J2T DESIGN. (http://www.j2t-design.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class TBT_RewardsReferral_Block_Manage_Referrals_Grid extends Mage_Adminhtml_Block_Widget_Grid {
+class TBT_RewardsReferral_Block_Manage_Referrals_Grid extends Mage_Adminhtml_Block_Widget_Grid
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->setId('referralsGrid');
         $this->setDefaultSort('rewardsref_referral_id ');
@@ -27,16 +29,19 @@ class TBT_RewardsReferral_Block_Manage_Referrals_Grid extends Mage_Adminhtml_Blo
         $this->setSaveParametersInSession(true);
     }
 
-    protected function _prepareCollection() {
+    protected function _prepareCollection()
+    {
 
         $collection = Mage::getResourceModel('rewardsref/referral_collection');
         $collection->addParentNameToSelect();
 
         $this->setCollection($collection);
+
         return parent::_prepareCollection();
     }
 
-    protected function _prepareColumns() {
+    protected function _prepareColumns()
+    {
 
         $this->addColumn('id', array(
             'header' => Mage::helper('rewardsref')->__('Referral Link ID'),
@@ -92,12 +97,14 @@ class TBT_RewardsReferral_Block_Manage_Referrals_Grid extends Mage_Adminhtml_Blo
             'options' => Mage::getSingleton('rewardsref/referral_status')->getAllOptionsArray(),
         ));
 
-
+        $this->addExportType('*/*/exportCsv', Mage::helper('rewardsref')->__('CSV'));
+        $this->addExportType('*/*/exportXml', Mage::helper('rewardsref')->__('Excel XML'));
 
         return parent::_prepareColumns();
     }
 
-    protected function _prepareMassaction() {
+    protected function _prepareMassaction()
+    {
         $this->setMassactionIdField('rewardsref_referral_id');
         $this->getMassactionBlock()->setFormFieldName('rewardsref_referral_ids');
 
@@ -110,7 +117,8 @@ class TBT_RewardsReferral_Block_Manage_Referrals_Grid extends Mage_Adminhtml_Blo
         return $this;
     }
 
-    protected function _afterLoadCollection() {
+    protected function _afterLoadCollection()
+    {
         $this->getCollection()->walk('afterLoad');
         parent::_afterLoadCollection();
     }

@@ -47,6 +47,10 @@
  */
 class TBT_Rewards_Block_Product_Predictpoints extends TBT_Rewards_Block_Product_List_Abstract {
 	
+    /**
+     * This contains the layout nodes that we need to show for the prediction blocks in the listing.
+     */
+    protected static $_flyweightNodes = null;
 	
 	protected function _construct() {
 		parent::_construct ();
@@ -114,15 +118,36 @@ class TBT_Rewards_Block_Product_Predictpoints extends TBT_Rewards_Block_Product_
     }
 
     /**
+    * Loads flyweight nodes from the layout XML or from the memory if it was loaded before
+    * return array()
+    */
+    protected function _getFlywightNodes()
+    {
+        if(self::$_flyweightNodes !== null) {
+            return self::$_flyweightNodes;
+        }
+
+        self::$_flyweightNodes = $this->getLayout()->getXpath( "//reference[@name='rewards_catalog_product_list_predictpoints']" );
+
+        // Make sure we don't reset it to null so it doesn't try to load it again since null assumes that we have not loaded it yet.
+        if(self::$_flyweightNodes === null) {
+            self::$_flyweightNodes = array();
+        }
+
+        return self::$_flyweightNodes;
+    }
+
+    /**
      * 
      * Fetches an array  of Flyweight Block classes that are used to render what to display under each product block in the HTML
      * output.
      * @return array(TBT_Rewards_Block_Product_List_Abstract)
      */
     protected function _getPredictpointsChildren() {
-        
+
         // Load the flyweight block classes from the global layout.
-        $flyweight_nodes = $this->getLayout()->getXpath( "//reference[@name='rewards_catalog_product_list_predictpoints']" );
+        Varien_Profiler::start("TBT_Rewards::Fetching catalog listing flyweight nodes");
+        $flyweight_nodes = $this->_getFlywightNodes();
         
         // if no flyweight were found, return back.
         if ( sizeof( $flyweight_nodes ) <= 0 ) return array();
@@ -159,6 +184,7 @@ class TBT_Rewards_Block_Product_Predictpoints extends TBT_Rewards_Block_Product_
             $blocks[] = $block;
             
         }
+        Varien_Profiler::stop("TBT_Rewards::Fetching catalog listing flyweight nodes");
         
         return $blocks;
     }

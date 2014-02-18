@@ -9,6 +9,11 @@ class TBT_Rewardssocial_Block_Twitter_Follow_Button extends TBT_Rewardssocial_Bl
         $session = Mage::getSingleton('customer/session');
         $this->customerId = $session->getCustomerId();
         $this->storeTwitterUsername = Mage::getStoreConfig('rewards/twitter/storeTwitterUsername');
+
+        if (!Mage::helper('rewardssocial/twitter_follow')->isFollowingEnabled()) {
+            $this->setIsHidden(true);
+        }
+
         return parent::_prepareLayout();
     }
 
@@ -20,6 +25,7 @@ class TBT_Rewardssocial_Block_Twitter_Follow_Button extends TBT_Rewardssocial_Bl
         }
 
         $url = Mage::helper('core/url')->getCurrentUrl();
+
         return $this->_getValidator()->hasFollowed($customer->getId());
     }
 
@@ -52,10 +58,35 @@ class TBT_Rewardssocial_Block_Twitter_Follow_Button extends TBT_Rewardssocial_Bl
         return $this->_predictedPoints;
     }
 
-    public function countEnabled()
+    /**
+     * Checks wheter config option to show count next to Twitter Follow button is enabled
+     *
+     * @return boolean true if option 'Followers Count Display' is set to 'Show', false otherwise
+     */
+    public function isCounterEnabled()
     {
-        $countEnabled = Mage::getStoreConfig('rewards/twitter/showNumPageTweets');
+        $countEnabled = Mage::helper('rewardssocial/twitter_follow')->isFollowCountEnabled();
         return $countEnabled;
+    }
+
+    public function getCustomCss()
+    {
+        if ($this->isCounterEnabled() && !$this->isUsernameDisplayEnabled()) {
+            return " rewardssocial-{$this->getWidgetKey()}-counter";
+        }
+
+        return '';
+    }
+
+    /**
+     * Checks wheter config option to display username on Twitter Follow button is enabled
+     *
+     * @return boolean true if option 'Username On Follow Button' is set to 'Show', false otherwise
+     */
+    public function isUsernameDisplayEnabled()
+    {
+        $usernameEnabled = Mage::getStoreConfig('rewards/twitter/showUsername');
+        return $usernameEnabled;
     }
 
     public function getFollowProcessingUrl()
@@ -63,23 +94,18 @@ class TBT_Rewardssocial_Block_Twitter_Follow_Button extends TBT_Rewardssocial_Bl
         return $this->getUrl('rewardssocial/index/processFollow');
     }
 
-    /**
-     * If the is_hidden attribute is set, dont output anything.
-     *
-     * (overrides parent method)
-     */
-    protected function _toHtml()
-    {
-        // this code would prevent the Tweet button from appearing if
-        // no Twitter username is specified in the admin panel
-		/*if (!Mage::helper('rewardssocial/twitter_tweet')->isTweetingEnabled()) {
-		    return "";
-		}*/
-        return parent::_toHtml();
-    }
-
     protected function _getValidator()
     {
         return Mage::getSingleton('rewardssocial/twitter_follow_validator');
+    }
+
+    public function isFollowingEnabled()
+    {
+        return Mage::helper('rewardssocial/twitter_follow')->isFollowingEnabled();
+    }
+
+    public function getStoreTwitterUsername()
+    {
+        return Mage::helper('rewardssocial/twitter_follow')->getStoreTwitterUsername();
     }
 }

@@ -166,7 +166,7 @@
 .mypoints-transfers {
 }
 .mypoints-transfers .content TABLE TBODY {
-	height: 200px;
+        height: 20px;
 	overflow-x: hidden;
 }
 .mypoints-transfers H2 {
@@ -309,6 +309,11 @@
 	padding-bottom: 2px;
 	border-style: dotted;
 	border-width: 1px;
+}
+
+.guest-rewards-warning-message {
+    color:#ff0000;
+    text-align:right;
 }
 
 /* Start Enterprise theme styles */

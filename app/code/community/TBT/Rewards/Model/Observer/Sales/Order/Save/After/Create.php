@@ -51,14 +51,26 @@ class TBT_Rewards_Model_Observer_Sales_Order_Save_After_Create
      * @param   Varien_Event_Observer $observer
      * @return  TBT_Rewards_Model_Observer_Sales_Order_Save_After_Create
      */
-    public function createPointsTransfers($observer) {
+    public function createPointsTransfers($observer)
+    {
+        $event        = $observer->getEvent ();
+        $order        = $event->getOrder ();
+        $skipDispatch = false;
 
-        $event = $observer->getEvent ();
-        $order = $event->getOrder ();
+        // this event is fired twice, make sure we run code only once
+        if ($event->getName() == 'sales_order_save_commit_after' && Mage::registry('rewards_createPointsTransfers_run')) {
+            return $this;
+        }
 
         // Check if the method is triggered from
         // Mage::dispatchEvent('sales_order_payment_place_start', array('payment' => $this));
         if ( $event->getPayment() instanceof Mage_Sales_Model_Order_Payment ) {
+            // skip this if we are in admin, because we do this on 'sales_order_save_commit_after' event (only needed
+            // for Authorize.net on front-end)
+            if ($this->_isAdmin()) {
+                return $this;
+            }
+            $skipDispatch = true;
             $order = $event->getPayment()->getOrder();
         }
 
@@ -67,14 +79,13 @@ class TBT_Rewards_Model_Observer_Sales_Order_Save_After_Create
             return $this;
         }
 
-        Mage::dispatchEvent( 'rewards_order_points_transfer_before_create',
-            array(
-                'order' => $order,
-                'catalog_transfers' => $this->_getCatalogTransfers(),
-                'cart_transfers' => $this->_getCartTransfers()
-            )
-        );
-
+        if (!$skipDispatch) {
+            Mage::dispatchEvent( 'rewards_order_points_transfer_before_create', array (
+                    'order' => $order,
+                    'catalog_transfers' => $this->_getCatalogTransfers(),
+                    'cart_transfers' => $this->_getCartTransfers()
+            ));
+        }
 
         $this->_processCatalogTransfers($order);
 
@@ -84,13 +95,17 @@ class TBT_Rewards_Model_Observer_Sales_Order_Save_After_Create
             $this->_processPendingMsgs($order);
         }
 
-        Mage::dispatchEvent( 'rewards_order_points_transfer_after_create',
-            array(
+        if (!$skipDispatch) {
+            Mage::dispatchEvent( 'rewards_order_points_transfer_after_create', array (
                 'order' => $order,
                 'catalog_transfers' => $this->_getCatalogTransfers(),
                 'cart_transfers' => $this->_getCartTransfers()
-            )
-        );
+            ));
+        }
+
+        if ($event->getName() == 'sales_order_save_commit_after') {
+            Mage::register('rewards_createPointsTransfers_run', true);
+        }
 
         $this->_cleanUpTempData($order);
 
@@ -453,6 +468,15 @@ class TBT_Rewards_Model_Observer_Sales_Order_Save_After_Create
     protected function _getCartTransfers()
     {
         return Mage::getSingleton ( 'rewards/observer_sales_carttransfers' );
+    }
+
+    /**
+     * Checks if we are in Admin (back-end) section.
+     * @return boolean Returns true if we are in admin, false otherwise
+     */
+    protected function  _isAdmin()
+    {
+        return Mage::helper('rewards')->getIsAdmin();
     }
 
 }

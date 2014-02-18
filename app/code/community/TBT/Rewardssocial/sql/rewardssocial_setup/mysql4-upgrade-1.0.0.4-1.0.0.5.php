@@ -3,7 +3,7 @@
 $installer = $this;
 $installer->startSetup();
 
-$installer->attemptQuery($installer, "
+$installer->attemptQuery("
     CREATE TABLE IF NOT EXISTS `{$this->getTable('rewardssocial/customer')}` (
         `customer_id` int(10) unsigned NOT NULL,
         `is_following` TINYINT(1) NULL DEFAULT NULL,
@@ -20,13 +20,13 @@ $installer->getConnection()->addConstraint(
     'entity_id'
 );
 
-$this->attemptQuery($installer, "
+$installer->attemptQuery("
     ALTER TABLE `{$this->getTable('rewardssocial/customer')}`
     ADD COLUMN `pinterest_username` VARCHAR(64) NULL DEFAULT NULL;
 ");
 
 
-$this->attemptQuery($installer, "
+$installer->attemptQuery("
     CREATE TABLE IF NOT EXISTS `{$this->getTable('rewardssocial/pinterest_pin')}` (
         `pinterest_pin_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
         `customer_id` INT(10) UNSIGNED NOT NULL,
@@ -36,12 +36,12 @@ $this->attemptQuery($installer, "
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ");
 
-$this->attemptQuery($installer, "
+$installer->attemptQuery("
     ALTER TABLE `{$this->getTable('rewardssocial/pinterest_pin')}`
     ADD COLUMN `created_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ");
 
-$this->getConnection()->addConstraint(
+$installer->getConnection()->addConstraint(
     "FK_REWARDSSOCIAL_PINTEREST_PIN_CUSTOMER",
     $this->getTable('rewardssocial/pinterest_pin'),
     'customer_id',
@@ -50,7 +50,7 @@ $this->getConnection()->addConstraint(
 );
 
 
-$this->attemptQuery($installer, "
+$installer->attemptQuery("
     CREATE TABLE IF NOT EXISTS `{$this->getTable('rewardssocial/google_plusone')}` (
         `google_plusone_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
         `customer_id` INT(10) UNSIGNED NOT NULL,
@@ -60,7 +60,7 @@ $this->attemptQuery($installer, "
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ");
 
-$this->getConnection()->addConstraint(
+$installer->getConnection()->addConstraint(
     "FK_REWARDSSOCIAL_GOOGLE_PLUSONE_CUSTOMER",
     $this->getTable('rewardssocial/google_plusone'),
     'customer_id',
@@ -69,7 +69,7 @@ $this->getConnection()->addConstraint(
 );
 
 
-$installer->attemptQuery($installer, "
+$installer->attemptQuery("
     CREATE TABLE IF NOT EXISTS `{$this->getTable('rewardssocial/referral_share')}` (
         `referral_share_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
         `customer_id` INT(10) UNSIGNED NOT NULL,

@@ -3,9 +3,8 @@
 class TBT_Rewardssocial_Model_Referral_Share_Validator extends TBT_Rewards_Model_Special_Validator
 {
     /**
-     * Loops through each Special rule. If the rule applies and the customer didn't
-     * already earn points for this tweet, then create (a) new points transfer(s) for the tweet.
-     * @note: Adds messages to the session TODO: return messages instead of adding session messages
+     * Loops through each Special rule. If the rule applies and create (a) new
+     * points transfer(s) for the referral link share.
      */
     public function initReward($customerId, $referralShareId)
     {
@@ -28,11 +27,11 @@ class TBT_Rewardssocial_Model_Referral_Share_Validator extends TBT_Rewards_Model
 
     /**
      * Goes through an already validated rule collection and transfers rule points to the customer specified
-     * with the tweet model as the reference.
+     * with the $referralShareId as the reference.
+     *
      * @param array(TBT_Rewards_Model_Special) $ruleCollection
-     * @param TBT_Rewards_Model_Customer $customer
-     * @param TBT_Rewardssocial_Model_Twitter_Tweet $tweetModel
-     * @note: Adds messages to the session TODO: return messages instead of adding session messages
+     * @param TBT_Rewardssocial_Model_Customer $customer
+     * @param int $referralShareId ID of the referral share
      */
     protected function _doTransfer($ruleCollection, $customerId, $referralShareId)
     {
@@ -53,7 +52,7 @@ class TBT_Rewardssocial_Model_Referral_Share_Validator extends TBT_Rewards_Model
     }
 
     /**
-     * Returns all rules that apply wehn a customer tweets something on twitter
+     * Returns all rules that apply when a customer shares their referral link
      * @return array(TBT_Rewards_Model_Special)
      */
     public function getApplicableRules($action = null, $orAction = null)
@@ -66,13 +65,14 @@ class TBT_Rewardssocial_Model_Referral_Share_Validator extends TBT_Rewards_Model
     }
 
     /**
-     * Returns an array outlining the number of points they will receive for liking the item
+     * Returns an array outlining the number of points they will receive for sharing
+     * their referral link
      *
      * @return array
      */
     public function getPredictedPoints()
     {
-        Varien_Profiler::start("TBT_Rewardssocial:: Predict Twitter Follow Points");
+        Varien_Profiler::start("TBT_Rewardssocial:: Predict Referral Link Share Points");
         $ruleCollection = $this->getApplicableRules();
 
         $predictArray = array();
@@ -84,7 +84,8 @@ class TBT_Rewardssocial_Model_Referral_Share_Validator extends TBT_Rewards_Model
             $predictArray[$currencyId] += $rule->getPointsAmount();
         }
 
-        Varien_Profiler::stop("TBT_Rewardssocial:: Predict Twitter Follow Points");
+        Varien_Profiler::stop("TBT_Rewardssocial:: Predict Referral Link Share Points");
+
         return $predictArray;
     }
 }

@@ -84,7 +84,7 @@ class TBT_Rewards_Block_Manage_Special_Edit_Tab_Actions extends Mage_Adminhtml_B
 		}
 		$fieldset->addField ( 'points_currency_id', $currencyDataType, array ('label' => Mage::helper ( 'rewards' )->__ ( 'Points Currency' ), 'title' => Mage::helper ( 'rewards' )->__ ( 'Points Currency' ), 'name' => 'points_currency_id', $currencyValueType => $currencyData ) );
 		
-		$fieldset->addField ( 'points_amount', 'text', array ('name' => 'points_amount', 'required' => true, 'class' => 'validate-not-negative-number', 'label' => Mage::helper ( 'salesrule' )->__ ( 'Fixed Amount' ) ) );
+		$fieldset->addField ( 'points_amount', 'text', array ('name' => 'points_amount', 'required' => true, 'class' => 'validate-greater-than-zero', 'label' => Mage::helper ( 'salesrule' )->__ ( 'Fixed Amount' ) ) );
 		
 		$initial_transfer_status = Mage::getModel('rewards/transfer_status')->getStatusCaption(TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME);
 		$warning_msg_html = "<div class='disabled-field-msg' style='font-style: italic; font-size: 10px;'>" 

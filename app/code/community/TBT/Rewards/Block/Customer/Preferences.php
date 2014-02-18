@@ -19,7 +19,7 @@ class TBT_Rewards_Block_Customer_Preferences extends TBT_Rewards_Block_Customer_
      */
     public function showPreferences()
     {
-        return Mage::getStoreConfigFlag('rewards/display/allow_points_summary_email');
+        return Mage::getStoreConfigFlag('rewards/pointSummaryEmails/allow_points_summary_email');
     }
            
 }

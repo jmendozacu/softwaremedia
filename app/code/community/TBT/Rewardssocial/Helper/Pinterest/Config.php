@@ -21,4 +21,14 @@ class TBT_Rewardssocial_Helper_Pinterest_Config extends Mage_Core_Helper_Abstrac
     {
         return Mage::getStoreConfigFlag('rewards/pinterest/enablePinterestPin');
     }
+
+    /**
+     * Checks if Pinterest Pin count is enabled in Sweet tooth configuration section.
+     *
+     * @return boolean True if button enabled, false otherwise
+     */
+    public function isPinningCounterEnabled()
+    {
+        return Mage::getStoreConfigFlag('rewards/pinterest/enablePinterestPinCount');
+    }
 }

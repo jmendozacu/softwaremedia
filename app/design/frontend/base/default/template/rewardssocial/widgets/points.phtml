@@ -1,5 +1,8 @@
 
-<div class="rewardssocial-widgets-points-notification" style="display: inline-block; vertical-align: top;">
+<div class="<?php echo $this->getWidgetNotificationClass(); ?>" style="<?php echo $this->getInlineStyling(); ?>">
+    <span id="rewardssocial-notification-loading" style="display: none;">
+        <img src="<?php echo $this->getSkinUrl('images/rewardssocial/ajax-loader.gif'); ?>" />
+    </span>
     <span class="not-logged-in" style="display: none;">
         <?php echo $this->getTextWithLoginLinks($this->__("[login_link]Login or create an account[/login_link] to earn <b>%s</b> for sharing!", $this->getPointsCurrency())) ?>
     </span>
@@ -14,24 +17,22 @@
 </div>
 
 <script type="text/javascript">
-    var rewardsSocialWidgetHover = {
-        widgets: [],
-        addWidget: function(widgetName)
-        {
-            this.widgets.push(widgetName);
-            return this;
-            }
-    };
+    var socialWidgetName = '<?php echo $this->getSocialWidgetName(); ?>';
+    window[socialWidgetName] = new RewardsSocialWidgetHover();
 </script>
 
 <?php if ($this->getHasPredictedPoints()): ?>
     <script type="text/javascript">
         Event.observe(document, 'dom:loaded', function() {
-            var isLoggedIn = <?php echo ($this->isLoggedIn() ? 'true' : 'false') ?>,
-                rewardCount = <?php echo $this->getRewardCount() ?>;
-            var notLoggedIn = $$('.rewardssocial-widgets-points-notification .not-logged-in')[0],
-                manyRewards = $$('.rewardssocial-widgets-points-notification .many-rewards')[0],
-                oneReward   = $$('.rewardssocial-widgets-points-notification .one-reward');
+
+            var isLoggedIn  = <?php echo ($this->isLoggedIn() ? 'true' : 'false') ?>,
+                rewardCount = <?php echo $this->getRewardCount() ?>,
+                widgetNotificationClass = '<?php echo $this->getWidgetNotificationClass(); ?>',
+                socialWidgetName = '<?php echo $this->getSocialWidgetName(); ?>';
+
+            var notLoggedIn = $$('.' + widgetNotificationClass + ' .not-logged-in')[0],
+                manyRewards = $$('.' + widgetNotificationClass + ' .many-rewards')[0],
+                oneReward   = $$('.' + widgetNotificationClass + ' .one-reward');
 
             // Magento prior to 1.6.1.0 has Prototype 1.6.0.3 which doesn't support
             // 'mouseenter' and 'mouseleave' events
@@ -49,7 +50,9 @@
             };
 
             var showRewardNotification = function(element) {
-                element.style.setProperty('display', 'block');
+                if (element) {
+                    element.style.setProperty('display', 'block');
+                }
             };
 
             var enableWidgetHover = function()
@@ -58,7 +61,7 @@
                     widgetName,
                     widget,
                     rewardNotifications = {},
-                    widgets = rewardsSocialWidgetHover.widgets;
+                    widgets = window[socialWidgetName].widgets;
 
                 for (i = 0; i < widgets.length; i += 1) {
                     widgetName = widgets[i];

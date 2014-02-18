@@ -25,27 +25,22 @@ class TBT_Rewards_Model_Admin_Output_Observer extends Varien_Object
         $configDataModel->setSection($section)
                         ->setWebsite($website)
                         ->setStore($store);
-        $inheritVal = isset($groups["modules_disable_output"]["fields"]["TBT_Rewards"]["inherit"])?
-                            $groups["modules_disable_output"]["fields"]["TBT_Rewards"]["inherit"]:false;
-        // Check inherit
-        if ($inheritVal == 1) {
-            $realTBTRewardsValue = $value = array("inherit" => 1);
-            $storeVal = Mage::getStoreConfig("advanced/modules_disable_output/TBT_Rewards", $store);
-            $realTBTRewardsValue = array("inherit" => 1, "value" => $storeVal);
-            return $this->saveConfigData($configDataModel, $value, $realTBTRewardsValue);
-        } else { // Check value
-            $fieldValue = isset($groups["modules_disable_output"]["fields"]["TBT_Rewards"]["value"]) ?
-                                $groups["modules_disable_output"]["fields"]["TBT_Rewards"]["value"] : null;
 
-        if(isset($fieldValue)) {
-                $realTBTRewardsValue = array("value" => $fieldValue);
-                if ($fieldValue == 1) {
-                    $value = array("value" => 0);
-                    return $this->saveConfigData($configDataModel, $value, $realTBTRewardsValue);
-                } else {
-                    $value = array("value" => 1);
-                    return $this->saveConfigData($configDataModel, $value, $realTBTRewardsValue);
-                }
+        // Check value
+        $fieldValue = isset($groups["modules_disable_output"]["fields"]["TBT_Rewards"]["value"])
+                        ? $groups["modules_disable_output"]["fields"]["TBT_Rewards"]["value"]
+                        : null;
+         // we're using this to check whether during config save value of TBT_Rewards changed or not
+        $rewardsLayoutValue = !Mage::getStoreConfig('rewards/general/layoutsactive', $store);
+        // only if TBT_Rewards modules_disable_output value changed force all modules to change accordingly
+        if (isset($fieldValue) && $fieldValue != $rewardsLayoutValue) {
+            $realTBTRewardsValue = array("value" => $fieldValue);
+            if ($fieldValue == 1) {
+                $value = array("value" => 0);
+                return $this->saveConfigData($configDataModel, $value, $realTBTRewardsValue);
+            } else {
+                $value = array("value" => 1);
+                return $this->saveConfigData($configDataModel, $value, $realTBTRewardsValue);
             }
         }
 
@@ -122,17 +117,16 @@ class TBT_Rewards_Model_Admin_Output_Observer extends Varien_Object
     public function getTBTModules()
     {
         return array(
-                        "TBT_InHouseDefaults",
-                        "TBT_RewardsApi",
-                        "TBT_RewardsCoreCustomer",
-                        "TBT_RewardsCoreSpending",
-                        "TBT_RewardsLoyalty",
-                        "TBT_RewardsOnly",
-                        "TBT_RewardsCoreSpending",
-                        "TBT_RewardsPlat",
-                        "TBT_RewardsReferral",
-                        "TBT_Rewardssocial",
-                        "TBT_Testsweet"
-                    );
+            "TBT_RewardsApi",
+            "TBT_RewardsCoreCustomer",
+            "TBT_RewardsCoreSpending",
+            "TBT_RewardsLoyalty",
+            "TBT_RewardsOnly",
+            "TBT_RewardsCoreSpending",
+            "TBT_RewardsPlat",
+            "TBT_RewardsReferral",
+            "TBT_Rewardssocial",
+            "TBT_Testsweet"
+        );
     }
 }

@@ -10,6 +10,10 @@ abstract class TBT_Rewards_Model_Special_Configabstract extends Varien_Object {
 		return $this;
 	}
 	
+	public function visitAdminTriggers(&$fieldset) {
+		return $this;
+	}
+	
 	public abstract function getNewCustomerConditions();
 	
 	public abstract function getNewActions();

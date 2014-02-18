@@ -2,19 +2,35 @@
 
 class TBT_RewardsReferral_Model_Mysql4_Referral_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract {
 
+    protected $_includeCustomerData = true;
+    
     public function _construct() {
         $this->_init('rewardsref/referral');
     }
 
-    protected function _initSelect() {
-        parent::_initSelect();
-        $select = $this->getSelect();
-        $select->join(
-                array('cust' => $this->getTable('customer/entity')), 'referral_parent_id = cust.entity_id'
-        );
-
+    protected function _beforeLoad()
+    {
+        if ($this->_includeCustomerData){
+            $this->getSelect()->join(
+                    array('cust' => $this->getTable('customer/entity')), 'referral_parent_id = cust.entity_id'
+            );
+        }
+        
+        parent::_beforeLoad();        
         return $this;
     }
+     
+    public function excludeCustomerData()
+    {
+        $this->_includeCustomerData = false;        
+        return $this;
+    }
+    
+    public function includeCustomerData()
+    {
+        $this->_includeCustomerData = true;
+        return $this;
+    }    
 
     public function addEmailFilter($email, $websiteId = null)
     {

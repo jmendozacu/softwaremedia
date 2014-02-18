@@ -21,4 +21,14 @@ class TBT_Rewardssocial_Helper_Google_Config extends Mage_Core_Helper_Abstract
     {
         return Mage::getStoreConfigFlag('rewards/google/enableGooglePlus');
     }
+
+    /**
+     * Checks if Google +1 counter is enabled in Sweet tooth configuration section.
+     *
+     * @return boolean True if button enabled, false otherwise
+     */
+    public function isGooglePlusCounterEnabled()
+    {
+        return Mage::getStoreConfigFlag('rewards/google/enableGooglePlusCount');
+    }
 }

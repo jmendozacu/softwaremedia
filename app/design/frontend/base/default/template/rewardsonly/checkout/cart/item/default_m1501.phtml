@@ -47,7 +47,7 @@ if ($hasRedeemed) {
 /* ST REWARDSONLY END */
 ?>
 <tr>
-    <td class="image"><?php if ($this->hasProductUrl()):?><a href="<?php echo $this->getProductUrl() ?>" title="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="product-image"><?php endif;?><img src="<?php echo $this->getProductThumbnail()->keepAspectRatio(false)->constrainOnly(false)->keepFrame(false)->resize(130); ?>" height="130" alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" /><?php if ($this->hasProductUrl()):?></a><?php endif;?></td>
+    <td><?php if ($this->hasProductUrl()):?><a href="<?php echo $this->getProductUrl() ?>" title="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="product-image"><?php endif;?><img src="<?php echo $this->getProductThumbnail()->resize(75); ?>" width="75" height="75" alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" /><?php if ($this->hasProductUrl()):?></a><?php endif;?></td>
     <td>
         <h2 class="product-name">
         <?php if ($this->hasProductUrl()):?>
@@ -87,6 +87,18 @@ if ($hasRedeemed) {
         <?php endif;?>
 
     </td>
+    <td class="a-center">
+        <?php if ($isVisibleProduct): ?>
+        <a href="<?php echo $this->getConfigureUrl() ?>" title="<?php echo $this->__('Edit item parameters') ?>"><?php echo $this->__('Edit') ?></a>
+        <?php endif ?>
+    </td>
+    <?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
+    <td class="a-center">
+        <?php if ($isVisibleProduct): ?>
+        <input type="checkbox" value="1" name="cart[<?php echo $_item->getId() ?>][wishlist]" title="<?php echo $this->__('Move to Wishlist') ?>" class="checkbox" />
+        <?php endif ?>
+    </td>
+    <?php endif ?>
     <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
     <?php /* ST REWARDSONLY BEGIN */ ?>
     <?php if ($is_points_only): ?>

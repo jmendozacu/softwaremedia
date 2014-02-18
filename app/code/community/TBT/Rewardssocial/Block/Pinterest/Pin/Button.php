@@ -1,16 +1,12 @@
 <?php
 
-class TBT_Rewardssocial_Block_Pinterest_Pin_Button extends TBT_Rewardssocial_Block_Widget_Abstract
+class TBT_Rewardssocial_Block_Pinterest_Pin_Button extends TBT_Rewardssocial_Block_Widget_Abstract implements TBT_Rewardssocial_Block_Pinterest_Pin_Button_Interface
 {
     protected $_predictedPoints = null;
     protected $_customer = null;
 
     public function _prepareLayout()
     {
-        $modalBlock = $this->getLayout()->createBlock('core/template')
-            ->setTemplate('rewardssocial/pinterest/pin/modal.phtml');
-        $this->setChild('modal', $modalBlock);
-
         if (!Mage::helper('rewardssocial/pinterest_config')->isPinningEnabled()) {
             $this->setIsHidden(true);
         }
@@ -29,24 +25,17 @@ class TBT_Rewardssocial_Block_Pinterest_Pin_Button extends TBT_Rewardssocial_Blo
         return $this->_getValidator()->hasPinned($customer->getId(), $url);
     }
 
+    public function getHasPredictedPoints()
+    {
+        $predictedPoints = $this->getPredictedPoints();
+        return !empty($predictedPoints) && !$this->getHasPinned();
+    }
+
     public function getNotificationBlock()
     {
         return $this->getLayout()->createBlock('core/template')
             ->setTemplate('rewardssocial/pinterest/pin/points.phtml')
             ->setPredictedPointsString($this->getPredictedPointsString());
-    }
-
-    public function getPredictedPointsString()
-    {
-        $predictedPoints = $this->getPredictedPoints();
-        return (string) Mage::getModel('rewards/points')->set($predictedPoints);
-    }
-
-    public function getHasPredictedPoints()
-    {
-        $predictedPoints = $this->getPredictedPoints();
-        // TODO: should check other things too, like limits
-        return !empty($predictedPoints) && !$this->getHasPinned();
     }
 
     public function getPredictedPoints()
@@ -58,15 +47,10 @@ class TBT_Rewardssocial_Block_Pinterest_Pin_Button extends TBT_Rewardssocial_Blo
         return $this->_predictedPoints;
     }
 
-    public function countEnabled()
+    public function isCounterEnabled()
     {
-        $countEnabled = Mage::getStoreConfig('rewards/twitter/showNumPageTweets');
+        $countEnabled = Mage::helper('rewardssocial/pinterest_config')->isPinningCounterEnabled();
         return $countEnabled;
-    }
-
-    public function getPinProcessingUri()
-    {
-        return $this->getUrl('rewardssocial/index/processPin');
     }
 
     public function getCustomerPinterestUsername()
@@ -93,14 +77,89 @@ class TBT_Rewardssocial_Block_Pinterest_Pin_Button extends TBT_Rewardssocial_Blo
 
     public function getPinnableMediaUri()
     {
-        // TODO: maybe this should be made non-product-page-specific at some point
         $product = Mage::registry('product');
         return $this->helper('catalog/image')->init($product, 'image');
     }
 
+    /**
+     * This return the link to the product image that will be pinned.
+     * This actually point to a controller that will redirect to the image needed for Pinterest. We do this to be able
+     * to observe when a user actually pins a product or not and reward them after that.
+     *
+     * @return string
+     */
     public function getPinnableMediaUriEncoded()
     {
-        return urlencode($this->getPinnableMediaUri());
+        $uri = $this->getUrl('rewardssocial/index/observePinning');
+        // remove '___SID =U' from url
+        $uri = Mage::getModel('core/url')->sessionUrlVar($uri);
+
+        $data              = array();
+        $data['productId'] = $this->getProductId();
+
+        $customerId    = $this->getCustomer()->getId();
+        if ($customerId) {
+            $data['customerId'] = $customerId;
+        }
+
+        $productId  = $this->getProductId();
+        if ($productId) {
+            $data['productId'] = $productId;
+        }
+
+        $url = Mage::helper('core/url')->getCurrentUrl();
+        // remove '___SID =U' from url
+        $url = Mage::getModel('core/url')->sessionUrlVar($url);
+        if ($url) {
+            $data['url'] = $url;
+        }
+
+        $data = urlencode(Mage::helper('rewardssocial/crypt')->encrypt(json_encode($data)));
+        $uri .= "?data={$data}";
+
+        return urlencode($uri);
+    }
+
+    public function getProduct()
+    {
+        if ($this->_product == null) {
+            $this->_product = $this->hasData('product') ? $this->getData('product') : Mage::registry('product');
+        }
+
+        return $this->_product;
+    }
+
+    /**
+     * Returns product main image URL.
+     * @return string|null Product image URL, or null
+     */
+    public function getProductImageUrl()
+    {
+        $product = $this->getProduct();
+        if ($product->getImage() != 'no-selection' && $product->getImage()) {
+            return Mage::helper('catalog/image')->init($product, 'image');
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns product's URL as configured in Magento admin.
+     * @return string Product URL
+     */
+    public function getProductUrl()
+    {
+        $product = $this->getProduct();
+        return Mage::helper('rewardssocial')->getProductUrl($product);
+    }
+
+    /**
+     * Returns product ID
+     * @return int Product ID
+     */
+    public function getProductId()
+    {
+        return $this->getProduct()->getId();
     }
 
     public function getCustomer()

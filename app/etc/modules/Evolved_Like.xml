@@ -29,7 +29,7 @@
 <config>
     <modules>
         <Evolved_Like>
-            <active>false</active>
+            <active>true</active>
             <codePool>local</codePool>
 			<depends>
 				<Mage_Catalog />

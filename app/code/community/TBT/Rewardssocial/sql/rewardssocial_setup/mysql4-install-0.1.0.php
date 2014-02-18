@@ -4,7 +4,7 @@ $installer = $this;
 $installer->startSetup();
 
 // Create facebook like table
-$installer->attemptQuery($installer, "
+$installer->attemptQuery("
     CREATE TABLE IF NOT EXISTS `{$this->getTable('rewardssocial/facebook_like')}` (
         `facebook_like_id` smallint(11) unsigned NOT NULL auto_increment,
         `customer_id` int(10) unsigned NOT NULL,
@@ -16,7 +16,7 @@ $installer->attemptQuery($installer, "
         KEY `IDX_CUSTOMER` (`customer_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Facebook Likes';
 ");
-    
+
 $installer->getConnection()->addConstraint(
     "FK_FACEBOOK_LIKE_CUSTOMER",
     $this->getTable('rewardssocial/facebook_like'),

@@ -466,18 +466,27 @@ class TBT_Rewards_Helper_Transfer extends Mage_Core_Helper_Abstract {
     public function calculateCatalogPoints($rule_id, $item, $allow_redemptions,$isGrouped = false) {
         Varien_Profiler::start("TBT_Rewards:: Catalog points calculator");
 
+        Varien_Profiler::start("TBT_Rewards:: Catalog points calculator (init)");
+
         // Load the rule and product model.
         $rule = $this->getCatalogRule($rule_id);
         $product = $this->assureProduct($item);
 
+
         // Get the store configuration
         $prices_include_tax = Mage::helper('tax')->priceIncludesTax();
 
+
         // Instantiate what the product cost will be evaluated to
-        if ( ! $product->getCost() ) {
-            $product = $product->load($product->getId());
+        // If no rule needs it, then just skip this step.
+        if($rule->getPointsAction() == 'give_by_profit') {
+            if ( !$product->getCost() ) {
+                $product = $product->load($product->getId());
+            }
+            $product_cost = (int) $product->getCost();
+        } else {
+            $product_cost = 0;
         }
-        $product_cost = (int) $product->getCost();
 
         if ( $this->isItem($item) ) {
             $qty = ($item->getQty() > 0) ? $item->getQty() : 1; //@nelkaake 04/03/2010 2:05:12 PM (terniary check jsut in case)
@@ -511,6 +520,8 @@ class TBT_Rewards_Helper_Transfer extends Mage_Core_Helper_Abstract {
         if ( $price < 0 ) {
             $price = 0;
         }
+
+        Varien_Profiler::stop("TBT_Rewards:: Catalog points calculator (init)");
 
         if ( $rule->getId() ) {
             if ( $rule->getPointsAction() == 'give_points' ) {

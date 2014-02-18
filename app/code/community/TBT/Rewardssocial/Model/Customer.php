@@ -1,7 +1,15 @@
 <?php
 
-class TBT_Rewardssocial_Model_Customer extends TBT_Rewards_Model_Customer
+class TBT_Rewardssocial_Model_Customer extends Mage_Core_Model_Abstract
 {
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->_init('rewardssocial/customer');
+
+        return $this;
+    }
+
     public function getTimeUntilNextReferralShareAllowed()
     {
         $collection = Mage::getResourceModel('rewardssocial/referral_share_collection');

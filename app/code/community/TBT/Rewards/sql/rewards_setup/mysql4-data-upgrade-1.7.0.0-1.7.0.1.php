@@ -5,8 +5,8 @@
  * the base domain, so we must convert our full URLs into base domains. */
 
 // get all the saved API URLs (current, default live, and default staging)
-$apiUrl = Mage::getStoreConfig('rewards/developer/apiurl');
-$defaultApiUrl = Mage::getStoreConfig('rewards/developer/defaultapiurl');
+$apiUrl            = Mage::getStoreConfig('rewards/developer/apiurl');
+$defaultApiUrl     = Mage::getStoreConfig('rewards/developer/defaultapiurl');
 $defaultStagingUrl = Mage::getStoreConfig('rewards/developer/defaultstagingurl');
 
 // convert the current API URL into the base domain of the same URL
@@ -23,14 +23,14 @@ if (strpos($apiUrl, "sweettoothdev.com") !== false) {
 // convert the default "live" API URL into the base domain of the same URL
 if (strpos($defaultApiUrl, "sweettoothdev.com") !== false) {
     $defaultApiUrl = "sweettoothdev.com";
-} else if (strpos($defaultApiUrl, "sweettoothapp.com") !== false) {
+} else if (strpos($defaultApiUrl, "sweettoothapp.com") !== false || is_null($defaultApiUrl)) {
     $defaultApiUrl = "sweettoothapp.com";
 }
 
 // convert the default staging API URL into the base domain of the same URL
 if (strpos($defaultStagingUrl, "sweettoothdevstaging.com") !== false) {
     $defaultStagingUrl = "sweettoothdevstaging.com";
-} else if (strpos($defaultStagingUrl, "sweettoothstaging.com") !== false) {
+} else if (strpos($defaultStagingUrl, "sweettoothstaging.com") !== false || is_null($defaultStagingUrl)) {
     $defaultStagingUrl = "sweettoothstaging.com";
 }
 

@@ -4,13 +4,13 @@ class TBT_Rewardssocial_Model_Pinterest_Pin_Validator extends TBT_Rewards_Model_
 {
     /**
      * Loops through each Special rule. If the rule applies and the customer didn't
-     * already earn points for this tweet, then create (a) new points transfer(s) for the tweet.
-     * @note: Adds messages to the session TODO: return messages instead of adding session messages
+     * already earn points for this pin, then create (a) new points transfer(s) for the pin.
+     * @return $this
      */
     public function initReward($customerId, $pinId)
     {
         try {
-            $ruleCollection = $this->getApplicableRulesOnPinterestPin();
+            $ruleCollection = $this->getApplicableRules();
             $count = count($ruleCollection);
 
             $this->_doTransfer($ruleCollection, $customerId, $pinId);
@@ -33,11 +33,11 @@ class TBT_Rewardssocial_Model_Pinterest_Pin_Validator extends TBT_Rewards_Model_
 
     /**
      * Goes through an already validated rule collection and transfers rule points to the customer specified
-     * with the tweet model as the reference.
+     * with the pin model as the reference.
      * @param array(TBT_Rewards_Model_Special) $ruleCollection
      * @param TBT_Rewards_Model_Customer $customer
-     * @param TBT_Rewardssocial_Model_Twitter_Tweet $tweetModel
-     * @note: Adds messages to the session TODO: return messages instead of adding session messages
+     * @param TBT_Rewardssocial_Model_Pinterest_Pin $pinModel
+     * @return $this
      */
     protected function _doTransfer($ruleCollection, $customerId, $pinId)
     {
@@ -62,27 +62,40 @@ class TBT_Rewardssocial_Model_Pinterest_Pin_Validator extends TBT_Rewards_Model_
     }
 
     /**
-     * Returns all rules that apply wehn a customer tweets something on twitter
+     * Returns all rules that apply when a customer pins something on Pinterest.
+     * @return array(TBT_Rewards_Model_Special)
+     */
+    public function getApplicableRules($action = null, $orAction = null)
+    {
+        if ($action === null) {
+            $action = TBT_Rewardssocial_Model_Pinterest_Pin_Special_Config::ACTION_CODE;
+        }
+
+        return parent::getApplicableRules($action, $orAction);
+    }
+
+    /**
+     * Returns all rules that apply when a customer pins something on Pinterest
+     * @deprecated  see getApplicableRules()
      * @return array(TBT_Rewards_Model_Special)
      */
     public function getApplicableRulesOnPinterestPin()
     {
         return $this->getApplicableRules(
-                TBT_Rewardssocial_Model_Pinterest_Pin_Special_Config::ACTION_CODE
+            TBT_Rewardssocial_Model_Pinterest_Pin_Special_Config::ACTION_CODE
         );
     }
 
-
     /**
-     * Returns an array outlining the number of points they will receive for liking the item
+     * Returns an array outlining the number of points they will receive for pinning the item
      *
      * @return array
      */
     public function getPredictedPinterestPinPoints($page=null)
     {
 
-        Varien_Profiler::start("TBT_Rewardssocial:: Predict Twitter Tweet Points");
-        $ruleCollection = $this->getApplicableRulesOnPinterestPin();
+        Varien_Profiler::start("TBT_Rewardssocial:: Predict Pinterest Pin Points");
+        $ruleCollection = $this->getApplicableRules();
 
         $predictArray = array();
         foreach ($ruleCollection as $rule) {
@@ -95,7 +108,7 @@ class TBT_Rewardssocial_Model_Pinterest_Pin_Validator extends TBT_Rewards_Model_
             $predictArray[$currencyId] += $rule->getPointsAmount();
         }
 
-        Varien_Profiler::stop("TBT_Rewardssocial:: Predict Twitter Tweet Points");
+        Varien_Profiler::stop("TBT_Rewardssocial:: Predict Pinterest Pin Points");
         return $predictArray;
     }
 

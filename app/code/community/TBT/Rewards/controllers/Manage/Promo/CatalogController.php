@@ -112,6 +112,8 @@ class TBT_Rewards_Manage_Promo_CatalogController extends TBT_Rewards_Admin_Abstr
 		$this->_addBreadcrumb ( $id ? Mage::helper ( 'catalogrule' )->__ ( 'Edit Rule' ) : Mage::helper ( 'catalogrule' )->__ ( 'New Rule' ), $id ? Mage::helper ( 'catalogrule' )->__ ( 'Edit Rule' ) : Mage::helper ( 'catalogrule' )->__ ( 'New Rule' ) )->_addContent ( $block )->_addLeft ( $this->getLayout ()->createBlock ( 'rewards/manage_promo_catalog_edit_tabs' ) )->renderLayout ();
 	}
 	
+
+
 	public function saveAction() {
 		if ($data = $this->getRequest ()->getPost ()) {
 			$model = Mage::getModel ( 'rewards/catalogrule_rule' );
@@ -168,28 +170,36 @@ class TBT_Rewards_Manage_Promo_CatalogController extends TBT_Rewards_Admin_Abstr
 						$label->removeLabelsByRuleAndStoreId ( $model, $storeId );
 					}
 				}
+
+                                Mage::helper('rewards/rule')->validateCatalogruleAdminSettings($model);
+
 				// End save labels
 				Mage::getSingleton ( 'adminhtml/session' )->addSuccess ( Mage::helper ( 'catalogrule' )->__ ( 'Rule was successfully saved' ) );
 				Mage::getSingleton ( 'adminhtml/session' )->setPageData ( false );
+
 				if ($autoApply) {
 					$this->_forward ( 'applyRules', 'manage_promo_catalog', 'rewardsadmin', array ('type' => $type, 'id' => $model->getId () ) );
-				
-		//$this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('rule_id')));
+                                        //$this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('rule_id')));
 				} else {
 					Mage::getSingleton ( 'adminhtml/session' )->addNotice ( Mage::helper ( 'catalogrule' )->__ ( 'You must still APPLY rules before they will take effect!' ) );
 					Mage::app ()->saveCache ( 1, 'catalog_rules_dirty' );
 					$this->_redirect ( '*/*/', array ('type' => $type, 'id' => $model->getId () ) );
 				}
-				return;
+
+                                return $this;
 			} catch ( Exception $e ) {
 				Mage::getSingleton ( 'adminhtml/session' )->addError ( $e->getMessage () );
 				Mage::getSingleton ( 'adminhtml/session' )->setPageData ( $data );
 				$this->_redirect ( '*/*/edit', array ('id' => $this->getRequest ()->getParam ( 'rule_id' ), 'type' => $this->getRequest ()->getParam ( 'type' ) ) );
-				return;
+                                return $this;
 			}
 		}
 		$this->_redirect ( '*/*/' );
+
+                return $this;
 	}
+
+
 	
 	public function deleteAction() {
 		$type = $this->getRequest ()->getParam ( 'type' ); // redemption type or distribution type

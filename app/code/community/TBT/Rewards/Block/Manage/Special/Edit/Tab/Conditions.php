@@ -77,6 +77,9 @@ class TBT_Rewards_Block_Manage_Special_Edit_Tab_Conditions extends Mage_Adminhtm
 
         Mage::getSingleton('rewards/wikihints')->addWikiHint($fieldset, "21212673", "Customer Behavior Rule - Triggers" );
 
+        Mage::getSingleton ( 'rewards/special_action' )->visitAdminTriggers ( $fieldset );
+        
+        
         $fieldset = $form->addFieldset ( 'conditions_fieldset', array ('legend' => Mage::helper ( 'salesrule' )->__ ( 'Conditions' ) ) );
         Mage::getSingleton('rewards/wikihints')->addWikiHint($fieldset, "21218922", "Customer Behavior Rule - Conditions" );
         $customerGroups = Mage::getResourceModel ( 'customer/group_collection' )->load ()->toOptionArray ();

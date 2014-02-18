@@ -43,8 +43,8 @@
  */
 class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Action
 {
-    public function indexAction() {
-
+    public function indexAction()
+    {
         if (Mage::getConfig()->getModuleConfig('TBT_Rewards')->is('active', 'false')) {
             throw new Exception(Mage::helper('rewardssocial')->__("Sweet Tooth must be installed on the server in order to use the Sweet Tooth Social system."));
         }
@@ -61,14 +61,10 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
     {
         try {
             $url = $_SERVER['HTTP_REFERER'];
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
 
             if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
                 throw new Exception($this->__("You must be logged in for us to reward you for tweeting."), 110);
-            }
-
-            $customer = Mage::getSingleton('customer/session')->getCustomer();
-            if (!$customer->getId()) {
-                throw new Exception($this->__("There was a problem loading customer with ID: {$customer->getId()}."), 20);
             }
 
             $tweet = Mage::getModel('rewardssocial/twitter_tweet');
@@ -92,7 +88,6 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
                 ->save();
 
             if (!$tweet->getId()) {
-                // TODO: log these details, output something simpler
                 throw new Exception($this->__("TWEET model was not saved for some reason."), 10);
             }
 
@@ -132,24 +127,25 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
     public function processFollowAction()
     {
         try {
+            $customer       = Mage::getSingleton('customer/session')->getCustomer();
+            $customerId     = $customer->getId();
+
             if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
-                throw new Exception($this->__("You must be logged in for us to reward you for following us on Twitter!"));
+                throw new Exception($this->__("You must be logged in for us to reward you for following us on Twitter!"), 110);
             }
 
-            $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-            $customer = Mage::getModel('rewardssocial/customer')->load($customerId);
+            $socialCustomer = Mage::getModel('rewardssocial/customer')->load($customerId);
 
-            if ($customer->getIsFollowing()) {
-                throw new Exception($this->__("You've already been rewarded for following us!"));
+            if ($socialCustomer->getIsFollowing()) {
+                throw new Exception($this->__("You've already been rewarded for following us on Twitter!"), 120);
             }
 
-            $customer->setId($customerId)
+            $socialCustomer->setId($customerId)
                 ->setIsFollowing(true)
                 ->save();
 
-            if (!$customer->getId()) {
-                // TODO: log these details, output something simpler
-                throw new Exception($this->__("CUSTOMER model was not saved for some reason. Customer ID {$customerId}."));
+            if (!$socialCustomer->getId()) {
+                throw new Exception($this->__("CUSTOMER model was not saved for some reason. Customer ID {$customerId}."), 10);
             }
 
             $validatorModel = Mage::getModel('rewardssocial/twitter_follow_validator');
@@ -159,7 +155,7 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
             $predictedPoints = $validatorModel->getPredictedTwitterFollowPoints();
             if (count($predictedPoints) > 0) {
                 $pointsString = (string) Mage::getModel('rewards/points')->set($predictedPoints);
-                $message = $this->__("You've earned <b>%s</b> for following us!", $pointsString);
+                $message = $this->__("You've earned <b>%s</b> for following us on Twitter!", $pointsString);
             }
 
             $this->_jsonSuccess(array(
@@ -167,9 +163,18 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
                 'message' => $message
             ));
         } catch (Exception $ex) {
+             // log the exception
+            Mage::helper('rewards')->logException("There was a problem rewarding customer {$customer->getEmail()} (ID: {$customerId}) for following on Twitter: \n".
+                $ex);
+
+            $message = $this->__('There was a problem trying to reward you for following us on Twitter.<br/>Try again and contact us if you still encounter this issue.');
+            if ($ex->getCode() > 100) {
+                $message = $ex->getMessage();
+            }
+
             $this->_jsonError(array(
                 'success' => false,
-                'message' => $ex->getMessage()
+                'message' => $message
             ));
         }
 
@@ -179,23 +184,33 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
     public function referralShareAction()
     {
         try {
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
+            $customerId     = $customer->getId();
+
             if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
                 throw new Exception($this->__("You must be logged in to share your referral link!"), 110);
             }
 
-            $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-            $customer = Mage::getModel('rewardssocial/customer')->load($customerId);
-            if (!$customer->getId()) {
-                throw new Exception($this->__("There was a problem loading customer with ID: {$customerId}."), 20);
+            // make sure this is not called from elsewhere
+            if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+                throw new Exception($this->__("Referral share link accessed from wrong endpoint!"), 50);
             }
 
-            $minimumWait = $customer->getTimeUntilNextReferralShareAllowed();
+
+            $socialCustomer = Mage::getModel('rewardssocial/customer')->load($customerId)
+                ->setData($customer->getData());
+
+            if (!$socialCustomer->getId()) {
+                $socialCustomer->setId($customerId);
+            }
+
+            $minimumWait = $socialCustomer->getTimeUntilNextReferralShareAllowed();
             if($minimumWait > 0) {
                 throw new Exception($this->__("Please wait %s second(s) before sharing your referral link again, if you want to be rewarded.", $minimumWait), 120);
             }
 
-            if ($customer->isMaxDailyReferralShareReached()) {
-                $maxTweets = $this->_getMaxReferralSharesPerDay($customer);
+            if ($socialCustomer->isMaxDailyReferralShareReached()) {
+                $maxTweets = $this->_getMaxReferralSharesPerDay($socialCustomer);
                 throw new Exception($this->__("You've reached the rewards limit for today for sharing your referral link (%s shares per day)", $maxTweets), 130);
             }
 
@@ -204,7 +219,6 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
                 ->save();
 
             if (!$referralShare->getId()) {
-                // TODO: log these details, output something simpler
                 throw new Exception($this->__("REFERRAL SHARE model was not saved for some reason."), 10);
             }
 
@@ -241,91 +255,130 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
         return $this;
     }
 
+    /**
+     * This will be pinged by Pinterest when the customer clicks the Pin button and the Pinterest modal shows. It is
+     *  used to aknowledge that the pin was made or not and then redirect Pinterest to the image being pinned.
+     *
+     * - First time it will be pinged to display the image in the popup, here we don't do anything just redirect to
+     *  the image.
+     *
+     * - Second time it's when the user click the 'Pin It' button in the modal to actually do the pinning (the image
+     *  is saved to their CDN). This is what we are interested in. We'll know this is the case because the request
+     *  useragent will be "Pinterest/0.1 +http://pinterest.com/".
+     *
+     * @return this
+     */
+    public function observePinningAction()
+    {
+        $data = $this->getRequest()->getParam('data');
+        if (!$data) {
+            return $this;
+        }
+
+        $data      = (array)json_decode(Mage::helper('rewardssocial/crypt')->decrypt($data));
+        $productId = $data['productId'];
+        if (!$productId) {
+            return $this;
+        }
+
+        $product = Mage::getModel('catalog/product')->load($productId);
+        $image   = Mage::helper('catalog/image')->init($product, 'image');
+        $this->getResponse()->setRedirect($image, 301);
+
+        $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+        // if user didn't pinned the item or there's no customer logged in, just redirect to the image (done above)
+        if (!preg_match('/^pinterest.*$/', strtolower($userAgent)) || !isset($data['customerId']) || !isset($data['url']) ) {
+            return $this;
+        }
+
+        $this->_processPin($data['customerId'], $data['url']);
+
+        return $this;
+    }
+
+    /**
+     * Saves a pin, if $productUrl wasn't already pinned and limits not reached.
+     *
+     * @param  int $customerId  Customer ID
+     * @param  string $productUrl Url being pinned
+     *
+     * @return $this
+     */
+    protected function _processPin($customerId, $productUrl)
+    {
+        try {
+
+            $pin = Mage::getModel('rewardssocial/pinterest_pin');
+            if ($pin->hasAlreadyPinnedUrl($customerId, $productUrl)) {
+                return $this;
+            }
+
+            $customer = Mage::getModel('customer/customer')->load($customerId);
+
+            // if minimum wait time not satisfied, exit
+            $minimumWait = $pin->getTimeUntilNextPinAllowed($customer);
+            if ($minimumWait > 0) {
+                return $this;
+            }
+
+            // if we reached here save the pin
+            $pin->setCustomerId($customerId)
+                ->setPinnedUrl($productUrl)
+                ->setIsProcessed(false)
+                ->save();
+
+            // if limit reached, exit
+            if ($pin->isMaxDailyPinsReached($customer, false)) {
+                return $this;
+            }
+
+            // reward the pin
+            $validatorModel = Mage::getModel('rewardssocial/pinterest_pin_validator');
+            $validatorModel->initReward($customer->getId(), $pin->getId());
+
+            $pin->setIsProcessed(true)
+                ->save();
+        } catch (Exception $e) {
+            // log the exception
+            Mage::helper('rewards')->logException("There was a problem rewarding customer {$customer->getEmail()} (ID: {$customerId}) for pinning a product ({$productUrl}) on Pinterest: ".
+                $e->getMessage());
+            Mage::helper('rewards')->logException($e);
+        }
+
+        return $this;
+    }
+
     public function processPinAction()
     {
         try {
-            $thisUrl = $_SERVER['HTTP_REFERER'];
-            $hostname = $_SERVER['HTTP_HOST'];
-            $pinterestUsername = $this->getRequest()->getParam('username');
+            $thisUrl           = $_SERVER['HTTP_REFERER'];
+            $hostname          = $_SERVER['HTTP_HOST'];
+            $customer          = Mage::getSingleton('customer/session')->getCustomer();
+            $customerId        = $customer->getId();
 
             if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
                 throw new Exception($this->__("You must be logged in for us to reward you for pinning."), 110);
             }
 
-            $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-            $customer = Mage::getModel('rewardssocial/customer')->load($customerId);
+            $pin = Mage::getModel('rewardssocial/pinterest_pin')->loadByCustomerAndUrl($customerId, $thisUrl);
 
-            if (!$customer->getId()) {
-                throw new Exception($this->__("There was a problem loading customer with ID: {$customerId}."), 20);
+            if (!$pin->getId()) {
+                $minimumWait = $this->_getMinSecondsBetweenPins($customer);
+                throw new Exception($this->__("Please make sure you successfully pin the product on Pinterest and you wait %s second(s) between pins if you want to be rewarded.", $minimumWait), 170);
             }
 
-            if ($pinterestUsername && !$customer->getPinterestUsername()) {
-                $customer->setPinterestUsername($pinterestUsername);
-            }
-
-            $pinterestUsername = $customer->getPinterestUsername();
-            if (!$pinterestUsername) {
-                throw new Exception($this->__("You haven't entered your Pinterest username, so we can't reward you for pinning."), 120);
-            }
-
-            $pin = Mage::getModel('rewardssocial/pinterest_pin');
-            if ($pin->hasAlreadyPinnedUrl($customer, $thisUrl)) {
-                throw new Exception($this->__("You've already been rewarded for pinning this page."), 130);
-            }
-
-            $minimumWait = $pin->getTimeUntilNextPinAllowed($customer);
-            if($minimumWait > 0) {
-                throw new Exception($this->__('Please wait %s second(s) before pinning another page if you want to be rewarded.', $minimumWait), 140);
-            }
-
-            if ($pin->isMaxDailyPinsReached($customer)) {
+            if ($pin->isMaxDailyPinsReached($customer, false)) {
                 $maxPins = $this->_getMaxPinsPerDay($customer);
+                $pin->delete();
                 throw new Exception($this->__("You've reached the Pinterest rewards limit for today (%s pins per day)", $maxPins), 150);
             }
 
-            $pinterest = Mage::getModel('tbtcommon/biglight')->getPinterestActivity($pinterestUsername);
-            if (!isset($pinterest['body']) || !is_array($pinterest['body'])) {
-                throw new Exception($this->__("The username you entered doesn't exist or we are unable to check it at this time."), 160);
+            if (!$pin->getIsProcessed()) {
+                $pin->delete();
+                throw new Exception($this->__("There was a problem rewarding points for a pin for customer with ID {$customerId} and product {$thisUrl}. Check previous logs for more details."), 10);
             }
 
-            $foundNewPin = false;
-            foreach ($pinterest['body'] as $remotePin) {
-                if ($remotePin['attrib'] != $hostname) {
-                    continue;
-                }
-
-                $localPin = Mage::getModel('rewardssocial/pinterest_pin');
-                if ($localPin->hasAlreadyPinnedUrl($customer, $remotePin['pinned_link'])) {
-                    continue;
-                }
-
-                if ($remotePin['pinned_link'] != $thisUrl) {
-                    continue;
-                }
-
-                $localPin->setCustomerId($customer->getId())
-                    ->setPinterestUrl($remotePin['href'])
-                    ->setPinnedUrl($remotePin['pinned_link'])
-                    ->save();
-
-
-                if (!$localPin->getId()) {
-                    throw new Exception($this->__("PIN model was not saved for some reason."), 10);
-                }
-
-                $validatorModel = Mage::getModel('rewardssocial/pinterest_pin_validator');
-                $validatorModel->initReward($customer->getId(), $localPin->getId());
-
-                $foundNewPin = true;
-            }
-
-            if (!$foundNewPin) {
-                throw new Exception($this->__("Please pin the product on Pinterest first and then reclaim your reward here."), 170);
-            }
-
-            // Found a pin, so let's save the customer's Pinterest username.
-            $customer->setId($customerId)
-                ->save();
+            $validatorModel = Mage::getModel('rewardssocial/pinterest_pin_validator');
 
             $message = $this->__("Thanks for pinning this page!");
             $predictedPoints = $validatorModel->getPredictedPinterestPinPoints();
@@ -339,11 +392,155 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
                 'message' => $message
             ));
         } catch (Exception $ex) {
-            // log the exception
-            Mage::helper('rewards')->logException("There was a problem rewarding customer {$customer->getEmail()} (ID: {$customerId}) for pinning a product ({$thisUrl}) on Pinterest: ".
-                $ex->getMessage());
-
             $message = $this->__('There was a problem trying to reward your pinterest pin.<br/>Try again and contact us if you still encounter this issue.');
+            if ($ex->getCode() > 100) {
+                $message = $ex->getMessage();
+            }
+
+            $this->_jsonError(array(
+                'success' => false,
+                'message' => $message
+            ));
+        }
+
+        return $this;
+    }
+
+    public function processFbProductShareAction()
+    {
+        try {
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
+
+            $productId = $this->getRequest()->getParam('product_id');
+            $postId    = $this->getRequest()->getParam('post_id');
+            if (!$productId) {
+                throw new Exception($this->__("No product found to reward sharing on Facebook"), 10);
+            }
+
+            if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
+                throw new Exception($this->__("You must be logged in for us to reward you for sharing a product on Facebook!"), 110);
+            }
+
+            $customerId = $customer->getId();
+            $productShare = Mage::getModel('rewardssocial/facebook_share');
+
+            if ($productShare->hasAlreadySharedProduct($customerId, $productId)) {
+                throw new Exception($this->__("You've already been rewarded for sharing this product on Facebook."), 120);
+            }
+
+            $minimumWait = $productShare->getTimeUntilNextShareAllowed($customer);
+            if ($minimumWait > 0) {
+                throw new Exception($this->__("Please wait %s second(s) before sharing another product if you want to be rewarded.", $minimumWait), 130);
+            }
+
+            if ($productShare->isMaxDailyProductSharesReached($customer)) {
+                $maxShares = $this->_getMaxProductSharesPerDay($customer);
+                throw new Exception($this->__("You've reached Facebook product share rewards limit for today (%s shares per day)", $maxShares), 140);
+            }
+
+            $productShare->setCustomerId($customerId)
+                ->setProductId($productId)
+                ->setPostId($postId)
+                ->save();
+
+            if (!$productShare->getId()) {
+                throw new Exception($this->__("Facebook Share model was not saved for some reason."), 20);
+            }
+
+            $validatorModel = Mage::getModel('rewardssocial/facebook_share_validator');
+            $validatorModel->initReward($customer, $productShare->getId());
+
+            $message = $this->__("Thanks for sharing this product on Facebook!");
+            $predictedPoints = $validatorModel->getPredictedPoints();
+            if (count($predictedPoints) > 0) {
+                $pointsString = (string) Mage::getModel('rewards/points')->set($predictedPoints);
+                $message = $this->__("You've earned <b>%s</b> for sharing this product on Facebook!", $pointsString);
+            }
+
+            $this->_jsonSuccess(array(
+                'success' => true,
+                'message' => $message
+            ));
+
+        } catch (Exception $ex) {
+            // log the exception
+            Mage::helper('rewards')->logException("There was a problem rewarding customer {$customer->getEmail()} (ID: {$customer->getId()}) for sharing a product ({$productId}) on Facebook: " . $ex->getMessage());
+
+            $message = $this->__('There was a problem trying to reward your Facebook product share.<br/>Try again and contact us if you still encounter this issue.');
+            if ($ex->getCode() > 100) {
+                $message = $ex->getMessage();
+            }
+
+            $this->_jsonError(array(
+                'success' => false,
+                'message' => $message
+            ));
+        }
+
+        return $this;
+    }
+
+    public function processPurchaseShareAction()
+    {
+        try {
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
+
+            $productId  = $this->getRequest()->getParam('product_id');
+            $actionType = $this->getRequest()->getParam('action_type');
+            $orderId    = $this->getRequest()->getParam('order_id');
+            if (!$productId) {
+                throw new Exception($this->__("No product found to reward sharing your purchase."), 10);
+            }
+            if (!$actionType) {
+                throw new Exception($this->__("No action type found to reward sharing your purchase."), 20);
+            }
+            if (!$orderId) {
+                throw new Exception($this->__("No order found to reward sharing your purchase."), 30);
+            }
+
+            if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
+                throw new Exception($this->__("You must be logged in for us to reward you for sharing your purchase!"), 110);
+            }
+
+            $customerId = $customer->getId();
+            $purchaseShare = Mage::getModel('rewardssocial/purchase_share');
+
+            if ($purchaseShare->hasAlreadySharedPurchase($customerId, $productId, $orderId, $actionType)) {
+                throw new Exception($this->__("You've already been rewarded for sharing this purchase on "
+                    . ucfirst($actionType) . "."), 120);
+            }
+
+            $purchaseShare->setCustomerId($customerId)
+                ->setProductId($productId)
+                ->setOrderId($orderId)
+                ->setTypeId($purchaseShare->getActionTypeId($actionType))
+                ->save();
+
+            if (!$purchaseShare->getId()) {
+                throw new Exception($this->__("Purchase Share model was not saved for some reason."), 40);
+            }
+
+            $validatorModel = Mage::helper('rewardssocial/purchase_share')->getValidator($actionType);
+            $validatorModel->initReward($customer, $purchaseShare->getId(), $actionType);
+
+            $message = $this->__("Thanks for sharing this purchase on " . ucfirst($actionType) . "!");
+            $predictedPoints = $validatorModel->getPredictedPoints();
+            if (count($predictedPoints) > 0) {
+                $pointsString = (string) Mage::getModel('rewards/points')->set($predictedPoints);
+                $message = $this->__("You've earned <b>%s</b> for sharing this purchase on " . ucfirst($actionType)
+                    . "!", $pointsString);
+            }
+
+            $this->_jsonSuccess(array(
+                'success' => true,
+                'message' => $message
+            ));
+
+        } catch (Exception $ex) {
+            // log the exception
+            Mage::helper('rewards')->logException("There was a problem rewarding customer {$customer->getEmail()} (ID: {$customer->getId()}) for sharing a purchased product ({$productId}) from order {$orderId}: " . $ex->getMessage());
+
+            $message = $this->__('There was a problem trying to reward your purchase share.<br/>Try again and contact us if you still encounter this issue.');
             if ($ex->getCode() > 100) {
                 $message = $ex->getMessage();
             }
@@ -364,15 +561,11 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
     public function processPlusOneAction()
     {
         try {
-            $url = $_SERVER['HTTP_REFERER'];
+            $url      = $_SERVER['HTTP_REFERER'];
+            $customer = Mage::getSingleton('customer/session')->getCustomer();
 
             if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
                 throw new Exception($this->__("You must be logged in for us to reward you for +1'ing a page!"), 110);
-            }
-
-            $customer = Mage::getSingleton('customer/session')->getCustomer();
-            if (!$customer->getId()) {
-                throw new Exception($this->__("There was a problem loading customer with ID: {$customer->getId()}."), 20);
             }
 
             $plusone = Mage::getModel('rewardssocial/google_plusOne');
@@ -396,7 +589,6 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
                 ->save();
 
             if (!$plusone->getId()) {
-                // TODO: log these details, output something simpler
                 throw new Exception($this->__("PLUSONE model was not saved for some reason."), 10);
             }
 
@@ -443,14 +635,24 @@ class TBT_Rewardssocial_IndexController extends Mage_Core_Controller_Front_Actio
         return Mage::helper('rewardssocial/pinterest_config')->getMaxPinRewardsPerDay($customer->getStore());
     }
 
-    protected function _getMaxReferralSharesPerDay($customer)
+    protected function _getMinSecondsBetweenPins($customer)
     {
-        return Mage::helper('rewardssocial/twitter_config')->getMaxReferralSharesPerDay($customer->getStore());
+        return Mage::helper('rewardssocial/pinterest_config')->getMinSecondsBetweenPins($customer->getStore());
     }
 
     protected function _getMaxPlusOnesPerDay($customer)
     {
         return Mage::helper('rewardssocial/google_config')->getMaxPlusOneRewardsPerDay($customer->getStore());
+    }
+
+    protected function _getMaxProductSharesPerDay($customer)
+    {
+        return Mage::helper('rewardssocial/facebook_config')->getMaxFacebookProductShareRewardsPerDay($customer->getStore());
+    }
+
+    protected function _getMaxReferralSharesPerDay($customer)
+    {
+        return Mage::helper('rewardssocial/referral_config')->getMaxReferralSharesPerDay($customer->getStore());
     }
 
     protected function _jsonSuccess($response)

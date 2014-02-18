@@ -2,34 +2,34 @@
 
 /**
  * WDCA - Sweet Tooth
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
+ *
+ * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
- * The Sweet Tooth License is available at this URL: 
+ * The Sweet Tooth License is available at this URL:
  * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
- * The Open Software License is available at this URL: 
+ * The Open Software License is available at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
+ *
  * DISCLAIMER
- * 
- * By adding to, editing, or in any way modifying this code, WDCA is 
- * not held liable for any inconsistencies or abnormalities in the 
- * behaviour of this code. 
+ *
+ * By adding to, editing, or in any way modifying this code, WDCA is
+ * not held liable for any inconsistencies or abnormalities in the
+ * behaviour of this code.
  * By adding to, editing, or in any way modifying this code, the Licensee
- * terminates any agreement of support offered by WDCA, outlined in the 
- * provided Sweet Tooth License. 
- * Upon discovery of modified code in the process of support, the Licensee 
- * is still held accountable for any and all billable time WDCA spent 
+ * terminates any agreement of support offered by WDCA, outlined in the
+ * provided Sweet Tooth License.
+ * Upon discovery of modified code in the process of support, the Licensee
+ * is still held accountable for any and all billable time WDCA spent
  * during the support process.
- * WDCA does not guarantee compatibility with any other framework extension. 
+ * WDCA does not guarantee compatibility with any other framework extension.
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
- * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * If you did not receive a copy of the license, please send an email to
+ * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy
  * immediately.
- * 
+ *
  * @category   [TBT]
  * @package    [TBT_Rewards]
  * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
@@ -43,25 +43,33 @@
  * @package    TBT_Rewards
  * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
  */
-class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
-	
+class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer
+{
+
 	/**
 	 * Stores the points balances where the key is the ID of the currency.
 	 *
 	 * @var array
 	 */
-	protected $points = array ();
-	protected $on_hold_points = array ();
-	protected $pending_points = array ();
+        protected $points              = array();
+        protected $on_hold_points      = array();
+        protected $pending_points      = array();
 	protected $pending_time_points = array();
-	protected $usable_points = array ();
-	protected $transfers = array ();
+        protected $usable_points       = array();
+        protected $transfers           = array();
+
+
+    public function _construct()
+    {
+        $this->_init('rewards/customer');
+    }
 
     /**
      * @param Mage_Customer_Model_Customer $customer
      * @return TBT_Rewards_Model_Customer
      */
-    public function getRewardsCustomer($customer) {
+    public function getRewardsCustomer($customer)
+    {
         if ( $customer instanceof TBT_Rewards_Model_Customer ) {
             return $customer;
         }
@@ -72,20 +80,20 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
             $this->load($customer->getId());
         }
         $this->addData($customer->getData());
-        
+
         return $this;
     }
-	
-    
+
+
 	/**
-	 * This is used to store the id from the model before saving 
+         * This is used to store the id from the model before saving
 	 * to compare to future versions
 	 *
 	 * @var integer
 	 */
 	protected $oldId = - 1;
 	protected $currencies = null;
-	
+
 	/**
 	 *
 	 * (override from an abstract parent)
@@ -97,7 +105,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return parent::_beforeSave ();
 	}
-	
+
 	/**
 	 *
 	 * (override from an abstract parent)
@@ -115,10 +123,10 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
     {
 		$this->_loadPointsCollections();
         $this->_loadTransferCollections();
-        
+
         return $this;
     }
-	
+
 	/**
 	 * True if the id specified is new to this customer model after a SAVE event.
 	 *
@@ -128,7 +136,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function isNewCustomer($checkId) {
 		return ($this->oldId != $checkId);
 	}
-	
+
 	/**
 	 * Processing object after save data
 	 * (override from an abstract parent)
@@ -144,7 +152,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 			$this->oldId = $this->getId (); //This stops multiple triggers of this function
 			$this->createTransferForNewCustomer ();
 		}
-		
+
 		Mage::getSingleton ( 'rewards/session' )->setCustomer ( $this );
 		if ($isNew) {
 			if (Mage::helper('rewards/dispatch')->smartDispatch('rewards_customer_signup', array('customer' => $this))) {
@@ -154,82 +162,82 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return parent::_afterSave ();
 	}
-	
+
 	/**
 	 * Creates transfers if there are rules dealing with new customers
 	 *
-	 * 
+         *
 	 */
 	public function createTransferForNewCustomer() {
 		// stop if Customer account created in Admin Panel and Associated Website for customer is Admin store
 		if (Mage::app()->getStore()->isAdmin() && $this->getWebsiteId() == Mage_Core_Model_App::ADMIN_STORE_ID) {
 			return $this;
 		}
-		
+
 		$ruleCollection = Mage::getSingleton ( 'rewards/special_validator' )->getApplicableRulesOnSignup ();
 		foreach ( $ruleCollection as $rule ) {
-			
+
 			// check Associated Website for customer is valid, when creating customer from admin panel
 			if (Mage::app()->getStore()->isAdmin() && !$rule->isApplicableToWebsite($this->getWebsiteId())) {
 				continue;
 			}
-			
+
 			try {
 				//Create the Transfer
 				$is_transfer_successful = Mage::helper ( 'rewards/transfer' )->transferSignupPoints ( $rule->getPointsAmount (), $rule->getPointsCurrencyId (), $this->getId (), $rule);
 			} catch ( Exception $ex ) {
 				Mage::getSingleton ( 'core/session' )->addError ( $ex->getMessage () );
 			}
-			
+
 			if ($is_transfer_successful) {
-				//Alert the customer on the distributed points   
+                                //Alert the customer on the distributed points
 				Mage::getSingleton ( 'core/session' )->addSuccess ( Mage::helper ( 'rewards' )->__ ( 'You received %s for signing up!', (string)Mage::getModel ( 'rewards/points' )->set ( $rule ) ) );
 			} else {
 				Mage::getSingleton ( 'core/session' )->addError ( Mage::helper ( 'rewards' )->__ ( 'Could not transfer points.' ) );
 			}
 		}
 	}
-	
+
 	/**
 	 * Loads the points summaries for this customer then saves into this customer model.
 	 *
 	 */
 	private function _loadPointsCollections() {
-		
-		try {			
+
+                try {
 			// Load Indexed point balance
 			if (Mage::helper('rewards/customer_points_index')->useIndex()) {
-								
+
 				$balanceData = $this->_getIndexedCustomerBalanceData();
-				
+
 				// TODO: currency id's are hard-coded to 1 here. no support for multi-currency atm.
-				$this->usable_points = array( 1 => (int) $balanceData['customer_points_usable']);				
+                                $this->usable_points = array( 1 => (int) $balanceData['customer_points_usable']);
 				$this->points = array( 1 => (int) $balanceData['customer_points_active']);
 				$this->on_hold_points = array( 1 => (int) $balanceData['customer_points_pending_approval']);
 				$this->pending_points = array( 1 => (int) $balanceData['customer_points_pending_event']);
-				$this->pending_time_points = array( 1 => (int) $balanceData['customer_points_pending_time']);				
-								
-			} else {							
+                                $this->pending_time_points = array( 1 => (int) $balanceData['customer_points_pending_time']);
+
+                        } else {
 				$this->usable_points = $this->_getEffectiveActivePointsSum ();
 				$this->points = $this->_getPointSums ( '*active*' );
 				$this->on_hold_points = $this->_getPointSums ( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_APPROVAL );
 				$this->pending_points = $this->_getPointSums ( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_EVENT );
-				$this->pending_time_points = $this->_getPointSums( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME );				
+                                $this->pending_time_points = $this->_getPointSums( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME );
 			}
-			
+
 		} catch ( Exception $e ) {
 			$this->usable_points = $this->_getEffectiveActivePointsSum ();
 			$this->points = $this->_getPointSums ( '*active*' );
 			$this->on_hold_points = $this->_getPointSums ( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_APPROVAL );
 			$this->pending_points = $this->_getPointSums ( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_EVENT );
-			$this->pending_time_points = $this->_getPointSums( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME );				
-			
+                        $this->pending_time_points = $this->_getPointSums( TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME );
+
 			Mage::helper('rewards/debug')->notice("Unable to load points collection in Customer Model: " . $e->getMessage());
 		}
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Loads point sums for a given status
 	 * @see TBT_Rewards_Model_Transfer_Status for status ids
@@ -242,21 +250,21 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		} else {
 			$point_sums = $this->getCustomerPointsCollectionAll ()->addStoreFilter ( Mage::app ()->getStore () )->addFilter ( "status", $status );
 		}
-		
+
 		$point_sums->excludeTransferReferences()->addFilter ( "customer_id", $this->getId () );
-		
+
 		$points = array ();
 		//Zero's out all cuurencies on the point map
 		foreach ( $this->getCustomerCurrencyIds () as $curr_id ) {
 			$points [$curr_id] = 0;
 		}
-		
+
 		foreach ( $point_sums as $currency_points ) {
 			$points [$currency_points->getCurrencyId ()] = ( int ) $currency_points->getPointsCount ();
 		}
 		return $points;
 	}
-	
+
 	/**
 	 * Loads sum of pending points redemptions
 	 * @see TBT_Rewards_Model_Transfer_Status for status ids
@@ -269,20 +277,20 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		        ->addFieldToFilter ( "quantity", array ('lt' => 0 ) )
 		        ->groupByCustomers ()
 		        ->addFilter ( "customer_id", $this->getId () );
-		
+
 		$points = array ();
 		//Zero's out all currencies on the point map
 		foreach ( $this->getCustomerCurrencyIds () as $curr_id ) {
 			$points [$curr_id] = 0;
 		}
-		
+
 		foreach ( $point_sums as $currency_points ) {
 			$points [$currency_points->getCurrencyId ()] = ( int ) $currency_points->getPointsCount ();
 		}
-		
+
 		return $points;
 	}
-	
+
 	/**
 	 * Loads sum of active points minus sum of pending redemptions
 	 * @see TBT_Rewards_Model_Transfer_Status for status ids
@@ -291,21 +299,21 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	private function _getEffectiveActivePointsSum() {
 		$points_sum = $this->_getPointSums ( '*active*' );
 		$pending_redemptions = $this->_getPendingPointsRedemptionsSum ();
-		
+
 		$points = array ();
 		//Zero's out all currencies on the point map
 		foreach ( $this->getCustomerCurrencyIds () as $curr_id ) {
 			$points [$curr_id] = 0;
 		}
-		
+
 		foreach ( $points_sum as $curr_id => $points_amt ) {
 			// we're adding them because $pending_redemptions are already negative
 			$points [$curr_id] = ( int ) $points_amt + ( int ) $pending_redemptions [$curr_id];
 		}
-		
+
 		return $points;
 	}
-	
+
 	/**
 	 * Loads the transfers for this customer then saves into this customer model.
 	 *
@@ -316,7 +324,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		$transfers = $this->getTransferCollection ()->selectPointsCaption ( 'points_caption' )->addStoreFilter ( Mage::app ()->getStore () )->addFilter ( "customer_id", $this->getId () );
 		$this->transfers = $transfers;
 	}
-	
+
 	/**
 	 * Returns the quantity of points available for the current
 	 * customer and current store in the specified currency_id;
@@ -331,7 +339,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Returns the quantity of points <b>usable</b> for the current
 	 * customer and current store in the specified currency_id, which is
@@ -347,9 +355,9 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 			return false;
 		}
 	}
-	
+
 	/**
-	 * Returns the a list of points where each item is 
+         * Returns the a list of points where each item is
 	 * a total balance of points
 	 *
 	 * @return array
@@ -357,9 +365,9 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getPoints() {
 		return $this->points;
 	}
-	
+
 	/**
-	 * Returns the a list of points where each item is 
+         * Returns the a list of points where each item is
 	 * a total balance of points
 	 *
 	 * @return array
@@ -367,9 +375,9 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getPendingPoints() {
 		return $this->pending_points;
 	}
-	
+
 	/**
-	 * Returns the a list of points where each item is 
+         * Returns the a list of points where each item is
 	 * a total balance of points
 	 *
 	 * @return array
@@ -377,9 +385,9 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getOnHoldPoints() {
 		return $this->on_hold_points;
 	}
-	
+
 	/**
-	 * Returns the a list of points where each item is 
+         * Returns the a list of points where each item is
 	 * a total balance of points
 	 *
 	 * @return array
@@ -387,32 +395,32 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getPendingTimePoints() {
 		return $this->pending_time_points;
 	}
-	
+
 	/**
-	 * Returns the a list of points where each item is 
+         * Returns the a list of points where each item is
 	 * a total balance of points
 	 * The usable points are the number of points that can be used towards an order RIGHT NOW.
-	 * IE pending redemptions ARE deducted from this total and pending distributions are NOT 
+         * IE pending redemptions ARE deducted from this total and pending distributions are NOT
 	 * added to this total.
-	 * 
+         *
 	 * @return array
 	 */
-	public function getUsablePoints() {		
+        public function getUsablePoints() {
 		return $this->usable_points;
 	}
-	
+
 	/**
 	 * Get usable points (non-indexer version)
-	 * 
+         *
 	 * @return array
 	 */
 	public function getRealUsablePoints() {
 		return $this->_getEffectiveActivePointsSum ();
 	}
-	
+
 	/**
 	 * Get a non-indexer balance of points for the given status
-	 *  
+         *
 	 * Loads point sums for a given status
 	 * @see TBT_Rewards_Model_Transfer_Status for status ids
 	 * @param integer|string $status the only string accepted is '*active*' which will fetch all active points transfers (approved)
@@ -420,32 +428,35 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	 */
 	public function getRealBalanceForPointsStatus($status) {
 		return $this->_getPointSums($status);
-	}	
-	
+        }
+
 	/**
 	 * Returns all currencies applicable to this customer
 	 *
 	 * @return array
 	 */
 	// TODO WDCA - Add in filter by customer group ID, currently not supported
-	public function getCustomerCurrencyIds() {
-		return Mage::getModel ( 'rewards/currency' )->getAvailCurrencyIds ();
+        public function getCustomerCurrencyIds()
+        {
+                return Mage::getSingleton('rewards/currency')->getAvailCurrencyIds ();
 	}
-	
+
 	/**
 	 * Returns the number of currencies available to this customer.
 	 *
 	 * @return int
 	 */
-	public function getNumCurrencies() {
-		return count ( Mage::getModel ( 'rewards/currency' )->getAvailCurrencyIds () );
+        public function getNumCurrencies()
+        {
+                return count ( Mage::getSingleton('rewards/currency')->getAvailCurrencyIds () );
 	}
-	
-	public function hasCurrencyId($currency_id) {
-		$currency_ids = Mage::getModel ( 'rewards/currency' )->getAvailCurrencyIds ();
+
+        public function hasCurrencyId($currency_id)
+        {
+                $currency_ids = Mage::getSingleton('rewards/currency')->getAvailCurrencyIds ();
 		return array_search ( $currency_id, $currency_ids ) !== false;
 	}
-	
+
 	/**
 	 * Returns a nicely formatted string of the customer's points
 	 *
@@ -454,7 +465,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getPointsSummary() {
 		return Mage::helper ( 'rewards' )->getPointsString ( $this->usable_points );
 	}
-	
+
 	/**
 	 * Returns a nicely formatted string of the customer's PENDING points
 	 *
@@ -463,7 +474,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getPendingPointsSummary() {
 		return Mage::helper ( 'rewards' )->getPointsString ( $this->pending_points );
 	}
-	
+
 	/**
 	 * Returns a nicely formatted string of the customer's PENDING-TIME points
 	 *
@@ -472,7 +483,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getPendingTimePointsSummary() {
 		return Mage::helper ( 'rewards' )->getPointsString ( $this->pending_time_points );
 	}
-	
+
 	/**
 	 * Returns a nicely formatted string of the customer's ON HOLD points
 	 *
@@ -481,10 +492,10 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getOnHoldPointsSummary() {
 		return Mage::helper ( 'rewards' )->getPointsString ( $this->on_hold_points );
 	}
-	
+
 	/**
 	 * Calculates the indexer usable points balance for this customer
-	 * 
+         *
 	 * @deprecated use _getIndexedCustomerBalanceData instead.
 	 * @return array
 	 */
@@ -501,7 +512,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 
 	/*
 	 * Finds indexed balance data for this customer and returns the data as an array
-	 * 
+         *
 	 * @return array, Data from TBT_Rewards_Model_Mysql4_Customer_Indexer_Points_Collection model
 	 */
 	protected function _getIndexedCustomerBalanceData() {
@@ -509,18 +520,18 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		$indexedCustomer = Mage::getModel ( 'rewards/customer_indexer_points' )->load($this->getId ());
 		$balanceData = array();
 		if ($indexedCustomer->getId()) {
-			$balanceData = $indexedCustomer->getData();						
+                        $balanceData = $indexedCustomer->getData();
 		} else {
 			throw new Exception("No customer record found in rewards index table for customer #{$this->getId ()}");
 		}
-		
+
 		return $balanceData;
 	}
-	
-	
-	
+
+
+
 	/**
-	 * Returns a nicely formatted string of the customers points including 
+         * Returns a nicely formatted string of the customers points including
 	 * pending points and on hold points.
 	 * @deprecated Using this function makes templating very rigid. see the other points summary methods
 	 *
@@ -529,7 +540,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getPointsSummaryFull() {
 		$parts = array ();
 		$status_captions = Mage::getSingleton ( 'rewards/transfer_status' )->getOptionArray ();
-		
+
 		if ($this->hasPoints ()) {
 			$active_points = $this->getPointsSummary ();
 			$parts [] = $active_points;
@@ -549,12 +560,12 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 			$points_pending_time .= ' ' . $status_captions [TBT_Rewards_Model_Transfer_Status::STATUS_PENDING_TIME];
 			$parts [] = $points_pending_time;
 		}
-		
+
 		$del = ' ' . Mage::helper ( 'rewards' )->__ ( 'and' ) . ' ';
 		$final_str = implode ( $del, $parts );
 		return $final_str;
 	}
-	
+
 	public function hasPoints() {
 		foreach ( $this->getPoints () as $points ) {
 			if ($points > 0)
@@ -562,7 +573,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return false;
 	}
-	
+
 	public function hasUsablePoints() {
 		foreach ( $this->getUsablePoints () as $points ) {
 			if ($points > 0)
@@ -570,7 +581,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return false;
 	}
-	
+
 	public function hasPendingPoints() {
 		foreach ( $this->getPendingPoints () as $points ) {
 			if ($points > 0)
@@ -578,7 +589,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return false;
 	}
-	
+
 	public function hasPointsOnHold() {
 		foreach ( $this->getOnHoldPoints () as $points ) {
 			if ($points > 0)
@@ -586,7 +597,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return false;
 	}
-	
+
 	public function hasPendingTimePoints() {
 		foreach ( $this->getPendingTimePoints () as $points ) {
 			if ($points > 0) {
@@ -595,7 +606,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Fetches the transfers array for this customer.
 	 *
@@ -604,7 +615,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getTransfers() {
 		return $this->transfers;
 	}
-	
+
 	/**
 	 * Fetches newsletter transfers from this customer
 	 * @param integer $newsletter_id
@@ -614,7 +625,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		$transfers = $this->getTransfers ()->addAllReferences()->addFilter ( 'reference_type', TBT_Rewards_Model_Transfer_Reference::REFERENCE_NEWSLETTER )->addFilter ( 'reference_id', $newsletter_id );
 		return $transfers;
 	}
-	
+
 	/**
 	 * Fetches all sumemd up transfers for all customers
 	 *
@@ -623,9 +634,9 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getCustomerPointsCollection() {
 		return $this->getTransferCollection ()->groupByCustomers ()->selectOnlyActive ();
 	}
-	
+
 	/**
-	 * Fetches all summed up transfers for the customer including 
+         * Fetches all summed up transfers for the customer including
 	 * pending and on_hold transfers (no status restriction)
 	 *
 	 * @return TBT_Rewards_Model_Mysql4_Transfer_Collection
@@ -633,25 +644,25 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 	public function getCustomerPointsCollectionAll() {
 		return $this->getTransferCollection ()->groupByCustomers ();
 	}
-	
+
 	/**
-	 * This method fetches a collection of all transfers for <b>all customers</b>. 
+         * This method fetches a collection of all transfers for <b>all customers</b>.
 	 *
 	 * @return TBT_Rewards_Model_Mysql4_Transfer_Collection
 	 */
 	public function getTransferCollection() {
 		return Mage::getModel ( 'rewards/transfer' )->getCollection ();
 	}
-	
+
 	/**
 	 * True if the customer can afford the points specified in the currency specified.
 	 * If the first parameter is an array and the second param is left out,
-	 * the function will return true if the customer can afford all of the 
+         * the function will return true if the customer can afford all of the
 	 * <b>array of point sums</b> provided in the first param.
 	 * Do not pass this function a list of arbitrary transfers!
 	 * TODO use predictPointsRemaining to calculate this value
-	 * 
-	 * @param integer|array $points_quantity if this value is an array, please input the 
+         *
+         * @param integer|array $points_quantity if this value is an array, please input the
 	 * standard format of array( currency_id=>points_quantity, ...)
 	 * @param integer [$points_currency]
 	 * @return boolean
@@ -675,49 +686,49 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * True if the customer can afford the points specified in the currency specified.
 	 * If the first parameter is an array and the second param is left out,
-	 * the function will return true if the customer can afford all of the 
+         * the function will return true if the customer can afford all of the
 	 * <b>array of point sums</b> provided in the first param.
 	 * Do not pass this function a list of arbitrary transfers!
 	 * TODO use predictPointsRemaining to calculate this value
-	 * 
-	 * @param integer|array $points_quantity if this value is an array, please input the 
+         *
+         * @param integer|array $points_quantity if this value is an array, please input the
 	 * standard format of array( currency_id=>points_quantity, ...)
 	 * @param integer [$points_currency]
 	 * @return boolean
 	 */
 	public function canAffordFromPointsHash($points_array) {
 		$total_points = array ();
-		
+
 		foreach ( $points_array as $temp_transfer ) {
 			$temp_transfer = ( array ) $temp_transfer;
-			
+
 			$points_amount = $temp_transfer [TBT_Rewards_Model_Catalogrule_Rule::POINTS_AMT] * $temp_transfer [TBT_Rewards_Model_Catalogrule_Rule::POINTS_APPLICABLE_QTY];
 			$currency_id = $temp_transfer [TBT_Rewards_Model_Catalogrule_Rule::POINTS_CURRENCY_ID];
-			
+
 			if (isset ( $total_points [$currency_id] )) {
 				$total_points [$currency_id] += $points_amount;
 			} else {
 				$total_points [$currency_id] = $points_amount;
 			}
 		}
-		
+
 		return $this->canAfford ( $total_points );
 	}
-	
+
 	/**
 	 * Calculates the points remaining for this customer if the points transaction(s)
 	 * proved went through.
-	 * 
-	 * @param integer|array $points_quantity if this value is an array, please input the 
+         *
+         * @param integer|array $points_quantity if this value is an array, please input the
 	 * standard format of array( currency_id=>points_quantity, ...)
 	 * @param integer [$points_currency]
 	 * @return int|boolean|array	false means there was an error.  int is returned if a single
 	 * quantity and currency is provided.  An array of remaining amounts
-	 * for each currency is returned if the 
+         * for each currency is returned if the
 	 */
 	public function predictPointsRemaining($points_quantity, $points_currency = null) {
 		if ($points_currency == null && is_array ( $points_quantity )) {
@@ -742,7 +753,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 			return $this->getUsablePointsBalance ( $points_currency ) - $points_quantity;
 		}
 	}
-	
+
 	//@nelkaake 22/01/2010 2:52:49 AM : returns the last time the user earned/spent points.
 	public function getLatestActivityDate() {
 		$last_transfers = $this->getTransfers ();
@@ -756,8 +767,8 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		}
 		return $date;
 	}
-	
-	//@nelkaake 31/01/2010 4:01:17 PM : 
+
+        //@nelkaake 31/01/2010 4:01:17 PM :
 	public function expireAllPoints() {
 		$all_points = $this->getUsablePoints ();
 		$customer_id = $this->getId ();
@@ -765,7 +776,7 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 		foreach ( $all_points as $currency_id => $num_points ) {
 			if ($num_points <= 0)
 				continue;
-			
+
 		// ALWAYS ensure that we only give an integral amount of points
 			$num_points = (- 1) * floor ( $num_points );
 			$transfer = Mage::getModel ( 'rewards/transfer' )->setId ( null );
@@ -774,10 +785,10 @@ class TBT_Rewards_Model_Customer extends Mage_Customer_Model_Customer {
 			if (! $transfer->setStatus ( null, TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED )) {
 				continue;
 			}
-			
+
 			$transfer->setCreationTs ( now () )->setLastUpdateTs ( now () )->setCurrencyId ( $currency_id )->setQuantity ( $num_points )->setComments ( $comments )->setCustomerId ( $customer_id )->save ();
 		}
-		
+
 		return $this;
 	}
 

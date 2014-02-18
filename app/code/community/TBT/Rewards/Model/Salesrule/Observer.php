@@ -53,7 +53,8 @@ class TBT_Rewards_Model_Salesrule_Observer extends Varien_Object {
      * This gets triggered after rules are processed and the discount amount is requested.
      * @param Varien_Object $o
      */
-    public function salesruleValidatorProcess($o) {
+    public function salesruleValidatorProcess($o)
+    {
         $event = $o->getEvent ();
         //($quote, $address, $item, $rule_id)
         $quote = $event->getQuote ();
@@ -95,13 +96,18 @@ class TBT_Rewards_Model_Salesrule_Observer extends Varien_Object {
             'base_discount_amount' => 0,
         ));*/
 
-        $original_discounts = $event->getResult ();
-        $original_discounts->setDiscountAmount ( $new_discounts->getDiscountAmount () );
-        $original_discounts->setBaseDiscountAmount ( $new_discounts->getBaseDiscountAmount () );
+        // we currrently don't support multi-shipping, so if it's a multi-shipping checkout don't apply cart discounts
+        if (!Mage::helper('rewards')->isMultishipingCheckout($quote)) {
+            $original_discounts = $event->getResult ();
+            $original_discounts->setDiscountAmount ( $new_discounts->getDiscountAmount () );
+            $original_discounts->setBaseDiscountAmount ( $new_discounts->getBaseDiscountAmount () );
 
 
-        $this->_hadDisc[$rule_id] = array("discount_amount"=> $new_discounts->getDiscountAmount(),
-                                          "base_discount_amount"=> $new_discounts->getBaseDiscountAmount());
+        }
+        $this->_hadDisc[$rule_id] = array(
+            "discount_amount"      => $new_discounts->getDiscountAmount(),
+            "base_discount_amount" => $new_discounts->getBaseDiscountAmount()
+        );
 
         if($is_applicable) {
             $rule->setStopRulesProcessing(false);
@@ -129,6 +135,7 @@ class TBT_Rewards_Model_Salesrule_Observer extends Varien_Object {
      * @param unknown_type $o
      */
     public function checkRedemptionCouponAfter($o) {
+
         $this->setRequest ( $o->getControllerAction ()->getRequest () );
         $this->setResponse ( $o->getControllerAction ()->getResponse () );
         $couponCode = ( string ) $this->getRequest ()->getParam ( 'coupon_code' );
@@ -258,6 +265,37 @@ class TBT_Rewards_Model_Salesrule_Observer extends Varien_Object {
     }
 
     /**
+     * Listens to event 'sales_quote_address_discount_item' and sets item discount calculation price so that coupon
+     * discounts are applied to proper amount.
+     *
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function setItemDiscountPrice($observer)
+    {
+        if (!Mage::helper('rewards/version')->isBaseMageVersionAtLeast('1.4.2.0')) {
+            return $this;
+        }
+
+        $item = $observer->getEvent()->getItem();
+        if (!$item->getId()) {
+            return $this;
+        }
+
+        $storeId = $item->getStoreId();
+        $qty = $item->getQty();
+        if (Mage::helper('tax')->discountTax($storeId)) {
+            $item->setDiscountCalculationPrice($item->getRowTotalAfterRedemptionsInclTax() / $qty);
+            $item->setBaseDiscountCalculationPrice(Mage::helper('rewards/price')->getReversedCurrencyPrice($item->getRowTotalAfterRedemptionsInclTax() / $qty));
+        } else {
+            $item->setDiscountCalculationPrice($item->getRowTotalAfterRedemptions() / $qty);
+            $item->setBaseDiscountCalculationPrice(Mage::helper('rewards/price')->getReversedCurrencyPrice($item->getRowTotalAfterRedemptions() / $qty));
+        }
+
+        return $this;
+    }
+
+    /**
      * Get current active quote instance
      *
      * @return Mage_Sales_Model_Quote
@@ -297,6 +335,11 @@ class TBT_Rewards_Model_Salesrule_Observer extends Varien_Object {
             if ($rule_id == null) {
                 continue;
             }
+
+            if (!isset($hadDisc[$rule_id])) {
+                continue;
+            }
+
             if ($hadDisc[(int) $rule_id]["discount_amount"] == 0) {
                if (! isset($description[$rule_id])) {
                    continue;

@@ -16,7 +16,7 @@
  * DISCLAIMER
  *
  * You may edit this file, but only at your own risk, as long as it is within
- * the constraints of the license agreement. Before upgrading the module (not Magento), 
+ * the constraints of the license agreement. Before upgrading the module (not Magento),
  * be sure to back up your original installation as the upgrade may override your
  * changes.
  *
@@ -27,13 +27,14 @@
  */
 
 ?>
-<?php if(!Mage::helper('evlike')->getLikeConfig('ev_facebook_type')): ?>
+<?php if (!Mage::helper('evlike')->getLikeConfig('ev_facebook_type')): ?>
 <?php $_locale = Mage::helper('evlike')->getFacebookLocale(); ?>
 
 <!-- Using the JavaScript SDK -->
 <div id="fb-root"></div>
 
 <script>
+Event.observe(document, 'dom:loaded', function() {
   window.fbAsyncInit = function() {
     FB.init({appId: '<?php echo Mage::helper("evlike")->getLikeConfig("ev_facebook_app_id") ?>',
              xfbml: true});
@@ -44,6 +45,7 @@
       '//connect.facebook.net/<?php echo $_locale ?>/all.js';
     document.getElementById('fb-root').appendChild(e);
   }());
+});
 </script>
 
 <?php endif; ?>

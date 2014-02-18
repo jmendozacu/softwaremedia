@@ -1,11 +1,6 @@
 <?php
 
-/**
- *
- *
- */
-class TBT_Rewardssocial_Block_Twitter_Tweet_Notificationblock
-        extends TBT_Rewardssocial_Block_Abstract
+class TBT_Rewardssocial_Block_Twitter_Tweet_Notificationblock extends TBT_Rewardssocial_Block_Abstract
 {
     public function _prepareLayout()
     {
@@ -33,7 +28,6 @@ class TBT_Rewardssocial_Block_Twitter_Tweet_Notificationblock
         return $str;
     }
 
-
     /**
      *
      * @return boolean
@@ -46,7 +40,6 @@ class TBT_Rewardssocial_Block_Twitter_Tweet_Notificationblock
 
         return true;
     }
-
 
     /**
      *
@@ -81,11 +74,6 @@ class TBT_Rewardssocial_Block_Twitter_Tweet_Notificationblock
      */
     protected function _toHtml()
     {
-        // this code would prevent the Tweet button from appearing if
-        // no Twitter username is specified in the admin panel
-		/*if (!Mage::helper('rewardssocial/twitter_tweet')->isTweetingEnabled()) {
-		    return "";
-		}*/
         return parent::_toHtml();
     }
 

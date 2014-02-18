@@ -4,12 +4,15 @@ class TBT_Rewardssocial_Block_Facebook_Like_Button extends Evolved_Like_Block_Li
 {
     protected function _prepareLayout()
     {
-        if (!Mage::helper('rewardssocial/facebook_config')->isLikingEnabled()) {
+        if (!Mage::helper('rewardssocial/facebook_config')->isLikingEnabled()
+            || !$this->hasFacebookLike())
+        {
             $this->setIsHidden(true);
         }
 
         // TODO: from TBT_Rewardssocial_Block_Widget_Abstract
         $this->setFrameTags("div class='rewardssocial-widget rewardssocial-{$this->getWidgetKey()}'", "/div");
+
         return parent::_prepareLayout();
     }
 
@@ -65,16 +68,18 @@ class TBT_Rewardssocial_Block_Facebook_Like_Button extends Evolved_Like_Block_Li
      */
     protected function _toHtml()
     {
+        $widgetName = $this->getParentBlock()->getWidgetName();
         $html = parent::_toHtml();
         if ($html != '') {
             $html .= "
                 <script type='text/javascript'>
                     Event.observe(document, 'dom:loaded', function() {
-                        rewardsSocialWidgetHover.addWidget('{$this->getWidgetKey()}');
+                        " . $widgetName . ".addWidget('{$this->getWidgetKey()}');
                     });
                 </script>
             ";
         }
+
         return $html;
     }
 

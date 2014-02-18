@@ -4,7 +4,6 @@ class TBT_Rewards_Block_Manage_Dashboard_Usage extends Mage_Adminhtml_Block_Temp
 {
     const CONFIG_DEV_MODE = 'rewards/platform/dev_mode';
     const FORMAT_DATE_DISPLAY = 'M j, Y';
-    const CONFIG_SHOW_ALL_NOTIFICATIONS = 'rewards/help/showDashboardStPanel';
 
     protected $_account = null;
 
@@ -12,6 +11,8 @@ class TBT_Rewards_Block_Manage_Dashboard_Usage extends Mage_Adminhtml_Block_Temp
     {
         parent::_construct();
         $this->setTemplate('rewards/dashboard/usage.phtml');
+
+        return $this;
     }
 
     public function getAccountData()
@@ -197,22 +198,12 @@ class TBT_Rewards_Block_Manage_Dashboard_Usage extends Mage_Adminhtml_Block_Temp
         return false;
     }
 
-    /**
-     * Disable/ Enable Sweet Tooth panel on Dashboard
-     *
-     * @return boolean
-     */
-    public function displayAllNotification()
-    {
-        return Mage::getStoreConfigFlag(self::CONFIG_SHOW_ALL_NOTIFICATIONS);
-    }
-
     /*
      *  Check for all the cron dependent sweet tooth services
      *  return boolean
      */
     protected function _isCronRequired()
-    {   
+    {
         if (Mage::getStoreConfigFlag('rewards/expire/is_enabled')) {
             return true;
         }
@@ -228,6 +219,7 @@ class TBT_Rewards_Block_Manage_Dashboard_Usage extends Mage_Adminhtml_Block_Temp
         if (Mage::helper('rewards/cron')->hasOnholdRules()) {
             return true;
         }
+
         return false;
     }
 }

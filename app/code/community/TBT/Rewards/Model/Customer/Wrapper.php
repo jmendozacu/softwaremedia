@@ -2,7 +2,7 @@
 
 class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 {
-	
+
 	/**
      * Stores the points balances where the key is the ID of the currency.
      *
@@ -14,17 +14,17 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 	protected $pending_time_points = array();
     protected $usable_points = array();
     protected $transfers = array();
-    
+
     /**
      * The wrapped customer
      * @var Mage_Customer_Model_Customer
      */
     protected $_customer;
-    
-    
+
+
 	protected $currencies = null;
-	
-        
+
+
     /**
      * Customer wrapper
      * @param Mage_Customer_Model_Customer $customer
@@ -34,7 +34,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
         $this->_customer = $customer;
         return $this;
     }
-    
+
     /**
      * Provides functionality for getters and setters of the customer
      * @see Varien_Object::__call()
@@ -66,7 +66,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
         }
         return parent::__call($method, $args);
     }
-    
+
     /**
      * Loads customer collections
      * @return void
@@ -76,7 +76,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 		$this->_loadPointsCollections();
         $this->_loadTransferCollections();
     }
-    
+
     /**
      * Creates transfers if there are rules dealing with new customers
      */
@@ -91,14 +91,14 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
             }
 
             if ($is_transfer_successful) {
-                //Alert the customer on the distributed points   
+                //Alert the customer on the distributed points
 				Mage::getSingleton ( 'core/session' )->addSuccess ( Mage::helper ( 'rewards' )->__ ( 'You received %s for signing up!', (string)Mage::getModel ( 'rewards/points' )->set ( $rule ) ) );
             } else {
                 Mage::getSingleton('core/session')->addError(Mage::helper('rewards')->__('Could not transfer points.'));
             }
         }
     }
-    
+
 	/**
      * True if the id specified is new to this customer model after a SAVE event.
      *
@@ -144,8 +144,8 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 		} else {
 			$point_sums = $this->getCustomerPointsCollectionAll ()->addStoreFilter ( Mage::app ()->getStore () )->addFilter ( "status", $status );
         }
-        
-        
+
+
         $point_sums->addFilter("customer_id", $this->_customer->getId());
 
         $points = array();
@@ -253,7 +253,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     }
 
     /**
-     * Returns the a list of points where each item is 
+     * Returns the a list of points where each item is
      * a total balance of points
      *
      * @return array
@@ -263,7 +263,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     }
 
     /**
-     * Returns the a list of points where each item is 
+     * Returns the a list of points where each item is
      * a total balance of points
      *
      * @return array
@@ -273,7 +273,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     }
 
     /**
-     * Returns the a list of points where each item is 
+     * Returns the a list of points where each item is
      * a total balance of points
      *
      * @return array
@@ -283,7 +283,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     }
 
 	/**
-	 * Returns the a list of points where each item is 
+         * Returns the a list of points where each item is
 	 * a total balance of points
 	 *
 	 * @return array
@@ -291,23 +291,23 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 	public function getPendingTimePoints() {
 		return $this->pending_time_points;
 	}
-    
+
     /**
-     * Returns the a list of points where each item is 
+     * Returns the a list of points where each item is
      * a total balance of points
      * The usable points are the number of points that can be used towards an order RIGHT NOW.
-     * IE pending redemptions ARE deducted from this total and pending distributions are NOT 
+     * IE pending redemptions ARE deducted from this total and pending distributions are NOT
      * added to this total.
-     *  
+     *
      * @return array
      */
     public function getUsablePoints() {
         return $this->usable_points;
     }
-    
+
     /**
      * Get usable points (non-indexer version)
-     * 
+     *
      * @return array
      */
     public function getRealUsablePoints() {
@@ -320,8 +320,9 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
      * @return array
      */
     // TODO WDCA - Add in filter by customer group ID, currently not supported
-    public function getCustomerCurrencyIds() {
-        return Mage::getModel('rewards/currency')->getAvailCurrencyIds();
+    public function getCustomerCurrencyIds()
+    {
+        return Mage::getSingleton('rewards/currency')->getAvailCurrencyIds();
     }
 
     /**
@@ -329,12 +330,14 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
      *
      * @return int
      */
-    public function getNumCurrencies() {
-        return count(Mage::getModel('rewards/currency')->getAvailCurrencyIds());
+    public function getNumCurrencies()
+    {
+        return count(Mage::getSingleton('rewards/currency')->getAvailCurrencyIds());
     }
 
-    public function hasCurrencyId($currency_id) {
-        $currency_ids = Mage::getModel('rewards/currency')->getAvailCurrencyIds();
+    public function hasCurrencyId($currency_id)
+    {
+        $currency_ids = Mage::getSingleton('rewards/currency')->getAvailCurrencyIds();
         return array_search($currency_id, $currency_ids) !== false;
     }
 
@@ -364,7 +367,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 	public function getPendingTimePointsSummary() {
 		return Mage::helper ( 'rewards' )->getPointsString ( $this->pending_time_points );
 	}
-    
+
     /**
      * Returns a nicely formatted string of the customer's ON HOLD points
      *
@@ -373,10 +376,10 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     public function getOnHoldPointsSummary() {
         return Mage::helper('rewards')->getPointsString($this->on_hold_points);
     }
-    
+
     /**
      * Calculates the indexer points balance for this customer
-     * 
+     *
      * @return array
      */
     protected function _getIndexerUsablePointsBalance()
@@ -393,7 +396,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     }
 
     /**
-     * Returns a nicely formatted string of the customers points including 
+     * Returns a nicely formatted string of the customers points including
      * pending points and on hold points.
      * deprecated Using this function makes templating very rigid. see the other points summary methods
      *
@@ -468,7 +471,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 		}
 		return false;
 	}
-    
+
     /**
      * Fetches the transfers array for this customer.
      *
@@ -501,7 +504,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     }
 
     /**
-     * Fetches all summed up transfers for the customer including 
+     * Fetches all summed up transfers for the customer including
      * pending and on_hold transfers (no status restriction)
      *
      * @return TBT_Rewards_Model_Mysql4_Transfer_Collection
@@ -511,7 +514,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     }
 
     /**
-     * This method fetches a collection of all transfers for <b>all customers</b>. 
+     * This method fetches a collection of all transfers for <b>all customers</b>.
      *
      * @return TBT_Rewards_Model_Mysql4_Transfer_Collection
      */
@@ -522,12 +525,12 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     /**
      * True if the customer can afford the points specified in the currency specified.
      * If the first parameter is an array and the second param is left out,
-     * the function will return true if the customer can afford all of the 
+     * the function will return true if the customer can afford all of the
      * <b>array of point sums</b> provided in the first param.
      * Do not pass this function a list of arbitrary transfers!
      * TODO use predictPointsRemaining to calculate this value
-     * 
-     * @param integer|array $points_quantity if this value is an array, please input the 
+     *
+     * @param integer|array $points_quantity if this value is an array, please input the
      * 										standard format of array( currency_id=>points_quantity, ...)
      * @param integer [$points_currency]
      * @return boolean
@@ -555,12 +558,12 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     /**
      * True if the customer can afford the points specified in the currency specified.
      * If the first parameter is an array and the second param is left out,
-     * the function will return true if the customer can afford all of the 
+     * the function will return true if the customer can afford all of the
      * <b>array of point sums</b> provided in the first param.
      * Do not pass this function a list of arbitrary transfers!
      * TODO use predictPointsRemaining to calculate this value
-     * 
-     * @param integer|array $points_quantity if this value is an array, please input the 
+     *
+     * @param integer|array $points_quantity if this value is an array, please input the
      * 										standard format of array( currency_id=>points_quantity, ...)
      * @param integer [$points_currency]
      * @return boolean
@@ -588,13 +591,13 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     /**
      * Calculates the points remaining for this customer if the points transaction(s)
      * proved went through.
-     * 
-     * @param integer|array $points_quantity if this value is an array, please input the 
+     *
+     * @param integer|array $points_quantity if this value is an array, please input the
      * 										standard format of array( currency_id=>points_quantity, ...)
      * @param integer [$points_currency]
      * @return int|boolean|array	false means there was an error.  int is returned if a single
      * 								quantity and currency is provided.  An array of remaining amounts
-     * 								for each currency is returned if the 
+     * 								for each currency is returned if the
      */
     public function predictPointsRemaining($points_quantity, $points_currency = null) {
         if ($points_currency == null && is_array($points_quantity)) {
@@ -635,7 +638,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
         return $date;
     }
 
-    //@nelkaake 31/01/2010 4:01:17 PM : 
+    //@nelkaake 31/01/2010 4:01:17 PM :
     public function expireAllPoints() {
         $all_points = $this->getUsablePoints();
         $customer_id = $this->_customer->getId();
@@ -664,7 +667,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
 
         return $this;
     }
-    
+
     /**
      * Returns the customer instance
      * @return Mage_Customer_Model_Customer|null
@@ -673,7 +676,7 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     {
         return $this->_customer;
     }
-    
+
     /**
      * Returns the wrapped customer id
      * @see Mage_Core_Model_Abstract::getId()
@@ -682,5 +685,5 @@ class TBT_Rewards_Model_Customer_Wrapper extends Varien_Object
     {
         return $this->_customer->getId();
     }
-	
+
 }

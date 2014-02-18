@@ -43,51 +43,68 @@
  * @package    TBT_Rewards
  * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
  */
-class TBT_Rewards_Block_Manage_Grid_Renderer_Customer extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract {
-	
-	/**
-	 * Contains a list of customers
-	 * 
-	 * @var array
-	 */
-	protected $_customers = array ();
-	
-	/**
-	 * Renderer of the customer name
-	 *
-	 * @param Varien_Object $row
-	 * @return string
-	 */
-	public function render(Varien_Object $row) {
-		$str = '';
-		if ($cid = $row->getId ()) {
-			if ($customer = $this->_getCustomer ( $cid )) {
-				$str = $customer->getName ();
-				$url = $this->getUrl ( 'adminhtml/customer/edit/', array ('id' => $cid, 'rback' => $this->getUrlBase64 ( '*/*/' ) ) );
-				$str = '<a href="' . $url . '">' . $str . '</a>';
-			}
-		}
-		return $str;
-	}
-	
-	/**
-	 * Tries to load a customer from $this->_customer.
-	 * If not present, loads a new customer from rewards/customer model
-	 *
-	 * @param int $cid
-	 * @return TBT_Rewards_Model_Customer|bool
-	 */
-	protected function _getCustomer($cid) {
-		if (isset ( $this->_customers [$cid] )) {
-			return Mage::getModel('rewards/customer')->getRewardsCustomer($this->_customers [$cid]);
-		}
-	    
-		$customer = Mage::getModel ( 'rewards/customer' )->load ( $cid );
-		if ($customer->getId ()) {
-			$this->_customers [$cid] = $customer;
-			return $this->_customers [$cid];
-		}
-		return false;
-	}
+class TBT_Rewards_Block_Manage_Grid_Renderer_Customer extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
+{
+
+    /**
+     * Contains a list of customers
+     *
+     * @var array
+     */
+    protected $_customers = array ();
+
+    /**
+     * Renderer of the customer name
+     *
+     * @param Varien_Object $row
+     * @return string
+     */
+    public function render(Varien_Object $row)
+    {
+        $str = '';
+        if ($cid = $row->getId ()) {
+            if ($customer = $this->_getCustomer ( $cid )) {
+                $str = $customer->getName ();
+                $url = $this->getUrl ( 'adminhtml/customer/edit/', array ('id' => $cid, 'rback' => $this->getUrlBase64 ( '*/*/' ) ) );
+                $str = '<a href="' . $url . '">' . $str . '</a>';
+            }
+        }
+
+        return $str;
+    }
+
+    /**
+     * Render column for export
+     *
+     * @param Varien_Object $row
+     * @return string
+    */
+    public function renderExport(Varien_Object $row)
+    {
+        $name = $row->getName();
+        return $name;
+    }
+
+    /**
+     * Tries to load a customer from $this->_customer.
+     * If not present, loads a new customer from rewards/customer model
+     *
+     * @param int $cid
+     * @return TBT_Rewards_Model_Customer|bool
+    */
+    protected function _getCustomer($cid)
+    {
+        if (isset($this->_customers[$cid])) {
+            return Mage::getModel('rewards/customer')->getRewardsCustomer($this->_customers [$cid]);
+        }
+
+        $customer = Mage::getModel ( 'rewards/customer' )->load($cid);
+        if ($customer->getId ()) {
+            $this->_customers[$cid] = $customer;
+            return $this->_customers[$cid];
+        }
+
+        return false;
+    }
 
 }

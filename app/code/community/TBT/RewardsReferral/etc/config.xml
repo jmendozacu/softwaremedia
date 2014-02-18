@@ -47,7 +47,7 @@
         </translate>
 
         <events>
-            <checkout_type_onepage_save_order_after>
+            <sales_order_save_commit_after>
                 <observers>
                     <rewardsref_recordOrderPoints>
                         <type>singleton</type>
@@ -55,7 +55,7 @@
                         <method>recordPointsForOrderEvent</method>
                     </rewardsref_recordOrderPoints>
                 </observers>
-            </checkout_type_onepage_save_order_after>
+            </sales_order_save_commit_after>
             <rewards_new_customer_create>
                 <observers>
                     <rewardsref_recordRegisterPoints>
@@ -121,7 +121,7 @@
                     </tbt_rewardsreferral_model_observer_sales_order_invoice_pay>
                 </observers>
             </sales_order_invoice_pay>
-            <sales_order_save_after>
+            <model_save_commit_after>
                 <observers>
                     <tbt_rewardsreferral_model_observer_sales_order_save_after_approve>
                         <type>singleton</type>
@@ -129,7 +129,7 @@
                         <method>approveAssociatedPendingTransfersOnShipment</method>
                     </tbt_rewardsreferral_model_observer_sales_order_save_after_approve>
                 </observers>
-            </sales_order_save_after>
+            </model_save_commit_after>
             <controller_action_predispatch_customer_account_createpost>
                 <observers>
                     <rewardsref_before_createaccount>
@@ -149,6 +149,16 @@
                     </rewardsref_before_onepage_billingsave>
                 </observers>
             </controller_action_predispatch_checkout_onepage_saveBilling>
+
+            <customer_save_before>
+                <observers>
+                    <rewardsref_before_onestepcheckout_new_customer>
+                        <type>singleton</type>
+                        <class>rewardsref/observer_onestepcheckout</class>
+                        <method>beforeOnestepcheckout</method>
+                    </rewardsref_before_onestepcheckout_new_customer>
+                </observers>
+            </customer_save_before>
 
             <controller_action_predispatch_rewardsadmin_manage_diagnostics_reinstalldb>
                 <observers>
@@ -416,8 +426,8 @@
             <referral>
                 <warning>1</warning>
                 <referral_show>1</referral_show>
-                <!-- Setting default customer group to Magento's General group -->
-                <customer_group>1</customer_group>
+                <!-- @kadukia, changed this to blank So that Magento default customer group will be used. -->
+                <customer_group></customer_group>
                 <subscription_email_template>rewards_referral_subscription_email_template</subscription_email_template>
                 <subscription_email_identity>support</subscription_email_identity>
                 <subscription_email_use_sender_email>1</subscription_email_use_sender_email>
