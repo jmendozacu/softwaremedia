@@ -7,6 +7,14 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Form extends Mage
       $this->setForm($form);
       $fieldset = $form->addFieldset('quotedispatch_form', array('legend'=>Mage::helper('quotedispatch')->__('General')));
      
+      $fieldset->addField('created_time', 'label', array(
+          'label'     => Mage::helper('quotedispatch')->__('Created Time'),
+          'name'      => 'created_time',
+//          'required'  => true,
+          'format' => 'yyyy-MM-dd',
+          
+      ));
+      
       $fieldset->addField('quotedispatch_id', 'label', array(
           'label'     => Mage::helper('quotedispatch')->__('Quote Id'),
           'required'  => false,

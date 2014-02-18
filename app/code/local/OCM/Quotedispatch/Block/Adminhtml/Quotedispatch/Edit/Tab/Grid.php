@@ -98,7 +98,18 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Grid extends Mage
                 'header'=> Mage::helper('catalog')->__('Name'),
                 'index' => 'name',
         ));
-
+        
+        $this->addColumn('qty', array(
+                    'header'            => Mage::helper('catalog')->__('Qty Requested'),
+                    'name'              => 'qty',
+                    'width'             => 60,
+                    'type'              => 'number',
+                    'validate_class'    => 'validate-number',
+                    'index'             => 'qty',
+                    'editable'          => true,
+                    'edit_only'         => true,
+                    ));       
+        
         $this->addColumn('sku',
             array(
                 'header'=> Mage::helper('catalog')->__('SKU'),
@@ -148,18 +159,6 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Edit_Tab_Grid extends Mage
                     'edit_only'         => true,
                     ));
         
-                
-        $this->addColumn('qty', array(
-                    'header'            => Mage::helper('catalog')->__('QTY'),
-                    'name'              => 'qty',
-                    'width'             => 60,
-                    'type'              => 'number',
-                    'validate_class'    => 'validate-number',
-                    'index'             => 'qty',
-                    'editable'          => true,
-                    'edit_only'         => true,
-                    ));
-
         return parent::_prepareColumns();
     }
 
