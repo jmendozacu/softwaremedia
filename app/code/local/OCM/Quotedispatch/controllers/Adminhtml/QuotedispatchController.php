@@ -180,7 +180,6 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
 
                     $current_user = Mage::getSingleton('admin/session')->getUser()->getUsername();
 
-
                     $note_model = Mage::getModel('quotedispatch/quotedispatch_notes');
                     $note_data = array(
                         'content' => $data['note'],

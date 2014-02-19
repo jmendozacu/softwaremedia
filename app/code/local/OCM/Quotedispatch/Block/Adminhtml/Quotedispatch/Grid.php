@@ -33,7 +33,7 @@ class OCM_Quotedispatch_Block_Adminhtml_Quotedispatch_Grid extends Mage_Adminhtm
   
   protected function _prepareColumns()
   {
-       
+      
 // if (!$this->hasData('all_items')) {
 //            
 //            $name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');

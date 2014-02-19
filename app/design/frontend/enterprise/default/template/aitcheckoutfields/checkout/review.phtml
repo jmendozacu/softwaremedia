@@ -53,14 +53,18 @@
  </div>
 
 <!--     START AITOC CHECKOUT ATTRIBUTES     -->
-//<?php  // $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems(); 
-//die(var_dump($items)); ?>
-//<?php     //   $hasCapture = false; ?>
-//<?php      // foreach($items as $item) {
-//                $product = Mage::getModel('catalog/product')->load($item->getProductId());
-//                if ($product->getCaptureEndUserData())
-//                    $hasCapture = true;                      
-//?> 
+<?php 
+$billingAddress = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getData();
+$items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems(); 
+////die(var_dump($items)); 
+       $hasCapture = false; 
+       foreach($items as $item) {
+                $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                if ($product->getCaptureEndUserData())
+                    $hasCapture = true;   
+       }
+?>
+<?php if ($hasCapture): ?>
 <div id="end_user_info" style="margin:40px;">
     <div id="end_user_form_header">
         <table style="border: 1px solid;">
@@ -69,10 +73,8 @@
         </table>
     </div>   
 </div>
-<div class="address_select">
-    <input type="checkbox" id="as_billing_address"><span>Same As Billing Address</span></input>
-    <input type="checkbox" id="as_shipping_address"><span>Same As Shipping Address</span></input>
-</div>
+<?php var_dump($billingAddress['street']);?>
+
 <div class="end_user_fields">
     <?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
     <fieldset class="buttons-set" style="text-align:left; border-bottom: none;">
@@ -84,7 +86,7 @@
     </fieldset>
     <?php endif; ?>
     </div>    
-
+<?php endif; ?>
 <!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
 
  <?php echo $this->getChildHtml('items_after'); ?>
