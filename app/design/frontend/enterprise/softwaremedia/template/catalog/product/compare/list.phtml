@@ -39,7 +39,7 @@
             <?php if ($_i++ % 10 == 0): ?>
                 <col width="1"/>
                 <?php endif; ?>
-            <col width="<?php echo floor(100 / $_total); ?>%"/>
+            <col width="<?php echo '(100 / $_total)'; ?>%"/>
             <?php endforeach; ?>
             <?php if ($_total > 2): ?>
             <thead>
@@ -104,7 +104,7 @@
             <tbody>
         <?php foreach ($this->getAttributes() as $_attribute): ?>
 <?php /* begin if empty attribute check */ ?>                
-    <?php if (/*!is_null($_item->getData($_attribute->getAttributeCode())) && */((string)$_attribute->getFrontend()->getValue($_item) != '')): ?>
+    <?php if (((string)$_attribute->getFrontend()->getValue($_item) != '')): ?>
          <tr>
                 <?php $_i = 0 ?>
         <?php foreach($this->getItems() as $_item): ?>
