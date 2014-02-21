@@ -102,38 +102,34 @@
             </tr>
             </tbody>
             <tbody>
-                <?php foreach ($this->getAttributes() as $_attribute): ?>
-            <tr>
+        <?php foreach ($this->getAttributes() as $_attribute): ?>
+<?php /* begin if empty attribute check */ ?>                
+    <?php if (/*!is_null($_item->getData($_attribute->getAttributeCode())) && */((string)$_attribute->getFrontend()->getValue($_item) != '')): ?>
+         <tr>
                 <?php $_i = 0 ?>
-                <?php foreach ($this->getItems() as $_item): ?>
-                <?php if ($_i++ % 10 == 0): ?>
-                    <th class="label"><span
-                            class="nobr"><?php echo $_attribute->getStoreLabel() ? $_attribute->getStoreLabel() : $this->__($_attribute->getFrontendLabel()) ?></span>
-                    </th>
-                    <?php endif; ?>
-                <td>
-                    <?php switch ($_attribute->getAttributeCode()) {
-                    case "price":
-                        ?>
-                        <?php echo $this->getPriceHtml($_item, true, '-compare-list-' . $_attribute->getCode()) ?>
-                        <?php break;
-                    case "small_image":
-                        ?>
-                        <img src="<?php echo $this->helper('catalog/image')->init($_item, 'small_image')->resize(125, 125); ?>"
-                             width="125" height="125" alt="<?php echo $this->stripTags($_item->getName(), null, true) ?>"/>
-                        <?php break;
-                    default:
-                        ?>
-                            <div class="std">
-                                <?php echo $_helper->productAttribute($_item, $this->getProductAttributeValue($_item, $_attribute), $_attribute->getAttributeCode()) ?>
-                            </div>
-                            <?php break;
-                } ?>
-                </td>
-                <?php endforeach; ?>
-            </tr>
-                <?php endforeach; ?>
-            </tbody>
+        <?php foreach($this->getItems() as $_item): ?>
+                <?php if($_i++ % 10 ==0): ?>
+                <th class="label"><span class="nobr"><?php echo $this->__($_attribute->getFrontendLabel()) ?></span></th>
+                <?php endif; ?>
+            <td>        
+                <?php switch ($_attribute->getAttributeCode()) {
+                case "price": ?>
+                <?php echo $this->getPriceHtml($_item, true, '-compare-list-' . $_attribute->getCode()) ?>
+                <?php break;
+                case "small_image": ?>
+                <img src="<?php echo $this->helper('catalog/image')->init($_item, 'small_image')->resize(125, 125); ?>" width="125" height="125" alt="<?php echo $this->stripTags($_item->getName(), null, true) ?>" />
+                <?php break;
+                default: ?>
+                <?php echo $_helper->productAttribute($_item, $this->getProductAttributeValue($_item, $_attribute), $_attribute->getAttributeCode()) ?>
+                <?php break;
+            } ?>
+            </td>        
+        <?php endforeach; ?>
+        </tr>
+        <?php /* begin if empty attribute check */ ?>                
+    <?php endif; ?>
+        <?php endforeach; ?>
+        </tbody>
             <tbody>
             <tr>
                 <?php $_i = 0 ?>
