@@ -48,8 +48,9 @@
                 <?php echo $this->getChildHtml($_stepId) ?>
             </div>
         </li>
-        <?php endforeach ?>
+        <?php endforeach ?>        
     </ol>
+    
     <script type="text/javascript">
         //<![CDATA[
         var accordion = new Accordion('checkoutSteps', '.step-title', true);
@@ -63,8 +64,61 @@
                     failure: '<?php echo $this->getUrl('checkout/cart') ?>'}
         );
         //]]>
+       
+    function fillAddress(element)
+    {   
+        if(element.value=="Same As Billing Address")
+        {
+            var box = $('customreview:aitoc_checkout_1393');
+            box.value = $('billing:company').value;
+            
+            $('customreview:aitoc_checkout_1394').value = $('billing:street1').value + " " + $('billing:street2').value;
+            $('customreview:aitoc_checkout_1395').value = $('billing:city').value;
+            var state = $('billing:region_id').selectedOptions[0].text;
+            $('customreview:aitoc_checkout_1396').selectedOptions[0].text=state;
+//            //$(newbox).value = $('billing:region_id').selectedOptions[0].text;
+//            
+//            $(newbox).childElements().each(function(child){
+//                if ($(child).textContent.indexOf(state) > -1) {
+//                    $(newbox).value = $(child).value;
+//                }
+//            });
+//            console.log("Result:",$(newbox).value);s
+            $('customreview:aitoc_checkout_1397').value = $('billing:postcode').getValue();
+            <?php if (!$this->isCustomerLoggedIn()): ?>
+            $('customreview:aitoc_checkout_1398').value = $('billing:email').value;
+            <?php else: ?> 
+            $('customreview:aitoc_checkout_1398').value = "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getEmail(); ?>";
+            <?php endif; ?>
+            $('customreview:aitoc_checkout_1399').value = $('billing:firstname').value + " " + $('billing:lastname').value;
+            $('customreview:aitoc_checkout_1400').value = $('billing:telephone').value;   
+        }
+        else
+        {
+           var box = $('customreview:aitoc_checkout_1393');
+            box.value = $('shipping:company').value;
+            //console.log("result:",box.value);
+            $('customreview:aitoc_checkout_1394').value = $('shipping:street1').value + " " + $('shipping:street2').value;
+            $('customreview:aitoc_checkout_1395').value = $('shipping:city').value;
+            var state = $('shipping:region_id').selectedOptions[0].text;
+            $('customreview:aitoc_checkout_1396').selectedOptions[0].text=state;
+
+            $('customreview:aitoc_checkout_1397').value = $('shipping:postcode').getValue();
+            <?php if (!$this->isCustomerLoggedIn()): ?>
+            $('customreview:aitoc_checkout_1398').value = $('shipping:email').value;
+            <?php else: ?> 
+            $('customreview:aitoc_checkout_1398').value = "<?php echo Mage::getSingleton('customer/session')->getCustomer()->getEmail(); ?>";
+            <?php endif; ?>
+            $('customreview:aitoc_checkout_1399').value = $('shipping:firstname').value + " " + $('shipping:lastname').value;
+            $('customreview:aitoc_checkout_1400').value = $('shipping:telephone').value;   
+        }
+    }
     </script>
 </div>
+
+    <script type="text/javascript">
+       
+    </script>
 <div class="box-area">
     <div class="title-orange">
         <h3><?php echo $this->__('Need Help With Your Order?') ?></h3>

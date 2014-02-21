@@ -54,7 +54,8 @@
 
 <!--     START AITOC CHECKOUT ATTRIBUTES     -->
 <?php 
-$billingAddress = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getData();
+$billingAddress = Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getData();
+$shippingAddress = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getData();
 $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems(); 
 ////die(var_dump($items)); 
        $hasCapture = false; 
@@ -64,7 +65,9 @@ $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
                     $hasCapture = true;   
        }
 ?>
+
 <?php if ($hasCapture): ?>
+
 <div id="end_user_info" style="margin:40px;">
     <div id="end_user_form_header">
         <table style="border: 1px solid;">
@@ -73,7 +76,14 @@ $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
         </table>
     </div>   
 </div>
-<?php //var_dump($billingAddress['street']);?>
+<div class="address_select">
+    <form name="address_select">
+    <input type="radio" id="as_billing_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Billing Address">Same As Billing Address
+    <input type="radio" id="as_shipping_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Shipping Address">Same As Shipping Address
+    </form>
+</div>
+
+<?php //var_dump($billingAddress);?>
 
 <div class="end_user_fields">
     <?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
