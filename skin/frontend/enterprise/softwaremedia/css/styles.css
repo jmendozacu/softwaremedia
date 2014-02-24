@@ -2092,7 +2092,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .opc-wrapper .page-title {display: none }
 
 /* Block: Checkout Progress */
-.opc-progress-container { float:right; width:340px; }
+.opc-progress-container { float:right; width:340px; position:relative;}
 .opc-progress-container .opc-block-progress { background:#fff; }
 .opc-progress-container .opc-block-progress .block-title {border: none;margin: 0; background:#323232; color:#fff;font-size:24px; padding:6px 25px 7px 25px; line-height:24px; height:24px; text-transform:capitalize; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .opc-progress-container .opc-block-progress .block-title strong { font-weight: normal }
