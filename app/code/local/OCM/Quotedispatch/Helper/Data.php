@@ -57,13 +57,13 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
         $object = Mage::getModel('quotedispatch/quotedispatch')->load($object->getId());
         $mail  = Mage::getModel('core/email_template')->loadDefault('ocm_quotedispatch_request_processed');
         $model = Mage::getModel('quotedispatch/quotedispatch_notes');
-        $user = Mage::getModel('admin/user')->load($object->getCreatedBy(),'username');
+        $user = Mage::getSingleton('admin/session')->getUser();
         $adminPhone = Mage::getSingleton('admin/session')->getUser()->getAdminPhone();
         $adminLastName = Mage::getSingleton('admin/session')->getUser()->getLastname();
         $adminFirstName = Mage::getSingleton('admin/session')->getUser()->getFirstname();
         
         if($user->getId()) {
-            $sender_name = implode(' ',array($user->getFirstname(),$user->getLastname()));
+            $sender_name = implode(' ',array($adminFirstName,$adminLastName));
             $sender_email = $user->getEmail();
         } else {
             $sender_name = Mage::getStoreConfig('trans_email/ident_general/name');
@@ -100,6 +100,8 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract
             $model->setContent($formatted);
             $model->setQuotedispatchId($object->getId());
             $model->setCreatedBy($sender_name);
+           // die(var_dump($user->getId()));
+//            die(print_r($formatted));
             $model->save();
             $mail->send($object->getEmail(),$customer_name, $variables);
             

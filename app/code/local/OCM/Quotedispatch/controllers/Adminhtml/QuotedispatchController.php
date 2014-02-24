@@ -178,13 +178,15 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
 
                 if (isset($data['note']) && $data['note'] != '') {
 
-                    $current_user = Mage::getSingleton('admin/session')->getUser()->getUsername();
-
-
+                    
+                    $adminLastName = Mage::getSingleton('admin/session')->getUser()->getLastname();
+                    $adminFirstName = Mage::getSingleton('admin/session')->getUser()->getFirstname();
+                    $sender_name = implode(' ',array($adminFirstName,$adminLastName));
+                    
                     $note_model = Mage::getModel('quotedispatch/quotedispatch_notes');
                     $note_data = array(
                         'content' => $data['note'],
-                        'created_by' => $current_user,
+                        'created_by' => $sender_name,
                         'quotedispatch_id' => $quotemodel->getId()
                     );
                     $note_model->setData($note_data);

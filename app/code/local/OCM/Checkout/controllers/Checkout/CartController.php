@@ -67,7 +67,9 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController
             ->setRegionId($regionId)
             ->setRegion($region)
             ->setCollectShippingRates(true);
+        
         $this->_getQuote()->save();
+        $_SESSION['country'] = $country;
         if(isset($code) && !empty($code)){
             header('location: ' . Mage::getUrl('checkout/cart/estimateUpdatePost',array('estimate_method'=>$code)));
             exit;

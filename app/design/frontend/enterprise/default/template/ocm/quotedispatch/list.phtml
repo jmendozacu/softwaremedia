@@ -1,0 +1,34 @@
+<?php $allItems = Mage::getSingleton('checkout/session')->getQuote()->getAllVisibleItems(); ?>
+<?php $core_helper = Mage::helper('core'); ?>
+
+    <table id="my-orders-table" class="data-table">
+        <colgroup>
+        <col width="1">
+        <col>
+        <col width="1">
+        <col width="1">
+        <col width="1">
+        </colgroup><thead>
+            <tr class="first last">
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($allItems as $item) : ?>
+                <tr class="">
+                    <td><?php echo $item->getSku(); ?></td>
+                    <td><span class=""><?php echo $item->getName(); ?></span></td>
+                    <td><span class="price"><?php echo $core_helper->currency($item->getPrice(),true,false); ?></span></td>
+                    <td><span class="nobr"><?php echo $item->getQty(); ?></span></td>
+                    <td><span class="nobr"><?php echo $core_helper->currency( ( $item->getPrice() * $item->getQty() ) ,true,false); ?></span></td>
+                    
+                </tr>
+            <?php endforeach ?>
+                
+        </tbody>
+    </table>
+    <script type="text/javascript">decorateTable('my-orders-table');</script>
