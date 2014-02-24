@@ -39,7 +39,9 @@
         </div>
         <div class="f-right">
             <div class="switches"><?php echo $this->getChildHtml('switches') ?></div>
-            <p class="welcome-msg"><?php echo $this->getChildHtml('welcome') ?></p>
+            <p class="welcome-msg"><?php echo $this->getChildHtml('welcome') ?> <?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+<a href="<?php echo Mage::helper('customer')->getLogoutUrl(); ?>"><?php echo $this->__(' (Logout)') ?></a>
+<?php endif; ?></p>
             <?php //echo $this->getChildHtml('accountLinks') ?>
         </div>
     </div>
