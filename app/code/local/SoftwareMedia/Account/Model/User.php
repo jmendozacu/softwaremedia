@@ -94,10 +94,10 @@ class SoftwareMedia_Account_Model_User extends Mage_Admin_Model_User {
 		// TODO: Encrypt password
 		if ($this->getNewOfficePassword()) {
 			// Change password
-			$data['office_password'] = $this->getNewOfficePassword();
+			$data['office_password'] = $this->_getEncryptedPassword($this->getNewOfficePassword());
 		} elseif ($this->getOfficePassword() && $this->getOfficePassword() != $this->getOrigData('office_password')) {
 			// New user password
-			$data['office_password'] = $this->getOfficePassword();
+			$data['office_password'] = $$this->_getEncryptedPassword($this->getNewOfficePassword());
 		}
 
 		if (!is_null($this->getIsActive())) {
@@ -107,6 +107,14 @@ class SoftwareMedia_Account_Model_User extends Mage_Admin_Model_User {
 		$this->addData($data);
 
 		return parent::_beforeSave();
+	}
+
+	public function _getEncryptedPassword($password) {
+		return Mage::helper('core')->encrypt(base64_encode($password));
+	}
+
+	public function _getDecryptedPassword($encrypt) {
+		return base64_decode(Mage::helper('core')->decrypt($encrypt));
 	}
 
 	/**

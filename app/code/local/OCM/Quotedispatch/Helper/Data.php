@@ -92,15 +92,13 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract {
 			'view_all_quotes_url' => Mage::getBaseUrl() . 'quotedispatch/?uid=' . $this->encryptQuote($object),
 		);
 
-		try {
-			$formatted = $mail->getProcessedTemplate($variables);
-			$model->setContent($formatted);
-			$model->setQuotedispatchId($object->getId());
-			$model->setCreatedBy($sender_name);
-			$model->save();
-			$mail->send($object->getEmail(), $customer_name, $variables);
-		} catch (Exception $e) {
-			Mage::log($e->getMessage(), null, 'exception.log');
+		$formatted = $mail->getProcessedTemplate($variables);
+		$model->setContent($formatted);
+		$model->setQuotedispatchId($object->getId());
+		$model->setCreatedBy($sender_name);
+		$model->save();
+		if (!$mail->send($object->getEmail(), $customer_name, $variables)) {
+			throw new Exception($mail->getError());
 		}
 
 		return $this;
