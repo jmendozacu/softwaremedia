@@ -12,6 +12,7 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 	public function __construct() {
 		parent::__construct();
 		$this->setData('error');
+		$this->setData('configs');
 	}
 
 	public function send($email, $name = null, array $variables = array()) {
@@ -81,7 +82,6 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 		}
 
 		$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
-		$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
 
 		// If we are using store emails as reply-to's set the header
 		// Check the header is not already set by the application.
@@ -100,7 +100,15 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 			Mage::log('ReplyToStoreEmail is enabled, just set Reply-To header: ' . $this->getSenderEmail());
 		}
 
-		$transport = Mage::helper('smtppro')->getTransport($this->getDesignConfig()->getStore());
+		$helper = Mage::helper('smtppro');
+		$transport = $helper->getTransport($this->getDesignConfig()->getStore());
+		$configs = $helper->getConfigs();
+
+		if (!empty($configs) && $this->getSenderEmail() != $configs['username']) {
+			$mail->setFrom($configs['username'], $this->getSenderName());
+		} else {
+			$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
+		}
 
 		try {
 
