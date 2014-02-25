@@ -18,6 +18,8 @@ $txRequest->newOrderRequest->ccCardVerifyNum = '111';
 $txRequest->newOrderRequest->avsZip = '11111';
 $txRequest->newOrderRequest->avsAddress1 = '4921 S Murray Blvd APT S1';
 $txRequest->newOrderRequest->avsCity = 'South Jordan';
+$txRequest->newOrderRequest->orderID = '1231123';
+$txRequest->newOrderRequest->amount = round(31.82 * 100, 0);
 
 //If refunding or voiding, pass in transaction ID here
 //$txRequest->newOrderRequest->txRefNum = 'TRANSACTION ID';
@@ -27,8 +29,6 @@ $txRequest->newOrderRequest->avsCity = 'South Jordan';
 //AC = Auth & Capture
 //R  = Refund
 $txRequest->newOrderRequest->transType = 'AC';
-$txRequest->newOrderRequest->orderID = '1231123';
-$txRequest->newOrderRequest->amount = round(31.82 * 100, 0);
 		
 $wsdl = Mage::getStoreConfig('payment/chasePaymentTech/url', Mage::app()->getStore());
 
