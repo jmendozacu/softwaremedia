@@ -39,6 +39,11 @@
         <p class="item-msg <?php if($_item->getHasError()): ?>error<?php else: ?>notice<?php endif; ?>">* <?php echo $_item->getMessage() ?></p>
         <?php endif; ?>
     </td>
+    <?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
+    <td class="a-center">
+        <a href="<?php echo $this->helper('wishlist')->getMoveFromCartUrl($_item->getId()); ?>" class="link-wishlist"><?php echo $this->__('Move'); ?></a>
+    </td>
+    <?php endif ?>
     <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
     <td class="a-right">
         <?php echo $this->helper('checkout')->formatPrice($_item->getCalculationPrice()) ?>
