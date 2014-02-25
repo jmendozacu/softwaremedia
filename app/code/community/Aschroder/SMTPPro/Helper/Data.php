@@ -10,6 +10,12 @@
  */
 class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
+	protected $_configs = null;
+
+	public function getConfigs() {
+		return $this->_configs;
+	}
+
 	public function isEnabled() {
 		return Mage::getStoreConfig('system/smtppro/option') != "disabled";
 	}
@@ -101,6 +107,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 				$config['ssl'] = $ssl;
 			}
 
+			$this->_configs = $config;
 			$transport = new Zend_Mail_Transport_Smtp($host, $config);
 		} else if ($this->getGoogleApps()) {
 
