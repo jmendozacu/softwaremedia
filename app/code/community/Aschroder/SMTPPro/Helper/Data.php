@@ -61,7 +61,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 				$officePass = $user->getOfficePassword();
 			}
 
-			if (!empty($user->getOfficePassword())) {
+			if (!empty($officePass)) {
 				$username = $user->getEmail();
 				$password = $user->_getDecryptedPassword($user->getOfficePassword());
 			} else {
