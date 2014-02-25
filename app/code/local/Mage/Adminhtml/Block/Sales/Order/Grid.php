@@ -55,6 +55,11 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 
 	protected function _prepareCollection() {
 		$collection = Mage::getResourceModel($this->_getCollectionClass());
+		$collection->addAddressFields();
+		//$collection->getSelect()->joinLeft(array('sfo'=>'sales_flat_order'),'sfo.entity_id=main_table.entity_id',array('sfo.customer_email'));
+
+		//$collection->getSelect()->join('sales_flat_order_address', 'main_table.entity_id = sales_flat_order_address.parent_id',array('company'));
+
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
 	}
@@ -69,9 +74,9 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 		if (!$filter) {
 			return $this;
 		} else if ($filter == 'main') {
-			$this->getCollection()->getSelect()->where('status NOT IN (? , ? , ? )', array('complete', 'canceled', 'closed'));
+			$this->getCollection()->getSelect()->where('main_table.status NOT IN (? , ? , ? )', array('complete', 'canceled', 'closed'));
 		} else {
-			$this->getCollection()->getSelect()->where('status = ?', $filter);
+			$this->getCollection()->getSelect()->where('main_table.status = ?', $filter);
 		}
 		
 		return $this;
@@ -102,7 +107,16 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'type' => 'datetime',
 			'width' => '100px',
 		));
-
+		
+		$this->addColumn('company', array(
+			'header' => Mage::helper('sales')->__('Company'),
+			'index' => 'company',
+		));
+		 $this->addColumn('customer_email', array(
+        'header' => Mage::helper('sales')->__('Customer Email'),
+        'index' => 'customer_email',
+        'filter_index' => 'sfo.customer_email'
+    ));
 		$this->addColumn('billing_name', array(
 			'header' => Mage::helper('sales')->__('Bill to Name'),
 			'index' => 'billing_name',
@@ -136,7 +150,9 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'type' => 'options',
 			'width' => '70px',
 			'options' => $arr,
+			'filter_index'=>'main_table.status', 
 			'filter_condition_callback' => array($this, '_statusFilter'),
+			
 		));
 
 		if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/view')) {
