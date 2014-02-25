@@ -12,6 +12,11 @@
 					<user>SoftwareMedia_Account_Model_User</user>
 				</rewrite>
 			</admin>
+			<core>
+				<rewrite>
+					<email_template>SoftwareMedia_Account_Model_Email_Template</email_template>
+				</rewrite>
+			</core>
 		</models>
 		<resources>
 			<SoftwareMedia_Account_setup>
