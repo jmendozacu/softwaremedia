@@ -55,8 +55,13 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 		if ($this->getSMTP()) {
 			$user = Mage::getSingleton('admin/session')->getUser();
+			$officePass = null;
 
-			if ($user != null && !empty($user->getOfficePassword())) {
+			if ($user != null) {
+				$officePass = $user->getOfficePassword();
+			}
+
+			if (!empty($user->getOfficePassword())) {
 				$username = $user->getEmail();
 				$password = $user->_getDecryptedPassword($user->getOfficePassword());
 			} else {
