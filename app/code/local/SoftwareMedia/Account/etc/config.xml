@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<SoftwareMedia_Account>
+			<version>0.1.0</version>
+		</SoftwareMedia_Account>
+	</modules>
+	<global>
+		<models>
+			<admin>
+				<rewrite>
+					<user>SoftwareMedia_Account_Model_User</user>
+				</rewrite>
+			</admin>
+		</models>
+		<resources>
+			<SoftwareMedia_Account_setup>
+				<setup>
+					<module>SoftwareMedia_Account</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</SoftwareMedia_Account_setup>
+			<quotedispatch_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</quotedispatch_write>
+			<quotedispatch_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</quotedispatch_read>
+		</resources>
+	</global>
+	<admin>
+		<routers>
+			<adminhtml>
+				<args>
+					<modules>
+						<SoftwareMedia_Account before="Mage_Adminhtml">SoftwareMedia_Account_Adminhtml</SoftwareMedia_Account>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
+</config>

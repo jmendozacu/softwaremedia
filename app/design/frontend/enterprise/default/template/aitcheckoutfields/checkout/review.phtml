@@ -80,7 +80,6 @@ $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
     <form name="address_select">
     <input type="radio" id="as_billing_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Billing Address">Same As Billing Address
     <input type="radio" id="as_shipping_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Shipping Address">Same As Shipping Address
-    </form>
 </div>
 
 <?php //var_dump($billingAddress);?>
@@ -99,6 +98,7 @@ $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
 <?php endif; ?>
 <!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
 
+</form>
  <?php echo $this->getChildHtml('items_after'); ?>
  <script type="text/javascript">
  //<![CDATA[
