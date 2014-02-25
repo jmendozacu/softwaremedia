@@ -151,7 +151,7 @@
 
     <?php // Grid Mode ?>
 
-    <?php $_collectionSize = $_productCollection->getSize() ?>
+    <?php $_collectionSize = count($_productCollection); ?>
     <?php $_columnCount = $this->getColumnCount(); ?>
     <?php $i=0; foreach ($_productCollection as $_product): ?>
         <?php $msrp = $_product->getMsrp(); ?>
@@ -215,7 +215,7 @@
                     </ul>
                 </div>
             </li>
-        <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+        <?php if (($i%$_columnCount==0) || $i==$_collectionSize): ?>
         </ul>
         <?php endif ?>
         <?php endforeach ?>
