@@ -225,9 +225,9 @@ class Aitoc_Aitcheckoutfields_Block_Rewrite_AdminhtmlSalesOrderGrid extends Mage
             } else {
                 $cond = $column->getFilter()->getCondition();
                 if ($field && isset($cond)) {
-                    if(false === stripos($field,'aitec'))
+                    if(false === stripos($field,'aitec') && false === stripos($field,'billing_o_a'))
                     {
-                        $field = 'main_table.' . $field;    
+                        //$field = 'main_table.' . $field;    
                     }
                     $this->getCollection()->addFieldToFilter($field , $cond);
                 }

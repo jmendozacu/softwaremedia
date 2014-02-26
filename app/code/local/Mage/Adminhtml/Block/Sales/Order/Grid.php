@@ -56,18 +56,13 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 	protected function _prepareCollection() {
 		$collection = Mage::getResourceModel($this->_getCollectionClass());
 		$collection->addAddressFields();
-		//$collection->getSelect()->joinLeft(array('sfo'=>'sales_flat_order'),'sfo.entity_id=main_table.entity_id',array('sfo.customer_email'));
-
-		//$collection->getSelect()->join('sales_flat_order_address', 'main_table.entity_id = sales_flat_order_address.parent_id',array('company'));
+		$collection->getSelect()->joinLeft(array('sfo'=>'sales_flat_order'),'sfo.entity_id=main_table.entity_id',array('sfo.customer_email'));
 
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
 	}
 
-	protected function _addColumnFilterToCollection($column) {
-		
-		parent::_addColumnFilterToCollection($column);
-	}
+
 	
 	protected function _statusFilter($collection, $column) {
 		$filter = $column->getFilter()->getValue();
@@ -88,6 +83,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'header' => Mage::helper('sales')->__('Order #'),
 			'width' => '80px',
 			'type' => 'text',
+			'filter_index'=>'main_table.increment_id', 
 			'index' => 'increment_id',
 		));
 
@@ -108,15 +104,16 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'width' => '100px',
 		));
 		
-		$this->addColumn('company', array(
+		$this->addColumn('billing_company', array(
 			'header' => Mage::helper('sales')->__('Company'),
 			'index' => 'company',
+			'filter_index' => 'billing_o_a.company'
 		));
 		 $this->addColumn('customer_email', array(
-        'header' => Mage::helper('sales')->__('Customer Email'),
-        'index' => 'customer_email',
-        'filter_index' => 'sfo.customer_email'
-    ));
+			'header' => Mage::helper('sales')->__('E-Mail'),
+			'index' => 'customer_email',
+			'filter_index' => 'sfo.customer_email'
+		));
 		$this->addColumn('billing_name', array(
 			'header' => Mage::helper('sales')->__('Bill to Name'),
 			'index' => 'billing_name',

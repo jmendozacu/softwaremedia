@@ -121,6 +121,7 @@ class Mage_Sales_Model_Resource_Order_Collection extends Mage_Sales_Model_Resour
             ->addFilterToMap('billing_lastname', $billingAliasName . '.lastname')
             ->addFilterToMap('billing_telephone', $billingAliasName . '.telephone')
             ->addFilterToMap('billing_postcode', $billingAliasName . '.postcode')
+            ->addFilterToMap('billing_company', $billingAliasName . '.company')
             ->addFilterToMap('shipping_firstname', $shippingAliasName . '.firstname')
             ->addFilterToMap('shipping_lastname', $shippingAliasName . '.lastname')
             ->addFilterToMap('shipping_telephone', $shippingAliasName . '.telephone')
@@ -151,7 +152,6 @@ class Mage_Sales_Model_Resource_Order_Collection extends Mage_Sales_Model_Resour
                     $shippingAliasName . '.postcode'
                 )
             );
-        $this->getSelect()->joinLeft(array('sfo'=>'sales_flat_order'),'sfo.entity_id=main_table.entity_id',array('sfo.customer_email'));
         Mage::getResourceHelper('core')->prepareColumnsList($this->getSelect());
         return $this;
     }

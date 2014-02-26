@@ -58,9 +58,9 @@
 							<img src="<?php echo $this->getSkinUrl(); ?>images/Mac-small.png" alt="Mac" />
 						<?php endif; ?>
                     </div>
-                     <?php if ($_product->getResource()->getAttribute('product_type_2')): ?>
+                     <?php if ($_product->getResource()->getAttribute('product_type')): ?>
                     <div class="version">
-                    	<?php echo $_product->getAttributeText('product_type_2'); ?>
+                    	<?php echo $_product->getAttributeText('product_type'); ?>
                     </div>
                      <?php endif; ?>
                    
