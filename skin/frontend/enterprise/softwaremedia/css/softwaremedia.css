@@ -629,6 +629,7 @@ div.block-layered-nav dd li.amshopby-cat-level-3 {
 }
 .product-view .product-img-box .more-views {
 	margin-left: 60px;
+	display: none;
 }
 .box-add-to-social .add-to-links li, .rewardssocial-widget {
 	margin-top: 6px;
