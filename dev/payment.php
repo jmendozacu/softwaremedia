@@ -12,23 +12,23 @@ $txRequest->newOrderRequest->industryType = 'EC';
 $txRequest->newOrderRequest->bin = Mage::getStoreConfig('payment/chasePaymentTech/bin', Mage::app()->getStore());
 $txRequest->newOrderRequest->merchantID = Mage::getStoreConfig('payment/chasePaymentTech/merchant_id', Mage::app()->getStore());
 $txRequest->newOrderRequest->terminalID = Mage::getStoreConfig('payment/chasePaymentTech/terminal_id', Mage::app()->getStore());
-$txRequest->newOrderRequest->ccAccountNum = '5454545454545454';
-$txRequest->newOrderRequest->ccExp = '201505';
-$txRequest->newOrderRequest->ccCardVerifyNum = '111';
-$txRequest->newOrderRequest->avsZip = '11111';
-$txRequest->newOrderRequest->avsAddress1 = '4921 S Murray Blvd APT S1';
-$txRequest->newOrderRequest->avsCity = 'South Jordan';
-$txRequest->newOrderRequest->orderID = '1231123';
-$txRequest->newOrderRequest->amount = round(31.82 * 100, 0);
+$txRequest->newOrderRequest->ccAccountNum = '4788250000028291';
+$txRequest->newOrderRequest->ccExp = '201501';
+$txRequest->newOrderRequest->ccCardVerifyNum = '';
+$txRequest->newOrderRequest->avsZip = '66666';
+$txRequest->newOrderRequest->avsAddress1 = '916 S, MAIN STREET';
+$txRequest->newOrderRequest->avsCity = 'SALT LAKE CITY';
+$txRequest->newOrderRequest->orderID = '100000269';
+$txRequest->newOrderRequest->amount = 0;
 
 //If refunding or voiding, pass in transaction ID here
-//$txRequest->newOrderRequest->txRefNum = 'TRANSACTION ID';
+//$txRequest->newOrderRequest->txRefNum = '530D141AE32C3C947029D4C49BF2738157C75491';
 
 //Transtype (newOrderRequest only):
 //A  = Auth Only
 //AC = Auth & Capture
 //R  = Refund
-$txRequest->newOrderRequest->transType = 'AC';
+$txRequest->newOrderRequest->transType = 'A';
 		
 $wsdl = Mage::getStoreConfig('payment/chasePaymentTech/url', Mage::app()->getStore());
 
