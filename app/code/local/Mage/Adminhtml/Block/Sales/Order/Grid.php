@@ -83,6 +83,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'header' => Mage::helper('sales')->__('Order #'),
 			'width' => '80px',
 			'type' => 'text',
+			'filter_index'=>'main_table.increment_id', 
 			'index' => 'increment_id',
 		));
 
