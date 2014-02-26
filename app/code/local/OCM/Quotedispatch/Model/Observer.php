@@ -140,7 +140,8 @@ class OCM_Quotedispatch_Model_Observer {
 			try {
 				$sales_rep = null;
 
-				if (empty($quote->getCreatedBy())) {
+				$created_by = $quote->getCreatedBy();
+				if (empty($created_by)) {
 					$sales_rep = Mage::getModel('admin/user')->loadByUsername('cservice');
 				} else {
 					$sales_rep = Mage::getModel('admin/user')->loadByUsername($quote->getCreatedBy());
