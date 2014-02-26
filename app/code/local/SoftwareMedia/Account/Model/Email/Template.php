@@ -104,6 +104,7 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 		$transport = $helper->getTransport($this->getDesignConfig()->getStore());
 		$configs = $helper->getConfigs();
 
+
 		if (!empty($configs) && $this->getSenderEmail() != $configs['username']) {
 			$mail->setFrom($configs['username'], $this->getSenderName());
 		} else {
@@ -127,6 +128,7 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 
 			$this->_mail = null;
 		} catch (Exception $e) {
+			Mage::log('Error: ' . $e->getMessage());
 			Mage::logException($e);
 			$this->setData('error', $e->getMessage());
 			return false;

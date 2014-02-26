@@ -46,16 +46,22 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract {
 	 * Send Emails
 	 */
 
-	public function sendEmail($object, $subject = null) {
+	public function sendEmail($object, $subject = null, $adminUser = null) {
 
 		// FORCE THAT ALL DATA IS AVAILABLE WITH OBJECT : TODO FIND BETTER WAY
 		$object = Mage::getModel('quotedispatch/quotedispatch')->load($object->getId());
 		$mail = Mage::getModel('core/email_template')->loadDefault('ocm_quotedispatch_request_processed');
 		$model = Mage::getModel('quotedispatch/quotedispatch_notes');
-		$user = Mage::getSingleton('admin/session')->getUser();
-		$adminPhone = Mage::getSingleton('admin/session')->getUser()->getAdminPhone();
-		$adminLastName = Mage::getSingleton('admin/session')->getUser()->getLastname();
-		$adminFirstName = Mage::getSingleton('admin/session')->getUser()->getFirstname();
+
+		if (empty($adminUser)) {
+			$user = Mage::getSingleton('admin/session')->getUser();
+		} else {
+			$user = $adminUser;
+		}
+
+		$adminPhone = $user->getAdminPhone();
+		$adminLastName = $user->getLastname();
+		$adminFirstName = $user->getFirstname();
 
 		if ($user->getId()) {
 			$sender_name = implode(' ', array($adminFirstName, $adminLastName));
@@ -92,12 +98,14 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract {
 			'view_all_quotes_url' => Mage::getBaseUrl() . 'quotedispatch/?uid=' . $this->encryptQuote($object),
 		);
 
+
 		$formatted = $mail->getProcessedTemplate($variables);
 		$model->setContent($formatted);
 		$model->setQuotedispatchId($object->getId());
 		$model->setCreatedBy($sender_name);
 		$model->save();
 		if (!$mail->send($object->getEmail(), $customer_name, $variables)) {
+			Mage::log('Mail Exception: ' . $mail->getError());
 			throw new Exception($mail->getError());
 		}
 
