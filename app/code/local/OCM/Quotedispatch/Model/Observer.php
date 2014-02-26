@@ -146,7 +146,6 @@ class OCM_Quotedispatch_Model_Observer {
 					$sales_rep = Mage::getModel('admin/user')->loadByUsername($quote->getCreatedBy());
 				}
 				Mage::helper('quotedispatch')->sendEmail($quote, Mage::helper('quotedispatch')->__('Reminder : Quote is ready for purchase'), $sales_rep);
-				$quote->setAvailableTime(null);
 				$quote->save();
 			} catch (Exception $e) {
 				Mage::log($quote->getId() . ' failed to remind / update: ' . $e->getMessage(), null, 'quotedispatch.log');
