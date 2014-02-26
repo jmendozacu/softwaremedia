@@ -1346,4 +1346,4 @@ div.country.validation-passed, div.country.validation-error {
 #uniform-use_all_points { float: left; padding-left: 39px }
 
 /* Checkout */
-#shopping-cart-table { width: 1150px; }
+#shopping-cart-table { width: 1150px; margin: 0 25px 0px; }
