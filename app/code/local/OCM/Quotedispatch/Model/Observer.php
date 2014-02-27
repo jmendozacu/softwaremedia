@@ -30,7 +30,7 @@ class OCM_Quotedispatch_Model_Observer {
 
 				$cart_items[] = $item->getProductId();
 
-				if (isset($quote_item_values[$item->getProductId()]) && $item->getQty() != $quote_item_values[$item->getProductId()]) {
+				if (isset($quote_item_values[$item->getProductId()]) && $item->getQty() < $quote_item_values[$item->getProductId()]) {
 
 					$item->setQty($quote_item_values[$item->getProductId()]);
 
