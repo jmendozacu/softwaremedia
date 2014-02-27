@@ -50,7 +50,7 @@ class OCM_Quotedispatch_Helper_Data extends Mage_Core_Helper_Abstract {
 
 		// FORCE THAT ALL DATA IS AVAILABLE WITH OBJECT : TODO FIND BETTER WAY
 		$object = Mage::getModel('quotedispatch/quotedispatch')->load($object->getId());
-		$mail = Mage::getModel('core/email_template')->loadDefault('ocm_quotedispatch_request_processed');
+		$mail = Mage::getModel('core/email_template')->load(2);
 		$model = Mage::getModel('quotedispatch/quotedispatch_notes');
 
 		if (empty($adminUser)) {
