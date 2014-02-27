@@ -40,13 +40,20 @@
 			<tbody>
 				<?php
 				$quote = $this->getCheckout()->getQuote();
-				foreach ($quote->getAllItems() as $item):
+				foreach ($quote->getAllVisibleItems() as $item):
 					?>
 					<tr>
 						<td><?php echo $item->getName(); ?></td>
 						<td><?php echo $item->getQty(); ?></td>
 						<td lcass="a-center">
-							<a class="btn-remove btn-remove2" href="<?php $this->getUrl('checkout/cart/removeFailed', array('sku' => Mage::helper('core/url')->urlEncode($item->getSku()))); ?>">Remove Item</a>
+							<a class="btn-remove btn-remove2" href="<?php
+							echo $this->getUrl(
+								'checkout/cart/delete', array(
+								'id' => $item->getId(),
+								Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->helper('core/url')->getEncodedUrl()
+								)
+							);
+							?>">Remove Item</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>
