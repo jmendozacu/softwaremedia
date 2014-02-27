@@ -20,13 +20,16 @@ class Mestrona_ForwardToConfigurable_ProductController extends Mage_Catalog_Prod
             /* @var $parentProduct Mage_Catalog_Model_Product */
             $parentProduct = Mage::getModel('catalog/product');
             $parentProduct->load($parentId);
+            $product = Mage::getModel('catalog/product')->load($productId);
             if (!$parentProduct->getId()) {
                 throw new Exception(sprintf('Can not load parent product with ID %d', $parentId));
             }
 
             if ($parentProduct->isVisibleInCatalog()) {
                 //$this->_redirect();
-                $url = $parentProduct->getUrlPath();
+                //die($parentProduct->getId());
+                $url = $parentProduct->getProductUrl();
+                //die($url);
 				$this->getResponse()->setHeader('HTTP/1.1, 301 Moved Permanently');
 				$this->getResponse()->setHeader('Location',$url);
 				return;

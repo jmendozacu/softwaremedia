@@ -43,6 +43,14 @@
                     </modules>
                 </args>
             </catalog>
+            <cms>
+                <use>standard</use>
+                <args>
+                    <modules>
+                        <Mestrona_ForwardToConfigurable before="Mage_Cms">Mestrona_ForwardToConfigurable_Cms</Mestrona_ForwardToConfigurable>
+                    </modules>
+                </args>
+            </cms>
         </routers>
     </frontend>
 </config>
