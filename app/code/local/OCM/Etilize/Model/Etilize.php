@@ -16,7 +16,78 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	protected $_productType = "simple";
 	protected $_attributeType;
 	    
-
+	protected $brands = array(
+		"01 Communique"	 => "10475",
+		"ABBYY"=>"104178",
+		"AEC"=>"10299",
+		"Altima Technologies"=>"10625",
+		"Autodesk"=>"10316",
+		"Apple"=>"102765",
+		"Acronis"=>"1020785",
+		"Adobe"=>"10297",
+		"AVG"=>"1024624",
+		"BitDefender"=>"1027317",
+		"BlackBerry"=>"1020260",
+		"BullGuard"=>"1021383",
+		"Bussiness Objects"=>"1024365",
+		"CA"=>"10344",
+		"Canon"=>"10332",
+		"Circus Ponies"=>"1020389",
+		"Comodo"=>"1029568",
+		"Condusiv"=>"10992",
+		"Corel"=>"1016",
+		"DeLorme"=>"10367",
+		"Embarcadero"=>"1024655",
+		"EMC Insignia"=>"1020252",
+		"Enfocus"=>"102762",
+		"ESET"=>"1023988",
+		"Filemaker"=>"10749",
+		"Final Draft"=>"1021431",
+		"Fujitsu"=>"10387",
+		"H&R Block"=>"1020810",
+		"Hewlett Packard"=>"10393",
+		"Honest Technology"=>"1021653",
+		"IBM"=>"10396",
+		"IMSI Software"=>"10398",
+		"Infinite Skills"=>"",
+		"Insperity"=>"1122614",
+		"Intego"=>"102240",
+		"Intuit"=>"10403",
+		"Iris"=>"1021475",
+		"Kaspersky"=>"1020989",
+		"McAfee"=>"101150",
+		"Microsoft"=>"10291",
+		"Nero"=>"1020598",
+		"Nolo Press"=>"101046",
+		"Nuance"=>"101168",
+		"OfficeWork"=>"1023919",
+		"Open Text"=>"1020841",
+		"Oracle"=>"101730",
+		"Palo Alto"=>"1080",
+		"Paragon"=>"1023486",
+		"Pentax"=>"103115",
+		"Punch!"=>"10877",
+		"PremiumSoft"=>"",
+		"ProgeSOFT"=>"",
+		"Quark"=>"10189",
+		"Roxio"=>"1020273",
+		"Sage"=>"1021820",
+		"SAP"=>"1024365",
+		"Serif"=>"1021820",
+		"Smith Micro"=>"10105",
+		"Sony"=>"10657",
+		"Sybase"=>"10826",
+		"Symantec"=>"10219",
+		"TechSmith"=>"102957",
+		"Thomson Reuters"=>"1036711",
+		"Toshiba"=>"102787",
+		"Total Training"=>"1020896",
+		"Trend Micro"=>"10587",
+		"TuneUP"=>"1027529",
+		"V7"=>"1020301",
+		"Veeam"=>"1026920",
+		"Vivitar"=>"10490",
+		"Vmware"=>"1020252");
 	
 
 	public function updateSpex() {
@@ -32,6 +103,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
     	->getCollection()
     	->addAttributeToSelect('sku')
     	->addAttributeToSelect('name')
+    	->addAttributeToSelect('brand')
     	->addAttributeToSelect('manufacturer_pn_2')
     	->addAttributeToSelect('etilize_manufactureid')
     	->addAttributeToFilter('etilize_updated',"No")
@@ -365,12 +437,22 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 		return $value;
 	}
 	
+	private function getMfgIdFromBrand($product) {
+		$brand = $product->getResource()->getAttribute('brand')->getFrontend()->getValue($product);
+		if (array_key_exists($brand, $this->brands))
+			return $this->brands[$brand];
+			
+		return false;
+	}
+	
 	private function getEtilizeData($product)
 	{
 			//get product and catalog id's
 			$partNumber = $product->getData('manufacturer_pn_2');
 			$mfgId = $product->getEtilizeManufactureid();
-			
+			if (!$mfgId)
+				$mfgId = $this->getMfgIdFromBrand($product);
+				
 			Mage::log("\n\n---------- ".$product->getName()." ----------", null, 'OCM_Spex.log');
 			Mage::log("Product SKU: ".$product->getSku(), null, 'OCM_Spex.log');
 			Mage::log("Etilize Manufacturer Part Number: ".$partNumber, null, 'OCM_Spex.log');
