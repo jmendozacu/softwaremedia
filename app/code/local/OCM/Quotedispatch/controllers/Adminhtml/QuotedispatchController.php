@@ -127,12 +127,10 @@ class OCM_Quotedispatch_Adminhtml_QuotedispatchController extends Mage_Adminhtml
 
 		if ($data = $this->getRequest()->getPost()) {
 
-			$quotedata = $this->getRequest()->getPost();
-
 			$quotemodel = Mage::getModel('quotedispatch/quotedispatch')->load($this->getRequest()->getParam('id'));
 
-			foreach ($quotedata as $key => $data) {
-				$quotemodel->setData($key, $data);
+			foreach ($data as $key => $value) {
+				$quotemodel->setData($key, $value);
 			}
 
 			try {
