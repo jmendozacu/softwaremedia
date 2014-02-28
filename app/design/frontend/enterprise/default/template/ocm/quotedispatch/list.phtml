@@ -8,7 +8,6 @@ if (empty($quote)) {
 $allItems = $quote->getAllItems();
 ?>
 <?php $core_helper = Mage::helper('core'); ?>
-
 <table id="my-orders-table" class="data-table">
 	<colgroup>
         <col width="1">
@@ -27,6 +26,7 @@ $allItems = $quote->getAllItems();
 	</thead>
 	<tbody>
 		<?php foreach ($allItems as $item) : ?>
+                <?php if ($item->getProductType()== 'configurable'): ?>
 			<tr class="">
 				<td><?php echo $item->getSku(); ?></td>
 				<td><span class=""><?php echo $item->getName(); ?></span></td>
@@ -35,7 +35,9 @@ $allItems = $quote->getAllItems();
 				<td><span class="nobr"><?php echo $core_helper->currency(( $item->getPrice() * $item->getQty()), true, false); ?></span></td>
 
 			</tr>
+                 <?php endif; ?>      
 		<?php endforeach ?>
+                         
 
 	</tbody>
 </table>
