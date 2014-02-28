@@ -75,12 +75,14 @@ class Mestrona_ForwardToConfigurable_Cms_IndexController extends Mage_Core_Contr
 		$path = explode('/', $path);
 		if ($path) {
 			$path  = $path[count($path) - 1];
-			$product = Mage::getModel ('catalog/product')
+			$productList = Mage::getModel ('catalog/product')
             ->getCollection ()
-            ->addAttributeToFilter ('url_key', $path) //load the "sales" category
-            ->getFirstItem();
+            ->addAttributeToSelect('*')
+            ->addAttributeToFilter ('url_key', $path);
             
-            if ($product) {
+            $product = $productList->getFirstItem();
+            
+            if ($product->getId()) {
             	$parentIds = Mage::getModel('catalog/product_type_configurable')
 	            ->getParentIdsByChild($product->getId());
 	
@@ -98,7 +100,7 @@ class Mestrona_ForwardToConfigurable_Cms_IndexController extends Mage_Core_Contr
 		                //$this->_redirect();
 		                //die($parentProduct->getId());
 		                $url = $parentProduct->getProductUrl();
-		                //die($url);
+		                //die($url . " 1");
 						$this->getResponse()->setHeader('HTTP/1.1, 301 Moved Permanently');
 						$this->getResponse()->setHeader('Location',$url);
 						return;
@@ -106,15 +108,16 @@ class Mestrona_ForwardToConfigurable_Cms_IndexController extends Mage_Core_Contr
 		            // try to find other products if one parent product is not visible -> loop
 		        }
 	            
-            }
-            if ($product->isVisibleInCatalog()) {
-                //$this->_redirect();
-                //die($parentProduct->getId());
-                $url = $product->getProductUrl();
-                //die($url);
-				$this->getResponse()->setHeader('HTTP/1.1, 301 Moved Permanently');
-				$this->getResponse()->setHeader('Location',$url);
-				return;
+				
+	            if ($product->isVisibleInCatalog()) {
+	                //$this->_redirect();
+	                //die($parentProduct->getId());
+	                $url = $product->getProductUrl();
+	                die($product->getName());
+					$this->getResponse()->setHeader('HTTP/1.1, 301 Moved Permanently');
+					$this->getResponse()->setHeader('Location',$url);
+					return;
+	            }
             }
             
 		}
