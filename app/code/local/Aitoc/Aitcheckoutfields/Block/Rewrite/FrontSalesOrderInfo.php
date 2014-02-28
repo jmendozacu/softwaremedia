@@ -16,7 +16,7 @@ class Aitoc_Aitcheckoutfields_Block_Rewrite_FrontSalesOrderInfo  extends Mage_Sa
         $packageName = Mage::getDesign()->getPackageName();
         if ('enterprise' == $packageName)
         {
-            $this->setTemplate('aitcommonfiles/design--frontend--enterprise--default--template--sales--order--info.phtml');    
+            $this->setTemplate('sales/order/info.phtml');    
         }
     }
 		
