@@ -26,7 +26,9 @@ $allItems = $quote->getAllItems();
 	</thead>
 	<tbody>
 		<?php foreach ($allItems as $item) : ?>
-                <?php if ($item->getProductType()== 'configurable'): ?>
+                <?php if ($item->getParentItemId())
+                        continue;
+                ?>
 			<tr class="">
 				<td><?php echo $item->getSku(); ?></td>
 				<td><span class=""><?php echo $item->getName(); ?></span></td>
@@ -35,7 +37,7 @@ $allItems = $quote->getAllItems();
 				<td><span class="nobr"><?php echo $core_helper->currency(( $item->getPrice() * $item->getQty()), true, false); ?></span></td>
 
 			</tr>
-                 <?php endif; ?>      
+        
 		<?php endforeach ?>
                          
 
