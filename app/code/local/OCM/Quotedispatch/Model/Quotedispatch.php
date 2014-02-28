@@ -13,42 +13,35 @@ class OCM_Quotedispatch_Model_Quotedispatch extends OCM_Quotedispatch_Model_Abst
 		$this->_init('quotedispatch/quotedispatch');
 	}
 
+	/**
+	 * Get array of all items what can be display directly
+	 *
+	 * @return array
+	 */
+	public function getAllVisibleItems() {
+		if (!$this->hasData('all_visible_items')) {
+			$items = array();
+			foreach ($this->getAllItems() as $quote_item) {
+				$item = Mage::getModel('catalog/product')->load($quote_item->getProductId());
+				$grouped_parent = Mage::getModel('catalog/product_type_grouped')->getParentIdsByChild($item->getId());
+				$config_parent = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($item->getId());
+				if (!$item->isDeleted() && !$grouped_parent && !$config_parent) {
+					$items[] = $quote_item;
+				}
+			}
+			$this->setData('all_visible_items', $items);
+		}
+		return $this->getData('all_visible_items');
+	}
+
 	public function getItemList() {
 
 		if (!$this->hasData('item_list')) {
+			$collection = $this->getAllVisibleItems();
 
-			$name_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'name');
-
-			//die(print_r(array_keys($name_attr->getData())));
-
-			$collection = Mage::getModel('quotedispatch/quotedispatch_items')->getCollection()
-				->addFieldToFilter('quotedispatch_id', $this->getId())
-				->addFieldToSelect('qty')
-			//->addFieldToFilter('email',$this->getEmail())
-			;
-
-			$collection->getSelect()
-				->joinleft(
-					array('e' => 'catalog_product_entity'), 'main_table.product_id = e.entity_id'
-				)
-				->joinleft(
-					array('pv' => 'catalog_product_entity_varchar'), 'pv.entity_id=main_table.product_id', array('name' => 'value')
-				)
-				->where('pv.attribute_id=' . $name_attr->getAttributeId())
-				->columns(array(
-					'line_total' => new Zend_Db_Expr('main_table.price * main_table.qty')
-					)
-				)
-			;
-
-			$itemList = "";
-			$collection->addFieldToFilter('type_id', array('neq' => "configurable"));
 			foreach ($collection as $item) {
-				//if $item->get
 				$itemList .= $item->getName() . " - (" . $item->getQty() . ")" . "<br />";
 			}
-
-
 
 			$this->setData('item_list', $itemList);
 		}
