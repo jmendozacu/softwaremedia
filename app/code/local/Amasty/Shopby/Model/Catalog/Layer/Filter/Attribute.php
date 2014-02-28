@@ -44,18 +44,19 @@ class Amasty_Shopby_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalog_Mo
                 $connection->quoteInto("{$tableAlias}.attribute_id = ?", $attribute->getAttributeId()),
                 $connection->quoteInto("{$tableAlias}.store_id = ?", $this->getStoreId()),
             );
-    
+
             $select
                 ->join(
                     array($tableAlias => $this->_getResource()->getMainTable()),
                     join(' AND ', $conditions),
-                    array('value', 'count' => "COUNT(DISTINCT {$tableAlias}.entity_id)"))
+                    array('value', 'count' => "COUNT( {$tableAlias}.entity_id)"))
                 ->group("{$tableAlias}.value");
-    
+             //die(var_dump($this->_getResource()->getMainTable()));     
             $optionsCount = $connection->fetchPairs($select);
          } 
          
-         return $optionsCount;       
+         return $optionsCount;  
+         
     }
     
     protected function _getIsFilterableAttribute($attribute)
