@@ -43,6 +43,8 @@
 /* Widget Banner */
 .widget-banner { height: 194px !important; clear:both; display:block; width:100%; overflow:hidden; text-align:center; }
 .widget-banner li { margin:7px 0; }
+.widget-banner ul, .widget-banner ul li, .widget-banner .caroufredsel_wrapper { height: 183px !important; }
+
 
 .top-container .widget-banner li { margin:0; }
 
