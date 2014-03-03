@@ -73,6 +73,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
 
         foreach ($invoices as $invoice) {
             
+            $shipTime = false;
             
             //$items = $invoice->getAllItems();
             $items = Mage::getResourceModel('sales/order_invoice_item_collection')
@@ -132,7 +133,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             	if ($orderItem->getParentItemId())
             		continue;
             	if (!$shipTime)
-            		$shipTime = $item->getData('item_ship_date');
+            		$shipTime = date('m/d/Y', strtotime( $item->getData('item_ship_date') ) );
                 $item_values = array(
                     'ship_date'   => date('m/d/Y', strtotime( $item->getData('item_ship_date') ) ), 
                     'invoice_cm_distributions' => $i++,
