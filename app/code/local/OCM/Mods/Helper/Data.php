@@ -9,22 +9,14 @@ class OCM_Mods_Helper_Data extends Mage_Core_Helper_Abstract
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('thumbnail')
             ->addAttributeToFilter('parent_id', $brands_id)
-            ->addAttributeToFilter(array(
-                array(
-                    'attribute' => 'name',
-                    'eq' => $brand_name
-                )))->load();
+            ->addAttributeToFilter('name',$brand_name);
         $cat_data = $cat_collection->getFirstItem()->getData();
         if(is_null($cat_data['thumbnail'])) {
             $cat_collection = Mage::getModel('catalog/category')->getCollection()
-                ->addAttributeToSelect('name')
-                ->addAttributeToSelect('thumbnail')
-                ->addAttributeToFilter('parent_id', $more_brands_id)
-                ->addAttributeToFilter(array(
-                    array(
-                        'attribute' => 'name',
-                        'eq' => $brand_name
-                    )))->load();
+            ->addAttributeToSelect('name')
+            ->addAttributeToSelect('thumbnail')
+            ->addAttributeToFilter('parent_id', $more_brands_id)
+            ->addAttributeToFilter('name',$brand_name);
             $cat_data = $cat_collection->getFirstItem()->getData();
         }
         if(!is_null($cat_data['thumbnail'])) { 
