@@ -41,7 +41,7 @@
 .widget .add-to-links { list-style:none; padding-left:0; margin:5px 0; }
 
 /* Widget Banner */
-.widget-banner { clear:both; display:block; width:100%; overflow:hidden; text-align:center; }
+.widget-banner { height: 194px !important; clear:both; display:block; width:100%; overflow:hidden; text-align:center; }
 .widget-banner li { margin:7px 0; }
 
 .top-container .widget-banner li { margin:0; }
