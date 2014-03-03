@@ -155,7 +155,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
                 $tax_values = array(
                     'ship_date'   => $shipTime, //use last item ship date
-                    'invoice_cm_distributions' => $i++,
+                    'invoice_cm_distributions' => 0,
                     'description' => 'Salt Lake County Sales Tax',
                     'gl_account' => self::GL_ACCOUNT_TAX,
                     'tax_type' => self::TAX_TYPE_TAX,
@@ -171,7 +171,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
                 $ship_values = array(
                     'ship_date'   => $shipTime, //use last item ship date
-                    'invoice_cm_distributions' => $i++,
+                    'invoice_cm_distributions' => 0,
                     'description' => 'Freight Amount',
                     'gl_account' => self::GL_ACCOUNT_FRIEGHT,
                     'tax_type' => self::TAX_TYPE_FRIEGHT,
@@ -186,7 +186,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
                 $promo_values = array(
                     'ship_date'   => $shipTime, //use last item ship date
-                    'invoice_cm_distributions' => $i++,
+                    'invoice_cm_distributions' => 0,
                     'description' => 'Promo: '.$invoice->getData('coupon_rule_name') ,
                     'gl_account' => self::GL_ACCOUNT_PROMO,
                     'tax_type' => self::TAX_TYPE_PROMO,
