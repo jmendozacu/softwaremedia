@@ -1,0 +1,59 @@
+<?php
+// Retrieve BillingAddress    
+$billingData = $quoteModel->getAddressInfoByType(Ophirah_Qquoteadv_Helper_Address::ADDRESS_TYPE_BILLING);
+?>
+
+<div class="entry-edit">
+	<div class="entry-edit-head">
+		<h4 class="icon-head head-account"><?php echo $this->__('Billing Address') ?></h4>
+	</div>
+	<div class="fieldset">
+            <div class="hor-scroll">
+                <div class="lbaddr"><?php echo $this->__('Customer Name') ?></div>
+                <div class="taddr"><?php echo $this->htmlEscape($quoteModel->getNameFormatted($billingData->getData())) ?></div>
+                <br />
+
+                <?php
+                $title = $this->__('Address');
+                foreach($quoteModel->getStreetFormatted($billingData->getData()) as $addressLine):
+                    echo '<div class="lbaddr">'.$title.'</div>';
+                    echo '<div class="taddr">'.$addressLine.'</div>';
+                    $title = '&nbsp;'; // unset title;
+                endforeach;
+                ?>
+                <br />
+
+                <div class="lbaddr"><?php echo $this->__('City, Zip code') ?></div>
+                <div class="taddr">
+                    <?php
+                        echo $quoteModel->getCityZipFormatted($billingData->getData());
+                    ?>
+                </div>
+                <br />
+                <?php
+                if($billingData->getData('country_id') == NULL){
+                    $billingData->setData('country_id', Mage::getStoreConfig('general/country/default',  Mage::app()->getStore()->getId()));
+                }
+                ?>
+                <div class="lbaddr"><?php echo $this->__('Country') ?></div>
+                <div class="taddr"><?php echo $this->helper('qquoteadv')->getCountryName($billingData->getData('country_id')) ?></div>
+                <br />
+
+                <?php
+                if($billingData->getData('region')) {
+                    $region = $billingData->getData('region');
+                } elseif ( $billingData->getData('region_id') ) {
+                    $region = $this->helper('qquoteadv')->getRegionName($billingData->getData('region_id'));
+                }?>
+                <?php if(!empty($region)) : ?>
+                    <div class="lbaddr"><?php echo $this->__('Region') ?></div>
+                    <div class="taddr"><?php echo $region; ?></div>
+                    <br />
+                <?php endif; ?>
+
+                <div class="lbaddr"><?php echo $this->__('Telephone') ?></div>
+                <div class="taddr"><?php echo $billingData->getData('telephone') ?></div>
+                <br />                        
+            </div>
+	</div>
+</div>

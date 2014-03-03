@@ -1,0 +1,112 @@
+<?php
+// Retrieve ShippingAddress    
+$shippingData = $quoteModel->getAddressInfoByType(Ophirah_Qquoteadv_Helper_Address::ADDRESS_TYPE_SHIPPING);
+?>
+
+<div class="entry-edit">
+	<div class="entry-edit-head">
+		<h4 class="icon-head head-account"><?php echo $this->__('Shipping Address')?></h4>
+	</div>
+	<div class="fieldset">
+            <div class="hor-scroll">
+                <div class="lbaddr"><?php echo $this->__('Customer Name') ?></div>
+                <div class="taddr"><?php echo $this->htmlEscape($quoteModel->getNameFormatted($shippingData->getData())) ?></div>
+                <br />
+
+                <?php
+                $title = $this->__('Address');
+                foreach($quoteModel->getStreetFormatted($shippingData->getData()) as $addressLine):
+                    echo '<div class="lbaddr">'.$title.'</div>';
+                    echo '<div class="taddr">'.$addressLine.'</div>';
+                    $title = '&nbsp;'; // unset title;
+                endforeach;
+                ?>
+                <br />
+
+
+                <div class="lbaddr"><?php echo $this->__('City, Zip code') ?></div>
+                <div class="taddr">
+                    <?php
+                        echo $quoteModel->getCityZipFormatted($shippingData->getData());
+                    ?>
+                </div>
+                <br />
+                <?php
+                if($shippingData->getData('country_id') == NULL){
+                    $shippingData->setData('country_id', Mage::getStoreConfig('general/country/default',  Mage::app()->getStore()->getId()));
+                }
+                ?>
+                <div class="lbaddr"><?php echo $this->__('Country') ?></div>
+                <div class="taddr"><?php echo $this->helper('qquoteadv')->getCountryName($shippingData->getData('country_id')) ?></div>
+                <br />
+
+                <?php
+                if($shippingData->getData('region')) {
+                    $region = $shippingData->getData('region');
+                } elseif ( $shippingData->getData('region_id') ) {
+                    $region = $this->helper('qquoteadv')->getRegionName($shippingData->getData('region_id'));
+                }?>
+                <?php if(!empty($region)) : ?>
+                    <div class="lbaddr"><?php echo $this->__('Region') ?></div>
+                    <div class="taddr"><?php echo $region; ?></div>
+                    <br />
+                <?php endif; ?>
+
+                <div class="lbaddr"><?php echo $this->__('Telephone') ?></div>
+                <div class="taddr"><?php echo $shippingData->getData('telephone') ?></div>
+                <br />
+                <?php
+                // Adding Extra Option Fields
+                // Define $columnName with the right CONST see /** Ophirah_Qquoteadv_Model_Extraoptions */
+                // Define $optionType with the right CONST see /** Ophirah_Qquoteadv_Model_Extraoptions */
+                $columnName     = Ophirah_Qquoteadv_Model_Extraoptions::COLUMN_NAME_SHIPPING_SERVICE;                            
+                if($columnName != '' && !empty($quote[$columnName])) :
+                    $optionType     = Ophirah_Qquoteadv_Model_Extraoptions::OPTION_TYPE_SHIPPING_SERVICE;
+                    $addressData    = Mage::getModel('qquoteadv/extraoptions');
+                    $addressType    = $addressData->getOptionData($quote[$columnName], $optionType);
+                    $addressOptions = $addressData->getAddressType();
+                    $addressSelect  = $addressData->createAdminHtml($addressOptions['optionToAdd'], $quote[$columnName]);                    
+                    ?>
+                    <div class="lbaddr"><?php echo $this->__($addressType['title']); ?></div>
+                    <div class="taddr">
+                        <div id="optionSelected_<?php echo $optionType; ?>" class="optionSelected">
+                            <?php echo $this->__($addressType['option']); ?>
+                        </div>
+                        <div id="optionSelect_<?php echo $optionType; ?>" class="optionSelect" style="display:none;">
+                            <?php echo $addressSelect; ?>
+                        </div>
+                        <div class="editAddress" onclick="{ $('optionSelected_<?php echo $optionType;?>').hide(); $('optionSelect_<?php echo $optionType; ?>').show(); $(this).hide(); }"><?php echo $this->__('edit'); ?></div>
+                    </div>
+                    <br />
+                <?php endif; ?>
+                <?php
+                // Adding extra option fields with multiselect
+                // Define $columnName with the right CONST see /** Ophirah_Qquoteadv_Model_Extraoptions */
+                // Define $optionType with the right CONST see /** Ophirah_Qquoteadv_Model_Extraoptions */
+                $columnName         = Ophirah_Qquoteadv_Model_Extraoptions::COLUMN_NAME_SHIPPING_SERVICE;
+                if($columnName != '' && !empty($quote[$columnName])) :
+                    $optionType         = Ophirah_Qquoteadv_Model_Extraoptions::OPTION_TYPE_SHIPPING_SERVICE;
+                    $shippingData       = Mage::getModel('qquoteadv/extraoptions');
+                    $shippingService    = $shippingData->getMultipleoptionData($quote[$columnName], $optionType);
+                    $shippingOptions    = $shippingData->getShippingService();
+                    $shippingSelect     = $shippingData->createAdminHtml($shippingOptions['optionToAdd'], $quote[$columnName]);                
+                    if(!empty($shippingService['options'])) :
+                        $title = $this->__($shippingService['title']);?>
+                        <div id="multiSelected_<?php echo $optionType; ?>" class="multiSelected">
+                            <?php foreach($shippingService['options'] as $option):?>
+                                <div class="lbaddr"><?php echo $this->__($title); ?></div>
+                                <div class="taddr"><?php echo $this->__($option['label']); ?></div>
+                                <br />
+                            <?php $title = '&nbsp;';
+                            endforeach;?>
+                        </div>
+                        <div id="optionMultiSelect_<?php echo $optionType; ?>" class="optionMultiSelect" style="display:none;">
+                            <div class="lbaddr"><?php echo $this->__($this->__($shippingService['title'])); ?></div>
+                            <div class="taddr"><?php echo $shippingSelect; ?></div>
+                        </div>
+                        <div class="editAddress" onclick="{ $('multiSelected_<?php echo $optionType;?>').hide(); $('optionMultiSelect_<?php echo $optionType;?>').show(); $(this).hide(); }"><?php echo $this->__('edit'); ?></div>
+                    <?php endif; ?>
+                <?php endif; ?>                  
+            </div>
+	</div>
+</div>
