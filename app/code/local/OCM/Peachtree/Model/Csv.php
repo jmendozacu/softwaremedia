@@ -131,6 +131,8 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             	$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
             	if ($orderItem->getParentItemId())
             		continue;
+            	if (!$shipTime)
+            		$shipTime = $item->getData('item_ship_date');
                 $item_values = array(
                     'ship_date'   => date('m/d/Y', strtotime( $item->getData('item_ship_date') ) ), 
                     'invoice_cm_distributions' => $i++,
@@ -151,7 +153,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if ($has_tax_line) {
                 
                 $tax_values = array(
-                    'ship_date'   => date('m/d/Y', strtotime( $item->getData('item_ship_date') ) ), //use last item ship date
+                    'ship_date'   => $shipTime, //use last item ship date
                     'invoice_cm_distributions' => $i++,
                     'description' => 'Salt Lake County Sales Tax',
                     'gl_account' => self::GL_ACCOUNT_TAX,
@@ -167,7 +169,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if ($has_ship_line) {
                 
                 $ship_values = array(
-                    'ship_date'   => date('m/d/Y', strtotime( $item->getData('item_ship_date') ) ), //use last item ship date
+                    'ship_date'   => $shipTime, //use last item ship date
                     'invoice_cm_distributions' => $i++,
                     'description' => 'Freight Amount',
                     'gl_account' => self::GL_ACCOUNT_FRIEGHT,
@@ -182,7 +184,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if ($has_promo_line) {
                 
                 $promo_values = array(
-                    'ship_date'   => date('m/d/Y', strtotime( $item->getData('item_ship_date') ) ), //use last item ship date
+                    'ship_date'   => $shipTime, //use last item ship date
                     'invoice_cm_distributions' => $i++,
                     'description' => 'Promo: '.$invoice->getData('coupon_rule_name') ,
                     'gl_account' => self::GL_ACCOUNT_PROMO,
