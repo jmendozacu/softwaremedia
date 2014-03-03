@@ -98,11 +98,14 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             $has_ship_line = ($invoice->getData('shipping_amount')>0) ? 1 : 0;
             $has_promo_line = ($invoice->getData('discount_amount')!=0) ? 1 : 0;
             
+            $shipVia = $invoice->getData('ship_via');
+            $shipVia = str_replace("Federal Express", "Fed-Ex", $shipVia);
+            
             $common_values = array(
                 'customer_id' => 'O'.date('my',strtotime( $invoice->getData('order_created_at') ) ),
                 'invoice_id'  => $invoice->getData('increment_id'),
                 'date'        => date('m/d/Y',strtotime( $invoice->getData('order_created_at') ) ),
-                'ship_via'    => $invoice->getData('ship_via'),
+                'ship_via'    => $shipVia,
                 'ship_date'   => '', //item, tax, frieght
                 'displayed_terms' => self::DISPLAYED_TERMS,
                 'sales_rep_id'    => OCM_Peachtree_Model_Referer::getNameByCode( $invoice->getData('referer_id') ),
