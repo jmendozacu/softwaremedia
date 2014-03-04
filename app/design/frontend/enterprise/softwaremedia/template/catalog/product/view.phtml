@@ -129,37 +129,43 @@
                         <?php endif; ?>
                     </div>
                     <?php endif;?>
-            <?php if (!$this->hasOptions()):?>
-                <div class="add-to-box">
-                    <?php
-                    if($_product->isSaleable()):
-                        echo $this->getChildHtml('addtocart');
-                    endif;
-                    // -- C2Q buttons --
-                    //if(!$_product->isSaleable()):
-                        echo Mage::app()->getLayout()->createBlock('qquoteadv/qquotebtn')
+                    
+                    <?php if (!$this->hasOptions()):?>
+                        <div class="add-to-box">
+                            <?php  if($_product->isSaleable()): ?>
+                                <?php echo $this->getChildHtml('addtocart') ?>
+                            <?php endif; ?>
+							<?php echo Mage::app()->getLayout()->createBlock('qquoteadv/qquotebtn')
                                         ->setData('product', $_product)
                                         ->setTemplate('qquoteadv/catalog/product/view/addtoquoteadv.phtml')
                                         ->toHtml();
-                    //endif;
-                    if($_product->isSaleable()):
-                        if( $this->helper('wishlist')->isAllow() || $_compareUrl=$this->helper('catalog/product_compare')->getAddUrl($_product)):
-                            echo '<span class="or"><'.$this->__('OR').'</span>';
-                        endif;
-                    endif;
-                    echo $this->getChildHtml('addto'); ?>
-                </div>
-                <?php
-                if($_product->isSaleable()):
-                    echo $this->getChildHtml('extra_buttons');
-                endif;
-            elseif(!$_product->isSaleable()):?>
-                <div class="add-to-box">                
-                    <?php echo $this->getChildHtml('addto'); ?>
-                </div>
-            <?php endif; ?>
-            
+                            ?>
+                        </div>
+                    <?php else:?>
+                        <?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container1') ):?>
+                            <div class="options-container-small">
+                                <?php echo $this->getChildChildHtml('container1', '', true, true) ?>
+                            </div>
+                            <?php echo Mage::app()->getLayout()->createBlock('qquoteadv/qquotebtn')
+                                        ->setData('product', $_product)
+                                        ->setTemplate('qquoteadv/catalog/product/view/addtoquoteadv.phtml')
+                                        ->toHtml();
+                            ?>
+                        <?php endif;?>
+                    <?php endif; ?>
+                    
+                    
 
+                    <?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container2') ):?>
+                    <div class="options-container-big">
+                        <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+                        <?php echo Mage::app()->getLayout()->createBlock('qquoteadv/qquotebtn')
+                                        ->setData('product', $_product)
+                                        ->setTemplate('qquoteadv/catalog/product/view/addtoquoteadv.phtml')
+                                        ->toHtml();
+                            ?>
+                    </div>
+                    <?php endif;?>
 
                     <?php /* if ($_product->getShortDescription()):?>
                         <div class="short-description std">
