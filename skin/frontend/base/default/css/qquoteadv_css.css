@@ -142,8 +142,6 @@ ol.c2q {
 .c2q li.section:hover .tab-title,
 .c2q li.section.active .tab-title {
 	/* Active tab */
-	z-index: 100;
-
 	background: #d9e5ee; /* Old browsers */
 	background: -moz-linear-gradient(top, #C5D6E2 0%, #d9e5ee 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#C5D6E2), color-stop(100%,#d9e5ee)); /* Chrome,Safari4+ */
