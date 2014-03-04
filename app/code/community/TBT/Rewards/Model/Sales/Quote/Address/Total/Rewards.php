@@ -85,6 +85,7 @@ class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Mod
 
         parent::collect($address);
 
+		/*
         $this->_clearRoundingDeltas ( $address );
 
         //Update the subtotals using the points discount
@@ -102,7 +103,7 @@ class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Mod
             $this->_addAmount($final_price);
             $this->_addBaseAmount($base_final_price);
         }
-
+		*/
         return $this;
     }
 
