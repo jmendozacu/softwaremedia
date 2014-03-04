@@ -37,8 +37,7 @@
 <?php $isAjax = Mage::getStoreConfig('qquoteadv/layout/ajax_add'); ?>
 <?php $actionQuote = "addQuote('".$url."', $isAjax );"; ?>
 
-<fieldset class="add-to-cart-box">
-        <legend><?php echo $this->__('Add Items to Cart') ?></legend>
+<fieldset class="add-to-cart" style="float: right">
 	    <?php if($_product->getData('allowed_to_quotemode')==1 && $hideQuoteButton === false): ?>
 	    	<?php if(!$_product->isGrouped() && (!$_product->isSaleable() || $hideCartButton === true)): ?>
                 <span class="qty-box"><label for="qty"><?php echo $this->__('Qty') ?>:</label>
