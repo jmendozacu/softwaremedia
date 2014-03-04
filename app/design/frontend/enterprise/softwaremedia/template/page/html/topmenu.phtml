@@ -146,6 +146,11 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
                                     <?php if (count($all_child_categoryIds) > 1): ?>
                                         <ol>
                                             <?php foreach ($all_child_categoryIds as $cat) : ?>
+                                            	<?php $category = Mage::getModel('catalog/category')->load($cat->getId()); ?>
+                 
+                                            	<?php if (!$category->getIncludeInMenu())
+                                            		continue;
+													?>
                                                 <li class="category-menu-title">
                                                     <a href="<?php echo $cat->getUrl() ?>">
                                                         <span><?php echo $cat->getName() ?></span>
