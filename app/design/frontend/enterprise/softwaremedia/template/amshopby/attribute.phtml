@@ -3,7 +3,7 @@
 switch ($this->getDisplayType()){
     case 0: // labels only
         foreach ($this->getItemsAsArray() as $item){
-            echo '<li '.$item['style'].'><a class="'.$item['css'].'" href="'.$item['url'].'">'. $item['label'] . '</a>' . $item['count'] . '</li>';
+            echo '<li '.$item['style'].'><a class="'.$item['css'].'" href="'.$item['url'].'">'. $item['label'] . '</a>' .  '</li>';
         }
     break;
     
@@ -21,7 +21,7 @@ switch ($this->getDisplayType()){
             if (!empty($item['image'])){
                 echo '<img src="'.$item['image'].'" title="'. $item['label'] .'" alt="'. $item['label'] .'">';
             }
-            echo $item['label'] . '</a>' . $item['count'] . '</li>';
+            echo $item['label'] . '</a>' .  '</li>';
         }
     break;
     
@@ -30,7 +30,7 @@ switch ($this->getDisplayType()){
         //echo '<option value="">' . $this->getName() . '</option>';
         echo '<option value="'.$this->getRemoveUrl().'"></option>';
         foreach ($this->getItemsAsArray() as $item){
-            echo '<option '.$item['css'].' value="'.$item['url'].'">'. $item['label'] . $item['count'] . '</option>';
+            echo '<option '.$item['css'].' value="'.$item['url'].'">'. $item['label'] .  '</option>';
         }
         echo '</select></li>';
     break;
@@ -44,7 +44,7 @@ switch ($this->getDisplayType()){
         echo '<div class="amshopby-column">';
         for ($i=0; $i<$half; $i++){
             $item = $items[$i];
-            echo '<a class="'.$item['css'].'" href="'.$item['url'].'">'. $item['label'] . '</a>' . $item['count'] . '<br/>';
+            echo '<a class="'.$item['css'].'" href="'.$item['url'].'">'. $item['label'] . '</a>' .  '<br/>';
         }
         echo '</div>';
         echo '<div class="amshopby-column">';
