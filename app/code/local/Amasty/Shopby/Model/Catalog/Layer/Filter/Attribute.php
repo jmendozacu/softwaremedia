@@ -17,7 +17,7 @@ class Amasty_Shopby_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalog_Mo
          }
             
     }
-    
+    /*
     protected function _getCount($attribute)
     {
 		$connection = $this->_getResource()->getReadConnection();
@@ -61,6 +61,48 @@ class Amasty_Shopby_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalog_Mo
 		}
 
 		return $optionsCount;  
+         
+    }
+    */
+    
+    protected function _getCount($attribute)
+    {
+         $optionsCount = array();
+         if (Mage::helper('amshopby')->isVersionLessThan(1, 4)){
+            $optionsCount = Mage::getSingleton('catalogindex/attribute')->getCount(
+                $attribute,
+                $this->_getBaseCollectionSql()
+            );
+         }
+         else {
+            // clone select from collection with filters
+            $select = $this->_getBaseCollectionSql();
+            
+            // reset columns, order and limitation conditions
+            $select->reset(Zend_Db_Select::COLUMNS);
+            $select->reset(Zend_Db_Select::ORDER);
+            $select->reset(Zend_Db_Select::LIMIT_COUNT);
+            $select->reset(Zend_Db_Select::LIMIT_OFFSET);
+    
+            $connection = $this->_getResource()->getReadConnection();
+            $tableAlias = $attribute->getAttributeCode() . '_idx';
+            $conditions = array(
+                "{$tableAlias}.entity_id = e.entity_id",
+                $connection->quoteInto("{$tableAlias}.attribute_id = ?", $attribute->getAttributeId()),
+                $connection->quoteInto("{$tableAlias}.store_id = ?", $this->getStoreId()),
+            );
+
+            $select
+                ->join(
+                    array($tableAlias => $this->_getResource()->getMainTable()),
+                    join(' AND ', $conditions),
+                    array('value', 'count' => "COUNT( {$tableAlias}.entity_id)"))
+                ->group("{$tableAlias}.value");
+             //die(var_dump($this->_getResource()->getMainTable()));     
+            $optionsCount = $connection->fetchPairs($select);
+         } 
+         
+         return $optionsCount;  
          
     }
     

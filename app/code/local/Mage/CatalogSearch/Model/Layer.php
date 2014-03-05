@@ -59,10 +59,6 @@ class Mage_CatalogSearch_Model_Layer extends Mage_Catalog_Model_Layer
             ->addAttributeToFilter('visibility', array('in'=>array(3,4)))
             ->addSearchFilter(Mage::helper('catalogsearch')->getQuery()->getQueryText())
             ->setStore(Mage::app()->getStore())
-            ->addMinimalPrice()
-            ->addFinalPrice()
-            ->addTaxPercents()
-            ->addStoreFilter()
             ->addUrlRewrite();
 
         Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection);
