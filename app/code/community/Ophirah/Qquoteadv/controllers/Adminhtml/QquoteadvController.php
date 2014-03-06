@@ -1597,7 +1597,7 @@ function hideBox() {
                             'fax'                => $billingAddress->getFax(),
                             'store_id'           => $quote->getStoreId(),
                             'itemprice'          => $itemprice,
-                            
+                            'notify_admin'		=> 1,
                             //#shipping
                             'shipping_prefix'        => $shipAddress->getData("prefix"),
                             'shipping_firstname'     => $shipAddress->getData("firstname"),
@@ -1631,7 +1631,7 @@ function hideBox() {
                     //#add customer to c2q
                     try {
                         $c2qId = $modelCustomer->addQuote($qcustomer)->getQuoteId();
-
+						
                         //#save c2q id into session
                         $this->getCustomerSession()->setQuoteadvId($c2qId);					
                     }catch(Exception $e){ Mage::log($e->getMessage()); }
