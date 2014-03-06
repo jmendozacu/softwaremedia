@@ -429,18 +429,20 @@ if( count($collection) >0 ):
                         </td>
                          <td class="a-center"><span class="price cpc-price" id="cpc-price-<?php echo $product->getSku()?>"><?php
 
-
+							 $productNew = Mage::getModel('catalog/product')->loadByAttribute('sku',$product->getSku());
+							 
                             if(isset($requested_item) and is_object($requested_item)) {
                             if(count($aQty)) $qty = $aQty[0];   else $qty = 1;
 
-                              $price  = $product->getCpcPrice();
+                              $price  = $productNew->getCpcPrice();
 							  
                             //set currency code
                             }
+                            
                             // Adding to total information
                             if(isset($price)){
                                 $_quoteItems[$item->getId()]['totalCpcprice']    = $price;
-                                echo Mage::helper('core')->formatPrice($product->getCpcPrice());
+                                echo Mage::helper('core')->formatPrice($price);
                             }else{
                                 $_quoteItems[$item->getId()]['totalOrgprice']    = 0;      
                                 echo "n/a";                          
@@ -468,7 +470,8 @@ if( count($collection) >0 ):
                             $_qTotals->setTotalQty($_qTotals->getTotalQty() + $item->getData('qty'));
                             $_qTotals->setTotalCost($_qTotals->getTotalCost() + ($item->getData('qty') * $_quoteItems[$item->getId()]['totalCost']));
                             $_qTotals->setTotalOrgcost($_qTotals->getTotalOrgcost() + ($item->getData('qty') * $_quoteItems[$item->getId()]['totalOrgprice']));
-                            $_qTotals->setTotalCpccost($_qTotals->getTotalCpcost() + ($item->getData('qty') * $_quoteItems[$item->getId()]['totalCpcprice']));
+        
+                            $_qTotals->setTotalCpccost($_qTotals->getTotalCpccost() + ($item->getData('qty') * $_quoteItems[$item->getId()]['totalCpcprice']));
                             ?>
                             
                         </td>
