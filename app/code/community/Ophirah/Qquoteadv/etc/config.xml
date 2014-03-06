@@ -376,14 +376,14 @@
                     <model>qquoteadv/qqadvcustomer::send2ndReminderEmail</model>
                 </run>
             </qquoteadv_reminder_email_2> 
-            <qquoteadv_reminder_email>
+            <qquoteadv_reminder_email_3>
                 <schedule>
                     <cron_expr>21 6 * * *</cron_expr>                  
                 </schedule>
                 <run>
                     <model>qquoteadv/qqadvcustomer::send3rdReminderEmail</model>
                 </run>
-            </qquoteadv_reminder_email> 
+            </qquoteadv_reminder_email_3> 
         </jobs>
     </crontab>
     <frontend>
