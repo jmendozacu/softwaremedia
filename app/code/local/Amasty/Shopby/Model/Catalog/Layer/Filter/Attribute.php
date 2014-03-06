@@ -17,6 +17,53 @@ class Amasty_Shopby_Model_Catalog_Layer_Filter_Attribute extends Mage_Catalog_Mo
          }
             
     }
+    /*
+    protected function _getCount($attribute)
+    {
+		$connection = $this->_getResource()->getReadConnection();
+		$options = $attribute->getFrontend()->getSelectOptions();
+		$tableAlias = $attribute->getAttributeCode() . '_idx';
+		$optionsCount = array(); 
+		
+		foreach($options as $option) {
+			$collection = Mage::getResourceModel('catalogsearch/fulltext_collection');
+			$collection
+				->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
+				->addAttributeToSelect('visibility')
+				->addAttributeToFilter('visibility', array('in'=>array(3,4)))
+				->addSearchFilter(Mage::helper('catalogsearch')->getQuery()->getQueryText())
+				->setStore(Mage::app()->getStore())
+				->addMinimalPrice()
+				->addFinalPrice()
+				->addTaxPercents()
+				->addStoreFilter()
+				->addUrlRewrite();
+				
+			Mage::getSingleton('catalog/product_status')->addVisibleFilterToCollection($collection); 
+			
+			$select = $collection->getSelect();
+			
+			
+			$conditions = array(
+				"{$tableAlias}.entity_id = e.entity_id",
+				$connection->quoteInto("{$tableAlias}.attribute_id = ?", $attribute->getAttributeId()),
+				$connection->quoteInto("{$tableAlias}.store_id = ?",     $collection->getStoreId()),
+				$connection->quoteInto("{$tableAlias}.value = ?",      $option['value'])
+			);
+			$select->join(
+				array($tableAlias => $this->_getResource()->getMainTable()),
+				join(' AND ', $conditions),
+				array('value')
+			);      
+			
+			
+			$optionsCount[$option['value']] = $collection->getSize();
+		}
+
+		return $optionsCount;  
+         
+    }
+    */
     
     protected function _getCount($attribute)
     {

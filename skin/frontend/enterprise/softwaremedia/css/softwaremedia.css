@@ -978,6 +978,13 @@ div.block-layered-nav dd li.amshopby-cat-level-3 {
     line-height: 24px;
     padding: 4px 0 4px 32px;
 }
+.form_bottom .f-left button.btn-quote span {
+    background-position: 1px 0;
+    background: url("../images/quote-icon.png") no-repeat scroll 0 0 transparent;
+    height: 24px;
+    line-height: 24px;
+    padding: 4px 0 4px 33px;
+}
 .form_bottom .f-left button.button {
     background: none repeat scroll 0 0 #323232;
     float: left;

@@ -33,7 +33,10 @@ class Amasty_Shopby_Block_Catalog_Product_List_Toolbar extends Mage_Catalog_Bloc
         }
         return parent::getPagerHtml();
     }
-    
+    public function getTotalNum()
+    {
+        return $this->getCollection()->getSize();
+    }
     private function skip()
     {
         $r = Mage::app()->getRequest();

@@ -31,7 +31,7 @@ if (count($productNames)>0) {
 	$action = 'initMsg();';
 }
 
-$btn = '<button id="c2qBtn" onclick="%s" class="button btn-update" style="margin-left:3px;" type="button"><span><span>%s</span></span></button>';
+$btn = '<button id="c2qBtn" onclick="%s" class="button btn-quote" style="margin-left:3px;" type="button"><span><span>%s</span></span></button>';
 ?>
 <?php if(Mage::helper('qquoteadv')->isActiveConfirmMode()) {
 	echo sprintf($btn, "outQqconfirmMode();", $this->__('Log out from quote confirmation mode') );
@@ -57,12 +57,12 @@ $btn = '<button id="c2qBtn" onclick="%s" class="button btn-update" style="margin
 	</script>
 <?php 
 }else{
-	echo sprintf($btn, $action, $this->__('Copy to Quotation') );
+	echo sprintf($btn, $action, $this->__('Get Quote') );
 }
 ?>
 
 <script type="text/javascript" language="javascript">
-var tfoot = $$('#shopping-cart-table tfoot td.last');
+var tfoot = $$('.form_bottom .f-left');
 if(typeof(tfoot)=='object' && tfoot.length>0 && $('c2qBtn')) {
     //tfoot[0].appendChild('&nbsp;');
 	tfoot[0].appendChild($('c2qBtn'));

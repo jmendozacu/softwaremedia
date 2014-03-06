@@ -1964,6 +1964,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .cart-table tbody td .product-name a {color: #0b66cc}
 .cart-table tfoot tr td {background: #323232;border: 1px solid #fff;font-size: 25px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;text-transform: capitalize;color: #fff;padding: 6px 25px}
 .cart-table tfoot tr td.cart_subtotal span {padding: 0 0 0 38px}
+.cart-table tfoot tr td.cart_subtotal span span {padding: 0 0 0 8px}
 .cart-table tfoot tr.last td {background: #fff;padding: 22px 0 33px 0}
 .cart-table button.button {background: #323232;height: 32px;line-height: 32px;padding: 0 10px 0 8px;float: left;margin: 0 17px 0 0;overflow: hidden}
 .cart-table .f-right button.button {margin: 0 0 0 17px}

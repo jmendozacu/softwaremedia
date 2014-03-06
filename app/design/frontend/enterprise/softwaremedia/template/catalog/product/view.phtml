@@ -135,22 +135,12 @@
                             <?php  if($_product->isSaleable()): ?>
                                 <?php echo $this->getChildHtml('addtocart') ?>
                             <?php endif; ?>
-							<?php echo Mage::app()->getLayout()->createBlock('qquoteadv/qquotebtn')
-                                        ->setData('product', $_product)
-                                        ->setTemplate('qquoteadv/catalog/product/view/addtoquoteadv.phtml')
-                                        ->toHtml();
-                            ?>
                         </div>
                     <?php else:?>
                         <?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container1') ):?>
                             <div class="options-container-small">
                                 <?php echo $this->getChildChildHtml('container1', '', true, true) ?>
                             </div>
-                            <?php echo Mage::app()->getLayout()->createBlock('qquoteadv/qquotebtn')
-                                        ->setData('product', $_product)
-                                        ->setTemplate('qquoteadv/catalog/product/view/addtoquoteadv.phtml')
-                                        ->toHtml();
-                            ?>
                         <?php endif;?>
                     <?php endif; ?>
                     
@@ -159,11 +149,6 @@
                     <?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container2') ):?>
                     <div class="options-container-big">
                         <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
-                        <?php echo Mage::app()->getLayout()->createBlock('qquoteadv/qquotebtn')
-                                        ->setData('product', $_product)
-                                        ->setTemplate('qquoteadv/catalog/product/view/addtoquoteadv.phtml')
-                                        ->toHtml();
-                            ?>
                     </div>
                     <?php endif;?>
 
