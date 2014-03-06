@@ -93,7 +93,7 @@
                 <class>Autocompleteplus_Autosuggest_Block</class>
             </autocompleteplus_autosuggest>
         </blocks>
-        <template>
+        <!--template>
             <email>
                 <autosuggest_status_notification module="Autocompleteplus_Autosuggest">
                     <label>Autocompleteplus status notification</label>
@@ -101,7 +101,7 @@
                     <type>html</type>
                 </autosuggest_status_notification>
             </email>
-        </template>
+        </template-->
         <events>
             <admin_session_user_login_success>
                 <observers>
