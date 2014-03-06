@@ -21,7 +21,7 @@
                         <?php  $checked = ($quoteModel->getData('no_expiry'))? ' checked="checked"': ''; ?>
                         
                         <input style="margin-left:30px;" type="checkbox" name="no_expiry" <?php echo $checked; ?> /> 
-                        <label style="margin-left:3px;"><?php echo $this->__('Do not notify customer'); ?></label>
+                        <label style="margin-left:3px;"><?php echo $this->__('Do not notify'); ?></label>
                         
                         </div>                        
                     </td>
@@ -42,9 +42,64 @@
                         <?php  $checked = ($quoteModel->getData('no_reminder'))? ' checked="checked"': ''; ?>
                         
                         <input style="margin-left:30px;" type="checkbox" name="no_reminder" <?php echo $checked; ?> /> 
-                        <label style="margin-left:3px;"><?php echo $this->__('Do not notify customer'); ?></label>
+                        <label style="margin-left:3px;"><?php echo $this->__('Do not notify'); ?></label>
                         
                         </div>                        
+                    </td>
+                </tr>
+                <tr>
+                    <?php $disabled = (Mage::getStoreConfig('qquoteadv/general/send_reminder_2') > 0)? '': $this->__(' (disabled)');?>
+                    <td class="label"><label><?php echo $this->__('2nd Reminder Date'.$disabled) ?></label></td>
+                    <?php
+                            $reminder= Mage::helper('qquoteadv')->getReminderDate($quoteModel->getData('quote_id'),2);                       
+                            $m = substr($reminder, 5, 2);
+                            $d = substr($reminder, 8, 2);
+                            $y = substr($reminder, 0, 4);
+                            $reminderFormatted = $m."/".$d."/".$y;                            
+                    ?>
+                    <td><div style="margin-top:3px;"><input type="text" style="width:70px;" name="reminder_2" id="reminder_2" value="<?php echo $reminderFormatted; ?>" />
+                        <img id="reminder_trig" style="position:relative; top: 1px;" src="<?php echo $this->getSkinUrl('images/grid-cal.gif'); ?>" />
+                        
+                        <?php  $checked = ($quoteModel->getData('no_reminder_2'))? ' checked="checked"': ''; ?>
+                        
+                        <input style="margin-left:30px;" type="checkbox" name="no_reminder_2" <?php echo $checked; ?> /> 
+                        <label style="margin-left:3px;"><?php echo $this->__('Do not notify'); ?></label>
+                        </div>                        
+                    </td>
+                </tr>
+                <tr>
+                    <?php $disabled = (Mage::getStoreConfig('qquoteadv/general/send_reminder_3') > 0)? '': $this->__(' (disabled)');?>
+                    <td class="label"><label><?php echo $this->__('3rd Reminder Date'.$disabled) ?></label></td>
+                    <?php
+                            $reminder= Mage::helper('qquoteadv')->getReminderDate($quoteModel->getData('quote_id'),3);                       
+                            $m = substr($reminder, 5, 2);
+                            $d = substr($reminder, 8, 2);
+                            $y = substr($reminder, 0, 4);
+                            $reminderFormatted = $m."/".$d."/".$y;                            
+                    ?>
+                    <td><div style="margin-top:3px;"><input type="text" style="width:70px;" name="reminder_3" id="reminder_3" value="<?php echo $reminderFormatted; ?>" />
+                        <img id="reminder_trig" style="position:relative; top: 1px;" src="<?php echo $this->getSkinUrl('images/grid-cal.gif'); ?>" />
+                        <?php  $checked = ($quoteModel->getData('no_reminder_3'))? ' checked="checked"': ''; ?>
+                        
+                        <input style="margin-left:30px;" type="checkbox" name="no_reminder_3" <?php echo $checked; ?> /> 
+                        <label style="margin-left:3px;"><?php echo $this->__('Do not notify'); ?></label>
+                        
+                        </div>                        
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td class="label"><label><?php echo $this->__('Notify Admin') ?></label></td>
+                    <td style="padding:10px 0px;">
+
+                        <?php  $checked = $quoteModel->getData('notify_admin'); ?>
+                        
+                        <select name="notify_admin">
+                        	<option value="0"<?php if ($checked == 0) echo " SELECTED"; ?>>No</option>
+                        	<option value="1"<?php if ($checked == 1) echo " SELECTED"; ?>>Last Reminder</option>
+                        	<option value="2"<?php if ($checked == 2) echo " SELECTED"; ?>>All Reminders</option>
+                        </select> 
+                                           
                     </td>
                 </tr>
                 <tr>

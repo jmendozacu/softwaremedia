@@ -22,7 +22,7 @@ window.location = "<?php echo Mage::getUrl('qquoteadv/index/'); ?>"
 </script>
 <?php $isActiveQuote = $this->isActiveQuote();?>
 
-<?php if($this->getShowOrderReferences()) : ?>
+<?php if($this->getShowOrderReferences() && 1==2) : ?>
 <div>
    <ol class="c2q">
 	   <li class="section allow <?php if(!$isActiveQuote) echo 'active';?>" id="c2qOrder">

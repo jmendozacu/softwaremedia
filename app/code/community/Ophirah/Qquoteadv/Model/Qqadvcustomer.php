@@ -564,9 +564,23 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
         }
 
      }
+    
+    public function sendReminderEmail(){    
+    	$this->_sendReminderEmail();
+    }
+    public function send2ndReminderEmail(){    
+    	$this->_sendReminderEmail(2);
+    }
      
-    public function sendReminderEmail(){      
-        if(Mage::getStoreConfig('qquoteadv/general/send_reminder') > 0){
+    public function send3rdReminderEmail(){    
+    	$this->_sendReminderEmail(3);
+    }
+    
+    private function _sendReminderEmail($inc = false){      
+    	if ($inc) 
+    		$inc = "_" . $inc;
+    		
+        if(Mage::getStoreConfig('qquoteadv/general/send_reminder' . $inc) > 0){
             
             $reminderTemplateId = Mage::getStoreConfig('qquoteadv/emails/proposal_reminder', $this->getStoreId());
             if ($reminderTemplateId) {
@@ -577,10 +591,13 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
             
             $reminderQuotes = $this->getCollection()
                                     ->addFieldToFilter('status',array('in'=> array(50,52,53) ))
-                                    ->addFieldToFilter('no_reminder',array('eq'=> 0 ))
-                                    ->addFieldToFilter('reminder',array('eq'=>date('Y-m-d')));
-            
-            foreach($reminderQuotes as $_quoteadv){                
+                                    ->addFieldToFilter('no_reminder' . $inc,array(
+														                        array('eq'=> 0 ),
+														                        array('null' => true),
+														                    ))
+                                    ->addFieldToFilter('reminder' . $inc,array('eq'=>date('Y-m-d')));
+									
+            foreach($reminderQuotes as $_quoteadv){       
                 if(substr($_quoteadv->getData('proposal_sent'),0 ,4) != 0){
                     $vars['quote']      = $_quoteadv;
                     $vars['customer']   = Mage::getModel('customer/customer')->load($_quoteadv->getCustomerId());
@@ -608,7 +625,9 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                         $bccData = explode(";", $bcc);
                         $template->addBcc($bccData);
                     }
-
+					if ($_quoteadv->getData('notify_admin') == 2 || ($_quoteadv->getData('notify_admin') == 1 && $inc == "_3")) {
+						$template->addBcc($_quoteadv->getSalesRepresentative()->getEmail());
+					}
                     /**
                      * Opens the qquote_request.html, throws in the variable array
                      * and returns the 'parsed' content that you can use as body of email

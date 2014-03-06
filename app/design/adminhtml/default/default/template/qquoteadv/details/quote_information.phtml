@@ -19,7 +19,6 @@
                                 $substatus  = ($quoteModel->getData('substatus'))?$quoteModel->getData('substatus'):'';
                                 $status     = Mage::getModel('qquoteadv/substatus')->getCurrentStatus($quoteModel->getData('status'), $substatus);
                                 $disabled   = ($quoteModel->getData('status') == Ophirah_Qquoteadv_Model_Status::STATUS_PROPOSAL_SAVED)?'disabled':'';
-                                echo '<select '.$disabled.' name="status" >';
                                 foreach(Mage::getModel('qquoteadv/status')->getOptionArray(true) as $k=>$v):
                                     $selected=($status == $v)?"selected = selected":'';
                                     echo '<option value="'.$k .'" '.$selected.'>'.$v.'</option>';

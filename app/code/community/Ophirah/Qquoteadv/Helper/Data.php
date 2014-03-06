@@ -920,16 +920,19 @@ class Ophirah_Qquoteadv_Helper_Data extends Mage_Core_Helper_Abstract
     }
     
     // Reminder Mail
-    public function getReminderDate($id=null) {
+    public function getReminderDate($id=null,$inc = null) {
+    	if ($inc)
+    		$inc = "_" . $inc;
+    		
         if($id>0){
             $quote = Mage::getModel('qquoteadv/qqadvcustomer')->load($id);
             if($quote->getData('proposal_sent')){
-                $reminder = $quote->getData('reminder');
+                $reminder = $quote->getData('reminder' . $inc);
             }
         }
 
        if(!isset($reminder)){
-           $days = Mage::getStoreConfig('qquoteadv/general/send_reminder', Mage::app()->getStore()->getStoreId());
+           $days = Mage::getStoreConfig('qquoteadv/general/send_reminder' . $inc, Mage::app()->getStore()->getStoreId());
            if(isset($days)){
                $reminder = date('Y-m-d', strtotime("+$days days"));
            }else{

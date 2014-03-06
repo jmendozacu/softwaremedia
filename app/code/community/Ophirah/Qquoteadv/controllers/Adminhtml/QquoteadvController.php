@@ -364,6 +364,40 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController
                         $no_reminder = ($this->getRequest()->getParam('no_reminder') && $this->getRequest()->getParam('no_reminder')=="on")? 1:0;
                         $_quoteadv->setNoReminder($no_reminder);
                         
+                        // Reminder
+                        if ($reminder = $this->getRequest()->getParam('reminder') and preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $reminder)) {
+                            $m = substr($reminder, 0, 2);
+                            $d = substr($reminder, 3, 2);
+                            $y = substr($reminder, 6, 4);
+                            $reminderFormatted = $y."-".$m."-".$d;
+                            $_quoteadv->setReminder($reminderFormatted);
+                        }
+                        $no_reminder = ($this->getRequest()->getParam('no_reminder') && $this->getRequest()->getParam('no_reminder')=="on")? 1:0;
+                        $_quoteadv->setNoReminder($no_reminder);
+                        
+                        // Reminder
+                        if ($reminder = $this->getRequest()->getParam('reminder_2') and preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $reminder)) {
+                            $m = substr($reminder, 0, 2);
+                            $d = substr($reminder, 3, 2);
+                            $y = substr($reminder, 6, 4);
+                            $reminderFormatted = $y."-".$m."-".$d;
+                            $_quoteadv->setData('reminder_2',$reminderFormatted);
+                        }
+                        $no_reminder = ($this->getRequest()->getParam('no_reminder_2') && $this->getRequest()->getParam('no_reminder_2')=="on")? 1:0;
+                        $_quoteadv->setData('no_reminder_2',$no_reminder);
+                        
+                        // Reminder
+                        if ($reminder = $this->getRequest()->getParam('reminder_3') and preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $reminder)) {
+                            $m = substr($reminder, 0, 2);
+                            $d = substr($reminder, 3, 2);
+                            $y = substr($reminder, 6, 4);
+                            $reminderFormatted = $y."-".$m."-".$d;
+                            $_quoteadv->setData('reminder_3',$reminderFormatted);
+                        }
+
+                        $no_reminder = ($this->getRequest()->getParam('no_reminder_3') && $this->getRequest()->getParam('no_reminder_3')=="on")? 1:0;
+                        $_quoteadv->setData('no_reminder_3',$no_reminder);
+                        
                         // Follow Up
                         if ($followup = $this->getRequest()->getParam('followup') and preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $followup)) {
                             $m = substr($followup, 0, 2);
@@ -389,6 +423,15 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController
                         }else{
                             $_quoteadv->setSalesrule(null);                            
                         }
+                        
+                        // Salesrule
+                        
+                        if ($nofityadmin = $this->getRequest()->getParam('notify_admin')) {
+                            $_quoteadv->setNotifyAdmin($nofityadmin);
+                        }else{
+                            $_quoteadv->setNotifyAdmin(null);                            
+                        }
+                        
                         
                         // Assign Salesrep
                         if ($assignedTo = $this->getRequest()->getParam('assigned_to') ) {                            

@@ -138,6 +138,9 @@ ul,ol         { list-style:none; }
 
 /* Global Styles ========================================================================= */
 
+.qquoteadv-view-view .btn-update span { padding: 0 10px 0 35px; }
+.qquoteadv-index-index .btn-update span { padding: 0 10px 0 35px; }
+
 /* Form Elements */
 input,select,textarea,button { font:12px Arial, Helvetica, sans-serif; vertical-align:middle; color:#434343; }
 input.input-text,select,textarea { background:#fff; border:1px solid #575757;}
@@ -447,7 +450,9 @@ p.error-msg { border-color:#e9581f; background-color:#fff5f3; color:#d91a00; }
 .sort-by {margin:0;color:#333;font-size: 16px;float: left;width: 275px}
 .sort-by label {float: left;padding: 0 10px;line-height: 19px}
 .toolbar div.selector {float: left;width: 158px;background-position: center -929px;height: 18px;line-height: 18px}
+.pager div.selector { margin: 4px 0; width: auto;background-position: center -929px;height: 18px;line-height: 18px}
 .toolbar div.selector span {height: 18px;line-height: 14px;padding: 0 22px 0 4px;background-position: right -854px;color: #000;font-size: 16px}
+.pager div.selector span {height: 18px;line-height: 18px;padding: 0 22px 0 4px;background-position: right -854px;color: #000;font-size: 12px}
 .toolbar div.selector select {height: 18px}
 
 /* Toolbar */
