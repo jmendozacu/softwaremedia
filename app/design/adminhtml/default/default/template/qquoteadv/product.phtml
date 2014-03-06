@@ -104,7 +104,8 @@
                     <th class="a-center" width="1%"><?php echo $this->__('Sku') ?></th>
                     <th class="a-center" width="40%"><?php echo $this->__('Comment with Product') ?></th>
                     <th class="a-center"><?php echo $this->__('Cost Price') ?></th>
-                    <th class="a-center"><?php echo $this->__('Original Price') ?></th>
+                    <th class="a-center"><?php echo $this->__('Site Price') ?></th>
+                    <th class="a-center"><?php echo $this->__('CPC Price') ?></th>
                     <th class="a-center"><?php echo $this->__('Qty') ?></th>
                     <th class="a-center" width="7.5%" style="min-width:130px;"><?php echo $this->__('Price Proposal')."*" ?></th>
                     <th class="a-center" width="7.5%"><?php echo $this->__('Margin (GP)') ?></th>
@@ -426,6 +427,28 @@ if( count($collection) >0 ):
                             
                             </span>
                         </td>
+                         <td class="a-center"><span class="price cpc-price" id="cpc-price-<?php echo $product->getSku()?>"><?php
+
+
+                            if(isset($requested_item) and is_object($requested_item)) {
+                            if(count($aQty)) $qty = $aQty[0];   else $qty = 1;
+
+                              $price  = $product->getCpcPrice();
+							  
+                            //set currency code
+                            }
+                            // Adding to total information
+                            if(isset($price)){
+                                $_quoteItems[$item->getId()]['totalCpcprice']    = $price;
+                                echo Mage::helper('core')->formatPrice($product->getCpcPrice());
+                            }else{
+                                $_quoteItems[$item->getId()]['totalOrgprice']    = 0;      
+                                echo "n/a";                          
+                            }
+                            ?>
+                            
+                            </span>
+                        </td>
                         <td class="a-center">
                             <?php $tierMatch = false;
                             if(count($aQty))?>
@@ -445,6 +468,7 @@ if( count($collection) >0 ):
                             $_qTotals->setTotalQty($_qTotals->getTotalQty() + $item->getData('qty'));
                             $_qTotals->setTotalCost($_qTotals->getTotalCost() + ($item->getData('qty') * $_quoteItems[$item->getId()]['totalCost']));
                             $_qTotals->setTotalOrgcost($_qTotals->getTotalOrgcost() + ($item->getData('qty') * $_quoteItems[$item->getId()]['totalOrgprice']));
+                            $_qTotals->setTotalCpccost($_qTotals->getTotalCpcost() + ($item->getData('qty') * $_quoteItems[$item->getId()]['totalCpcprice']));
                             ?>
                             
                         </td>
@@ -512,6 +536,7 @@ if( count($collection) >0 ):
                         <td class="a-right"><?php echo $this->helper('sales')->__('Subtotal:') ?></td>
                         <td class="a-center"><strong><?php echo Mage::helper('core')->formatPrice($_qTotals->getTotalCost()); ?></strong></td>
                         <td class="a-center"><strong><?php echo Mage::helper('core')->formatPrice($_qTotals->getTotalOrgcost()); ?></strong></td>
+                        	<td class="a-center"><strong><?php echo Mage::helper('core')->formatPrice($_qTotals->getTotalCpccost()); ?></strong></td>
                         <td class="a-center"><strong><?php echo $_qTotals->getTotalQty(); ?></strong></td>
                         <td class="a-center"><strong><?php echo Mage::helper('core')->formatPrice($_qTotals->getTotalQuotecost()); ?></strong></td>
                         <td class="a-center"><?php echo $_qTotals->getTotalGPMarginCalculated();?></td>

@@ -269,13 +269,15 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
                 'created_at'    => NOW(),
                 'updated_at'    => NOW(),
                 'customer_id'   => $this->getCustomerSession()->getId(),
-                'store_id'      => Mage::app()->getStore()->getStoreId()
+                'store_id'      => Mage::app()->getStore()->getStoreId(),
+                'notify_admin'	=> 1
             );
         } else {
             $qcustomer = array(
                 'created_at'    => NOW(),
                 'updated_at'    => NOW(),
-                'store_id'      => Mage::app()->getStore()->getStoreId()
+                'store_id'      => Mage::app()->getStore()->getStoreId(),
+                'notify_admin'	=> 1
             );
         }
 

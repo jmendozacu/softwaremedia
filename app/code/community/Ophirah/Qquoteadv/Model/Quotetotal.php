@@ -11,7 +11,8 @@ class Ophirah_Qquoteadv_Model_Quotetotal
     protected $_totalCurrencyCode   = null;  
     protected $_totalCost           = null;
     protected $_totalQty            = null;    
-    protected $_totalOrgcost        = null;
+    protected $_totalOrgcost        = null;  
+    protected $_totalCpccost        = null;
     protected $_totalQuotecost      = null;
     protected $_totalMargin         = null;
     protected $_totalProfit         = null;
@@ -52,7 +53,9 @@ class Ophirah_Qquoteadv_Model_Quotetotal
     public function setTotalOrgcost($orgcost){
         $this->_totalOrgcost = $orgcost;
     }
-    
+    public function setTotalCpccost($orgcost){
+        $this->_totalCpccost = $orgcost;
+    }
     public function setTotalQuotecost($quotecost){
         $this->_totalQuotecost = $quotecost;
     }
@@ -126,7 +129,9 @@ class Ophirah_Qquoteadv_Model_Quotetotal
     public function getTotalOrgcost(){
         return $this->_totalOrgcost;
     }
-    
+    public function getTotalCpccost(){
+        return $this->_totalCpccost;
+    }
     public function getTotalQuotecost(){
         return $this->_totalQuotecost;
     }
