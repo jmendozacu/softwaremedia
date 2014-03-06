@@ -1354,3 +1354,5 @@ div.country.validation-passed, div.country.validation-error {
 
 /* Checkout */
 #shopping-cart-table { width: 1150px; margin: 0 25px 0px; }
+.cart .deals label.padded { padding: 10px; clear: both; }
+.cart .deals input.align-right { float: right; }
