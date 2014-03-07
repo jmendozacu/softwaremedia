@@ -38,6 +38,9 @@
         </resources>
     </global>
     <frontend>
+	<secure_url>
+		<checkout_cart>/checkout/cart</checkout_cart>
+	</secure_url>
         <routers>
             <checkout>
                 <use>standard</use>
