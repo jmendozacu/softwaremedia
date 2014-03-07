@@ -20,7 +20,7 @@
         <?php if(   ($status == Ophirah_Qquoteadv_Model_Status::STATUS_PROPOSAL OR  $status == Ophirah_Qquoteadv_Model_Status::STATUS_AUTO_PROPOSAL) ||
                     (($status == Ophirah_Qquoteadv_Model_Status::STATUS_CONFIRMED || $status == Ophirah_Qquoteadv_Model_Status::STATUS_ORDERED) && !Mage::helper('qquoteadv')->isActiveConfirmMode()) ):
         ?>
-           <a href="#" onclick="moveAllToEdit()" class="link-cart"><span><?php echo $this->__('Resubmit Quote') ?></span></a>
+           
 
            <span class="pipe">|</span>
            <a href="<?php echo $this->getPrintUrl($_quoteadv) ?>" class="link-cart" onclick="this.target='_blank';"><?php echo $this->__('Print Quote') ?></a>
