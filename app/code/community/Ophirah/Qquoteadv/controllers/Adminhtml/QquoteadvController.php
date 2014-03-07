@@ -778,7 +778,8 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController
 
         $vars['quote'] = $_quoteadv;
         $vars['customer'] = Mage::getModel('customer/customer')->load($_quoteadv->getCustomerId());
-
+		$vars['rep'] = $_quoteadv->getSalesRepresentative();
+		
         $template = Mage::getModel('core/email_template');
 
 	$quoteadv_param = Mage::getStoreConfig('qquoteadv/emails/proposal', $_quoteadv->getStoreId());

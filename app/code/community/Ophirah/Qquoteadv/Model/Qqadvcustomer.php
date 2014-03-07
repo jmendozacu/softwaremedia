@@ -520,7 +520,8 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
 
             $vars['quote'] = $_quoteadv;
             $vars['customer'] = Mage::getModel('customer/customer')->load($_quoteadv->getCustomerId());
-
+			$vars['rep'] = $_quoteadv->getSalesRepresentative();
+			
             $template       = Mage::getModel('qquoteadv/core_email_template');
             $disabledEmail  = Ophirah_Qquoteadv_Model_System_Config_Source_Email_Templatedisable::VALUE_DISABLED_EMAIL;
             if($template != $disabledEmail ):
@@ -601,7 +602,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                 if(substr($_quoteadv->getData('proposal_sent'),0 ,4) != 0){
                     $vars['quote']      = $_quoteadv;
                     $vars['customer']   = Mage::getModel('customer/customer')->load($_quoteadv->getCustomerId());
-
+					$vars['rep'] = $_quoteadv->getSalesRepresentative();
                     $template = Mage::getModel('qquoteadv/core_email_template');
 
                     // get locale of quote sent so we can sent email in that language	
@@ -660,7 +661,8 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
 
                 $vars['quote']      = $_quoteadv;
                 $vars['customer']   = Mage::getModel('customer/customer')->load($_quoteadv->getCustomerId());
-
+				$vars['rep'] = $_quoteadv->getSalesRepresentative();
+				
                 $template = Mage::getModel('qquoteadv/core_email_template');
 
                 // get locale of quote sent so we can sent email in that language	
