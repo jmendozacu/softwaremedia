@@ -10,6 +10,7 @@
  */
 class Aitoc_Aitcheckoutfields_Block_Rewrite_FrontSalesOrderEmailItems extends Mage_Sales_Block_Order_Email_Items
 {
+	/*
     protected static $_excludeArray = array('paypal','epay','paypaluk');
 
     public function _toHtml()
@@ -96,4 +97,5 @@ class Aitoc_Aitcheckoutfields_Block_Rewrite_FrontSalesOrderEmailItems extends Ma
         }
         return $aCustomAtrrList;
     }
+    */
 }
