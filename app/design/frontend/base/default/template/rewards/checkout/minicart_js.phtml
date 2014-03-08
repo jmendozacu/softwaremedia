@@ -27,6 +27,10 @@
 						$('shopping-cart-totals-table').insert({after: result.totals});
 						$('shopping-cart-totals-table').remove();
 
+						for (var i = 0; i < checkoutLinks.length; i++) {
+							Element.extend(checkoutLinks[i]).show();
+						}
+
 						var checkoutMethods = Element.extend($$('.title-buttons .checkout-types').shift());
 						checkoutMethods.insert({after: result.top_methods});
 						checkoutMethods.remove();
