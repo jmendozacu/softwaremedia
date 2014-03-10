@@ -65,7 +65,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 				
 				//Update any values older than 23 hours
 				
-                $target = time() - (60 * 60 * 23);
+                $target = time() - (60 * 60 * 20);
                 Mage::log(strtotime($product->getData('peachtree_updated')) . "->" . $target,null,'peachtreeimport.log');
                 $updated = $product->getData('peachtree_updated');
                 if (strtotime($updated) > $target && !empty($updated)) {
@@ -103,7 +103,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                 $product->save();
                 $stock_model->save();
                 
-                if ($count > 50) {
+                if ($count > 500) {
                 	Mage::log('Break',null,'peachtreeimport.log');
                 	break;
                 }
