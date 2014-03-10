@@ -127,7 +127,13 @@ class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Mod
             if (! $item->getQuoteId () || ! $item->getId ()) {
                 continue;
             }
-
+            
+            //This is ghetto but if they are in the quotes module don't do any of this stuff
+            //Rewards are not utilized in the backend anyways and this is breaking stuff
+            $url = Mage::helper('core/url')->getCurrentUrl();
+			if (strpos($url,'qquoteadv'))
+				continue;
+				
             if (Mage::helper ( 'rewards' )->isBaseMageVersionAtLeast ( '1.4.0.0' ) && $item->getRowTotalBeforeRedemptions () != null) {
                 $item->setRowTotal ( $item->getRowTotalBeforeRedemptions () );
                 $item->setRowTotalInclTax ( $item->getRowTotalBeforeRedemptionsInclTax () );
@@ -167,6 +173,7 @@ class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Mod
             $acc_diff += $catalog_discount;
 
             $new_redeemed_points = $this->_getRedeemer ()->getUpdatedRedemptionsHash ( $item );
+            
             $item->setRedeemedPointsHash ( $new_redeemed_points )->save ();
         }
 
