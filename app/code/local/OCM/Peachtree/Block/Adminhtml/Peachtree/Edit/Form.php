@@ -8,6 +8,7 @@ class OCM_Peachtree_Block_Adminhtml_Peachtree_Edit_Form extends Mage_Adminhtml_B
               'id' => 'edit_form',
               'action' => $this->getUrl('*/*/export'),
               'method' => 'post',
+              'enctype' => 'multipart/form-data'
            )
       );
 
@@ -36,7 +37,13 @@ class OCM_Peachtree_Block_Adminhtml_Peachtree_Edit_Form extends Mage_Adminhtml_B
           'image'     => $this->getSkinUrl('images/grid-cal.gif'),
       ));
 
-     
+      $fieldset2 = $form->addFieldset('peachtree_import_form', array('legend'=>Mage::helper('peachtree')->__('Peachtree Import')));
+      $fieldset2->addField('import', 'file', array(
+          'label'     => Mage::helper('peachtree')->__('CSV File'),
+          'required'  => false,
+          'name'      => 'import',
+		  ));
+
       if ( Mage::getSingleton('adminhtml/session')->getPeachtreeData() )
       {
           $form->setValues(Mage::getSingleton('adminhtml/session')->getPeachtreeData());
