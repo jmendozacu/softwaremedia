@@ -95,7 +95,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 )
             ;
             
-            $has_points = false;
+            $has_points_line = false;
             
             
             $order = Mage::getModel('sales/order')->load($invoice->getOrderId());
