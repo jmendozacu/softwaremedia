@@ -147,7 +147,7 @@ class Aitoc_Aitcheckoutfields_Model_Aitcheckoutfields extends Mage_Eav_Model_Ent
         if (!$bForAdmin)
         {
             //if ($aField['is_required'])
-            if (!strpos($sLabel,'Prior'))
+            if (strpos($sLabel,'Prior') === false)
             {
                 $sHtml .= ' class="required"><em>*</em>';
             }
