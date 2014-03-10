@@ -94,7 +94,26 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
                 )
             ;
-                
+            
+            $has_points_line = false;
+            
+            
+            $order = Mage::getModel('sales/order')->load($invoice->getOrderId());
+            $points = $order->getAssociatedTransfers();
+
+			
+			$points->selectFullCustomerName ( 'fullcustomername' );
+			$points->selectPointsCaption ( 'points' );
+			$points->addRules ();
+			// include any transfers that have revoked the original transfers
+			$points_discount = 0;
+			foreach ($points as $point) {
+				if ($point->getPoints() < 0) {
+					$has_points_line = true;
+					$points_discount = floor($point->getPoints() / 100);
+					break;
+				}
+			}
             $has_tax_line = ($invoice->getData('tax_amount')>0) ? 1 : 0;
             $has_ship_line = ($invoice->getData('shipping_amount')>0) ? 1 : 0;
             $has_promo_line = ($invoice->getData('discount_amount')!=0) ? 1 : 0;
@@ -119,7 +138,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'sales_rep_id'    => OCM_Peachtree_Model_Referer::getNameByCode( $invoice->getData('referer_id') ),
                 'account_receivable' => self::ACCOUNT_RECEIVABLE,
                 'sales_tax_id'  => ($has_tax_line) ? self::SALES_TAX_ID : '',
-                'number_of_distributions' => $itemCount + $has_tax_line + $has_ship_line + $has_promo_line,
+                'number_of_distributions' => $itemCount + $has_tax_line + $has_ship_line + $has_promo_line + $has_points_line,
                 'invoice_cm_distributions' => '', //item, tax, frieght
                 'qty' => 0, //item
                 'item_id' => '',//item 'sku'
@@ -189,22 +208,36 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
             }
             
-            if ($has_promo_line) {
+            if ($has_promo_line && ($invoice->getData('discount_amount'))*-1 + $points_discount > 0) {
                 
                 $promo_values = array(
                     'ship_date'   => $shipTime, //use last item ship date
-                    'invoice_cm_distributions' => 2,
+                    'invoice_cm_distributions' => $i++,
                     'description' => 'Promo: '.$invoice->getData('coupon_rule_name') ,
                     'gl_account' => self::GL_ACCOUNT_PROMO,
                     'tax_type' => self::TAX_TYPE_PROMO,
-                    'amount' => ($invoice->getData('discount_amount'))*-1,
+                    'amount' => ($invoice->getData('discount_amount'))*-1 + $points_discount,
                     'item_id' => 'SM-PROMOUSED'
                 );
                 $line_values = array_merge($common_values,$promo_values);
                 $csv .= '"'.implode('","', $line_values).'"'."\r\n";
                 
             }
-            
+            if ($has_points_line) {
+                
+                $promo_values = array(
+                    'ship_date'   => $shipTime, //use last item ship date
+                    'invoice_cm_distributions' => $i++,
+                    'description' => 'Loyalty Discount',
+                    'gl_account' => self::GL_ACCOUNT_PROMO,
+                    'tax_type' => self::TAX_TYPE_PROMO,
+                    'amount' => $points_discount * -1,
+                    'item_id' => 'LOYALTY'
+                );
+                $line_values = array_merge($common_values,$promo_values);
+                $csv .= '"'.implode('","', $line_values).'"'."\r\n";
+                
+            }
         }
                 
         return $csv;

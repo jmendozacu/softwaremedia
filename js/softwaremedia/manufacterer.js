@@ -495,6 +495,13 @@ var manufacturerList = {
 	
 	}
 	],
+	"MakerBot"		:	[
+	{
+		"ManufacturerID" 	: "1048",
+		"ManufacturerCode"	: "MB"
+	
+	}
+	],
 	"SoftwareMedia"		:	[
 	{
 		"ManufacturerID" 	: "",

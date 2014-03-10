@@ -22,5 +22,16 @@
                 <class>OCM_Catalog_Helper</class>
             </ocm_catalog>
         </helpers>
+        <events>
+        <catalog_product_save_before>
+            <observers>
+                <ocm_catalog>
+                    <type>singleton</type>
+                    <class>OCM_Catalog_Model_Observer</class>
+                    <method>catalog_product_save_before</method>
+                </ocm_catalog>
+            </observers>
+        </catalog_product_save_before>
+    </events>
     </global>
 </config>

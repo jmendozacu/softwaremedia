@@ -1281,9 +1281,16 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
         endif;
         
     }
-
+    
+	protected function _getPass( $length ) {
+	    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	    return substr(str_shuffle($chars),0,$length);
+	
+	}
+	
     protected function _createCustomerAccount($email, $firstname, $lastname) { 
-		$pass = Mage::getStoreConfig('qquoteadv/emails/user_password', Mage::app()->getStore()->getId());
+		//$pass = Mage::getStoreConfig('qquoteadv/emails/user_password', Mage::app()->getStore()->getId());
+		$pass = $this->_getPass(7);
         if ($pass) { 
             $password_test = $pass;
         } else {

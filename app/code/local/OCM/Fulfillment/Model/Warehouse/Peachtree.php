@@ -24,16 +24,18 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 
     public function updatePriceQtyFromCsv($file_path=null, $headers=array()) {
         
-        chmod('../var/peachtree_import/pt_qty_cost.csv',0777);
-        if (!$file_path) {
-            $file_path = Mage::getBaseDir() . '/var/peachtree_import/pt_qty_cost.csv';
-        }
+        chmod('../media/peachtree.csv',0777);
+        //if (!$file_path) {
+            $file_path = Mage::getBaseDir() . '/media/peachtree.csv';
+        //}
         
         if (!count($headers)) {
             $headers = array(
                 'sku',
+                'skip',
                 'qty',
-                'cost'
+                'cost',
+                'skip'
             ); 
         }
         
@@ -43,7 +45,8 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
         }
 
         $model = Mage::getModel('catalog/product');
-
+		$stock_model = Mage::getModel('cataloginventory/stock_item');
+		
 		$count = 0;
         while (($data = fgetcsv($file, 1000, ",")) !== FALSE) {
             
@@ -56,10 +59,13 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                 
                 if(!$product_id) {
                     throw new Exception('Failed to load: '.$line['sku']);
+                } else {
+	                 Mage::log('Loaded: '.$line['sku'],null,'peachtreeimport.log');
                 }
 				
 				//Update any values older than 23 hours
-                $target = time() - (60 * 60 * 23);
+				
+                $target = time() - (60 * 60 * 20);
                 Mage::log(strtotime($product->getData('peachtree_updated')) . "->" . $target,null,'peachtreeimport.log');
                 $updated = $product->getData('peachtree_updated');
                 if (strtotime($updated) > $target && !empty($updated)) {
@@ -70,11 +76,32 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 				
 				$count++;
 		
-				Mage::log($line['sku'],null,'peachtreeimport.log');
+				//Mage::log($line['sku'],null,'peachtreeimport.log');
                 $product->setData('peachtree_updated',now());
                 $product->setData('pt_qty',$line['qty']);
                 $product->setData('pt_avg_cost',$line['cost']);
+                
+      
+			   $qty += $line['qty'];
+			   if ($line['qty']<1) {
+	               ksort($price_array);
+	               reset($price_array);
+	               $lowest_cost = key($price_array);
+	               $product->setData('cost',$lowest_cost);
+	           } else {
+	               $product->setData('cost',$line['cost']);
+	           }
+	           $product->setData('peachtree_updated',now());
+	           
+	           $stock_model->loadByProduct($product->getId());
+	           
+	           
+			   
+			   $stock_model->setData('qty',$qty);
+	           if($qty) $stock_model->setData('is_in_stock',1);
+           
                 $product->save();
+                $stock_model->save();
                 
                 if ($count > 500) {
                 	Mage::log('Break',null,'peachtreeimport.log');
@@ -82,7 +109,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                 }
                 
             } catch (Exception $e) {
-                Mage::log($e->getMessage(),null,'peachtreeimport.log');
+               Mage::log($e->getMessage(),null,'peachtreeimport.log');
             }
         }
         fclose($file);
