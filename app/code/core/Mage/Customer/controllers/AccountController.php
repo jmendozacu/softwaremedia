@@ -167,13 +167,6 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action 
 				} catch (Exception $e) {
 					// Mage::logException($e); // PA DSS violation: this exception log can disclose customer password
 				}
-			} else if ($session->getBeforeAuthUrl() != Mage::getUrl('checkout/cart')) {
-				if (!$session->getAfterAuthUrl()) {
-					$session->setAfterAuthUrl($session->getBeforeAuthUrl());
-				}
-				if ($session->isLoggedIn()) {
-					$session->setBeforeAuthUrl($session->getAfterAuthUrl(true));
-				}
 			} else {
 				$session->addError($this->__('Login and password are required.'));
 			}
@@ -213,6 +206,13 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action 
 			}
 		} else if ($session->getBeforeAuthUrl() == $this->_getHelper('customer')->getLogoutUrl()) {
 			$session->setBeforeAuthUrl($this->_getHelper('customer')->getDashboardUrl());
+		} else if ($session->getBeforeAuthUrl() != Mage::getUrl('checkout/cart')) {
+			if (!$session->getAfterAuthUrl()) {
+				$session->setAfterAuthUrl($session->getBeforeAuthUrl());
+			}
+			if ($session->isLoggedIn()) {
+				$session->setBeforeAuthUrl($session->getAfterAuthUrl(true));
+			}
 		} else {
 			if (!$session->getAfterAuthUrl()) {
 				$session->setAfterAuthUrl($session->getBeforeAuthUrl());
