@@ -95,7 +95,7 @@ class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Mod
         if (!Mage::helper('rewards/version')->isBaseMageVersionAtLeast('1.4.2.0')) {
             $address->setSubtotal( $address->getSubtotal() + $final_price );
             $address->setBaseSubtotal( $address->getBaseSubtotal() + $base_final_price );
-             Then update the grandtotals
+            // Then update the grandtotals
             $address->setGrandTotal ( $address->getSubtotal () );
             $address->setBaseGrandTotal ( $address->getBaseSubtotal () );
         } else {
