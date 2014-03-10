@@ -56,14 +56,12 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 	protected function _prepareCollection() {
 		$collection = Mage::getResourceModel($this->_getCollectionClass());
 		$collection->addAddressFields();
-		$collection->getSelect()->joinLeft(array('sfo'=>'sales_flat_order'),'sfo.entity_id=main_table.entity_id',array('sfo.customer_email'));
+		$collection->getSelect()->joinLeft(array('sfo' => 'sales_flat_order'), 'sfo.entity_id=main_table.entity_id', array('sfo.customer_email'));
 
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
 	}
 
-
-	
 	protected function _statusFilter($collection, $column) {
 		$filter = $column->getFilter()->getValue();
 		if (!$filter) {
@@ -73,7 +71,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 		} else {
 			$this->getCollection()->getSelect()->where('main_table.status = ?', $filter);
 		}
-		
+
 		return $this;
 	}
 
@@ -83,7 +81,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'header' => Mage::helper('sales')->__('Order #'),
 			'width' => '80px',
 			'type' => 'text',
-			'filter_index'=>'main_table.increment_id', 
+			'filter_index' => 'main_table.increment_id',
 			'index' => 'increment_id',
 		));
 
@@ -102,14 +100,15 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'index' => 'created_at',
 			'type' => 'datetime',
 			'width' => '100px',
+			'filter_index' => 'main_table.created_at',
 		));
-		
+
 		$this->addColumn('billing_company', array(
 			'header' => Mage::helper('sales')->__('Company'),
 			'index' => 'company',
 			'filter_index' => 'billing_o_a.company'
 		));
-		 $this->addColumn('customer_email', array(
+		$this->addColumn('customer_email', array(
 			'header' => Mage::helper('sales')->__('E-Mail'),
 			'index' => 'customer_email',
 			'filter_index' => 'sfo.customer_email'
@@ -137,7 +136,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'type' => 'currency',
 			'currency' => 'order_currency_code',
 		));
-		
+
 		$arr = Mage::getSingleton('sales/order_config')->getStatuses();
 		$arr['main'] = 'Main';
 
@@ -147,9 +146,8 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'type' => 'options',
 			'width' => '70px',
 			'options' => $arr,
-			'filter_index'=>'main_table.status', 
+			'filter_index' => 'main_table.status',
 			'filter_condition_callback' => array($this, '_statusFilter'),
-			
 		));
 
 		if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/view')) {
