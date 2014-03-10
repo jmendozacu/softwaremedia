@@ -208,7 +208,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
             }
             
-            if ($has_promo_line) {
+            if ($has_promo_line && ($invoice->getData('discount_amount'))*-1 + $points_discount > 0) {
                 
                 $promo_values = array(
                     'ship_date'   => $shipTime, //use last item ship date
