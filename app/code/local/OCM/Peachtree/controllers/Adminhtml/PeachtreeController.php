@@ -91,13 +91,13 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 	public function saveAction() {
 		if ($data = $this->getRequest()->getPost()) {
 			
-			if(isset($_FILES['filename']['name']) && $_FILES['filename']['name'] != '') {
+			if(isset($_FILES['import']['name']) && $_FILES['import']['name'] != '') {
 				try {	
 					/* Starting upload */	
-					$uploader = new Varien_File_Uploader('filename');
+					$uploader = new Varien_File_Uploader('import');
 					
 					// Any extention would work
-	           		$uploader->setAllowedExtensions(array('jpg','jpeg','gif','png'));
+	           		$uploader->setAllowedExtensions(array('csv'));
 					$uploader->setAllowRenameFiles(false);
 					
 					// Set the file upload mode 
@@ -108,47 +108,24 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							
 					// We set media as the upload dir
 					$path = Mage::getBaseDir('media') . DS ;
-					$uploader->save($path, $_FILES['filename']['name'] );
+					$uploader->save($path, 'peachtree.csv');
 					
 				} catch (Exception $e) {
 		      
 		        }
-	        
+		        Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
+
+				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('peachtree')->__('Peachtree Import Uploaded Successfully'));
+				$this->_redirect('*/*/');
 		        //this way the name is saved in DB
 	  			$data['filename'] = $_FILES['filename']['name'];
+			} else {
+				Mage::getSingleton('adminhtml/session')->addError(Mage::helper('peachtree')->__('Please choose a file to upload'));
 			}
 	  			
-	  			
-			$model = Mage::getModel('peachtree/peachtree');		
-			$model->setData($data)
-				->setId($this->getRequest()->getParam('id'));
-			
-			try {
-				if ($model->getCreatedTime == NULL || $model->getUpdateTime() == NULL) {
-					$model->setCreatedTime(now())
-						->setUpdateTime(now());
-				} else {
-					$model->setUpdateTime(now());
-				}	
-				
-				$model->save();
-				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('peachtree')->__('Item was successfully saved'));
-				Mage::getSingleton('adminhtml/session')->setFormData(false);
-
-				if ($this->getRequest()->getParam('back')) {
-					$this->_redirect('*/*/edit', array('id' => $model->getId()));
-					return;
-				}
-				$this->_redirect('*/*/');
-				return;
-            } catch (Exception $e) {
-                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-                Mage::getSingleton('adminhtml/session')->setFormData($data);
-                $this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
-                return;
-            }
         }
-        Mage::getSingleton('adminhtml/session')->addError(Mage::helper('peachtree')->__('Unable to find item to save'));
+        
+        
         $this->_redirect('*/*/');
 	}
  

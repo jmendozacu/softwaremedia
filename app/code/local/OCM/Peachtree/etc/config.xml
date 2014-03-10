@@ -21,7 +21,7 @@
 		  <sales>
 		      <children>
 			<peachtree module="peachtree">
-				<title>Peachtree Export</title>
+				<title>Peachtree</title>
 				<sort_order>71</sort_order>               
 				<action>adminhtml/peachtree</action>
 			</peachtree>
