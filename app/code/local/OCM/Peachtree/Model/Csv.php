@@ -193,11 +193,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
                 $promo_values = array(
                     'ship_date'   => $shipTime, //use last item ship date
-                    'invoice_cm_distributions' => 0,
+                    'invoice_cm_distributions' => 2,
                     'description' => 'Promo: '.$invoice->getData('coupon_rule_name') ,
                     'gl_account' => self::GL_ACCOUNT_PROMO,
                     'tax_type' => self::TAX_TYPE_PROMO,
                     'amount' => ($invoice->getData('discount_amount'))*-1,
+                    'item_id' => 'SM-PROMOUSED'
                 );
                 $line_values = array_merge($common_values,$promo_values);
                 $csv .= '"'.implode('","', $line_values).'"'."\r\n";
