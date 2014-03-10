@@ -2131,9 +2131,9 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 
 .opc .form-list label {display: block;float: none;padding: 0 0 4px 0;width: 100%;text-align: left;font-size: 16px;text-transform: capitalize;font-weight: normal}
 .opc .form-list .field ,
-.opc .form-list li.fields .field {float: left;width: 348px;padding: 0 42px 0 0;clear: none}
+.opc .form-list li.fields .field {float: left;width: 308px;padding: 0 42px 0 0;clear: none}
 .opc .form-list input.input-text,
-.opc .form-list textarea {width: 330px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 14px}
+.opc .form-list textarea {width: 300px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;font-size: 14px}
 .opc .form-list input.regions {margin: 9px 0 0 0}
 .opc .form-list .input-box {width: 100%}
 .opc .form-list .add-field .input-box {margin: 0}
