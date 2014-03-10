@@ -113,7 +113,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 				} catch (Exception $e) {
 		      
 		        }
-		        Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
+		        //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
 
 				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('peachtree')->__('Peachtree Import Uploaded Successfully'));
 				$this->_redirect('*/*/');
