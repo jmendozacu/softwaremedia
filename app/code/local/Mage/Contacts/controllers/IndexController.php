@@ -72,7 +72,8 @@ class Mage_Contacts_IndexController extends Mage_Core_Controller_Front_Action
                 $postObject->setData($post);
 
                 $error = false;
-
+				var_dump($post);
+				die();
                 if (!Zend_Validate::is(trim($post['name']) , 'NotEmpty')) {
                     $error = true;
                 }
