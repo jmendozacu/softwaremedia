@@ -59,6 +59,8 @@
         <?php endif; ?>
                 <div id="accountDiv">
 		<?php $email = $customer->getEmail() ? $customer->getEmail() : $this->getCustomerEmail() ?>
+		<?php $canadaInfo = Mage::getSingleton('core/session')->getCanadaInfo(); ?>
+		<?php if ($canadaInfo) $email = $canadaInfo['email']; ?>
 		<table id="qquote-tbl-address" cellspacing='6' cellpadding='3' border="0" width="100%" >
 		  <tr>
 			<td class="left">
@@ -72,22 +74,22 @@
 		  <tr>
 			<td class="left">
 			  <?php echo $this->__('First Name') ?> <span class="required">*</span><br/>
-                          <input type='text' value="<?php echo $customer->getData('firstname'); ?>" name='customer[firstname]' id='customer:firstname' class="required-entry input-text" />
+                          <input type='text' value="<?php echo $canadaInfo ? $canadaInfo['firstname'] : $customer->getData('firstname'); ?>" name='customer[firstname]' id='customer:firstname' class="required-entry input-text" />
 			</td>
             <td class="p5">
 			  <?php echo $this->__('Last Name') ?> <span class="required">*</span><br/>
-			  <input type='text' value="<?php echo $customer->getData('lastname'); ?>" name='customer[lastname]' id='customer:lastname' class="required-entry input-text" />                          
+			  <input type='text' value="<?php echo $canadaInfo ? $canadaInfo['lastname'] : $customer->getData('lastname'); ?>" name='customer[lastname]' id='customer:lastname' class="required-entry input-text" />                          
 			</td>
 
 		  </tr>
 		  <tr>
             <td class="left">
 			  <?php echo $this->__('Telephone') ?><br/>
-			  <input type='text' value="<?php echo $this->getValue('telephone', 'billing')?>" name='customer[telephone]' id='customer:telephone' class="input-text" />
+			  <input type='text' value="<?php echo $canadaInfo ? $canadaInfo['telephone'] : $this->getValue('telephone', 'billing'); ?>" name='customer[telephone]' id='customer:telephone' class="input-text" />
 			</td>
 			<td class="p5">
 			  <?php echo $this->__('Company') ?><br/>
-			  <input type='text' value="<?php echo $this->getValue('company', 'billing') ?>" name='customer[company]' id='customer:company' class="input-text"/>
+			  <input type='text' value="<?php echo $canadaInfo ? $canadaInfo['company'] : $this->getValue('company', 'billing'); ?>" name='customer[company]' id='customer:company' class="input-text"/>
 			</td>
 		  </tr>
            <?php
@@ -420,6 +422,25 @@ if(!$disable_check):
        var message = '<?php echo $this->__('Customer email already exists. You should login <a href=%s>here</a>', $this->getLoginUrl()) ?>';
 
        Event.observe(elmEmail, 'change', function(event){ isExistUserEmail(event, url, message) });  
-    }//]]>
+    }
+    <?php if ($canadaInfo): ?>
+    document.observe("dom:loaded", function() {
+    alert('dom');
+    $('quotelist').submit();
+    });
+    <?php endif; ?>
+    //]]>
+</script>
+<?php endif; ?>
+<?php if ($canadaInfo): ?>
+<script type="text/javascript">
+    //<![CDATA[
+    
+    document.observe("dom:loaded", function() {
+
+    //$('quotelist').submit();
+    });
+    
+    //]]>
 </script>
 <?php endif; ?>
