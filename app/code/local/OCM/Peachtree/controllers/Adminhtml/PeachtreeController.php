@@ -114,7 +114,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 		      
 		        }
 		        //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
-
+				Mage::getModel('ocm_fulfillment/warehouse_peachtree')->importCsv();
 				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('peachtree')->__('Peachtree Import Uploaded Successfully'));
 				$this->_redirect('*/*/');
 		        //this way the name is saved in DB
