@@ -279,6 +279,7 @@ class OCM_Fulfillment_Model_Observer
         $stock_model = Mage::getModel('cataloginventory/stock_item');
        
        foreach($collection as $product) {
+       		$stock_model = Mage::getModel('cataloginventory/stock_item');
        		$product->setData('warehouse_errors',"");
            //skip products not in warehouse system
            if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) {	

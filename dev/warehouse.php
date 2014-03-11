@@ -39,6 +39,25 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 
 //Mage::getModel('ocm_fulfillment/observer');
 //updatePriceQtyFromCsv            
+
+$productList = Mage::getModel ('catalog/product')
+            ->getCollection ()
+            ->addAttributeToSelect('*')
+            ->addAttributeToFilter ('url_key', 'photoshop-cs5-extended-for-mac-upgrade');
+foreach($productList as $prod) {
+	try {
+		$prod->setPtQty(10);
+		$prod->save();
+		} catch (Exception $e) {
+			echo $e->getMessage();
+			echo "error";
+			die();
+               Mage::log($e->getMessage(),null,'peachtreeimport.log');
+            }
+	
+	echo $prod->getId() . "<br />";
+}         
+            
 $model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
 
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
