@@ -91,10 +91,10 @@
             </update_product_warehouse_data>
             <update_peachtree_warehouse_data>
                 <schedule>
-                    <cron_expr>*/10 0,1 * * *</cron_expr>
+                    <cron_expr>*/5 0,1,3,4,5 * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>ocm_fulfillment/warehouse_peachtree::updatePriceQtyFromCsv</model>
+                    <model>ocm_fulfillment/warehouse_peachtree::updatePriceQtyFrom</model>
                 </run>
             </update_peachtree_warehouse_data>
         </jobs>
