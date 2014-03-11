@@ -108,12 +108,12 @@ class Mestrona_ForwardToConfigurable_Cms_IndexController extends Mage_Core_Contr
 		            // try to find other products if one parent product is not visible -> loop
 		        }
 	            
-				
-	            if ($product->isVisibleInCatalog()) {
+
+	            if ($product->isVisibleInCatalog() && $product->getUrlKey() != $path) {
 	                //$this->_redirect();
 	                //die($parentProduct->getId());
 	                $url = $product->getProductUrl();
-	                die($product->getName());
+	                
 					$this->getResponse()->setHeader('HTTP/1.1, 301 Moved Permanently');
 					$this->getResponse()->setHeader('Location',$url);
 					return;
