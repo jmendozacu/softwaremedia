@@ -247,16 +247,13 @@ class OCM_Fulfillment_Model_Observer
 			->addAttributeToSelect('warehouse_updated_at','left')
             ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
-//            ->addAttributeToFilter('sku','SY-21252243')
+//            ->addAttributeToFilter('sku','co-wpx5efdvda')
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
-           
-            ->addAttributeToSelect('pt_avg_cost')
-            ->addAttributeToSelect('pt_qty')
             ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
             //->setCurPage($current_page);
             
