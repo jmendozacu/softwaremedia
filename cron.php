@@ -48,7 +48,6 @@ $isShellDisabled = is_array($disabledFuncs) ? in_array('shell_exec', $disabledFu
 $isShellDisabled = (stripos(PHP_OS, 'win') === false) ? $isShellDisabled : true;
 $isShellDisabled = true;
 
-Mage::log('start',null,'cron.log');
 
 try {
     if (stripos(PHP_OS, 'win') === false) {
@@ -83,4 +82,3 @@ try {
     exit(1);
 }
 
-Mage::log('end',null,'cron.log');
