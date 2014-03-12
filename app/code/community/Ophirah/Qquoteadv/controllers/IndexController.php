@@ -1501,6 +1501,51 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
         return $result;
     }
     
+    public function switch2CAQquoteAction() {
+        $result = false;
+        $cartHelper = Mage::helper('checkout/cart');
+        $cart = $cartHelper->getItemsCount();
+
+        if ($cart > 0) {
+            $session = Mage::getSingleton('checkout/session');
+
+            foreach ($session->getQuote()->getAllVisibleItems() as $item) {
+
+                $productId = $item->getProductId();
+                $product = Mage::getModel('catalog/product')->load($productId);
+                $isAllow = $product->getAllowedToQuotemode();
+                if( $isAllow ) {
+                    $superAttribute = $item->getProduct()->getTypeInstance(true)->getOrderOptions($item->getProduct());
+
+                    $optionalAttrib = '';
+                    if (isset($superAttribute['info_buyRequest'])) {
+                        if (isset($superAttribute['info_buyRequest']['uenc']))
+                            unset($superAttribute['info_buyRequest']['uenc']);                        
+                        
+                        $optionalAttrib = serialize($superAttribute['info_buyRequest']);
+                        var_dump($optionalAttrib);
+                        die();
+                    }
+                    
+                    $params = array(
+                        'cartid'            => $item->getId(),
+                        'product'           => $item->getProductId(),
+                        'qty'               => $item->getQty(),
+                        'attributeEncode'   => ''
+                    );
+                    
+                    
+                    
+                    $this->addDataAction($params, $optionalAttrib);
+                }
+            }
+
+            $result = true;
+        }
+        
+        $this->_redirect('qquoteadv/index/');        
+    }
+    
     //case: called from shopping cart page
     public function switch2QquoteAction() {
         

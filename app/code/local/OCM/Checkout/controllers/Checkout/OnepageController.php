@@ -19,9 +19,12 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
             }
             $result = $this->getOnepage()->saveBilling($data, $customerAddressId);
 			
+			
+			
 			//Hijack Canadian Orders
 			if ($data['country_id'] == 'CA') {
-				$result['redirect'] = '/quote-thank-you';
+				Mage::getSingleton('core/session')->setCanadaInfo($data);
+				$result['redirect'] = '/qquoteadv/index/switch2CAQquote/';
 			} elseif (!isset($result['error'])) {
                 if ($this->getOnepage()->getQuote()->isVirtual()) {
                     $result['goto_section'] = 'payment';
