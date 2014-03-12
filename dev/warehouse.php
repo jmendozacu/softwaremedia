@@ -43,7 +43,7 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 
                  
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->importCsv();       
-$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
+//$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 
-//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();

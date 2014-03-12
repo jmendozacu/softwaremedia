@@ -46,6 +46,7 @@ umask(0);
 $disabledFuncs = explode(',', ini_get('disable_functions'));
 $isShellDisabled = is_array($disabledFuncs) ? in_array('shell_exec', $disabledFuncs) : true;
 $isShellDisabled = (stripos(PHP_OS, 'win') === false) ? $isShellDisabled : true;
+Mage::log('start',null,'cron.log');
 
 try {
     if (stripos(PHP_OS, 'win') === false) {
@@ -79,3 +80,5 @@ try {
     Mage::printException($e);
     exit(1);
 }
+
+Mage::log('end',null,'cron.log');

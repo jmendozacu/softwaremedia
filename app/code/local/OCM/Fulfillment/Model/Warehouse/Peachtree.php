@@ -85,7 +85,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 					array('peach' => 'ocm_peachtree'), 'pv.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
 				);
 				
-            $collection->setPageSize(200);
+            $collection->setPageSize(100);
         
             
       
