@@ -109,20 +109,20 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 	           // Ingram MUST be the end of the array for this to work
 	           foreach (array('techdata','synnex','ingram') as $warehouse_name) {
 	                   if($product->getData($warehouse_name.'_qty') > 0) {
-	                       $price_array[ $product->getData($warehouse_name.'_price') ] = true;
+	                       $price_array[] = $product->getData($warehouse_name.'_price');
 	                       $qty += $product->getData($warehouse_name.'_qty');
 	                   }	               
 	           }
 
 			   $qty += $product->getData('peachtree_qty');
-			   if ($product->getData('peachtree_qty')<1) {
-	               ksort($price_array);
-	               reset($price_array);
-	               $lowest_cost = key($price_array);
-	               $product->setData('cost',$lowest_cost);
-	           } else {
-	               $product->setData('cost',$product->getData('peachtree_qty'));
-	           }
+			   if ($product->getData('pt_qty')<1) {
+               asort($price_array);
+               $lowest_cost = $price_array[0];
+               if ($lowest_cost > 0)
+              	 $product->setData('cost',$lowest_cost);
+           } else {
+               $product->setData('cost',$product->getData('pt_avg_cost'));
+           }
 	           $product->setData('peachtree_updated',now());
 	           
 	           $stock_model->loadByProduct($product->getId());
