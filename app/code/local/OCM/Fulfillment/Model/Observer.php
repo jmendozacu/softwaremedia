@@ -247,7 +247,7 @@ class OCM_Fulfillment_Model_Observer
 			->addAttributeToSelect('warehouse_updated_at','left')
             ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
-//            ->addAttributeToFilter('sku','co-wpx5efdvda')
+//            ->addAttributeToFilter('sku','SY-21218014')
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
@@ -302,7 +302,7 @@ class OCM_Fulfillment_Model_Observer
                    $product->setData($warehouse_name.'_qty',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty']);
     
                    if($product->getData($warehouse_name.'_qty') > 0) {
-                       $price_array[ $product->getData($warehouse_name.'_price') ] = true;
+                       $price_array[] = $product->getData($warehouse_name.'_price');
                        $qty += $product->getData($warehouse_name.'_qty');
                    }
                    Mage::log('Updated ' . $product->getSku() . $warehouse_name,null,'fulfillment.log');
@@ -319,13 +319,14 @@ class OCM_Fulfillment_Model_Observer
 		   $qty += $product->getData('pt_qty');
 		   Mage::log('PT QTY:' . $product->getSku() . ' - ' . $product->getData('pt_qty'), null, "fullfillment.log");
            if ($product->getData('pt_qty')<1) {
-               ksort($price_array);
-               reset($price_array);
-               $lowest_cost = key($price_array);
-               $product->setData('cost',$lowest_cost);
+               asort($price_array);
+               $lowest_cost = $price_array[0];
+               if ($lowest_cost > 0)
+              	 $product->setData('cost',$lowest_cost);
            } else {
                $product->setData('cost',$product->getData('pt_avg_cost'));
            }
+
            $product->setData('warehouse_updated_at',now());
            
            $stock_model->loadByProduct($product->getId());
