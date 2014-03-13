@@ -244,10 +244,10 @@ class OCM_Fulfillment_Model_Observer
 
 		$target = time() - (60 * 60 * 23);
         $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+//			->addAttributeToSelect('warehouse_updated_at','left')
+//            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
-//            ->addAttributeToFilter('sku','SY-21218014')
+            ->addAttributeToFilter('sku','AD-65224750BA01A12')
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
@@ -305,6 +305,7 @@ class OCM_Fulfillment_Model_Observer
                        $price_array[] = $product->getData($warehouse_name.'_price');
                        $qty += $product->getData($warehouse_name.'_qty');
                    }
+                   echo ${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price'];
                    Mage::log('Updated ' . $product->getSku() . $warehouse_name,null,'fulfillment.log');
                } else {
                	$sku = $product->getData(${$warehouse_name.'_sku_attr'});
@@ -321,6 +322,7 @@ class OCM_Fulfillment_Model_Observer
            if (!$product->getData('pt_avg_cost')) {
                asort($price_array);
                $lowest_cost = $price_array[0];
+               
                if ($lowest_cost > 0) 
               	 $product->setData('cost',$lowest_cost);
                else
@@ -328,7 +330,7 @@ class OCM_Fulfillment_Model_Observer
            } else {
                $product->setData('cost',$product->getData('pt_avg_cost'));
            }
-
+		   
            $product->setData('warehouse_updated_at',now());
            
            $stock_model->loadByProduct($product->getId());
@@ -352,6 +354,7 @@ class OCM_Fulfillment_Model_Observer
            try {
                $product->save();
                $stock_model->save();
+                Mage::log("SAVE " . $qty, null, "fullfillment.log");
            } catch (Exception $e) {
                Mage::log($e->getMessage());
            }
