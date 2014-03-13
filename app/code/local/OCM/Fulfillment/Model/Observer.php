@@ -33,7 +33,7 @@ class OCM_Fulfillment_Model_Observer
 	            	continue;
             	}
             	
-            	//order has ONLY virtual products
+            	//order has ONLY electronic products
                 $model = Mage::getModel('ocm_fulfillment/license')->getCollection()
                     ->addFieldToFilter('order_id',$order->getId())->getFirstItem();
                     
@@ -165,7 +165,7 @@ class OCM_Fulfillment_Model_Observer
                 
                 //set order to "Process Manually" here
 				if(!$done){
-					$order->setState('processing','multipleproductorder','No single warehouse has stock to fulfill entire order. Please process manually.', FALSE)->save();
+					$order->setState('processing','processmanually','No single warehouse has stock to fulfill entire order. Please process manually.', FALSE)->save();
 				}
             
             }
