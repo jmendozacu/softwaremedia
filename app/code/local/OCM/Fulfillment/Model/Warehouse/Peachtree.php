@@ -115,7 +115,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 	           }
 
 			   $qty += $product->getData('peachtree_qty');
-			   if ($product->getData('pt_qty')<1) {
+			   if (!$product->getData('pt_avg_cost')) {
                asort($price_array);
                $lowest_cost = $price_array[0];
                if ($lowest_cost > 0)

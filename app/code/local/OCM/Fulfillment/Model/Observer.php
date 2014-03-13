@@ -318,7 +318,7 @@ class OCM_Fulfillment_Model_Observer
            }
 		   $qty += $product->getData('pt_qty');
 		   Mage::log('PT QTY:' . $product->getSku() . ' - ' . $product->getData('pt_qty'), null, "fullfillment.log");
-           if ($product->getData('pt_qty')<1) {
+           if (!$product->getData('pt_avg_cost')) {
                asort($price_array);
                $lowest_cost = $price_array[0];
                if ($lowest_cost > 0) 
