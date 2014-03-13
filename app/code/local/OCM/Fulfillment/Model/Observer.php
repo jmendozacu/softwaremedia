@@ -321,8 +321,10 @@ class OCM_Fulfillment_Model_Observer
            if ($product->getData('pt_qty')<1) {
                asort($price_array);
                $lowest_cost = $price_array[0];
-               if ($lowest_cost > 0)
+               if ($lowest_cost > 0) 
               	 $product->setData('cost',$lowest_cost);
+               else
+			   	$product->setData('cost',$product->getData('pt_avg_cost'));
            } else {
                $product->setData('cost',$product->getData('pt_avg_cost'));
            }

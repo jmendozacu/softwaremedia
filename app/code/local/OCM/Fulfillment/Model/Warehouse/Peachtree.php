@@ -120,6 +120,8 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                $lowest_cost = $price_array[0];
                if ($lowest_cost > 0)
               	 $product->setData('cost',$lowest_cost);
+              	 else
+			   	$product->setData('cost',$product->getData('pt_avg_cost'));
            } else {
                $product->setData('cost',$product->getData('pt_avg_cost'));
            }
