@@ -33,7 +33,7 @@ class OCM_Fulfillment_Model_Observer
 	            	continue;
             	}
             	
-            	//order has ONLY virtual products
+            	//order has ONLY electronic products
                 $model = Mage::getModel('ocm_fulfillment/license')->getCollection()
                     ->addFieldToFilter('order_id',$order->getId())->getFirstItem();
                     
@@ -165,7 +165,7 @@ class OCM_Fulfillment_Model_Observer
                 
                 //set order to "Process Manually" here
 				if(!$done){
-					$order->setState('processing','multipleproductorder','No single warehouse has stock to fulfill entire order. Please process manually.', FALSE)->save();
+					$order->setState('processing','processmanually','No single warehouse has stock to fulfill entire order. Please process manually.', FALSE)->save();
 				}
             
             }
@@ -244,10 +244,10 @@ class OCM_Fulfillment_Model_Observer
 
 		$target = time() - (60 * 60 * 23);
         $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+//			->addAttributeToSelect('warehouse_updated_at','left')
+//            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
-//            ->addAttributeToFilter('sku','co-wpx5efdvda')
+            ->addAttributeToFilter('sku','AD-65224750BA01A12')
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
@@ -302,9 +302,10 @@ class OCM_Fulfillment_Model_Observer
                    $product->setData($warehouse_name.'_qty',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty']);
     
                    if($product->getData($warehouse_name.'_qty') > 0) {
-                       $price_array[ $product->getData($warehouse_name.'_price') ] = true;
+                       $price_array[] = $product->getData($warehouse_name.'_price');
                        $qty += $product->getData($warehouse_name.'_qty');
                    }
+                   echo ${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price'];
                    Mage::log('Updated ' . $product->getSku() . $warehouse_name,null,'fulfillment.log');
                } else {
                	$sku = $product->getData(${$warehouse_name.'_sku_attr'});
@@ -318,14 +319,18 @@ class OCM_Fulfillment_Model_Observer
            }
 		   $qty += $product->getData('pt_qty');
 		   Mage::log('PT QTY:' . $product->getSku() . ' - ' . $product->getData('pt_qty'), null, "fullfillment.log");
-           if ($product->getData('pt_qty')<1) {
-               ksort($price_array);
-               reset($price_array);
-               $lowest_cost = key($price_array);
-               $product->setData('cost',$lowest_cost);
+           if (!$product->getData('pt_avg_cost')) {
+               asort($price_array);
+               $lowest_cost = $price_array[0];
+               
+               if ($lowest_cost > 0) 
+              	 $product->setData('cost',$lowest_cost);
+               else
+			   	$product->setData('cost',$product->getData('pt_avg_cost'));
            } else {
                $product->setData('cost',$product->getData('pt_avg_cost'));
            }
+		   
            $product->setData('warehouse_updated_at',now());
            
            $stock_model->loadByProduct($product->getId());
@@ -349,6 +354,7 @@ class OCM_Fulfillment_Model_Observer
            try {
                $product->save();
                $stock_model->save();
+                Mage::log("SAVE " . $qty, null, "fullfillment.log");
            } catch (Exception $e) {
                Mage::log($e->getMessage());
            }
