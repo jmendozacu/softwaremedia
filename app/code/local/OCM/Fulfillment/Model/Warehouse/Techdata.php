@@ -101,7 +101,7 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
         foreach ($cloned_collection as $product) {
             if($tech_sku = $product->getData(self::TECH_DATA_SKU_ATTR)) {
                 
-                $this->_collection[$tech_sku] = array('id'=>$product->getId(),'price'=>'','qty'=>'');
+                //$this->_collection[$tech_sku] = array('id'=>$product->getId(),'price'=>'','qty'=>'');
             
                 $xml_builder .= '
                 <LineInfo>
@@ -124,9 +124,12 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
             //Mage::log($result,null,'techdata.log');
             
             $xml = new SimpleXMLElement($result);
-            
+            //$this->_collection = array();
             foreach($xml->Detail->LineInfo as $item) {
+            	
                 $tech_sku = (string) $item->RefID1;
+
+                $this->_collection[ $tech_sku ] = array();
                 $this->_collection[ $tech_sku ]['price'] = (string) str_replace('$','',$item->{ self::TECH_DATA_PRICE_NODE });
                 $this->_collection[ $tech_sku ]['qty'] = $this->_getQty($item);
             }
