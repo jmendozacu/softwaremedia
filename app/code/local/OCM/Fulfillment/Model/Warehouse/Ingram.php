@@ -99,7 +99,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         foreach ($cloned_collection as $product) {
             if($ingram_sku = $product->getData(self::INGRAM_SKU_ATTR)) {
                 
-                $this->_collection[$ingram_sku] = array('id'=>$product->getId(),'price'=>'','qty'=>'');
+                
             
                 $xml_builder .= '<PNAInformation ManufacturerPartNumber="' . $ingram_sku . '" Quantity="1"/>';
             }
@@ -120,6 +120,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
             		  unset($this->_collection[$ingram_sku]);
             		continue;
             	}
+            	$this->_collection[$ingram_sku] = array('id'=>$product->getId(),'price'=>'','qty'=>'');
                 $ingram_sku = (string) $item->attributes()->ManufacturerPartNumber;
                 $this->_collection[ $ingram_sku ]['price'] = $item->{ self::INGRAM_PRICE_NODE };
                 $this->_collection[ $ingram_sku ]['qty'] = $this->_getQty($item);
