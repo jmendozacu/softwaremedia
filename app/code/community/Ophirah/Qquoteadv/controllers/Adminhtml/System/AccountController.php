@@ -25,6 +25,13 @@ class Ophirah_Qquoteadv_Adminhtml_System_AccountController extends Mage_Adminhtm
         if ($this->getRequest()->getParam('password_confirmation', false)) {
             $user->setPasswordConfirmation($this->getRequest()->getParam('password_confirmation', false));
         }
+		if ($this->getRequest()->getParam('new_office_password', false)) {
+			$user->setNewOfficePassword($this->getRequest()->getParam('new_office_password', false));
+		}
+
+		if ($this->getRequest()->getParam('office_password_confirmation', false)) {
+			$user->setOfficePasswordConfirmation($this->getRequest()->getParam('office_password_confirmation', false));
+		}
 
         $result = $user->validate();
         if (is_array($result)) {
