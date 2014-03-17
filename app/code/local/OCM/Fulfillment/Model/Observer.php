@@ -184,7 +184,7 @@ class OCM_Fulfillment_Model_Observer
             
             }
         }
-        die();
+
         return $this;
     }
 
