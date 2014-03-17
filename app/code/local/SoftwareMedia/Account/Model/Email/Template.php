@@ -99,16 +99,28 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 			}
 			Mage::log('ReplyToStoreEmail is enabled, just set Reply-To header: ' . $this->getSenderEmail());
 		}
-
+		
+		//Clone mail to use default sender if sending w/ user Office 365 fails
+		$cloneMail = clone $mail;
+		
 		$helper = Mage::helper('smtppro');
 		$transport = $helper->getTransport($this->getDesignConfig()->getStore());
 		$configs = $helper->getConfigs();
-
-
 		if (!empty($configs) && $this->getSenderEmail() != $configs['username']) {
 			$mail->setFrom($configs['username'], $this->getSenderName());
 		} else {
 			$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
+		}
+		
+		$transportNoOffice = $helper->getTransportNoOffice($this->getDesignConfig()->getStore());
+		$configsNoOffice = $helper->getConfigs();
+
+		
+		
+		if (!empty($configsNoOffice) && $this->getSenderEmail() != $configsNoOffice['username']) {
+			$cloneMail->setFrom($configsNoOffice['username'], $this->getSenderName());
+		} else {
+			$cloneMail->setFrom($this->getSenderEmail(), $this->getSenderName());
 		}
 
 		try {
@@ -128,10 +140,18 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 
 			$this->_mail = null;
 		} catch (Exception $e) {
-			Mage::log('Error: ' . $e->getMessage());
-			Mage::logException($e);
-			$this->setData('error', $e->getMessage());
-			return false;
+			try {
+				Mage::log('Error: ' . $e->getMessage());
+				Mage::logException($e);
+				Mage::log('About to resend email');
+				$cloneMail->send($transportNoOffice); // Zend_Mail warning..
+				Mage::log('Finished resending email');	
+			} catch (Exception $e) {
+				Mage::log('Error: ' . $e->getMessage());
+				Mage::logException($e);
+				$this->setData('error', $e->getMessage());
+				return false;
+			}
 		}
 
 		return true;

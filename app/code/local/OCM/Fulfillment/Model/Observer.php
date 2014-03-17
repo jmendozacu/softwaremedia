@@ -226,24 +226,8 @@ class OCM_Fulfillment_Model_Observer
         return array($page_size,$current_page);
     }
 
-
-    public function updateProductWarehouseData($page_override = false) {
-    
-        list($page_size,$current_page) = $this->_selectCountPage();
-        
-        if ($page_override) {
-            $current_page = $page_override;
-        }
-        
-        Mage::log('RUNNING',null,'fulfillment.log');
-    
-		$time = time();
-		$to = date('Y-m-d H:i:s', $time);
-		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
-		$from = date('Y-m-d H:i:s', $lastTime);
-
-		$target = time() - (60 * 60 * 23);
-        $collection = Mage::getModel('catalog/product')->getCollection()
+	public function updateProductWarehouseData($page_override = false ) {
+		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('warehouse_updated_at','left')
             ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
@@ -255,6 +239,27 @@ class OCM_Fulfillment_Model_Observer
             //->addAttributeToSelect('qty')
 */
             ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
+            $this->updateProductWarehouse($collection);
+	}
+	
+    public function updateProductWarehouse($collection) {
+    
+        list($page_size,$current_page) = $this->_selectCountPage();
+        
+        if ($page_override) {
+            $current_page = $page_override;
+        }
+        $helper = Mage::helper('ocm_fulfillment'); 
+        
+        Mage::log('RUNNING',null,'fulfillment.log');
+    
+		$time = time();
+		$to = date('Y-m-d H:i:s', $time);
+		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
+		$from = date('Y-m-d H:i:s', $lastTime);
+
+		$target = time() - (60 * 60 * 23);
+        
             //->setCurPage($current_page);
             
         Mage::log('Loading TechData',null,'fulfillment.log');        
@@ -273,10 +278,9 @@ class OCM_Fulfillment_Model_Observer
         $synnex_products   = $synnex->getCollectionArray();
         $ingram_products   = $ingram->getCollectionArray();
 
-        $stock_model = Mage::getModel('cataloginventory/stock_item');
+       
        
        foreach($collection as $product) {
-       		$stock_model = Mage::getModel('cataloginventory/stock_item');
        		$product->setData('warehouse_errors',"");
            //skip products not in warehouse system
            if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) {	
@@ -291,6 +295,8 @@ class OCM_Fulfillment_Model_Observer
 			}
 			//continue;
            }
+           $product->setData('warehouse_updated_at',now());
+           
            $price_array = array();
            $qty = 0;
            
@@ -317,47 +323,9 @@ class OCM_Fulfillment_Model_Observer
                }
                
            }
-		   $qty += $product->getData('pt_qty');
-		   Mage::log('PT QTY:' . $product->getSku() . ' - ' . $product->getData('pt_qty'), null, "fullfillment.log");
-           if (!$product->getData('pt_avg_cost')) {
-               asort($price_array);
-               $lowest_cost = $price_array[0];
-               
-               if ($lowest_cost > 0) 
-              	 $product->setData('cost',$lowest_cost);
-               else
-			   	$product->setData('cost',$product->getData('pt_avg_cost'));
-           } else {
-               $product->setData('cost',$product->getData('pt_avg_cost'));
-           }
-		   
-           $product->setData('warehouse_updated_at',now());
            
-           $stock_model->loadByProduct($product->getId());
+           $helper->updateStock($product);
            
-           //Update QTY for sub items 
-           $subItems = $product->getSubstitutionProducts();
-           
-           foreach($subItems as $item) {
-	       		foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
-	       			$prod = Mage::getModel('catalog/product')->load($item->getId());
-	       			$qty+=$prod->getData($warehouse_name.'_qty');
-	       			Mage::log("QTY " . $prod->getSku() . '-' . $warehouse_name . ": " . $prod->getData($warehouse_name.'_qty'), null, "fullfillment.log");
-	       		}
-	       		$qty+=$item->getData('pt_qty');
-           }
-		   Mage::log("QTY " . $qty, null, "fullfillment.log");
-           $stock_model->setData('qty',$qty);
-           if($qty) $stock_model->setData('is_in_stock',1);
-
-           
-           try {
-               $product->save();
-               $stock_model->save();
-                Mage::log("SAVE " . $qty, null, "fullfillment.log");
-           } catch (Exception $e) {
-               Mage::log($e->getMessage());
-           }
            
        }
     }

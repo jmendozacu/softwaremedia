@@ -65,15 +65,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 	}
 	
 	public function updatePriceQtyFrom() {
-		$time = time();
-		$to = date('Y-m-d H:i:s', $time);
-		$lastTime = $time - (1*60*60); // 60*60*24
-		$from = date('Y-m-d H:i:s', $lastTime);
-
-		$target = time() - (60 * 60 * 23);
-		$sku_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'sku');
-		
-        $collection = Mage::getModel('catalog/product')->getCollection()
+		 $collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('peachtree_updated','left')
             ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*');
@@ -86,11 +78,25 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 				);
 				
             $collection->setPageSize(70);
+            $this->updatePriceQty($collection);
+	}
+	
+	
+	public function updatePriceQty($collection) {
+		$time = time();
+		$to = date('Y-m-d H:i:s', $time);
+		$lastTime = $time - (1*60*60); // 60*60*24
+		$from = date('Y-m-d H:i:s', $lastTime);
+
+		$target = time() - (60 * 60 * 23);
+		$sku_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'sku');
+		
+       
         
-            
+        $helper = Mage::helper('ocm_fulfillment'); 
       
         
-			$collection->load();
+		$collection->load();
 		foreach($collection as $product) {
 			$stock_model = Mage::getModel('cataloginventory/stock_item');
 			
@@ -99,51 +105,9 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                 $product->setData('pt_qty',$product->getData('peachtree_qty'));
                 $product->setData('pt_avg_cost',$product->getData('peachtree_cost'));
                 
-                $subItems = $product->getSubstitutionProducts();
-           
-	           
-
-				$price_array = array();
-	           $qty = 0;
-	           
-	           // Ingram MUST be the end of the array for this to work
-	           foreach (array('techdata','synnex','ingram') as $warehouse_name) {
-	                   if($product->getData($warehouse_name.'_qty') > 0) {
-	                       $price_array[] = $product->getData($warehouse_name.'_price');
-	                       $qty += $product->getData($warehouse_name.'_qty');
-	                   }	               
-	           }
-			   
-			   $qty += $product->getData('peachtree_qty');
-			   if (!$product->getData('pt_avg_cost')) {
-               asort($price_array);
-               $lowest_cost = $price_array[0];
-               if ($lowest_cost > 0)
-              	 $product->setData('cost',$lowest_cost);
-              	 else
-			   	$product->setData('cost',$product->getData('pt_avg_cost'));
-           } else {
-               $product->setData('cost',$product->getData('pt_avg_cost'));
-           }
-           
-	           $product->setData('peachtree_updated',now());
-	           
-	           $stock_model->loadByProduct($product->getId());
-	           
-	           foreach($subItems as $item) {
-		       		foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
-		       			$prod = Mage::getModel('catalog/product')->load($item->getId());
-		       			$qty+=$prod->getData($warehouse_name.'_qty');
-		       			//Mage::log("QTY " . $prod->getSku() . '-' . $warehouse_name . ": " . $prod->getData($warehouse_name.'_qty'), null, "fullfillment.log");
-		       		}
-		       		$qty+=$item->getData('pt_qty');
-	           }
-			   
-			   $stock_model->setData('qty',$qty);
-	           if($qty) $stock_model->setData('is_in_stock',1);
-           
-                //$product->save();
-                //$stock_model->save();
+               
+				$product->setData('peachtree_updated',now());
+	          $helper->updateStock($product);
 		}   
 	}
 	
