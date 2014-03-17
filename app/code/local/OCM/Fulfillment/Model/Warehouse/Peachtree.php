@@ -65,6 +65,11 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 	}
 	
 	public function updatePriceQtyFrom() {
+		$time = time();
+		$to = date('Y-m-d H:i:s', $time);
+		$lastTime = $time - (1*60*60); // 60*60*24
+		$from = date('Y-m-d H:i:s', $lastTime);
+		
 		 $collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('peachtree_updated','left')
             ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
@@ -83,11 +88,6 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 	
 	
 	public function updatePriceQty($collection) {
-		$time = time();
-		$to = date('Y-m-d H:i:s', $time);
-		$lastTime = $time - (1*60*60); // 60*60*24
-		$from = date('Y-m-d H:i:s', $lastTime);
-
 		$target = time() - (60 * 60 * 23);
 		$sku_attr = Mage::getModel('eav/entity_attribute')->loadByCode('catalog_product', 'sku');
 		
