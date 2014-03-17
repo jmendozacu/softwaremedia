@@ -249,6 +249,7 @@ class OCM_Fulfillment_Model_Observer
         if ($page_override) {
             $current_page = $page_override;
         }
+        $helper = Mage::helper('ocm_fulfillment'); 
         
         Mage::log('RUNNING',null,'fulfillment.log');
     
@@ -277,10 +278,9 @@ class OCM_Fulfillment_Model_Observer
         $synnex_products   = $synnex->getCollectionArray();
         $ingram_products   = $ingram->getCollectionArray();
 
-        $stock_model = Mage::getModel('cataloginventory/stock_item');
+       
        
        foreach($collection as $product) {
-       		$stock_model = Mage::getModel('cataloginventory/stock_item');
        		$product->setData('warehouse_errors',"");
            //skip products not in warehouse system
            if(!$product->getData($techdata_sku_attr) && !$product->getData($synnex_sku_attr) && !$product->getData($ingram_sku_attr)) {	
@@ -295,6 +295,8 @@ class OCM_Fulfillment_Model_Observer
 			}
 			//continue;
            }
+           $product->setData('warehouse_updated_at',now());
+           
            $price_array = array();
            $qty = 0;
            
@@ -321,48 +323,9 @@ class OCM_Fulfillment_Model_Observer
                }
                
            }
-		   $qty += $product->getData('pt_qty');
-		   Mage::log('PT QTY:' . $product->getSku() . ' - ' . $product->getData('pt_qty'), null, "fullfillment.log");
-           if (!$product->getData('pt_avg_cost')) {
-               asort($price_array);
-               $lowest_cost = $price_array[0];
-               var_dump($price_array);
-               
-               if ($lowest_cost > 0) 
-              	 $product->setData('cost',$lowest_cost);
-               else
-			   	$product->setData('cost',$product->getData('pt_avg_cost'));
-           } else {
-               $product->setData('cost',$product->getData('pt_avg_cost'));
-           }
-		   
-           $product->setData('warehouse_updated_at',now());
            
-           $stock_model->loadByProduct($product->getId());
+           $helper->updateStock($product);
            
-           //Update QTY for sub items 
-           $subItems = $product->getSubstitutionProducts();
-           
-           foreach($subItems as $item) {
-	       		foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
-	       			$prod = Mage::getModel('catalog/product')->load($item->getId());
-	       			$qty+=$prod->getData($warehouse_name.'_qty');
-	       			Mage::log("QTY " . $prod->getSku() . '-' . $warehouse_name . ": " . $prod->getData($warehouse_name.'_qty'), null, "fullfillment.log");
-	       		}
-	       		$qty+=$item->getData('pt_qty');
-           }
-		   Mage::log("QTY " . $qty, null, "fullfillment.log");
-           $stock_model->setData('qty',$qty);
-           if($qty) $stock_model->setData('is_in_stock',1);
-
-           
-           try {
-               $product->save();
-               $stock_model->save();
-                Mage::log("SAVE " . $qty, null, "fullfillment.log");
-           } catch (Exception $e) {
-               Mage::log($e->getMessage());
-           }
            
        }
     }

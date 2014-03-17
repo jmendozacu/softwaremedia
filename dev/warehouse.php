@@ -45,18 +45,12 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->importCsv();       
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToFilter('sku','SY-21218014')
+			->addAttributeToFilter('sku','VM-WS9VP1099F')
             ->addAttributeToSelect('*');
-             $collection->getSelect()
-				->joinleft(
-					array('pv' => 'catalog_product_flat_1'), 'pv.entity_id=e.entity_id', array()
-				)
-				->joininner(
-					array('peach' => 'ocm_peachtree'), 'pv.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
-				);
+
             
 Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
-Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
+//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
             
 $collection = Mage::getModel('catalog/product')->getCollection()
 //			->addAttributeToSelect('warehouse_updated_at','left')
