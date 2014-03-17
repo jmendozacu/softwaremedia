@@ -2,11 +2,6 @@
         <menu>
             <sales>
                 <children>
-                    <purchaseorder translate="title" module="ocm_fulfillment">
-                        <title>License Orders</title>
-                        <action>adminhtml/sales_licenseorder</action>
-                        <sort_order>11</sort_order>
-                    </purchaseorder>
                     <evaluate translate="title" module="ocm_fulfillment">
                         <title>Evaluate Orders</title>
                         <action>adminhtml/evaluate</action>
