@@ -44,6 +44,7 @@ $collection = Mage::getModel('catalog/product')->getCollection()
                  
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->importCsv();       
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
+/*
 $collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToFilter('sku','VM-WS9VP1099F')
             ->addAttributeToSelect('*');
@@ -65,4 +66,4 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 */
 
 
-//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();
+Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();

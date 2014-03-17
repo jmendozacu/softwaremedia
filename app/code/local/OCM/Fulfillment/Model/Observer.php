@@ -3,6 +3,8 @@ class OCM_Fulfillment_Model_Observer
 {
 	const FULFILLMENT_PAGE_SIZE     = 50;
 	const FULFILLMENT_UPDATE_DELAY     = 30;
+	const DEFAULT_ATTRIBUTE_SET_ID = 9;
+	const RETAIL_ATTRIBUTE_SET_ID = 81;
 	
     public function evaluateOrdersDaily()
     {
@@ -13,37 +15,50 @@ class OCM_Fulfillment_Model_Observer
         foreach($orders as $order){
             $is_virtual = false;
             $is_physical = false;
-            $items = $order->getAllVisibleItems();
+            $is_download = false;
+            $is_license = false;
+            
+            $items = $order->getAllItems();
             foreach($items as $item){
+            	if ($item->getHasChildren())
+            		continue;
+            		
             	$prod = Mage::getModel('catalog/product')->load($item->getProductId());
-				//echo $item->getProductId();
-		
+					
                 if($prod->getData('package_id')==1084){
                     $is_virtual = true;
                 } else {
 	                $is_physical = true;
                 }
+                
+				if (substr($prod->getSku(),-2) == 'DL') {
+					$is_download = true;
+				} elseif ($prod->getAttributeSetId() != DEFAULT_ATTRIBUTE_SET_ID && $prod->getAttributeSetId() != RETAIL_ATTRIBUTE_SET_ID)					
+					$is_license = true;
             }
 
             if($is_virtual){ 
-            
             	//Order has both physical and electronic items
             	if ($is_physical) {
-	            	$order->setState('processing','multipleproductorder','Order has both physical and electronic items. Please process manually.',FALSE)->save();
+	            	$order->setState('processing','multipleproductorder','Order has both physical and electronic items. Setting status to \'Multiple Product Order\'.',FALSE)->save();
 	            	continue;
             	}
             	
-            	//order has ONLY electronic products
-                $model = Mage::getModel('ocm_fulfillment/license')->getCollection()
-                    ->addFieldToFilter('order_id',$order->getId())->getFirstItem();
-                    
-                if(!$model->getId()){
-                    $model->setOrderId($order->getId())->setStatus('Not assigned');
-                    $model->save();
-                }
-				$order->setState('processing','needslicense','Order contains only electronic products. Needs Licensing.',FALSE)->save();
-				continue;
-            } else{ // order has ANY physical products:
+            	if ($is_license) {
+            		if ($is_download) {
+						$order->setState('processing','processmanually','Order contains download and licensing items. Setting status to \'Process Manually\'.',FALSE)->save();
+						continue;
+					} else {
+						$order->setState('processing','needslicense','Order contains only license products. Setting status to \'Licensing - Needs License\'.',FALSE)->save();
+						continue;
+					}
+				}
+				if ($is_download) {
+					$order->setState('processing','download','Order contains only download products. Setting status to \'Download\'.',FALSE)->save();
+					continue;
+				}
+				
+            } else { // order has ANY physical products:
            
 			
                 // Get All warehouse availability 
@@ -64,9 +79,8 @@ class OCM_Fulfillment_Model_Observer
                         //$warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
                         
                         //if internal stock, always use
-                        //set order to complete here
                         if ($warehouse_name == 'peachtree') {
-	                        $order->setState('processing',$warehouse_name,'Product is available in warehouse, use internal stock.',FALSE)->save();
+	                        $order->setState('processing',$warehouse_name,'Product is available in warehouse, use internal stock. Setting status to \'Warehouse\'.',FALSE)->save();
 	                        $done = true;
 	                        break;
                         }
@@ -84,12 +98,12 @@ class OCM_Fulfillment_Model_Observer
                 	//If shipping to Tennessee, use Synnex if available
                 	if ($order->getShippingAddress()->getRegionId() == $stop_states['TN']) {
 	                	if ($warehousesFulfill['synnex']) {
-		                	$order->setState('processing','synnex','Shipping to TN. Prioritize Synnex.',FALSE)->save();
+		                	$order->setState('processing','synnex','Shipping to TN. Prioritize Synnex. Setting status to \'Synnex\'.',FALSE)->save();
 	                        continue;
 	                	}
                 	}
                     //set order to ship internal
-                    $order->setState('processing','processmanually','Shipping to TN, CA, or MA. May need to reship from UT.', FALSE)->save();
+                    $order->setState('processing','processmanually','Shipping to TN, CA, or MA. May need to reship from UT. Setting status to \'Process Manually\'.', FALSE)->save();
                     continue;
                 }
                 
@@ -103,7 +117,7 @@ class OCM_Fulfillment_Model_Observer
                  	$difference = $warehousesFulfill[$warehouseKeys[$warehouseCount - 1]] - $warehousesFulfill[$warehouseKeys[0]];
 	                 if ($difference >= 10) 							{
 		                 $done = 1;
-		                 $order->setState('processing',$warehouseKeys[0],'Order available $' . $difference . ' cheaper at ' . $warehouseKeys[0] . ' vs ' . $warehouseKeys[$warehouseCount - 1], FALSE)->save();
+		                 $order->setState('processing',$warehouseKeys[0],'Order available $' . $difference . ' cheaper at ' . $warehouseKeys[0] . ' vs ' . $warehouseKeys[$warehouseCount - 1] . '. Setting status to \'' . ucfirst($warehouseKeys[0]) . '\'.', FALSE)->save();
 		                 $warehouse_model->getWarehouseModel($warehouseKeys[0])->fulfill($order , $order->getAllItems());
 		                 continue;
 	                 }
@@ -115,7 +129,7 @@ class OCM_Fulfillment_Model_Observer
                  	if (array_key_exists($warehouse_name, $warehousesFulfill)) {
                  		$warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
                         //set order to complete here
-                        $order->setStatus($warehouse_name)->save();
+                        $order->setState('processing',$warehouse_name,'Order available to fulfill at ' . $warehouse_name . '. Setting status to \'' . ucfirst($warehouse_name[0]) . '\'.')->save();
                         $done = true;
                         break;
                  	}
@@ -165,11 +179,12 @@ class OCM_Fulfillment_Model_Observer
                 
                 //set order to "Process Manually" here
 				if(!$done){
-					$order->setState('processing','processmanually','No single warehouse has stock to fulfill entire order. Please process manually.', FALSE)->save();
+					$order->setState('processing','processmanually','No single warehouse has stock to fulfill entire order. Setting status to \'Process Manually\'.', FALSE)->save();
 				}
             
             }
         }
+        die();
         return $this;
     }
 
@@ -328,6 +343,7 @@ class OCM_Fulfillment_Model_Observer
            
            
        }
+       
     }
 
 

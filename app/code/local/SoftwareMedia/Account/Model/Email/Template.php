@@ -146,6 +146,7 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 				Mage::log('About to resend email');
 				$cloneMail->send($transportNoOffice); // Zend_Mail warning..
 				Mage::log('Finished resending email');	
+				$this->setData('error', "Could not send from user e-mail, sending from customerservice instead");
 			} catch (Exception $e) {
 				Mage::log('Error: ' . $e->getMessage());
 				Mage::logException($e);
