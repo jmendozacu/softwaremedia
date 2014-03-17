@@ -44,6 +44,31 @@ $collection = Mage::getModel('catalog/product')->getCollection()
                  
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->importCsv();       
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
+$collection = Mage::getModel('catalog/product')->getCollection()
+			->addAttributeToFilter('sku','SY-21218014')
+            ->addAttributeToSelect('*');
+             $collection->getSelect()
+				->joinleft(
+					array('pv' => 'catalog_product_flat_1'), 'pv.entity_id=e.entity_id', array()
+				)
+				->joininner(
+					array('peach' => 'ocm_peachtree'), 'pv.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
+				);
+            
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
+Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
+            
+$collection = Mage::getModel('catalog/product')->getCollection()
+//			->addAttributeToSelect('warehouse_updated_at','left')
+//            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+            ->addAttributeToSelect('*')
+            ->addAttributeToFilter('sku','AD-65224750BA01A12');
+/*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
+            //->addAttributeToSelect('cpc_price')
+            //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
+            //->addAttributeToSelect('price')
+            //->addAttributeToSelect('qty')
+*/
 
-Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
+
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFromCsv();

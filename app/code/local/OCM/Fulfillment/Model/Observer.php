@@ -226,8 +226,23 @@ class OCM_Fulfillment_Model_Observer
         return array($page_size,$current_page);
     }
 
-
-    public function updateProductWarehouseData($page_override = false) {
+	public function updateProductWarehouseData($page_override = false ) {
+		$collection = Mage::getModel('catalog/product')->getCollection()
+			->addAttributeToSelect('warehouse_updated_at','left')
+            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+            ->addAttributeToSelect('*')
+//            ->addAttributeToFilter('sku','AD-65224750BA01A12')
+/*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
+            //->addAttributeToSelect('cpc_price')
+            //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
+            //->addAttributeToSelect('price')
+            //->addAttributeToSelect('qty')
+*/
+            ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
+            $this->updateProductWarehouse($collection);
+	}
+	
+    public function updateProductWarehouse($collection) {
     
         list($page_size,$current_page) = $this->_selectCountPage();
         
@@ -243,18 +258,7 @@ class OCM_Fulfillment_Model_Observer
 		$from = date('Y-m-d H:i:s', $lastTime);
 
 		$target = time() - (60 * 60 * 23);
-        $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
-            ->addAttributeToSelect('*')
-//            ->addAttributeToFilter('sku','AD-65224750BA01A12')
-/*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
-            //->addAttributeToSelect('cpc_price')
-            //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
-            //->addAttributeToSelect('price')
-            //->addAttributeToSelect('qty')
-*/
-            ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
+        
             //->setCurPage($current_page);
             
         Mage::log('Loading TechData',null,'fulfillment.log');        
@@ -322,6 +326,7 @@ class OCM_Fulfillment_Model_Observer
            if (!$product->getData('pt_avg_cost')) {
                asort($price_array);
                $lowest_cost = $price_array[0];
+               var_dump($price_array);
                
                if ($lowest_cost > 0) 
               	 $product->setData('cost',$lowest_cost);
