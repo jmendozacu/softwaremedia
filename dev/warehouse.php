@@ -52,7 +52,7 @@ $collection = Mage::getModel('catalog/product')->getCollection()
             
 Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
-            
+  */          
 $collection = Mage::getModel('catalog/product')->getCollection()
 //			->addAttributeToSelect('warehouse_updated_at','left')
 //            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
@@ -65,5 +65,5 @@ $collection = Mage::getModel('catalog/product')->getCollection()
             //->addAttributeToSelect('qty')
 */
 
-
-Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
+//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
