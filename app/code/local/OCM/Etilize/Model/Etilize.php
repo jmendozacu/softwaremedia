@@ -56,7 +56,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 		"Iris"=>"1021475",
 		"Kaspersky"=>"1020989",
 		"McAfee"=>"101150",
-		"MakerBot"=>"1048",
+		"MakerBot"=>"1038399",
 		"Microsoft"=>"10291",
 		"Nero"=>"1020598",
 		"Nolo Press"=>"101046",
