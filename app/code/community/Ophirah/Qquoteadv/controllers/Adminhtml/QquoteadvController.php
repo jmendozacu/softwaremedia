@@ -125,12 +125,14 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController
                 Mage::getSingleton('adminhtml/session')->addError($message);
             } elseif(is_string($res) && $res == Ophirah_Qquoteadv_Model_System_Config_Source_Email_Templatedisable::VALUE_DISABLED_EMAIL) {
                 Mage::getSingleton('adminhtml/session')->addNotice($this->__('Sending proposal Email is disabled'));
+            } elseif (is_string($res) && $res == 'cs') {
+	         	Mage::getSingleton('adminhtml/session')->addNotice('Could not send from user e-mail, sending from customerservice@softwaremedia.com instead');  
             } else {
                 Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Email was sent to client'));
                 Mage::helper('qquoteadv')->sentAnonymousData('proposal', 'b');
             }
         } catch (Exception $e) {
-            $message = $this->__("Qquote proposal email was't sent to the client for quote #%s", $realQuoteadvId);
+            $message = $this->__($e->getMessage(), $realQuoteadvId);
             Mage::log($e->getMessage());
             Mage::getSingleton('adminhtml/session')->addError($message);
             $this->_redirect('*/*/');
@@ -874,7 +876,10 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController
              * getProcessedTemplate is called inside send()
              */
             $res = $template->send($params['email'], $params['name'], $vars);
-
+            
+			if (!$res) {
+				return $template->getData('error');
+				}
             return $res;
         
         endif;

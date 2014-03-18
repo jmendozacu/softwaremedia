@@ -55,8 +55,8 @@ Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
   */          
 $collection = Mage::getModel('catalog/product')->getCollection()
 //			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addFieldToFilter('entity_id',array('lt' => 5532))
-            ->addFieldToFilter('entity_id',array('gt' => 5520))
+            ->addFieldToFilter('entity_id',array('lt' => 8595))
+            ->addFieldToFilter('entity_id',array('gt' => 8585))
             ->addAttributeToSelect('*')
             ->setPageSize(20);
 //            ->addAttributeToFilter('sku','AC-VMPXRPENS13');
