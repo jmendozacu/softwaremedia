@@ -253,13 +253,6 @@ class OCM_Fulfillment_Model_Observer
 			->addAttributeToSelect('warehouse_updated_at','left')
             ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
-//            ->addAttributeToFilter('sku','AD-65224750BA01A12')
-/*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
-            //->addAttributeToSelect('cpc_price')
-            //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
-            //->addAttributeToSelect('price')
-            //->addAttributeToSelect('qty')
-*/
             ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
             $this->updateProductWarehouse($collection);
 	}

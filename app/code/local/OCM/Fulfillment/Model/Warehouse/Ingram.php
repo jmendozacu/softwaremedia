@@ -131,7 +131,6 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
             Mage::log($e->getMessage(),null,'techdata.log');
             
         }
-        var_dump($this->_collection);
 
         $this->setData('collection_array',$this->_collection);
         return $this;
