@@ -2,7 +2,7 @@
 class OCM_Fulfillment_Model_Observer
 {
 	const FULFILLMENT_PAGE_SIZE     = 50;
-	const FULFILLMENT_UPDATE_DELAY     = 30;
+	const FULFILLMENT_UPDATE_DELAY     = 60;
 	const DEFAULT_ATTRIBUTE_SET_ID = 9;
 	const RETAIL_ATTRIBUTE_SET_ID = 81;
 	
@@ -242,6 +242,13 @@ class OCM_Fulfillment_Model_Observer
     }
 
 	public function updateProductWarehouseData($page_override = false ) {
+		$time = time();
+		$to = date('Y-m-d H:i:s', $time);
+		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
+		$from = date('Y-m-d H:i:s', $lastTime);
+
+		$target = time() - (60 * 60 * 23);
+		
 		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('warehouse_updated_at','left')
             ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
@@ -268,12 +275,7 @@ class OCM_Fulfillment_Model_Observer
         
         Mage::log('RUNNING',null,'fulfillment.log');
     
-		$time = time();
-		$to = date('Y-m-d H:i:s', $time);
-		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
-		$from = date('Y-m-d H:i:s', $lastTime);
-
-		$target = time() - (60 * 60 * 23);
+		
         
             //->setCurPage($current_page);
             
