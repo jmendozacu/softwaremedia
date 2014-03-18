@@ -497,7 +497,7 @@ var manufacturerList = {
 	],
 	"MakerBot"		:	[
 	{
-		"ManufacturerID" 	: "1048",
+		"ManufacturerID" 	: "1038399",
 		"ManufacturerCode"	: "MB"
 	
 	}
