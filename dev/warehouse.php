@@ -41,8 +41,8 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 //updatePriceQtyFromCsv            
 
 
-                 
-//$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->importCsv();       
+Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();                   
+Mage::getModel('ocm_fulfillment/warehouse_synnex')->insertSynnexData();       
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 /*
 $collection = Mage::getModel('catalog/product')->getCollection()
@@ -65,5 +65,5 @@ $collection = Mage::getModel('catalog/product')->getCollection()
             //->addAttributeToSelect('qty')
 */
 
-Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
+//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
