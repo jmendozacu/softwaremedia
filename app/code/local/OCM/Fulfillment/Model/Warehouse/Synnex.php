@@ -67,6 +67,8 @@ class OCM_Fulfillment_Model_Warehouse_Synnex extends OCM_Fulfillment_Model_Wareh
     }
     
     public function insertSynnexData(){
+    	$this->tmp_dir = Mage::getBaseDir() . DS . "var" . DS . "synnex_data";
+    	
         $resource = Mage::getSingleton('core/resource');
         $writeConnection = $resource->getConnection('core_write');
         $truncateQuery = "TRUNCATE TABLE ocm_fulfillment_synnex;";
