@@ -41,7 +41,7 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 //updatePriceQtyFromCsv            
 
 
-Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();           
+//Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();           
   
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 /*
@@ -55,15 +55,17 @@ Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
   */          
 $collection = Mage::getModel('catalog/product')->getCollection()
 //			->addAttributeToSelect('warehouse_updated_at','left')
-//            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+            ->addFieldToFilter('entity_id',array('lt' => 5532))
+            ->addFieldToFilter('entity_id',array('gt' => 5520))
             ->addAttributeToSelect('*')
-            ->addAttributeToFilter('sku','AD-65224750BA01A12');
+            ->setPageSize(20);
+//            ->addAttributeToFilter('sku','AC-VMPXRPENS13');
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')
             //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
-
-//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
+echo count($collection);
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
