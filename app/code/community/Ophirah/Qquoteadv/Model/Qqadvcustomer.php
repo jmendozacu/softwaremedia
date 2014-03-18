@@ -566,18 +566,24 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
 
      }
     
-    public function sendReminderEmail(){    
-    	$this->_sendReminderEmail();
+    public function sendReminderEmail($debug = false){    
+    	if ($debug) 
+    		echo "<h2>Reminder E-Mails</h2>";
+    	$this->_sendReminderEmail(false, $debug);
     }
-    public function send2ndReminderEmail(){    
-    	$this->_sendReminderEmail(2);
+    public function send2ndReminderEmail($debug = false){  
+    	if ($debug) 
+    		echo "<h2>2nd Reminder E-Mails</h2>";  
+    	$this->_sendReminderEmail(2, $debug);
     }
      
-    public function send3rdReminderEmail(){    
-    	$this->_sendReminderEmail(3);
+    public function send3rdReminderEmail($debug = false){    
+    	if ($debug) 
+    		echo "<h2>3rd Reminder E-Mails</h2>";
+    	$this->_sendReminderEmail(3, $debug);
     }
     
-    private function _sendReminderEmail($inc = false){      
+    private function _sendReminderEmail($inc = false, $debug = false){      
     	if ($inc) 
     		$inc = "_" . $inc;
     		
@@ -599,11 +605,15 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                                     ->addFieldToFilter('reminder' . $inc,array('eq'=>date('Y-m-d')));
 									
             foreach($reminderQuotes as $_quoteadv){       
+            	if ($debug) {
+	            	echo "Quote " . $_quoteadv->getIncrementId() . " Reminder" . $inc . " Due Today";
+	            	echo "<br />";
+            	}
                 if(substr($_quoteadv->getData('proposal_sent'),0 ,4) != 0){
                     $vars['quote']      = $_quoteadv;
                     $vars['customer']   = Mage::getModel('customer/customer')->load($_quoteadv->getCustomerId());
 					$vars['rep'] = $_quoteadv->getSalesRepresentative();
-                    $template = Mage::getModel('qquoteadv/core_email_template');
+                    $template = Mage::getModel('core/email_template');
 
                     // get locale of quote sent so we can sent email in that language	
                     $storeLocale = Mage::getStoreConfig('general/locale/code', $_quoteadv->getStoreId());
@@ -639,7 +649,10 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                     /*
                      * getProcessedTemplate is called inside send()
                      */
-                    $res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
+                    if ($debug && $_quoteadv->getEmail()) 
+                    	echo "Send to " . $_quoteadv->getEmail() . "<br /><br />";
+                    else
+                    	$res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
                 }
 
             }
@@ -647,7 +660,6 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
      }
     
     public function sendQuoteAccepted($quoteId){
-            
             $acceptedTemplateId = Mage::getStoreConfig('qquoteadv/emails/proposal_accepted', $this->getStoreId());
             $disabledEmail  = Ophirah_Qquoteadv_Model_System_Config_Source_Email_Templatedisable::VALUE_DISABLED_EMAIL;
             if($acceptedTemplateId != $disabledEmail):
