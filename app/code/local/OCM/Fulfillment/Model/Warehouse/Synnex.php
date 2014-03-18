@@ -55,9 +55,9 @@ class OCM_Fulfillment_Model_Warehouse_Synnex extends OCM_Fulfillment_Model_Wareh
             $zip->open($local_file);
             $zip->extractTo($this->tmp_dir);
             
-            chmod('../var/synnex_data/520985.ap',0777);
+            
             $zip->close();
-    
+			chmod('../var/synnex_data/520985.ap',0777);
         } else {
             Mage::log("There was a problem\n");
         }
