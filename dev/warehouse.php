@@ -41,8 +41,8 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 //updatePriceQtyFromCsv            
 
 
-Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();                   
-Mage::getModel('ocm_fulfillment/warehouse_synnex')->insertSynnexData();       
+Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();           
+  
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 /*
 $collection = Mage::getModel('catalog/product')->getCollection()
