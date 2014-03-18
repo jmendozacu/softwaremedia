@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<SoftwareMedia_Ubervisibility>
+			<version>0.1.0</version>
+		</SoftwareMedia_Ubervisibility>
+	</modules>
+	<global>
+		<helpers>
+			<SoftwareMedia_Ubervisibility>
+				<class>SoftwareMedia_Ubervisibility_Helper_Api</class>
+			</SoftwareMedia_Ubervisibility>
+		</helpers>
+		<resources>
+			<SoftwareMedia_Ubervisibility_setup>
+				<setup>
+					<module>SoftwareMedia_Ubervisibility</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</SoftwareMedia_Ubervisibility_setup>
+		</resources>
+		<events>
+			<catalog_product_save_after>
+				<observers>
+					<SoftwareMedia_Ubervisibility>
+						<class>SoftwareMedia_Ubervisibility_Model_Observer</class>
+						<method>updateProduct</method>
+					</SoftwareMedia_Ubervisibility>
+				</observers>
+			</catalog_product_save_after>
+		</events>
+	</global>
+</config>
