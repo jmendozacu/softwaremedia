@@ -241,7 +241,7 @@ class OCM_Fulfillment_Model_Observer
         return array($page_size,$current_page);
     }
 
-	public function updateProductWarehouseData($page_override = false ) {
+	protected function _getCollection() {
 		$time = time();
 		$to = date('Y-m-d H:i:s', $time);
 		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
@@ -254,16 +254,17 @@ class OCM_Fulfillment_Model_Observer
             ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
             ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
-            $this->updateProductWarehouse($collection);
+            
+        return $collection;
 	}
 	
-    public function updateProductWarehouse($collection) {
+    public function updateProductWarehouseData($collection = null) {
     
+    	if (!$collection)
+    		$collection = $this->_getCollection();
+    		
         list($page_size,$current_page) = $this->_selectCountPage();
-        
-        if ($page_override) {
-            $current_page = $page_override;
-        }
+
         $helper = Mage::helper('ocm_fulfillment'); 
         
         Mage::log('RUNNING',null,'fulfillment.log');
