@@ -241,27 +241,22 @@ class OCM_Fulfillment_Model_Observer
         return array($page_size,$current_page);
     }
 
-	protected function _getCollection() {
-		$time = time();
-		$to = date('Y-m-d H:i:s', $time);
-		$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
-		$from = date('Y-m-d H:i:s', $lastTime);
-
-		$target = time() - (60 * 60 * 23);
-		
-		$collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
-            ->addAttributeToSelect('*')
-            ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
-            
-        return $collection;
-	}
-	
-    public function updateProductWarehouseData($collection = null) {
+    public function updateProductWarehouseData($collection = false) {
     
-    	if (!$collection)
-    		$collection = $this->_getCollection();
+    	if (!$collection) {
+	    	$time = time();
+			$to = date('Y-m-d H:i:s', $time);
+			$lastTime = $time - (self::FULFILLMENT_UPDATE_DELAY*60*60); // 60*60*24
+			$from = date('Y-m-d H:i:s', $lastTime);
+	
+			$target = time() - (60 * 60 * 23);
+			
+			$collection = Mage::getModel('catalog/product')->getCollection()
+				->addAttributeToSelect('warehouse_updated_at','left')
+	            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+	            ->addAttributeToSelect('*')
+	            ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
+    	}
     		
         list($page_size,$current_page) = $this->_selectCountPage();
 
