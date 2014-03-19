@@ -67,5 +67,5 @@ $collection = Mage::getModel('catalog/product')->getCollection()
             //->addAttributeToSelect('qty')
 */
 echo count($collection);
-Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
