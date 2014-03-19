@@ -241,8 +241,8 @@ class OCM_Fulfillment_Model_Observer
         return array($page_size,$current_page);
     }
 
-    public function updateProductWarehouseData($collection = false) {
-    
+    public function updateProductWarehouseData($observer = null, $collection = null) {
+    	
     	if (!$collection) {
 	    	$time = time();
 			$to = date('Y-m-d H:i:s', $time);
