@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addCss">
+                <name>aw_ordertags/css/ordertag_window.css</name>
+            </action>
+        </reference>
+    </default>
+    <ordertags_adminhtml_managetags_index>
+        <reference name="content">
+            <block type="ordertags/adminhtml_managetags" name="managetags"/>
+        </reference>
+    </ordertags_adminhtml_managetags_index>
+    <adminhtml_sales_order_index>
+        <reference name="before_body_end">
+            <block type="ordertags/adminhtml_window_element_render_tags"
+                   name="aw_ordertags_wrapper"
+                   template="aw_ordertags/window/element/render/tags.phtml"
+            />
+        </reference>
+    </adminhtml_sales_order_index>
+</layout>
