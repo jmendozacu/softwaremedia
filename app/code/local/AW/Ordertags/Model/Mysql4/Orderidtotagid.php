@@ -53,7 +53,6 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
     public function loadIdsToTable($orderId, $tagId)
     {
     	$tags = $this->getArrayByOrderId($orderId);
-    	var_dump($tags);
     	
     	if (in_array($tagId,$tags))
     		return $this;
