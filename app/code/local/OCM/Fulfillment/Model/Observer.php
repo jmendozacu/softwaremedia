@@ -6,12 +6,17 @@ class OCM_Fulfillment_Model_Observer
 	const DEFAULT_ATTRIBUTE_SET_ID = 9;
 	const RETAIL_ATTRIBUTE_SET_ID = 81;
 	
+	const TAG_WAREHOUSE_ID = 1;
+	const TAG_LICENSING_ID = 2;
+	const TAG_DOWNLOAD_ID = 3;
+	
     public function evaluateOrdersDaily()
     {
         $orders = Mage::getModel('sales/order')->getCollection();
         $orders->addFieldToFilter('status','processing');
 		//$orders->addFieldToFilter('state','new');
-
+		$tagToOrderResource = Mage::getResourceModel('ordertags/orderidtotagid');
+		
         foreach($orders as $order){
             $is_virtual = false;
             $is_physical = false;
@@ -33,7 +38,7 @@ class OCM_Fulfillment_Model_Observer
                 
 				if (substr($prod->getSku(),-2) == 'DL') {
 					$is_download = true;
-				} elseif ($prod->getAttributeSetId() != DEFAULT_ATTRIBUTE_SET_ID && $prod->getAttributeSetId() != RETAIL_ATTRIBUTE_SET_ID)					
+				} elseif ($prod->getAttributeSetId() != self::DEFAULT_ATTRIBUTE_SET_ID && $prod->getAttributeSetId() != self::RETAIL_ATTRIBUTE_SET_ID)					
 					$is_license = true;
             }
 
@@ -46,14 +51,18 @@ class OCM_Fulfillment_Model_Observer
             	
             	if ($is_license) {
             		if ($is_download) {
+            			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
+            			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
 						$order->setState('processing','processmanually','Order contains download and licensing items. Setting status to \'Process Manually\'.',FALSE)->save();
 						continue;
 					} else {
+						$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
 						$order->setState('processing','needslicense','Order contains only license products. Setting status to \'Licensing - Needs License\'.',FALSE)->save();
 						continue;
 					}
 				}
 				if ($is_download) {
+					$tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
 					$order->setState('processing','download','Order contains only download products. Setting status to \'Download\'.',FALSE)->save();
 					continue;
 				}

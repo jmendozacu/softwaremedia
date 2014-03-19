@@ -1,0 +1,80 @@
+#aw_ordertags_form {
+    z-index: 100000000;
+    position: fixed;
+    padding: 0;
+    left: 48%;
+    border: 4px solid #f3bf8f;
+    border-top-width: 0;
+    margin: auto;
+    margin-left: -60px;
+    background: #fdf4eb;
+    width: 280px;
+}
+
+#aw_ordertags_form .head h3 {
+    margin-left: 12px;
+    font-size: 1.1em;
+    margin-bottom: 0;
+    margin-top: 0.2em;
+    font-weight: bold;
+    float: left;
+}
+
+#aw_ordertags_form .head {
+    background: #f3bf8f;
+    height: 23px;
+}
+
+#aw_ordertags_form .head .close {
+    display: block;
+    float: right;
+    background: url(../images/window/btn-close.gif) no-repeat top left;
+    padding-left: 28px;
+    height: 19px;
+    margin-top: 2px;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+#ordertags-popup-window-mask {
+    position: absolute;
+    background: #f3bf8f;
+}
+
+.tag td.aw_ot_td_image {
+    padding: 5px;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+.tag td.aw_ot_td_checkbox {
+    padding: 5px;
+    padding-top: 10px;
+}
+
+.tag td.aw_ot_td_label {
+    padding: 5px;
+    padding-top: 10px;
+}
+
+.tag img {
+    width: 22px;
+}
+
+#aw_ordertags_form .td_button {
+    padding: 4px;
+    padding-left: 40px;
+}
+
+#aw_ot_header {
+    padding-left: 32px;
+}
+
+#aw_tag_img {
+    width: 25px;
+}
+
+#aw_tagwrapper {
+    max-height: 350px;
+    overflow: auto;
+}
