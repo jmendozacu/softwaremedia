@@ -45,6 +45,13 @@ class OCM_Fulfillment_Model_Observer
             if($is_virtual){ 
             	//Order has both physical and electronic items
             	if ($is_physical) {
+            		if ($is_download) {
+            			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
+            		}
+            		if ($is_license) {
+            			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
+            		}
+            		$tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
 	            	$order->setState('processing','multipleproductorder','Order has both physical and electronic items. Setting status to \'Multiple Product Order\'.',FALSE)->save();
 	            	continue;
             	}
