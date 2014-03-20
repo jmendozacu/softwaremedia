@@ -36,7 +36,7 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
      * @var string
      */
     protected $_orderidtotagidTable;
-
+	protected $_tagidTable;
     /**
      * Initialize resource model
      *
@@ -46,6 +46,7 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
     {
         $this->_init('ordertags/ordertotag', 'ot_id');
         $this->_orderidtotagidTable = Mage::getSingleton('core/resource')->getTableName("ordertags/ordertotag");
+        $this->_tagidTable = Mage::getSingleton('core/resource')->getTableName("ordertags/managetags");
         $this->_read = $this->_getReadAdapter();
         $this->_write = $this->_getWriteAdapter();
     }
@@ -53,7 +54,10 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
     public function loadIdsToTable($orderId, $tagId)
     {
     	$tags = $this->getArrayByOrderId($orderId);
-    	
+    	$email = $this->getEmailByTagId($tagId);
+    	if ($email) {
+			$this->sendEmail($orderId,$email,$tagId);
+    	}
     	if (in_array($tagId,$tags))
     		return $this;
     	
@@ -77,6 +81,28 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
         return $this;
     }
 
+	public function sendEmail($orderId,$email,$tagId) {
+		$vars = array();
+		$template = Mage::getModel('core/email_template');
+		
+		$order = Mage::getModel('sales/order')->load($orderId);
+		$incrementId = $order->getIncrementId();
+		$adm_name = $this->getAdminName(Mage::getSingleton('admin/session')->getUser()->getId());
+		$vars['order_id'] = $orderId;
+		$vars['increment_id'] = $incrementId;
+		$vars['admin'] = $adm_name;
+		$vars['url'] = Mage::getUrl('adminhtml/sales_order/view', array('order_id' => $orderId));
+        $template->loadDefault('new_tag');
+        $template->setSenderName('Software Media');
+        $template->setSenderEmail('customerservice@softwaremedia.com');
+        $template->setTemplateSubject("Software Media: Order #" . $incrementId . ' has been brought to your attention');
+        $template->send($email, $this->getNameByTagId($tagId), $vars);
+		
+	}
+	 public function getAdminName($id){
+		return Mage::helper('qquoteadv')->getAdminName($id);
+    } 
+    
     public function getArrayByOrderId($orderId)
     {
         $arrayOfTags = array();
@@ -87,7 +113,30 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
         }
         return $arrayOfTags;
     }
+	public function getEmailByTagId($tagId)
+    {
+        $arrayOfTags = array();
+        $select = $this->_read->select()->from($this->_tagidTable)->where("tag_id=?", $tagId);
+        
 
+        $arrayOfTagsFromDb = $this->_read->fetchAll($select);
+        foreach ($arrayOfTagsFromDb as $tagValue) {
+            return $tagValue['email'];
+        }
+        return $eMail;
+    }
+    public function getNameByTagId($tagId)
+    {
+        $arrayOfTags = array();
+        $select = $this->_read->select()->from($this->_tagidTable)->where("tag_id=?", $tagId);
+        
+
+        $arrayOfTagsFromDb = $this->_read->fetchAll($select);
+        foreach ($arrayOfTagsFromDb as $tagValue) {
+            return $tagValue['name'];
+        }
+       
+      }
     public function addIntoDB($orderId, $elementsToAddIntoDB)
     {
         foreach ((array)$elementsToAddIntoDB as $tagId) {
