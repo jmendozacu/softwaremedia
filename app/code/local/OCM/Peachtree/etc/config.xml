@@ -37,10 +37,10 @@
 					<children>
             		  <sales>
             		      <children>
-    						<OCM_Peachtree>
-    							<title>Peachtree Export</title>
+    						<peachtree>
+    							<title>Peachtree</title>
     							<sort_order>71</sort_order>
-    						</OCM_Peachtree>
+    						</peachtree>
             		      </children>
             		  </sales>
 					</children>
