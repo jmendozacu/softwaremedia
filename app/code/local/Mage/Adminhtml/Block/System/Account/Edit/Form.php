@@ -101,14 +101,14 @@ class Mage_Adminhtml_Block_System_Account_Edit_Form extends Mage_Adminhtml_Block
 			'name' => 'new_office_password',
 			'label' => Mage::helper('adminhtml')->__('New Office365 Password'),
 			'title' => Mage::helper('adminhtml')->__('New Office365 Password'),
-			'class' => 'input-text validate-admin-password',
+			'class' => 'input-text',
 			)
 		);
 
 		$fieldset->addField('office_confirmation', 'password', array(
 			'name' => 'office_password_confirmation',
 			'label' => Mage::helper('adminhtml')->__('Office365 Password Confirmation'),
-			'class' => 'input-text validate-cpassword',
+			'class' => 'input-text',
 			)
 		);
 
