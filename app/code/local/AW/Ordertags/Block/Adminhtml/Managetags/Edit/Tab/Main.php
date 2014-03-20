@@ -72,7 +72,16 @@ class AW_Ordertags_Block_Adminhtml_Managetags_Edit_Tab_Main extends Mage_Adminht
                  'values' => $yesNoValues
             )
         );
-
+		 $fieldset->addField(
+            'email',
+            'text',
+            array(
+                 'label'    => Mage::helper('ordertags')->__('Alert E-Mail'),
+                 'name'     => 'email',
+                 'required' => false,
+            )
+            
+        );
         $fieldset->addField(
             'comment',
             'textarea',
