@@ -65,9 +65,12 @@ class Ophirah_Crmaddon_Adminhtml_CrmaddonController
                     $message = $this->__("CRM message couldn't be sent to the client");
                     Mage::getSingleton('adminhtml/session')->addError($message);
                 }
+                 if (is_string($sendMail) && $sendMail == 'cs') {
+                    Mage::getSingleton('adminhtml/session')->addNotice('Could not send from user e-mail, sending from customerservice@softwaremedia.com instead');  
+                }
 
             } catch (Exception $e) {
-                $message = $this->__("CRM message couldn't be sent to the client");
+                $message = $this->__("Error: CRM message couldn't be sent to the client");
                 Mage::log($e->getMessage());
                 Mage::getSingleton('adminhtml/session')->addError($message);
             }
@@ -156,12 +159,15 @@ class Ophirah_Crmaddon_Adminhtml_CrmaddonController
             $res = $template->send($crmData['crm_customerEmail'], $crmData['crm_customerName'], $vars);
 
         endif;
-        
+         if (!$res) {
+				$res = $template->getData('error');
+				}
+				
         if(!empty($res)){
             // save data to DB
             $model = Mage::getModel('crmaddon/crmaddonmessages')->setData($saveData)->save();
         }    
-
+		
         return $res;
     }
     
