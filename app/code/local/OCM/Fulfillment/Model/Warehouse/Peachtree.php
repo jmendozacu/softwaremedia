@@ -42,7 +42,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
                 'skip',
                 'qty',
                 'cost',
-                'skip'
+                'value'
             ); 
         }
         
@@ -55,15 +55,55 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 		$stock_model = Mage::getModel('cataloginventory/stock_item');
 		
 		$count = 0;
-        while (($data = fgetcsv($file, 1000, ",")) !== FALSE) {
-        	$line = array_combine($headers, $data);
-        	$values[] = "('".$line['sku']."','".$line['qty']."','".$line['cost']."')";
+        while (($data = fgets($file)) !== FALSE) {
+        	$data = $this->csv_split($data);
+        	$data[3] = str_replace(',','',$data[3]);
+        	$values[] = "('".$data[0]."','".$data[2]."','".$data[3]."')";
         }
         
         $query = $query . implode(',', $values) . ";";
         $writeConnection->query($query);
 	}
 	
+	function csv_split( $src, $comma = ',', $esc = '\\' ){
+	    $a = array();
+	    while( $src ){
+	    	$c = $src{0};
+	    	switch( $c ){
+	    	// permit empty values
+	    	case ',':
+	    		$a[] = '';
+	    		$src = substr( $src, 1 );
+	    		continue 2;
+	    	// ignore whitespace
+	    	case ' ':
+	    	case "\t":
+	    		preg_match('/^\s+/', $src, $r );
+	    		$src = substr( $src, strlen($r[0]) );
+	    		continue 2;
+	    	// quoted values
+	    	case '"':
+	    	case "'":
+	    	case '`':
+	    		$reg = sprintf('/^%1$s((?:\\\\.|[^%1$s\\\\])*)%1$s\s*(?:,|$)/', $c );
+	    		break;
+	    	// naked values
+	    	default:
+	    		$reg = '/^((?:\\\\.|[^,\\\\])*)(?:,|$)/';
+	    		$c = ',';
+	    	}
+	    	if( preg_match( $reg, $src, $r ) ){
+	    		$a[] = empty($r[1]) ? '' : str_replace( '\\'.$c, $c, $r[1] );
+	    		$src = substr( $src, strlen($r[0]) );
+	    		continue;
+	    	}
+	    	// else fail
+	    	trigger_error("csv_split failure", E_USER_WARNING );
+	    	break;
+	    }
+	    return $a;
+	}
+
 	public function updatePriceQtyFrom() {
 		$time = time();
 		$to = date('Y-m-d H:i:s', $time);
