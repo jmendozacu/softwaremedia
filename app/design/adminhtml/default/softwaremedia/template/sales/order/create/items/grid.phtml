@@ -45,9 +45,9 @@
             <thead>
                 <tr class="headings">
                     <th class="no-link"><?php echo $this->helper('sales')->__('Product') ?></th>
-                    <th class="no-link"><?php echo $this->helper('sales')->__('Price') ?></th>
-                    <th class="no-link"><?php echo $this->helper('sales')->__('CPC') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Cost') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('CPC') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Price') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Qty') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Subtotal') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Discount') ?></th>
@@ -82,10 +82,10 @@
             <col width="80" />
             <thead>
                 <tr class="headings">
-                    <th class="no-link" colspan="2"><?php echo $this->helper('sales')->__('Product') ?></th>
-                    <th class="no-link"><?php echo $this->helper('sales')->__('Price') ?></th>
-                    <th class="no-link"><?php echo $this->helper('sales')->__('CPC') ?></th>
+                    <th class="no-link" colspan="2"><?php echo $this->helper('sales')->__('Product') ?></th>                  
                     <th class="no-link"><?php echo $this->helper('sales')->__('Cost') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('CPC') ?></th>
+                    <th class="no-link"><?php echo $this->helper('sales')->__('Price') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Qty') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Subtotal') ?></th>
                     <th class="no-link"><?php echo $this->helper('sales')->__('Discount') ?></th>
@@ -125,6 +125,12 @@
                         </td>
                         <td class="a-center v-middle">
                             <?php echo $this->getConfigureButtonHtml($_item) ?>
+                        </td>
+                        <td class="price">
+                        	<?php echo $this->formatPrice($prod->getCost()); ?>
+                        </td>
+                        <td class="price">
+                        	<?php echo $this->formatPrice($prod->getCpcPrice()); ?>
                         </td>
                         <td class="price">
 
@@ -224,13 +230,9 @@
                             <?php endif; ?>
                             <input id="item_custom_price_<?php echo $_item->getId() ?>" name="item[<?php echo $_item->getId() ?>][custom_price]" value="<?php echo sprintf("%.2f", $this->getOriginalEditablePrice($_item))?>"<?php if (!$_isCustomPrice): ?> style="display:none" disabled="disabled"<?php endif; ?> class="input-text item-price"/>
                         </td>
-                        <td class="price">
-                        	<?php echo $this->formatPrice($prod->getCpcPrice()); ?>
-                        </td>
                         
-                        <td class="price">
-                        	<?php echo $this->formatPrice($prod->getCost()); ?>
-                        </td>
+                        
+                        
                         
                         <td><input name="item[<?php echo $_item->getId() ?>][qty]" class="input-text item-qty" value="<?php echo $_item->getQty()*1 ?>" maxlength="12" /></td>
                         <td class="price">
