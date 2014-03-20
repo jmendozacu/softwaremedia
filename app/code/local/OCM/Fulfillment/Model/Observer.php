@@ -150,7 +150,7 @@ class OCM_Fulfillment_Model_Observer
                  		$warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
                         //set order to complete here
                         $tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
-                        $order->setState('processing',$warehouse_name,'Order available to fulfill at ' . $warehouse_name . '. Setting status to \'' . ucfirst($warehouse_name[0]) . '\'.')->save();
+                        $order->setState('processing',$warehouse_name,'Order available to fulfill at ' . $warehouse_name . '. Setting status to \'' . ucfirst($warehouse_name) . '\'.')->save();
                         $done = true;
                         break;
                  	}
