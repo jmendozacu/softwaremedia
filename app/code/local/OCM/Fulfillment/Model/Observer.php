@@ -96,6 +96,7 @@ class OCM_Fulfillment_Model_Observer
                         
                         //if internal stock, always use
                         if ($warehouse_name == 'peachtree') {
+                        	$tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
 	                        $order->setState('processing',$warehouse_name,'Product is available in warehouse, use internal stock. Setting status to \'Warehouse\'.',FALSE)->save();
 	                        $done = true;
 	                        break;
@@ -114,11 +115,13 @@ class OCM_Fulfillment_Model_Observer
                 	//If shipping to Tennessee, use Synnex if available
                 	if ($order->getShippingAddress()->getRegionId() == $stop_states['TN']) {
 	                	if ($warehousesFulfill['synnex']) {
+	                		$tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
 		                	$order->setState('processing','synnex','Shipping to TN. Prioritize Synnex. Setting status to \'Synnex\'.',FALSE)->save();
 	                        continue;
 	                	}
                 	}
                     //set order to ship internal
+                    $tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
                     $order->setState('processing','processmanually','Shipping to TN, CA, or MA. May need to reship from UT. Setting status to \'Process Manually\'.', FALSE)->save();
                     continue;
                 }
@@ -133,6 +136,7 @@ class OCM_Fulfillment_Model_Observer
                  	$difference = $warehousesFulfill[$warehouseKeys[$warehouseCount - 1]] - $warehousesFulfill[$warehouseKeys[0]];
 	                 if ($difference >= 10) 							{
 		                 $done = 1;
+		                 $tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
 		                 $order->setState('processing',$warehouseKeys[0],'Order available $' . $difference . ' cheaper at ' . $warehouseKeys[0] . ' vs ' . $warehouseKeys[$warehouseCount - 1] . '. Setting status to \'' . ucfirst($warehouseKeys[0]) . '\'.', FALSE)->save();
 		                 $warehouse_model->getWarehouseModel($warehouseKeys[0])->fulfill($order , $order->getAllItems());
 		                 continue;
@@ -145,6 +149,7 @@ class OCM_Fulfillment_Model_Observer
                  	if (array_key_exists($warehouse_name, $warehousesFulfill)) {
                  		$warehouse_model->getWarehouseModel($warehouse_name)->fulfill($order , $order->getAllItems());
                         //set order to complete here
+                        $tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
                         $order->setState('processing',$warehouse_name,'Order available to fulfill at ' . $warehouse_name . '. Setting status to \'' . ucfirst($warehouse_name[0]) . '\'.')->save();
                         $done = true;
                         break;
@@ -195,6 +200,7 @@ class OCM_Fulfillment_Model_Observer
                 
                 //set order to "Process Manually" here
 				if(!$done){
+					$tagToOrderResource->addIntoDB($order->getId(), self::TAG_WAREHOUSE_ID);
 					$order->setState('processing','processmanually','No single warehouse has stock to fulfill entire order. Setting status to \'Process Manually\'.', FALSE)->save();
 				}
             
