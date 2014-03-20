@@ -58,6 +58,7 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
         while (($data = fgets($file)) !== FALSE) {
         	$data = $this->csv_split($data);
         	$data[3] = str_replace(',','',$data[3]);
+        	$data[2] = str_replace(',','',$data[2]);
         	$values[] = "('".$data[0]."','".$data[2]."','".$data[3]."')";
         }
         
