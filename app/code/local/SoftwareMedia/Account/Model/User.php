@@ -157,7 +157,9 @@ class SoftwareMedia_Account_Model_User extends Mage_Admin_Model_User {
 			}
 		}
 
+		
 		if ($this->hasNewOfficePassword()) {
+			/*
 			if (Mage::helper('core/string')->strlen($this->getNewOfficePassword()) < self::MIN_PASSWORD_LENGTH) {
 				$errors[] = Mage::helper('adminhtml')->__('Office365 Password must be at least of %d characters.', self::MIN_PASSWORD_LENGTH);
 			}
@@ -166,12 +168,13 @@ class SoftwareMedia_Account_Model_User extends Mage_Admin_Model_User {
 			) {
 				$errors[] = Mage::helper('adminhtml')->__('Office365 Password must include both numeric and alphabetic characters.');
 			}
-
+			*/
 			if (!$this->hasOfficePasswordConfirmation() || $this->getNewOfficePassword() != $this->getOfficePasswordConfirmation()) {
 				$errors[] = Mage::helper('adminhtml')->__('Office365 Password confirmation must be same as password.');
 			}
 		}
-
+		
+		
 		if ($this->userExists()) {
 			$errors[] = Mage::helper('adminhtml')->__('A user with the same user name or email aleady exists.');
 		}
