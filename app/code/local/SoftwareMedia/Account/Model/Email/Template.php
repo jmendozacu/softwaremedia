@@ -81,7 +81,8 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 			$mail->setBodyHTML($text);
 		}
 
-		$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
+		if (!$mail->getSubject())
+			$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
 
 		// If we are using store emails as reply-to's set the header
 		// Check the header is not already set by the application.
