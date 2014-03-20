@@ -91,6 +91,11 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Referral') ?></label></td>
                 <td class="value"><strong><?php echo $this->getReferer(); ?></strong></td>
             </tr>
+             <tr>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Tags') ?></label></td>
+                <td class="value"><strong><?php echo $this->getReferer(); ?></strong></td>
+            </tr>
+            
             <?php if($_order->getGlobalCurrencyCode() != $_order->getBaseCurrencyCode()): ?>
             <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('%s / %s rate:', $_order->getGlobalCurrencyCode(), $_order->getBaseCurrencyCode()) ?></label></td>

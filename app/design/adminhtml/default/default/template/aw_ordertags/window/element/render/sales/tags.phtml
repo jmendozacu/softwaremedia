@@ -1,0 +1,141 @@
+<?php
+/**
+ * aheadWorks Co.
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ *
+ * =================================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * =================================================================
+ * This software is designed to work with Magento enterprise edition and
+ * its use on an edition other than specified is prohibited. aheadWorks does not
+ * provide extension support in case of incorrect edition use.
+ * =================================================================
+ *
+ * @category   AW
+ * @package    AW_Ordertags
+ * @version    1.3.1
+ * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
+ * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ */
+?><div id="message-popup-window-mask" style="display:none;"></div>
+<div id="aw_ordertags_form" class="tagsform" style="display:none;">
+    <div class="head">
+        <h3><label id="aw_ot_header"></label></h3>
+    </div>
+    <div class="content">
+        <form method="post" action="<?php echo $this->getUrl('admin_ordertags/adminhtml_managetags/window', array('selestedTags' => 'tag_select', 'order_id'=>'aw_ot_order_id')) ?>" id="aw_ordertags">
+            <div id ="aw_tagwrapper">
+                <table class="form-list" cellspacing="0">
+                    <tbody>
+                        <input type="hidden" name="aw_ot_order_id" id="order_id" />
+                        <?php  $iterator = 0; ?>
+                        <?php foreach ($this->getTags() as $key => $tag): ?>
+                        <?php  $iterator++; ?>
+                            <tr class="tag">
+                                <td class="aw_ot_td_image">
+                                    <label for="<?php echo "aw_ot_checkbox".$iterator; ?>"><img alt="Tag image"   src="<?php echo $tag['imageurl']; ?>" ></label>
+                                </td>
+                                <td class="aw_ot_td_checkbox">
+                                    <input id="<?php echo "aw_ot_checkbox".$iterator; ?>" type="checkbox" name="tag_select[]" value="<?php echo $tag['value']; ?>" >
+                                </td>
+                                <td class="aw_ot_td_label">
+                                <label for="<?php echo "aw_ot_checkbox".$iterator; ?>"><?php echo $tag['label']; ?></label>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <table>
+                <tr>
+                    <td align="center" colspan="2" class="td_button">
+                        <button id="aw-save-button" class="scalable_save" style="" onclick="saveCloseMessagePopupWindow()" type="button">
+                            <span id="aw-save-button-content"> <?php echo $this->__('Save &amp; Close') ?></span>
+                        </button>
+                        <button type="button"  class="close" onclick="closeMessagePopupWindow()">
+                            <span>
+                                <?php echo $this->getCloseText(); ?>
+                            </span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" >
+    function showAwNotificator(arrayOfCheckboxes, orderId, incrementId) {
+        $('order_id').setAttribute('value', orderId);
+        $('aw_ot_header').innerHTML = '<?php echo $this->__("Tags for Order #") ?>' + incrementId;
+        initCheckboxes(arrayOfCheckboxes);
+        openMessagePopupWindow();
+        Effect.Appear('aw_ordertags_form', { duration: 1.0 });
+    }
+
+    function initCheckboxes(_arrayOfCheckboxes) {
+        var aw_ordertags_form = $('aw_ordertags');
+        var aw_ordertags_checkbox = aw_ordertags_form.getElements('checkbox');
+        aw_ordertags_checkbox.each(function (aw_ot_item) {
+                aw_ot_item.checked = false;
+            }
+        );
+
+        for (var aw_ot_iter = 0; aw_ot_iter < _arrayOfCheckboxes.length; aw_ot_iter++) {
+            aw_ordertags_checkbox.each(function (aw_ot_item) {
+                    if (aw_ot_item.value == _arrayOfCheckboxes[aw_ot_iter]) {
+                        aw_ot_item.checked = true;
+                    }
+                }
+            );
+        }
+    }
+
+    function openMessagePopupWindow() {
+        var height = $('html-body').getHeight();
+        var myClientHeight = getClientHeight();
+        var top = (myClientHeight - $('aw_ordertags_form').getHeight()) / 2;
+        $('message-popup-window-mask').setStyle({'height': height + 'px'});
+        $('aw_ordertags_form').setStyle({'top': top + 'px'});
+        toggleSelectsUnderBlock($('message-popup-window-mask'), false);
+        Element.show('message-popup-window-mask');
+    }
+
+    function closeMessagePopupWindow() {
+        toggleSelectsUnderBlock($('message-popup-window-mask'), true);
+        Effect.Fade('aw_ordertags_form', { duration: 0.5 });
+        Element.hide('message-popup-window-mask');
+    }
+
+    function getClientHeight() {
+        return document.documentElement.clientHeight;
+    }
+
+    function saveCloseMessagePopupWindow() {
+        $('aw-save-button-content').innerHTML = '<?php echo $this->__("Saving, please wait...") ?>';
+        $('aw-save-button').addClassName('disabled');
+        $('aw_ordertags').request({
+            onComplete: function () {
+                toggleSelectsUnderBlock($('message-popup-window-mask'), true);
+                Effect.Fade('aw_ordertags_form', { duration: 0.5 });
+                Element.hide('message-popup-window-mask');
+                var el = document.getElementById('aw_ordertags_form');
+                //sales_order_gridJsObject.reload();
+                window.top.location=window.top.location;
+                if (el.style.visibility != 'visible') {
+                    setTimeout(function () {
+                            $('aw-save-button-content').innerHTML = '<?php echo $this->__("Save &amp; Close") ?>';
+                            $('aw-save-button').removeClassName('disabled');
+                        }, 500
+                    )
+                }
+            }
+        });
+    }
+</script>
