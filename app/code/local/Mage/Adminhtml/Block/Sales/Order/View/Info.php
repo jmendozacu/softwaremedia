@@ -33,6 +33,78 @@
  */
 class Mage_Adminhtml_Block_Sales_Order_View_Info extends Mage_Adminhtml_Block_Sales_Order_Abstract
 {
+	static $_allTags;
+	
+    public function getTags()
+    {
+    	$row = $this->getOrder();
+    	$tagResource = Mage::getResourceModel('ordertags/orderidtotagid');
+    	$listOfCheckedTags = implode(',',$tagResource->getArrayByOrderId($row->getId()));
+    	
+        //$listOfCheckedTags = $row->getData('tags');
+        $orderId = $row->getData('entity_id');
+        $storeId = $row->getData('store_id');
+        $incrementId = $row->getData('increment_id');
+        $center = "a-center";
+
+        $html = "<div>
+                                <a  onClick=\"showAwNotificator( new Array (";
+
+        $html .= $listOfCheckedTags != "" ? "$listOfCheckedTags,0" : "0";
+
+        $html .= "), " . $orderId . ", '" . $incrementId . "'); return false;\"  href = '#' >";
+
+        $html .= $this->_getImagesAsHTML($listOfCheckedTags, $storeId);
+
+        $html .= "</a></div>";
+        return $html;
+    }
+
+    private function _getImagesAsHTML($listOfCheckedTags, $storeId)
+    {
+        $mediaBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+
+        $a = self::_getAllTags();
+
+        $html = '';
+        if ($listOfCheckedTags) {
+            $tags = explode(',', $listOfCheckedTags);
+            foreach ($tags as $tagId) {
+                if (isset($a[$tagId])) {
+                    $html .= '<img id="aw_tag_img" src="' . $mediaBaseUrl . $a[$tagId]['filename'] . '" title="'
+                        . $a[$tagId]['name'] . '" />';
+                }
+            }
+        } else {
+            $skinBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);
+            $urlToBlankTag = $skinBaseUrl . AW_Ordertags_Helper_Config::URL_TO_WHITE;
+            if (Mage::getStoreConfig('ordertags/configuration/blanktagimage', $storeId)) {
+                $urlToBlankTag = $mediaBaseUrl . DS . 'aw_ordertag'
+                    . DS . Mage::getStoreConfig('ordertags/configuration/blanktagimage', $storeId)
+                ;
+            }
+            $html .= '<img class="aw_tag_img" src="' . $urlToBlankTag . '" title="'
+                . Mage::helper('ordertags')->__('Default') . '"/>'
+            ;
+        }
+
+        return $html;
+    }
+
+    protected function _getAllTags()
+    {
+        if (!self::$_allTags) {
+            $collection = Mage::getModel('ordertags/managetags')->getCollection();
+            $_tags = array();
+            foreach ($collection as $tag) {
+
+                $_tags[$tag->getId()] = $tag->getData();
+            }
+            self::$_allTags = $_tags;
+        }
+        return self::$_allTags;
+    }
+    
     /**
      * Retrieve required options from parent
      */

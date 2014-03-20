@@ -20,4 +20,12 @@
             />
         </reference>
     </adminhtml_sales_order_index>
+    <adminhtml_sales_order_view>
+        <reference name="before_body_end">
+            <block type="ordertags/adminhtml_window_element_render_tags"
+                   name="aw_ordertags_wrapper"
+                   template="aw_ordertags/window/element/render/sales/tags.phtml"
+            />
+        </reference>
+    </adminhtml_sales_order_view>
 </layout>
