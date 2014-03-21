@@ -52,8 +52,8 @@ $collection = Mage::getModel('catalog/product')->getCollection()
             
 $collection = Mage::getModel('catalog/product')->getCollection()
 //			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addFieldToFilter('entity_id',array('lt' => 4521))
-            ->addFieldToFilter('entity_id',array('gt' => 4519))
+            ->addFieldToFilter('entity_id',array('lt' => 6605))
+            ->addFieldToFilter('entity_id',array('gt' => 6601))
             ->addAttributeToSelect('*')
             ->setPageSize(20);
 

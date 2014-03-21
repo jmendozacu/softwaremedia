@@ -285,19 +285,13 @@ class OCM_Fulfillment_Model_Observer
 				->addAttributeToSelect('warehouse_updated_at','left')
 	            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
 	            ->addAttributeToSelect('*')
+	            ->setOrder('warehouse_updated_at','ASC')
 	            ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
     	}
-    		
-        list($page_size,$current_page) = $this->_selectCountPage();
-
+   
         $helper = Mage::helper('ocm_fulfillment'); 
         
-        Mage::log('RUNNING',null,'fulfillment.log');
-    
-		
-        
-            //->setCurPage($current_page);
-            
+
         Mage::log('Loading TechData',null,'fulfillment.log');        
         $techdata = Mage::getModel('ocm_fulfillment/warehouse_techdata')->loadCollectionArray($collection);
         Mage::log('Loading Ingram',null,'fulfillment.log');      

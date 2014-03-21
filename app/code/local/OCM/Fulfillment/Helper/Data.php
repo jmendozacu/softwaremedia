@@ -8,8 +8,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$qty = 0;
 		$subItems = $product->getSubstitutionProducts();
 		$stock_model = Mage::getModel('cataloginventory/stock_item');
-		
-		// Ingram MUST be the end of the array for this to work
+
 		foreach (array('techdata','synnex','ingram') as $warehouse_name) {
 			if($product->getData($warehouse_name.'_qty') > 0) {
 				$price_array[] = $product->getData($warehouse_name.'_price');
@@ -44,7 +43,6 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		}
 	
 		$stock_model->loadByProduct($product->getId());
-		
 		
 		//Add up QTY 
 		foreach($subItems as $item) {
