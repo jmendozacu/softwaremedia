@@ -20,7 +20,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			}  
 		}
 		
-		$qty += $product->getData('peachtree_qty');
+		$qty += $product->getData('pt_qty');
 		if (!$product->getData('pt_avg_cost')) {
 			//If no prices from warehouses with QTY, use all prices
 			if (count($price_array) == 0 && count($all_price) > 0)
@@ -52,7 +52,6 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		try {
 			$product->save();
 			$stock_model->save();
-			Mage::log("SAVE " . $qty, null, "fullfillment.log");
 		} catch (Exception $e) {
 			Mage::log($e->getMessage());
 		}
