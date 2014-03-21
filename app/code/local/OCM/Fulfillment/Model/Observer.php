@@ -23,6 +23,8 @@ class OCM_Fulfillment_Model_Observer
             $is_download = false;
             $is_license = false;
             
+            $shippingMethod = $order->getShippingMethod();
+            
             $items = $order->getAllItems();
             foreach($items as $item){
             	if ($item->getHasChildren())
@@ -36,10 +38,17 @@ class OCM_Fulfillment_Model_Observer
 	                $is_physical = true;
                 }
                 
+                
 				if (substr($prod->getSku(),-2) == 'DL') {
 					$is_download = true;
 				} elseif ($prod->getAttributeSetId() != self::DEFAULT_ATTRIBUTE_SET_ID && $prod->getAttributeSetId() != self::RETAIL_ATTRIBUTE_SET_ID)					
 					$is_license = true;
+				elseif ($shippingMethod = 'productmatrix_Free_Electronic_Delivery') {
+					$is_download = true;
+					$is_physical = false;
+					$is_virtual = true;
+				}
+					
             }
 
             if($is_virtual){ 
@@ -88,7 +97,6 @@ class OCM_Fulfillment_Model_Observer
                 
                 $done = false;
                 foreach($warehouse_model->warehouses as $warehouse_name) {
-                	echo $warehouse_name . " - " . $warehouse_model->getData($warehouse_name)->getCanFulfill() . "<br />";
                     if ($warehouse_model->getData($warehouse_name)->getCanFulfill()) {
                     	$warehousesFulfill[$warehouse_name] = $warehouse_model->getData($warehouse_name)->getTotalCost();
                         //fulfill with warehouse here
@@ -176,7 +184,7 @@ class OCM_Fulfillment_Model_Observer
                     // foreach ($warehouse->getAllItems() as $id => $item) {
                         // if ($item->getQty() > $request_qtys[$id]) {
                         
-                            // $multi_fulfillment[$warehouse_name][$id] = new Varien_Object(array(
+                            // $multi_fulfillment[$warehouse_name][$id] = new ien_Object(array(
                                 // 'sku' => $item->getSku(),
                                 // 'qty' => $request_qtys[$id],
                             // ));
@@ -277,19 +285,13 @@ class OCM_Fulfillment_Model_Observer
 				->addAttributeToSelect('warehouse_updated_at','left')
 	            ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
 	            ->addAttributeToSelect('*')
+	            ->setOrder('warehouse_updated_at','ASC')
 	            ->setPageSize(self::FULFILLMENT_PAGE_SIZE);
     	}
-    		
-        list($page_size,$current_page) = $this->_selectCountPage();
-
+   
         $helper = Mage::helper('ocm_fulfillment'); 
         
-        Mage::log('RUNNING',null,'fulfillment.log');
-    
-		
-        
-            //->setCurPage($current_page);
-            
+
         Mage::log('Loading TechData',null,'fulfillment.log');        
         $techdata = Mage::getModel('ocm_fulfillment/warehouse_techdata')->loadCollectionArray($collection);
         Mage::log('Loading Ingram',null,'fulfillment.log');      
@@ -342,6 +344,8 @@ class OCM_Fulfillment_Model_Observer
                    //echo ${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price'];
                    Mage::log('Updated ' . $product->getSku() . $warehouse_name,null,'fulfillment.log');
                } else {
+               	$product->setData($warehouse_name.'_qty',null);
+               	$product->setData($warehouse_name.'_price',null);
                	$sku = $product->getData(${$warehouse_name.'_sku_attr'});
 	           	if (isset($sku)) {
 	           		$product->setData('warehouse_errors','No Warehouse Match for SKU ' . $sku . " -> " . $warehouse_name);
