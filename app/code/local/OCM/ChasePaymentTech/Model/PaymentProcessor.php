@@ -146,6 +146,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 				default:
 					$resultArray = array(
 						'Response' => "Error",
+						'procStatusMessage' => $TxResponse->return->procStatusMessage,
 						'ErrorCode' => $TxResponseCode
 					);
 					Mage::log('In switch default', null, 'SDB.log');
@@ -163,6 +164,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 				default:
 					$resultArray = array(
 						'Response' => "Error",
+						'procStatusMessage' => $TxResponse->return->procStatusMessage,
 						'ErrorCode' => $TxResponseCode
 					);
 					Mage::log('In switch default', null, 'SDB.log');
@@ -181,6 +183,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 				default:
 					$resultArray = array(
 						'Response' => "Error",
+						'procStatusMessage' => $TxResponse->return->procStatusMessage,
 						'ErrorCode' => $TxResponseCode
 					);
 					Mage::log('In switch last', null, 'SDB.log');
