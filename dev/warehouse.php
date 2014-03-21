@@ -44,15 +44,15 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 //Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();           
   
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
-/*
+
 $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToFilter('sku','VM-WS9VP1099F')
+			->addAttributeToFilter('sku','QU-296019')
             ->addAttributeToSelect('*');
 
             
-Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouse($collection);
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$collection);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
-  */          
+    
 $collection = Mage::getModel('catalog/product')->getCollection()
 //			->addAttributeToSelect('warehouse_updated_at','left')
             ->addFieldToFilter('entity_id',array('lt' => 8595))
@@ -66,6 +66,6 @@ $collection = Mage::getModel('catalog/product')->getCollection()
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
-echo count($collection);
-Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
+//echo count($collection);
+//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
