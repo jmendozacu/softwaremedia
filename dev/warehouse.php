@@ -46,19 +46,17 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 
 $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToFilter('sku','QU-296019')
-            ->addAttributeToSelect('*');
-
+//			->addAttributeToSelect('warehouse_updated_at','left')
+            ->addFieldToFilter('entity_id',array('lt' => 318))
+            ->addFieldToFilter('entity_id',array('gt' => 315))
+            ->addAttributeToSelect('*')
+            ->setPageSize(20);
+echo count($collection);
             
 Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$collection);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
     
-$collection = Mage::getModel('catalog/product')->getCollection()
-//			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addFieldToFilter('entity_id',array('lt' => 8595))
-            ->addFieldToFilter('entity_id',array('gt' => 8585))
-            ->addAttributeToSelect('*')
-            ->setPageSize(20);
+
 //            ->addAttributeToFilter('sku','AC-VMPXRPENS13');
 /*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
             //->addAttributeToSelect('cpc_price')

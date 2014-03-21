@@ -29,7 +29,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
     
     protected function _getRequest($xml) {
         $content_length=strlen($xml);
- 
+		
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
         curl_setopt($ch, CURLOPT_URL, 'https://newport.ingrammicro.com'); 
@@ -116,16 +116,15 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
             $xml = new SimpleXMLElement($result);
             
             foreach($xml->PriceAndAvailability as $item) {
+            	$ingram_sku = (string) $item->attributes()->ManufacturerPartNumber;
             	if ($item->SKUStatus) {
-            		  unset($this->_collection[$ingram_sku]);
+            		unset($this->_collection[$ingram_sku]);
             		continue;
-            	}
-            	
-                $ingram_sku = (string) $item->attributes()->ManufacturerPartNumber;
+            	}      	
+                
                 $this->_collection[ $ingram_sku ]['price'] = $item->{ self::INGRAM_PRICE_NODE };
                 $this->_collection[ $ingram_sku ]['qty'] = $this->_getQty($item);
             }
- 
         } catch (Exception $e) {
             
             Mage::log($e->getMessage(),null,'techdata.log');
