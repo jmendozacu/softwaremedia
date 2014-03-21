@@ -91,7 +91,7 @@
             </update_product_warehouse_data>
             <update_peachtree_warehouse_data>
                 <schedule>
-                    <cron_expr>*/5 0,1,2,3,4,5 * * *</cron_expr>
+                    <cron_expr>*/5 0,1,2,3,4,5,6,23,22,21,20 * * *</cron_expr>
                 </schedule>
                 <run>
                     <model>ocm_fulfillment/warehouse_peachtree::updatePriceQtyFrom</model>

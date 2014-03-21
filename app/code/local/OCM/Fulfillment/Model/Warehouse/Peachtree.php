@@ -114,7 +114,8 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
 		 $collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('peachtree_updated','left')
             ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
-            ->addAttributeToSelect('*');
+            ->addAttributeToSelect('*')
+            ->setOrder('peachtree_updated','ASC');
              $collection->getSelect()
 				->joinleft(
 					array('pv' => 'catalog_product_flat_1'), 'pv.entity_id=e.entity_id', array()
