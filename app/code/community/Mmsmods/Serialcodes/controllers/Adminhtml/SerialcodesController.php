@@ -74,8 +74,10 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 					$ptime = null;
 				}
 				$codes = explode("\n", $this->getRequest()->getParam('code'));
+				$codes_filtered = array_count_values(array_map('trim', $codes));
 				$existing_codes = $sc_model->getCollection()->addFieldToFilter('sku', trim($sku));
-				foreach ($codes as $code) {
+
+				foreach ($codes_filtered as $code => $count) {
 					$code = trim($code);
 					if ($code <> '') {
 						$found = false;
