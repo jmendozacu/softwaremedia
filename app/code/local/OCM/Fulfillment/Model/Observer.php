@@ -267,21 +267,22 @@ class OCM_Fulfillment_Model_Observer
 		$collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('*')
             ->addAttributeToSelect('peachtree_updated','left')
-	        ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
+	        ->addattributeToFilter('peachtree_updated',array('null' => true))
             ->addAttributeToFilter('sku',$product->getSku());
              $collection->getSelect()
 				->joininner(
 					array('peach' => 'ocm_peachtree'), 'e.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
 				);
+		if (count($collection) == 1)
             Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
             
        $collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('*')
             ->addAttributeToSelect('warehouse_updated_at','left')
-	        ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+	        ->addattributeToFilter('warehouse_updated_at',array('null' => true))
             ->addAttributeToFilter('sku',$product->getSku());
-            
-      $this->updateProductWarehouseData(null,$collection);
+      if (count($collection) == 1)      
+      	$this->updateProductWarehouseData(null,$collection);
 	}
 	
     protected function _selectCountPage() {
