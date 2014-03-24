@@ -43,7 +43,7 @@ class OCM_Fulfillment_Model_Observer
 					$is_download = true;
 				} elseif ($prod->getAttributeSetId() != self::DEFAULT_ATTRIBUTE_SET_ID && $prod->getAttributeSetId() != self::RETAIL_ATTRIBUTE_SET_ID)					
 					$is_license = true;
-				elseif ($shippingMethod = 'productmatrix_Free_Electronic_Delivery') {
+				elseif ($shippingMethod == 'productmatrix_Free_Electronic_Delivery') {
 					$is_download = true;
 					$is_physical = false;
 					$is_virtual = true;
@@ -258,7 +258,20 @@ class OCM_Fulfillment_Model_Observer
     }
 
 
-
+	public function updateByProduct($product) {
+		$collection = Mage::getModel('catalog/product')->getCollection()
+            ->addAttributeToSelect('*')
+            ->addAttributeToFilter('sku',$product->getSku());
+             $collection->getSelect()
+				->joinleft(
+					array('pv' => 'catalog_product_flat_1'), 'pv.entity_id=e.entity_id', array()
+				)
+				->joininner(
+					array('peach' => 'ocm_peachtree'), 'pv.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
+				);
+            $this->updatePriceQty($collection);
+	}
+	
     protected function _selectCountPage() {
         $catalog_size = Mage::getModel('catalog/product')->getCollection()->getSize();
         $page_size = ceil($catalog_size / 14);
