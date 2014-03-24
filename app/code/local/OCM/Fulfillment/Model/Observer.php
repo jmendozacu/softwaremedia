@@ -270,11 +270,8 @@ class OCM_Fulfillment_Model_Observer
 	        ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToFilter('sku',$product->getSku());
              $collection->getSelect()
-				->joinleft(
-					array('pv' => 'catalog_product_flat_1'), 'pv.entity_id=e.entity_id', array()
-				)
 				->joininner(
-					array('peach' => 'ocm_peachtree'), 'pv.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
+					array('peach' => 'ocm_peachtree'), 'e.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
 				);
             Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
             
