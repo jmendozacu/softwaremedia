@@ -28,8 +28,9 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$cost = false;
 		
 		$qty += $product->getData('pt_qty');
+		
 		//If no peachtree cost, or pt cost is 0 & no pt qty, use cost from warehouse if available
-		if (!is_numeric($product->getData('pt_avg_cost')) || (is_numeric($product->getData('pt_avg_cost') && $product->getData('pt_avg_cost') == 0 && (!$product->getData('pt_qty') || $product->getData('pt_qty') < 0)))) {
+		if (!is_numeric($product->getData('pt_avg_cost')) || (is_numeric($product->getData('pt_avg_cost')) && $product->getData('pt_avg_cost') == 0 && (!$product->getData('pt_qty') || $product->getData('pt_qty') <= 0))) {
 			//If no prices from warehouses with QTY, use all prices
 			if (count($price_array) == 0 && count($all_price) > 0)
 				$price_array = $all_price;
@@ -39,9 +40,14 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$cost = $lowest_cost;
 		} else {
 			//Use PT_avg_cost if not 0, or if 0 and no pt_qty
-			$cost = $product->getData('pt_avg_cost');
+			//echo $product->getData('pt_avg_cost');
+			
+			if ((is_numeric($product->getData('pt_qty')) && $product->getData('pt_qty') > 0) || $product->getData('pt_avg_cost') > 0) {
+				$cost = $product->getData('pt_avg_cost');
+			}
+			//die();
 		}
-	
+
 		$stock_model->loadByProduct($product->getId());
 		
 		//Add up QTY 
@@ -55,7 +61,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$qty+=$item->getData('pt_qty');
 		}
 		
-		if ($cost) 
+		//if ($cost) 
 			$product->setData('cost',$cost);
 			
 		$stock_model->setData('qty',$qty);
