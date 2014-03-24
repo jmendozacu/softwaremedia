@@ -12,7 +12,7 @@ class SoftwareMedia_Substitution_Model_Observer
     public function catalog_product_save_after($observer)
     {
         $product = $observer->getProduct();
-        
+       Mage::getModel('ocm_fulfillment/observer')->updateByProduct($product);
         $links = Mage::getResourceModel('catalog/product_link');
         $linkModel = Mage::getModel('catalog/product_link');
         

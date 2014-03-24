@@ -69,7 +69,7 @@ class OCM_Fulfillment_Model_Observer
             		if ($is_download) {
             			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
             			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
-						$order->setState('processing','multipleproductorder','Order contains download and licensing items. Setting status to \'Process Manually\'.',FALSE)->save();
+						$order->setState('processing','multipleproductorder','Order contains download and licensing items. Setting status to \'Multiple Product Order\'.',FALSE)->save();
 						continue;
 					} else {
 						$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
@@ -259,8 +259,15 @@ class OCM_Fulfillment_Model_Observer
 
 
 	public function updateByProduct($product) {
+		$time = time();
+			$to = date('Y-m-d H:i:s', $time);
+			$lastTime = $time - (1*60*60); // 60*60*24
+			$from = date('Y-m-d H:i:s', $lastTime);
+			
 		$collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('*')
+            ->addAttributeToSelect('peachtree_updated','left')
+	        ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToFilter('sku',$product->getSku());
              $collection->getSelect()
 				->joinleft(
@@ -269,7 +276,15 @@ class OCM_Fulfillment_Model_Observer
 				->joininner(
 					array('peach' => 'ocm_peachtree'), 'pv.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
 				);
-            $this->updatePriceQty($collection);
+            Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
+            
+       $collection = Mage::getModel('catalog/product')->getCollection()
+            ->addAttributeToSelect('*')
+            ->addAttributeToSelect('warehouse_updated_at','left')
+	        ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+            ->addAttributeToFilter('sku',$product->getSku());
+            
+      $this->updateProductWarehouseData(null,$collection);
 	}
 	
     protected function _selectCountPage() {
