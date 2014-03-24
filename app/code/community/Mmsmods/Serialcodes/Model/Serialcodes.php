@@ -407,7 +407,7 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 						if ($this->hidePendingCodes($order, $item, $product, $codeids[$i], $i)) {
 							$codes[$i] = Mage::helper('serialcodes')->__('Issued when payment received.');
 						}
-						$templatearray[$template]['html'] .= '<br /><span class="sc_type">' . $templatearray[$template]['codetype'] . ':</span> <span class="sc_code">' . $codes[$i] . '</span>';
+						$templatearray[$template]['html'] .= '<br /><span class="sc_code">' . $codes[$i] . '</span>';
 						if ($product->getSerialCodeUseVoucher()) {
 							$templatearray[$template]['code'] = $codes[$i];
 							$this->dispatchDeliveryEmail($order, $templatearray, $showmessage);
