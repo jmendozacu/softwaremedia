@@ -2,7 +2,7 @@
 class OCM_Fulfillment_Model_Observer
 {
 	const FULFILLMENT_PAGE_SIZE     = 50;
-	const FULFILLMENT_UPDATE_DELAY     = 60;
+	const FULFILLMENT_UPDATE_DELAY     = 24;
 	const DEFAULT_ATTRIBUTE_SET_ID = 9;
 	const RETAIL_ATTRIBUTE_SET_ID = 81;
 	
