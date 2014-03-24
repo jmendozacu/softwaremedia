@@ -414,7 +414,7 @@ var manufacturerList = {
 	"Sybase"		:	[
 	{
 		"ManufacturerID" 	: "10826",
-		"ManufacturerCode"	: "S"
+		"ManufacturerCode"	: "SB"
 	
 	}
 	],
