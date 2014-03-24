@@ -261,7 +261,7 @@ class OCM_Fulfillment_Model_Observer
 	public function updateByProduct($product) {
 		$time = time();
 			$to = date('Y-m-d H:i:s', $time);
-			$lastTime = $time - (1*60*60); // 60*60*24
+			$lastTime = $time - (24*60*60); // 60*60*24
 			$from = date('Y-m-d H:i:s', $lastTime);
 			
 		$collection = Mage::getModel('catalog/product')->getCollection()
@@ -285,7 +285,7 @@ class OCM_Fulfillment_Model_Observer
             ->addAttributeToFilter('sku',$product->getSku())
             ->setPageSize(1);
        if (count($collection) == 1)       
-      $this->updateProductWarehouseData(null,$collection);
+		$this->updateProductWarehouseData(null,$collection);
 	}
 	
     protected function _selectCountPage() {
