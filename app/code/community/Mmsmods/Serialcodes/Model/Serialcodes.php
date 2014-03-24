@@ -411,7 +411,7 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 						if ($product->getSerialCodeUseVoucher()) {
 							$templatearray[$template]['code'] = $codes[$i];
 							$this->dispatchDeliveryEmail($order, $templatearray, $showmessage);
-							$templatearray[$template]['html'] = str_replace('<br /><span class="sc_type">' . $templatearray[$template]['codetype'] . ':</span> <span class="sc_code">' . $codes[$i] . '</span>', '', $templatearray[$template]['html']);
+							$templatearray[$template]['html'] = str_replace('<br /><span class="sc_code">' . $codes[$i] . '</span>', '', $templatearray[$template]['html']);
 						}
 					}
 					if (round($item->getQtyInvoiced()) && $item->getQtyInvoiced() < $item->getQtyOrdered()) {
