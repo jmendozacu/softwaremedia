@@ -30,10 +30,8 @@ die();
 
 /*
 $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('visibility')
-            ->addAttributeToSelect('package_id')
-            ->addAttributeToSelect('ingram_micro_usa')
-            ->addAttributeToFilter('sku','SY-Z0TWWZF0EI1EE');
+            ->addAttributeToSelect('*')
+            ->addAttributeToFilter('sku','AD-61101754');
             */
       
 
@@ -45,20 +43,18 @@ $collection = Mage::getModel('catalog/product')->getCollection()
   
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 $collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('peachtree_updated','left')
-            ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
             ->addAttributeToSelect('*')
             ->setOrder('peachtree_updated','ASC');
             
-$collection = Mage::getModel('catalog/product')->getCollection()
-//			->addAttributeToSelect('warehouse_updated_at','left')
-            ->addFieldToFilter('entity_id',array('lt' => 6605))
-            ->addFieldToFilter('entity_id',array('gt' => 6601))
-            ->addAttributeToSelect('*')
-            ->setPageSize(20);
+            $collection->getSelect()
+				->joininner(
+					array('peach' => 'ocm_peachtree'), 'e.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
+				);
+				
+    echo count($collection);        
 
-Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$collection);
-//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
+//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$collection);
+Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
     
 
 //            ->addAttributeToFilter('sku','AC-VMPXRPENS13');
@@ -68,6 +64,6 @@ Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$col
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
-//echo count($collection);
+
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();

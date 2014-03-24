@@ -69,7 +69,7 @@ class OCM_Fulfillment_Model_Observer
             		if ($is_download) {
             			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
             			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
-						$order->setState('processing','processmanually','Order contains download and licensing items. Setting status to \'Process Manually\'.',FALSE)->save();
+						$order->setState('processing','multipleproductorder','Order contains download and licensing items. Setting status to \'Process Manually\'.',FALSE)->save();
 						continue;
 					} else {
 						$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
