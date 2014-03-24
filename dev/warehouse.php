@@ -45,16 +45,16 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 $collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('*')
             ->setOrder('peachtree_updated','ASC');
-            
+
             $collection->getSelect()
 				->joininner(
 					array('peach' => 'ocm_peachtree'), 'e.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
 				);
-				
-    echo count($collection);        
+				$collection->setPageSize(700);
+    echo $collection->getSize();        
 
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$collection);
-Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
+//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
     
 
 //            ->addAttributeToFilter('sku','AC-VMPXRPENS13');
