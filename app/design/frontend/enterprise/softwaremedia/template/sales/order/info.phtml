@@ -28,7 +28,8 @@
 <?php $_order = $this->getOrder() ?>
 <div class="order-page">
 <div class="page-title title-buttons">
-    <h1><?php echo $this->__('Order #%s - %s', $_order->getRealOrderId(), ucfirst($_order->getState())) ?></h1>
+	<?php if ($_order->getState() == 'holded') { $state =  "On Hold"; } else { $state = ucfirst($_order->getState()); } ?>
+    <h1><?php echo $this->__('Order #%s - %s', $_order->getRealOrderId(), $state) ?></h1>
     <?php echo $this->getChildHtml('buttons') ?>
 </div>
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
