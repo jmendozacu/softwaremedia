@@ -363,15 +363,23 @@ class OCM_Fulfillment_Model_Observer
            foreach (array('techdata','synnex','ingram') as $warehouse_name) {
            
                if(is_array(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ])) {
-                   $product->setData($warehouse_name.'_price',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price']);
-                   $product->setData($warehouse_name.'_qty',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty']);
-    
-                   if($product->getData($warehouse_name.'_qty') > 0) {
-                       $price_array[] = $product->getData($warehouse_name.'_price');
-                       $qty += $product->getData($warehouse_name.'_qty');
+               		if (is_numeric(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price']) ||is_numeric(${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty'])) {
+	                   $product->setData($warehouse_name.'_price',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price']);
+	                   $product->setData($warehouse_name.'_qty',${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['qty']);
+	    
+	                   if($product->getData($warehouse_name.'_qty') > 0) {
+	                       $price_array[] = $product->getData($warehouse_name.'_price');
+	                       $qty += $product->getData($warehouse_name.'_qty');
+	                   }
+	                   //echo ${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price'];
+	                   Mage::log('Updated ' . $product->getSku() ." " . $warehouse_name,null,'fulfillment.log');
+                   } else {
+	                   $sku = $product->getData(${$warehouse_name.'_sku_attr'});
+					   if (isset($sku)) {
+		           		$product->setData('warehouse_errors','No Warehouse Match for SKU ' . $sku . " -> " . $warehouse_name);
+				   		Mage::log('No Warehouse Match for SKU ' . $product->getSku() . " -> " . $sku . " -> " . $warehouse_name,null,'fulfillment.log');
+		           	}
                    }
-                   //echo ${$warehouse_name.'_products'}[ $product->getData(${$warehouse_name.'_sku_attr'}) ]['price'];
-                   Mage::log('Updated ' . $product->getSku() . $warehouse_name,null,'fulfillment.log');
                } else {
                	$product->setData($warehouse_name.'_qty',null);
                	$product->setData($warehouse_name.'_price',null);
