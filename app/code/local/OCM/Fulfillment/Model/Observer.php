@@ -2,7 +2,7 @@
 class OCM_Fulfillment_Model_Observer
 {
 	const FULFILLMENT_PAGE_SIZE     = 50;
-	const FULFILLMENT_UPDATE_DELAY     = 60;
+	const FULFILLMENT_UPDATE_DELAY     = 24;
 	const DEFAULT_ATTRIBUTE_SET_ID = 9;
 	const RETAIL_ATTRIBUTE_SET_ID = 81;
 	
@@ -43,7 +43,7 @@ class OCM_Fulfillment_Model_Observer
 					$is_download = true;
 				} elseif ($prod->getAttributeSetId() != self::DEFAULT_ATTRIBUTE_SET_ID && $prod->getAttributeSetId() != self::RETAIL_ATTRIBUTE_SET_ID)					
 					$is_license = true;
-				elseif ($shippingMethod = 'productmatrix_Free_Electronic_Delivery') {
+				elseif ($shippingMethod == 'productmatrix_Free_Electronic_Delivery') {
 					$is_download = true;
 					$is_physical = false;
 					$is_virtual = true;
@@ -69,7 +69,7 @@ class OCM_Fulfillment_Model_Observer
             		if ($is_download) {
             			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
             			$tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
-						$order->setState('processing','multipleproductorder','Order contains download and licensing items. Setting status to \'Process Manually\'.',FALSE)->save();
+						$order->setState('processing','multipleproductorder','Order contains download and licensing items. Setting status to \'Multiple Product Order\'.',FALSE)->save();
 						continue;
 					} else {
 						$tagToOrderResource->addIntoDB($order->getId(), self::TAG_LICENSING_ID);
@@ -258,7 +258,36 @@ class OCM_Fulfillment_Model_Observer
     }
 
 
-
+	public function updateByProduct($product) {
+		$time = time();
+			$to = date('Y-m-d H:i:s', $time);
+			$lastTime = $time - (24*60*60); // 60*60*24
+			$from = date('Y-m-d H:i:s', $lastTime);
+			
+		$collection = Mage::getModel('catalog/product')->getCollection()
+            ->addAttributeToSelect('*')
+            ->addAttributeToSelect('peachtree_updated','left')
+	        ->addattributeToFilter('peachtree_updated',array(array('lt' => $from),array('null' => true)))
+            ->addAttributeToFilter('sku',$product->getSku())
+            ->setPageSize(1);
+             $collection->getSelect()
+				->joininner(
+					array('peach' => 'ocm_peachtree'), 'e.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
+				);
+				
+			if (count($collection) == 1)   
+            Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
+            
+       $collection = Mage::getModel('catalog/product')->getCollection()
+            ->addAttributeToSelect('*')
+            ->addAttributeToSelect('warehouse_updated_at','left')
+	        ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
+            ->addAttributeToFilter('sku',$product->getSku())
+            ->setPageSize(1);
+       if (count($collection) == 1)       
+		$this->updateProductWarehouseData(null,$collection);
+	}
+	
     protected function _selectCountPage() {
         $catalog_size = Mage::getModel('catalog/product')->getCollection()->getSize();
         $page_size = ceil($catalog_size / 14);

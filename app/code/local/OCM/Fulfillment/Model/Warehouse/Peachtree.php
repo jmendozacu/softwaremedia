@@ -117,11 +117,8 @@ class OCM_Fulfillment_Model_Warehouse_Peachtree extends OCM_Fulfillment_Model_Wa
             ->addAttributeToSelect('*')
             ->setOrder('peachtree_updated','ASC');
              $collection->getSelect()
-				->joinleft(
-					array('pv' => 'catalog_product_flat_1'), 'pv.entity_id=e.entity_id', array()
-				)
 				->joininner(
-					array('peach' => 'ocm_peachtree'), 'pv.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
+					array('peach' => 'ocm_peachtree'), 'e.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
 				);
 				
             $collection->setPageSize(70);
