@@ -40,32 +40,30 @@ $collection = Mage::getModel('catalog/product')->getCollection()
 
 
 //Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();           
-  $time = time();
-			$to = date('Y-m-d H:i:s', $time);
-			$lastTime = $time - (10*60*60); // 60*60*24
-			$from = date('Y-m-d H:i:s', $lastTime);
-			
-		$collection = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToSelect('*')
-            ->addAttributeToSelect('warehouse_updated_at','left')
-	        ->addattributeToFilter('warehouse_updated_at',array(array('lt' => $from),array('null' => true)))
-            ->setPageSize(100);
-        echo $collection->getSize();
-        die();    
+  
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
 $collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('*')
+            ->addAttributeToFilter('sku','AD-61101754')
             ->setOrder('peachtree_updated','ASC');
             
             $collection->getSelect()
+				->joinleft(
+					array('pv' => 'catalog_product_flat_1'), 'pv.entity_id=e.entity_id', array()
+				)
 				->joininner(
-					array('peach' => 'ocm_peachtree'), 'e.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
+					array('peach' => 'ocm_peachtree'), '.sku=peach.sku', array('peachtree_qty' => 'qty','peachtree_cost' => 'cost')
 				);
-				
-    echo count($collection);        
 
-//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$collection);
-Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
+$collection = Mage::getModel('catalog/product')->getCollection()
+//			->addAttributeToSelect('warehouse_updated_at','left')
+            ->addFieldToFilter('entity_id',array('lt' => 352))
+            ->addFieldToFilter('entity_id',array('gt' => 168))
+            ->addAttributeToSelect('*')
+            ->setPageSize(50);
+
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(null,$collection);
+//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
     
 
 //            ->addAttributeToFilter('sku','AC-VMPXRPENS13');
