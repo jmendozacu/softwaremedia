@@ -1,9 +1,7 @@
 <?php
-
-$lists       = $this->getLists();
-$myLists     = $this->getSubscribedLists();
+$lists = $this->getLists();
+$myLists = $this->getSubscribedLists();
 $generalList = $this->getGeneralList();
-
 ?>
 <div class="page-title">
     <h1><?php echo $this->__('Newsletter Subscription'); ?></h1>
@@ -15,42 +13,33 @@ $generalList = $this->getGeneralList();
 
 			<!-- General Subscription -->
 			<li class="listdata"><?php echo $this->listLabel($generalList); ?>
-				<?php if(is_array($generalList['interest_groupings'])): ?>
-					<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
-					<?php foreach($generalList['interest_groupings'] as $group): ?>
-						<div class="grouping">
-							<strong><?php echo $group['name']; ?></strong>
-							<?php echo $this->renderGroup($group, $generalList); ?>
-						</div>
-					<?php endforeach; ?>
-					</div>
-
+				<?php if (is_array($generalList['interest_groupings'])): ?>
 				<?php endif; ?>
 			</li>
 			<!-- General Subscription -->
 
-				<!-- Additional Lists -->
+			<!-- Additional Lists -->
 			<?php
-				foreach($lists as $list):
-					$igroups = $list['interest_groupings'];
-			?>
+			foreach ($lists as $list):
+				$igroups = $list['interest_groupings'];
+				?>
 
 				<li class="listdata"><?php echo $this->listLabel($list); ?>
-				<?php if(is_array($igroups)): ?>
-					<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
-					<?php foreach($igroups as $group): ?>
-						<div class="grouping">
-							<strong><?php echo $group['name']; ?></strong>
-							<?php echo $this->renderGroup($group, $list); ?>
+					<?php if (is_array($igroups)): ?>
+						<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
+							<?php foreach ($igroups as $group): ?>
+								<div class="grouping">
+									<strong><?php echo $group['name']; ?></strong>
+									<?php echo $this->renderGroup($group, $list); ?>
+								</div>
+							<?php endforeach; ?>
 						</div>
-					<?php endforeach; ?>
-					</div>
 
-				<?php endif; ?>
+					<?php endif; ?>
 				</li>
 
 			<?php endforeach; ?>
-				<!-- Additional Lists -->
+			<!-- Additional Lists -->
 
 		</ul>
 	</div>
@@ -65,28 +54,28 @@ $generalList = $this->getGeneralList();
 		removeManageNewsletter();
 
 		//Handle newsletter subscribe/unsubscribe checkbox events
-		$$('input.monkey-list-subscriber').each(function(chk){
+		$$('input.monkey-list-subscriber').each(function(chk) {
 
-				if( !chk.checked ){
-					var groupings = $('interest_groupings_'+chk.value);
-					if(groupings){
-						groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
+			if (!chk.checked) {
+				var groupings = $('interest_groupings_' + chk.value);
+				if (groupings) {
+					groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
+				}
+			}
+
+			chk.observe('change', function() {
+
+				var groupings = $('interest_groupings_' + this.value);
+				if (groupings) {
+					var elements = groupings.select('select', 'input');
+					if (this.checked) {
+						elements.invoke('removeAttribute', 'disabled');
+					} else {
+						elements.invoke('writeAttribute', 'disabled', 'disabled');
 					}
 				}
 
-				chk.observe('change', function(){
-
-					var groupings = $('interest_groupings_'+this.value);
-					if(groupings){
-						var elements = groupings.select('select', 'input');
-						if(this.checked){
-							elements.invoke('removeAttribute', 'disabled');
-						}else{
-							elements.invoke('writeAttribute', 'disabled', 'disabled');
-						}
-					}
-
-				});
+			});
 		});
 
 		//Load viewstate on hidden field for later process
