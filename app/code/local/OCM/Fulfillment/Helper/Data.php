@@ -8,8 +8,12 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$qty = 0;
 		$subItems = $product->getSubstitutionProducts();
 		$stock_model = Mage::getModel('cataloginventory/stock_item');
+		$hasResult = false;
 
 		foreach (array('techdata','synnex','ingram') as $warehouse_name) {
+			if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
+				$hasResult = true;
+				
 			if($product->getData($warehouse_name.'_qty') > 0) {
 				$price_array[] = $product->getData($warehouse_name.'_price');
 				$qty += $product->getData($warehouse_name.'_qty');
@@ -28,7 +32,9 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$cost = false;
 		
 		$qty += $product->getData('pt_qty');
-		
+		if ($qty)
+			$hasResult = true;
+			
 		//If no peachtree cost, or pt cost is 0 & no pt qty, use cost from warehouse if available
 		if (!is_numeric($product->getData('pt_avg_cost')) || (is_numeric($product->getData('pt_avg_cost')) && $product->getData('pt_avg_cost') == 0 && (!$product->getData('pt_qty') || $product->getData('pt_qty') <= 0))) {
 			//If no prices from warehouses with QTY, use all prices
@@ -53,6 +59,9 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		//Add up QTY 
 		foreach($subItems as $item) {
 			foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
+				if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
+					$hasResult = true;
+					
 				$prod = Mage::getModel('catalog/product')->load($item->getId());
 				$qty+=$prod->getData($warehouse_name.'_qty');
 				if (!$cost && $prod->getData('cost'))
@@ -61,15 +70,24 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$qty+=$item->getData('pt_qty');
 		}
 		
-		//if ($cost) 
+		if ($cost) 
 			$product->setData('cost',$cost);
-			
-		$stock_model->setData('qty',$qty);
 		
 		//Additional rules for physical items
+		$stock_model->setData('backorders',0);
+		if($hasResult && !$qty) {
+			$qty = 9999;
+			if ($product->getData('package_id')==1085) {
+				$stock_model->setData('backorders',1);
+				$stock_model->setData('use_config_backorders',0);
+			}
+		}
 		
-		if($qty) $stock_model->setData('is_in_stock',1);
+		if($qty) {
+			$stock_model->setData('is_in_stock',1);
+		}
 		
+		$stock_model->setData('qty',$qty);
 		try {
 			$product->save();
 			$stock_model->save();
