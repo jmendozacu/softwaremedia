@@ -20,11 +20,11 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Tabs extends Mage_Adminhtml_Blo
 		$this->parent = parent::_prepareLayout();
 		if ($setId) {
 			//add new tab
-			$this->addTab('substitution', array(
+			$this->addTabAfter('substitution', array(
 					'label'		=> Mage::helper('catalog')->__('Substitutions'),
 					'url'		=> $this->getUrl('*/*/substitution', array('_current' => true)),
 					'class'		=> 'ajax',
-			));
+			),'categories');
 		}
 		
 		return $this->parent;
