@@ -7,11 +7,7 @@
  */
 class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer {
 
-	public function __construct() {
-		parent::__construct();
-	}
-
-	public function updateProduct(Varien_Event_Observer $observer) {
+	public function updateProduct() {
 		Mage::log('Starting ubervis update');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
@@ -71,7 +67,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 
 
 		Mage::log('Finished Updating Ubervis');
-		return true;
 	}
 
 }
