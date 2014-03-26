@@ -161,9 +161,16 @@
 
                     <?php echo $this->getChildHtml('other');?>
                     <?php if ($_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message')): ?>
+                    	<?php $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product);
+							if ($inventory->getBackorders()): ?>
+	                    <p class="availability">
+	                    	Backordered. Product may take 1-2 weeks for delivery.
+	                    </p>
+	                    <?php else: ?>
 	                    <p class="availability in-stock">
 	                    	<?php echo $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message') ?>
 	                    </p>
+	                    <?php endif; ?>
                     <?php endif; ?>
                 </div>
 
