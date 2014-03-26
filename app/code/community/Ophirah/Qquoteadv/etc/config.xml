@@ -362,7 +362,7 @@
             </qquoteadv_expire_email>
             <qquoteadv_reminder_email>
                 <schedule>
-                    <cron_expr>* 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 * * *</cron_expr>                  
+                    <cron_expr>* 12,13,14,15,16,17,18,19,20,21,22,23,0,1,2 * * *</cron_expr>                  
                 </schedule>
                 <run>
                     <model>qquoteadv/qqadvcustomer::sendReminderEmail</model>
@@ -370,7 +370,7 @@
             </qquoteadv_reminder_email> 
             <qquoteadv_reminder_email_2>
                 <schedule>
-                    <cron_expr>* 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 * * *</cron_expr>                    
+                    <cron_expr>* 12,13,14,15,16,17,18,19,20,21,22,23,0,1,2 * * *</cron_expr>                     
                 </schedule>
                 <run>
                     <model>qquoteadv/qqadvcustomer::send2ndReminderEmail</model>
@@ -378,7 +378,7 @@
             </qquoteadv_reminder_email_2> 
             <qquoteadv_reminder_email_3>
                 <schedule>
-                    <cron_expr>* 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 * * *</cron_expr>                  
+                    <cron_expr>* 12,13,14,15,16,17,18,19,20,21,22,23,0,1,2 * * *</cron_expr>                   
                 </schedule>
                 <run>
                     <model>qquoteadv/qqadvcustomer::send3rdReminderEmail</model>
