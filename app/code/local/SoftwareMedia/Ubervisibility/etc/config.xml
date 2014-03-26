@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<SoftwareMedia_Ubervisibility>
-			<version>0.1.0</version>
+			<version>0.1.1</version>
 		</SoftwareMedia_Ubervisibility>
 	</modules>
 	<global>
@@ -21,18 +21,22 @@
 				</connection>
 			</SoftwareMedia_Ubervisibility_setup>
 		</resources>
-
-		<crontab>
-			<jobs>
-				<SoftwareMedia_Ubervisibility_Update>
-					<schedule>
-						<cron_expr>0 1 * * *</cron_expr>
-					</schedule>
-					<run>
-						<model>ubervisibility/observer::updateProduct</model>
-					</run>
-				</SoftwareMedia_Ubervisibility_Update>
-			</jobs>
-		</crontab>
+		<models>
+			<ubervisibility>
+				<class>SoftwareMedia_Ubervisibility_Model</class>
+			</ubervisibility>
+		</models>
 	</global>
+	<crontab>
+		<jobs>
+			<SoftwareMedia_Ubervisibility>
+				<schedule>
+					<cron_expr>0 1 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ubervisibility/observer::updateProduct</model>
+				</run>
+			</SoftwareMedia_Ubervisibility>
+		</jobs>
+	</crontab>
 </config>
