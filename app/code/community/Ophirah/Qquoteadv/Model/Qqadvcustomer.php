@@ -651,8 +651,11 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                      */
                     if ($debug && $_quoteadv->getEmail()) 
                     	echo "Send to " . $_quoteadv->getEmail() . "<br /><br />";
-                    else
+                   
                     	$res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
+                    	$_quoteadv->setData('no_reminder' . $inc,1);
+                    	$_quoteadv->save();
+                    	
                 }
 
             }

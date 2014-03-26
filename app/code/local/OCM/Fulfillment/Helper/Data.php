@@ -85,6 +85,8 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		
 		if($qty) {
 			$stock_model->setData('is_in_stock',1);
+		} else {
+			$stock_model->setData('is_in_stock',0);
 		}
 		
 		$stock_model->setData('qty',$qty);
