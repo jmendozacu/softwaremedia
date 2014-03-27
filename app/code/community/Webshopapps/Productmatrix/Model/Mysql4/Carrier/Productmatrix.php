@@ -155,7 +155,7 @@ class Webshopapps_Productmatrix_Model_Mysql4_Carrier_Productmatrix extends Mage_
         }
 
         $absoluteResults = $this->organisePriorities($finalResults);
-
+		
     	if (in_array('custom_sorting',$this->_options)) {
 			usort($absoluteResults, array($this,'cmp_notes'));
     	}
@@ -232,7 +232,7 @@ class Webshopapps_Productmatrix_Model_Mysql4_Carrier_Productmatrix extends Mage_
 
     protected function organisePriorities(&$finalResults) {
         $absoluteResults = array();
-
+		
         if ($this->_prioritySet) {
             foreach ($finalResults as $i => $rate) {
                 $priceArr[$i] = $rate['price'];
@@ -244,9 +244,16 @@ class Webshopapps_Productmatrix_Model_Mysql4_Carrier_Productmatrix extends Mage_
             $previousPriority="";
 
             foreach ($finalResults as $data) {
+            	if ($data['delivery_type'] == 'Free Budget') {
+            		$budget = $data;
+            	}
+            	
                 if ($previousPrice==$data['price'] && $data['priority']!=$previousPriority  && is_numeric($data['priority']) && is_numeric($previousPriority)) {
                     continue;
                 } else {
+                	if ($data['package_id'] == 'electronic,physical')
+                		$hasPhysical = true;
+                			
                     $previousPrice=$data['price'];
                     $previousPriority=$data['priority'];
                     $absoluteResults[]=$data;
@@ -255,7 +262,9 @@ class Webshopapps_Productmatrix_Model_Mysql4_Carrier_Productmatrix extends Mage_
         } else {
             $absoluteResults=$finalResults;
         }
-
+        if ($hasPhysical)
+			$absoluteResults[]=$budget;
+		
         return $absoluteResults;
     }
 

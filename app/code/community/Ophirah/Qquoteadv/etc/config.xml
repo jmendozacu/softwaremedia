@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ophirah_Qquoteadv>
-            <version>4.2.5</version>
+            <version>4.2.6</version>
         </Ophirah_Qquoteadv>
     </modules>
     <global>
@@ -362,7 +362,7 @@
             </qquoteadv_expire_email>
             <qquoteadv_reminder_email>
                 <schedule>
-                    <cron_expr>1 6 * * *</cron_expr>                  
+                    <cron_expr>*/5 12,13,14,15,16,17,18,19,20,21,22,23,0,1,2 * * *</cron_expr>                  
                 </schedule>
                 <run>
                     <model>qquoteadv/qqadvcustomer::sendReminderEmail</model>
@@ -370,7 +370,7 @@
             </qquoteadv_reminder_email> 
             <qquoteadv_reminder_email_2>
                 <schedule>
-                    <cron_expr>11 6 * * *</cron_expr>                  
+                    <cron_expr>*/5 12,13,14,15,16,17,18,19,20,21,22,23,0,1,2 * * *</cron_expr>                     
                 </schedule>
                 <run>
                     <model>qquoteadv/qqadvcustomer::send2ndReminderEmail</model>
@@ -378,7 +378,7 @@
             </qquoteadv_reminder_email_2> 
             <qquoteadv_reminder_email_3>
                 <schedule>
-                    <cron_expr>21 6 * * *</cron_expr>                  
+                    <cron_expr>*/5 12,13,14,15,16,17,18,19,20,21,22,23,0,1,2 * * *</cron_expr>                   
                 </schedule>
                 <run>
                     <model>qquoteadv/qqadvcustomer::send3rdReminderEmail</model>
