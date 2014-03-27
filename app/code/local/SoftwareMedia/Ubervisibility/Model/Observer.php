@@ -14,6 +14,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->addAttributeToFilter('updated_at', array('gt' => new Zend_Db_Expr('ubervis_updated')));
 		$collection->setPageSize(100);
 
+		echo $collection->getSelect();
+
 		foreach ($collection as $prod) {
 			$updated_data = $prod->getData();
 			$mpn = $updated_data['manufacturer_pn_2'];
