@@ -70,7 +70,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$qty+=$item->getData('pt_qty');
 		}
 		
-		if ($cost) 
+		//if ($cost) 
 			$product->setData('cost',$cost);
 		
 		//Additional rules for physical items
