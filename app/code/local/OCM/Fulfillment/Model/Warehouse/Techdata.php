@@ -128,9 +128,15 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
             foreach($xml->Detail->LineInfo as $item) {
             	
                 $tech_sku = (string) $item->RefID1;
-
+				if ($item->ErrorInfo)
+					continue;
+					
                 $this->_collection[ $tech_sku ] = array();
-                $this->_collection[ $tech_sku ]['price'] = (string) str_replace('$','',$item->{ self::TECH_DATA_PRICE_NODE });
+                $price = (string) str_replace('$','',$item->{ self::TECH_DATA_PRICE_NODE });
+                $price = str_replace(',','',$price);
+                //echo $price;
+                //die();
+                $this->_collection[ $tech_sku ]['price'] = $price;
                 $this->_collection[ $tech_sku ]['qty'] = $this->_getQty($item);
             }
             
