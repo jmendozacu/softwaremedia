@@ -11,7 +11,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		Mage::log('Starting ubervis update');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
-		$collection->addAttributeToFilter('updated_at', array('gt' => new Zend_Db_Expr('ubervis_updated')));
+		$collection->addAttributeToFilter(array(array('updated_at', array('gt' => new Zend_Db_Expr('at_ubervis_updated.value'))), array(new Zend_Db_Expr('at_ubervis_updated.value'), array('null'))));
 		$collection->setPageSize(100);
 
 		echo $collection->getSelect();
