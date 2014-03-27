@@ -39,7 +39,9 @@ Mage::app('admin')->setUseSessionInUrl(false);
 //updatePriceQtyFromCsv
 //Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();
 //$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
-
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+error_reporting(-1);
 
 Mage::getModel('ubervisibility/observer')->updateProduct();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
