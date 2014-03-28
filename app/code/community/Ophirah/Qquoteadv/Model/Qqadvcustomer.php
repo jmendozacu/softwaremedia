@@ -957,7 +957,22 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                 foreach($addresses as $address){
                     if($address->getData('address_type') == $type){                       
                         // Set Address to quote
+                        $email = $this->getData('email');
+                        $firstname = $this->getData('firstname');
+                        $lastname = $this->getData('lastname');
+                        $telephone = $this->getData('telephone');
+                        $company = $this->getData('company');
                         $this->addData($address->getData());
+                        if ($email)
+                        	$this->setData('email',$email);
+                        if ($firstname)
+                        	$this->setData('firstname',$firstname);
+                        if ($lastname)
+                        	$this->setData('lastname',$lastname);
+                        if ($telephone)
+                        	$this->setData('telephone',$telephone);
+                        if ($company)
+                        	$this->setData('company',$company);
                         // Set Address to address
                         $this->_address->addData($address->getData());                        
                     }
