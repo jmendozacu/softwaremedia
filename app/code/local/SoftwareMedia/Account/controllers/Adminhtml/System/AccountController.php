@@ -34,7 +34,17 @@
 require_once 'Mage/Customer/controllers/AccountController.php';
 
 class SoftwareMedia_Account_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_Action {
-
+	
+	public function updateEmailAction() {
+		$order_id = Mage::app()->getRequest()->getParam('orderid');
+		$email_address =  Mage::app()->getRequest()->getParam('email');
+		
+		Mage::log($order_id . " - " . $email_address);
+		
+		$order = Mage::getModel('sales/order')->load($order_id);
+		$order->setCustomerEmail($email_address)->save();
+	}
+	
 	public function indexAction() {
 		$this->_title($this->__('System'))->_title($this->__('My Account'));
 
