@@ -7,6 +7,7 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
      */
     public function saveBillingAction()
     {
+    	
         if ($this->_expireAjax()) {
             return;
         }
@@ -20,6 +21,10 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
             $result = $this->getOnepage()->saveBilling($data, $customerAddressId);
 			
 			
+			if ($this->getRequest()->getPost('billing_address_id')) {
+				$add = Mage::getModel('customer/address')->load($this->getRequest()->getPost('billing_address_id'));
+				$data['country_id'] = $add->getCountryId();
+			}
 			
 			//Hijack Canadian Orders
 			if ($data['country_id'] == 'CA') {
