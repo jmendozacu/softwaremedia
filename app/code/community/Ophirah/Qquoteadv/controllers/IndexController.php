@@ -1587,7 +1587,6 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
 
             //EMAIL IS REGESTERED BUT CUSTOMER IS STILL NOT LOGGED IN
             if(empty($customerId) && $this->_isEmailExists()) {
-              $email = trim($paramsAddress['email']);
               $customer = Mage::getModel('customer/customer')
                               ->setWebsiteId(Mage::app()->getStore()->getWebsiteId())
                               ->loadByEmail($email);
