@@ -1505,7 +1505,9 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
         $result = false;
         $cartHelper = Mage::helper('checkout/cart');
         $cart = $cartHelper->getItemsCount();
-
+		
+		$helper = Mage::app()->getHelper('qquoteadv');
+		
         if ($cart > 0) {
             $session = Mage::getSingleton('checkout/session');
 
@@ -1523,8 +1525,8 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
                             unset($superAttribute['info_buyRequest']['uenc']);                        
                         
                         $optionalAttrib = serialize($superAttribute['info_buyRequest']);
-                        var_dump($optionalAttrib);
-                        die();
+                        //var_dump($optionalAttrib);
+                        //die();
                     }
                     
                     $params = array(
@@ -1539,11 +1541,151 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
                     $this->addDataAction($params, $optionalAttrib);
                 }
             }
+			$quoteId = $this->getCustomerSession()->getQuoteadvId();
+			
+            $canadaInfo = Mage::getSingleton('core/session')->getCanadaInfo();
+            
+            $canadaInfo['created_at']    = NOW();
+            $canadaInfo['updated_at']    = NOW();
+            $canadaInfo['is_quote']    = 1;
+            $canadaInfo['status']        = Ophirah_Qquoteadv_Model_Status::STATUS_REQUEST;
+            $canadaInfo['store_id']      = Mage::app()->getStore()->getStoreId();
+            $canadaInfo['increment_id']  = Mage::getModel('qquoteadv/entity_increment_numeric')->getNextId();
+            $canadaInfo['itemprice']     = (Mage::getStoreConfig('qquoteadv/general/itemprice', $canadaInfo['store_id']) == 1)?1:0;
+            $canadaInfo['create_hash']   = Mage::helper('qquoteadv')->getCreateHash($canadaInfo['increment_id']);
+            
+            if (! $this->getCustomerSession()->isLoggedIn()) {
+                try {
+                    if (!Zend_Validate::is($email, 'EmailAddress')) {
+                        Mage::throwException($this->__('Please enter an valid email address'));
+                    }
 
+                    if ($helper->userEmailAlreadyExists($email)) {
+                        $this->_setIsEmailExists(true);
+                        // If disable account check is no, show message
+                        if(Mage::getStoreConfig('qquoteadv/general/disable_exist_account_check') == 0 ) {
+                            Mage::throwException($this->__('Email already exists'));                            
+                        }                  
+                    }
+                } catch (Exception $e) {
+                    $this->getCoreSession()->addException($e, $this->__('%s', $e->getMessage()));
+                    $welcome = false;
+                }
+            } else {
+	            $canadaInfo['email'] = $this->getCustomerSession()->getCustomer()->getEmail();
+            }
+            
+            if (!$this->getCustomerSession()->isLoggedIn() && !$this->_isEmailExists()) {
+                $this->_createCustomerAccount($canadaInfo['email'], $canadaInfo['firstname'], $canadaInfo['lastname']);
+            }
+            $email = $canadaInfo['email'];
+            
+            $customerId = $this->getCustomerSession()->getId();
+            if(empty($customerId)) {
+               $customerId = $this->getCustomerSession()->getNotConfirmedId();
+            }
+
+            //EMAIL IS REGESTERED BUT CUSTOMER IS STILL NOT LOGGED IN
+            if(empty($customerId) && $this->_isEmailExists()) {
+              $email = trim($paramsAddress['email']);
+              $customer = Mage::getModel('customer/customer')
+                              ->setWebsiteId(Mage::app()->getStore()->getWebsiteId())
+                              ->loadByEmail($email);
+              $customerId = $customer->getId();
+            }
+            $canadaInfo['customer_id'] = $customerId;
+            //echo $customerId;
+
+            
+            //Mage::getModel('qquoteadv/qqadvcustomer')->addCustomer($quoteId, $canadaInfo);
+           
+			$_quoteadv = Mage::getModel('qquoteadv/qqadvcustomer')->load($quoteId);
+			
+			
+			$currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+                
+            $baseCurrency = Mage::app()->getBaseCurrencyCode();
+            if($currencyCode != $baseCurrency){
+                  $rates = Mage::getModel('directory/currency')->getCurrencyRates($baseCurrency,$currencyCode);
+                  $rate = $rates[$currencyCode];
+            }else{
+                $rate = 1;
+            }
+
+
+            $_quoteadv->setCurrency($currencyCode);
+            $_quoteadv->setBaseToQuoteRate($rate);
+
+            /** @var $helper Ophirah_Qquoteadv_Helper_Data */
+            $helper = Mage::app()->getHelper('qquoteadv');
+
+            //#Assigned to user
+            //$helper->assignQuote($_quoteadv, $customerId);
+            
+            // Set Expiry Date Proposal
+            //$_quoteadv->setExpiry($helper->getExpiryDate());
+            //$_quoteadv->setNoExpiry(0);
+
+            //disable sales_quote_item_qty_set_after observer
+            Mage::register('QtyObserver', 'disable');
+            
+            //#originalPrice
+            $qqadvproductData = Mage::getModel('qquoteadv/qqadvproduct')->getCollection()->addFieldToFilter('quote_id', array("eq"=> $quoteId));
+            //$itemsData = array();
+
+            foreach($qqadvproductData as $item) {
+            	//var_dump($item);
+            	$quoteadvProductId = $item->getId();
+            	$productId = $item->getProductId();
+            	$qty = $item->getQty();
+            	//echo $quoteadvProductId;
+            	//die();
+                            $ownerPrice = Mage::helper('qquoteadv')->_applyPrice($quoteadvProductId, $qty);
+                            $originalPrice = Mage::helper('qquoteadv')->_applyPrice($quoteadvProductId, 1);
+                            //#current currency price
+                            $currencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+                            $ownerCurPrice = Mage::helper('qquoteadv')->_applyPrice($quoteadvProductId, $qty, $currencyCode);
+                            $originalCurPrice = Mage::helper('qquoteadv')->_applyPrice($quoteadvProductId, 1, $currencyCode);
+                           
+                            $itemsData = array(
+                            	'quote_id'              => $quoteId,
+                                'product_id'            => $productId,
+                                'request_qty'           => $qty,
+                                'owner_base_price'      => $ownerPrice,
+                                'original_price'        => $originalPrice,
+                                'owner_cur_price'       => $ownerCurPrice,
+                                'original_cur_price'    => $originalCurPrice,
+                                'quoteadv_product_id'   => $quoteadvProductId
+                            );
+ 
+                           $requestitem = Mage::getModel('qquoteadv/requestitem')->setData($itemsData);
+                           $requestitem->save(); 
+            }            
+            //var_dump($itemsData);
+            //die();
+            // Set Expiry Date Proposal
+                $_quoteadv->setExpiry($helper->getExpiryDate());
+                $_quoteadv->setNoExpiry(0);
+                
+            try{
+                //set quote address
+                $_quoteadv->updateAddress($_quoteadv);                  
+                $_quoteadv->collectTotals();
+                $_quoteadv->addData($canadaInfo);
+                $_quoteadv->save();
+                Mage::unregister('QtyObserver');
+                //$this->_clearQuote();
+                $this->getCustomerSession()->setQuoteadvId(null);
+            } catch (Mage_Core_Exception $e) {
+				$session = Mage::getSingleton('core/session'); 
+                 $session->addException($e, $this->__('There was a problem with the subscription: %s', $e->getMessage()));
+             }
+ 
+                    
             $result = true;
         }
         
-        $this->_redirect('qquoteadv/index/');        
+        $this->_redirect('quote-ca-thank-you');       
     }
     
     //case: called from shopping cart page
