@@ -1544,7 +1544,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
 			$quoteId = $this->getCustomerSession()->getQuoteadvId();
 			
             $canadaInfo = Mage::getSingleton('core/session')->getCanadaInfo();
-            
+            $email = $canadaInfo['email'];
             $canadaInfo['created_at']    = NOW();
             $canadaInfo['updated_at']    = NOW();
             $canadaInfo['is_quote']    = 1;
@@ -1578,7 +1578,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
             if (!$this->getCustomerSession()->isLoggedIn() && !$this->_isEmailExists()) {
                 $this->_createCustomerAccount($canadaInfo['email'], $canadaInfo['firstname'], $canadaInfo['lastname']);
             }
-            $email = $canadaInfo['email'];
+            
             
             $customerId = $this->getCustomerSession()->getId();
             if(empty($customerId)) {
