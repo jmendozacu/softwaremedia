@@ -133,7 +133,7 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                 </tr>
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('sales')->__('Email') ?></label></td>
-                    <td class="value"><a href="mailto:<?php echo $_order->getCustomerEmail() ?>"><strong><?php echo $_order->getCustomerEmail() ?></strong></a></td>
+                    <td class="value"><span id="email_cancel" style="display: none;"><input type="text" value="<?php echo $_order->getCustomerEmail() ?>" name="emailedit" id="emailedit" /> (<a href="#" onclick="emailSave();">save</a>) (<a href="#" onclick="emailCancel();">cancel</a>)</span><span id="email_view"><a href="mailto:<?php echo $_order->getCustomerEmail() ?>"><strong><?php echo $_order->getCustomerEmail() ?></strong></a> (<a href="#" onclick="emailEdit();">edit</a>)</span></td>
                 </tr>
                 <?php if ($_groupName = $this->getCustomerGroupName()) : ?>
                 <tr>
@@ -224,3 +224,29 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
 </div>
 <div class="clear"></div>
 <?php endif; ?>
+
+<script type="text/javascript">
+
+	function emailEdit() {
+		$('email_cancel').show();
+		$('email_view').hide();
+	}
+	function emailCancel() {
+		$('email_cancel').hide();
+		$('email_view').show();
+	}
+	function emailSave() {
+		
+		var email = $('emailedit').getValue();
+
+		new Ajax.Request('<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/system_account/updateEmail'); ?>', {
+		  method: 'get',
+		  parameters: {email: email, orderid: <?php echo $_order->getId(); ?>},
+		  onSuccess: function(transport){
+		  	$('email_cancel').hide();
+			$('email_view').show();
+			$('email_view').update('<a href="mailto:' + email + '"><strong>' + email + '</strong></a> (<a href="#" onclick="emailEdit();">edit</a>)');
+		  }
+		});
+	}
+</script>
