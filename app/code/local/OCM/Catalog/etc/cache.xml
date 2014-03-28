@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <placeholders>
+        <!--welcome_user_cache>
+            <block>catalog/category_view</block>
+            <placeholder>CATEGORY_VIEW</placeholder>
+            <container>OCM_Catalog_Model_Container_Category</container>
+            <cache_lifetime>86400</cache_lifetime>
+        </welcome_user_cache-->
+    </placeholders>
+</config>
