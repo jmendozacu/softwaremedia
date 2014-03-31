@@ -2,7 +2,7 @@
 <config>
     <modules>
         <SoftwareMedia_EmailHistory>
-            <version>0.1.0</version>
+            <version>0.1.2</version>
         </SoftwareMedia_EmailHistory>
     </modules>
     <admin>
@@ -26,6 +26,11 @@
 		</layout>
 	</adminhtml>
     <global>
+    	<blocks>
+            <emailhistory>
+                <class>SoftwareMedia_EmailHistory_Block</class>
+            </emailhistory>
+    	</blocks>
       <helpers>
             <emailhistory>
                 <class>SoftwareMedia_EmailHistory_Helper</class>
