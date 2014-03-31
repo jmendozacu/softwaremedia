@@ -137,7 +137,7 @@
 						<?php endif;?>
 
 	                    <?php if($_product->isSaleable()): ?>
-	                       <button type="button" title="<?php echo $this->__('More Info') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('More Info') ?></span></span></button>
+	                       <button type="button" title="<?php echo $this->__('More Info') ?>" class="button btn-cart" onclick="setLocation('<?php echo $_product->getProductUrl();  ?>')"><span><span><?php echo $this->__('More Info') ?></span></span></button>
 	                   <?php endif; ?>
                     </div>
                 </div>
