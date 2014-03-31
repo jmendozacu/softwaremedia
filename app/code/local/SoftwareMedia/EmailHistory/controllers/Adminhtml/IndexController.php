@@ -1,5 +1,5 @@
 <?php
-class SoftwareMedia_EmailHistory_Adminhtml_IndexController extends Mage_Core_Controller_Front_Action
+class SoftwareMedia_EmailHistory_Adminhtml_EmailhistoryController extends Mage_Core_Controller_Front_Action
 {
     public function viewAction()
     {
