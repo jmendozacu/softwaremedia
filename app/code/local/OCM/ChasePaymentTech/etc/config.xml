@@ -1,45 +1,57 @@
 <?xml version="1.0"?>
 <config>
-    <modules>
-       <OCM_ChasePaymentTech>
-          <version>0.1.0</version>
-       </OCM_ChasePaymentTech>
-    </modules>
- 
-    <global>
-        <models>
-            <chasePaymentTech>
-                <class>OCM_ChasePaymentTech_Model</class>
-            </chasePaymentTech>
-            <paygate>
-              <rewrite>
-                  <authorizenet_source_cctype>OCM_ChasePaymentTech_Model_Authorizenet_Source_Cctype</authorizenet_source_cctype>
-              </rewrite>    
-            </paygate>
-        </models>
- 
- 	    
-	<helpers>
-            <chasePaymentTech>
-                <class>OCM_ChasePaymentTech_Helper</class>
-            </chasePaymentTech>
-        </helpers>
-        <resources>
-            <ocm_chase_setup>
-                <setup>
-                    <module>OCM_ChasePaymentTech</module>
-                    <class>Mage_Catalog_Model_Resource_Setup</class>
-                </setup>
-            </ocm_chase_setup>
-        </resources> 
-    </global>
-    
-    <default>
-        <payment>
-            <chasePaymentTech>
-                <active>0</active>
-                <model>chasePaymentTech/paymentMethod</model>
-            </chasePaymentTech>
-        </payment>
-    </default>
+	<modules>
+		<OCM_ChasePaymentTech>
+			<version>0.1.7</version>
+		</OCM_ChasePaymentTech>
+	</modules>
+
+	<global>
+		<models>
+			<chasePaymentTech>
+				<class>OCM_ChasePaymentTech_Model</class>
+			</chasePaymentTech>
+			<paygate>
+				<rewrite>
+					<authorizenet_source_cctype>OCM_ChasePaymentTech_Model_Authorizenet_Source_Cctype</authorizenet_source_cctype>
+				</rewrite>
+			</paygate>
+			<profiles>
+				<class>OCM_ChasePaymentTech_Model</class>
+				<resourceModel>profiles_mysql4</resourceModel>
+			</profiles>
+			<profiles_mysql4>
+				<class>OCM_ChasePaymentTech_Model_Mysql4</class>
+				<entities>
+					<chase_profiles>
+						<table>cm_chase_profiles</table>
+					</chase_profiles>
+				</entities>
+			</profiles_mysql4>
+		</models>
+
+
+		<helpers>
+			<chasePaymentTech>
+				<class>OCM_ChasePaymentTech_Helper</class>
+			</chasePaymentTech>
+		</helpers>
+		<resources>
+			<ocm_chase_setup>
+				<setup>
+					<module>OCM_ChasePaymentTech</module>
+					<class>Mage_Catalog_Model_Resource_Setup</class>
+				</setup>
+			</ocm_chase_setup>
+		</resources>
+	</global>
+
+	<default>
+		<payment>
+			<chasePaymentTech>
+				<active>0</active>
+				<model>chasePaymentTech/paymentMethod</model>
+			</chasePaymentTech>
+		</payment>
+	</default>
 </config>
