@@ -5,6 +5,26 @@
             <version>0.1.0</version>
         </SoftwareMedia_EmailHistory>
     </modules>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <emailhistory before="Mage_Adminhtml">SoftwareMedia_EmailHistory_Adminhtml</emailhistory>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+		<layout>
+			<updates>
+				<emailhistory>
+					<file>emailhistory.xml</file>
+				</emailhistory>
+			</updates>
+		</layout>
+	</adminhtml>
     <global>
       <helpers>
             <emailhistory>
