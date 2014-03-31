@@ -1,2 +1,3 @@
 User-agent: *
-Disallow:
+Disallow:Sitemap:http://magento.instantsearchplus.com/ext_sitemap?u=a9511d71-bfa4-4696-a68a-84b7e1f85e81
+Sitemap:http://magento.instantsearchplus.com/ext_sitemap?u=a9511d71-bfa4-4696-a68a-84b7e1f85e81
