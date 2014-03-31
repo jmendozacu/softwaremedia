@@ -31,15 +31,23 @@
             <li>
                 <strong><?php echo $this->getItemCreatedAt($_item) ?></strong>
                 <?php echo $this->getItemCreatedAt($_item, 'time') ?><span class="separator">|</span>
-                <?php if ($this->getItemTitle($_item)): ?>
-                <strong><?php echo $this->getItemTitle($_item) ?></strong>
+                
+                <strong><?php echo $_item['email_name'] ?> &lt;<a href="mailto:<?php echo $_item['email'] ?>"><?php echo $_item['email'] ?></a>&gt;</strong>
                 <span class="separator">|</span>
-                <?php endif; ?>
+                <strong><?php echo $_item['subject'] ?></strong>
+                <span class="separator">|</span>
                 <small>
                     
                     <strong class="subdue">
                     
                     	<a href="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/emailhistory/view/id/' . $_item->getId()); ?>" target="_blank">View E-Mail</a>
+                    </strong>
+                </small>
+                <span class="separator">|</span>
+                <small>
+                    
+                    <strong class="subdue">
+                    	<a href="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/emailhistory/resend/id/' . $_item->getId()); ?>">Resend E-Mail</a>
                     </strong>
                 </small>
             </li>

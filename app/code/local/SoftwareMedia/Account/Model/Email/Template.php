@@ -93,6 +93,7 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 			$historyEmail->setOrderId($order->getId());
 			$historyEmail->setText($text);
 			$historyEmail->setEmail($email);
+			$historyEmail->setEmailName($variables['name']);
 			$historyEmail->setSubject($this->getProcessedTemplateSubject($variables));
 			$historyEmail->setCreatedAt(now());
 			$historyEmail->save();

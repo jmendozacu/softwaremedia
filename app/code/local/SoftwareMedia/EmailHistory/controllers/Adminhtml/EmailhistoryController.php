@@ -8,9 +8,48 @@ class SoftwareMedia_EmailHistory_Adminhtml_EmailhistoryController extends Mage_A
             $current_email->load($id);
 
             Mage::register('current_email',$current_email);
+            $this->loadLayout();
             
-            $this->loadLayout();     
             $this->renderLayout();    
+    }
+    
+    public function resendAction()
+    {
+    		$id = $this->getRequest()->getParam('id');
+    		$newemail = $this->getRequest()->getParam('newemail');
+    		$newname = $this->getRequest()->getParam('newname');
+            $current_email = Mage::getModel('emailhistory/email');
+            $current_email->load($id);
+            $current_email->setId(null);
+            $current_email->setCreatedAt(now());
+            if ($newemail)
+            	$current_email->setEmail($newemail);
+            	
+            if ($newname)
+            	$current_email->setEmailName($newname);
+            	
+			$current_email->save();
+
+			$template = Mage::getModel('core/email_template');
+			$template->loadDefault('blank_email');
+			
+			$vars = array();
+			$vars['content'] = $current_email->getText();
+			
+			$template->setSenderName('Software Media');
+	        $template->setSenderEmail('customerservice@softwaremedia.com');
+	        $template->setTemplateSubject($current_email->getSubject());
+	        $res = $template->send($current_email->getEmail(), $current_email->getName(), $vars);
+            if (!$res) {
+	            if ($template->getData('error') == 'cs')
+	            	Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Email was sent to client'));
+	            else
+	            	Mage::getSingleton('adminhtml/session')->addError($this->__('Message could not be sent'));
+            } else {
+	            Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Email was sent to client'));
+            }
+ 
+            $this->_redirect('adminhtml/sales_order/view/order_id/' . $current_email->getOrderId());
     }
     
     protected function _initOrder()
