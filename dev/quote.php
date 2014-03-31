@@ -5,7 +5,8 @@ Mage::app('admin')->setUseSessionInUrl(false);
 
 
 		
-$quote = Mage::getModel('qquoteadv/qqadvcustomer');
-$quote->sendReminderEmail(true);
-$quote->send2ndReminderEmail(true);
-$quote->send3rdReminderEmail(true);
+$historyEmail = Mage::getModel('emailhistory/email');
+			$historyEmail->setOrderId(198);
+			$historyEmail->setText('asdasd');
+			$historyEmail->setEmail('sadas');
+			$historyEmail->save();

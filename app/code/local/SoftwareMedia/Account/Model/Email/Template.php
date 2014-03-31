@@ -22,7 +22,7 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 			return parent::send($email, $name, $variables);
 		}
 
-		Mage::log('SMTPPro is enabled, sending email in Aschroder_SMTPPro_Model_Email_Template');
+		Mage::log('SMTPPro is enabled, sending email in SoftwareMedia_Account_Model_Email_Template');
 
 
 		// The remainder of this function closely mirrors the parent
@@ -48,11 +48,14 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 
 		$variables['email'] = reset($emails);
 		$variables['name'] = reset($names);
-
+		
+		
+	
+			
 		$mail = $this->getMail();
 
 		$dev = Mage::helper('smtppro')->getDevelopmentMode();
-
+		//Mage::log($variables);
 		if ($dev == "contact") {
 
 			$email = Mage::getStoreConfig('contacts/email/recipient_email', $this->getDesignConfig()->getStore());
@@ -80,7 +83,22 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 		} else {
 			$mail->setBodyHTML($text);
 		}
-
+		if ($variables['order']) {
+			$order = Mage::getModel('sales/order')->load($variables['order']->getIncrementId(), 'increment_id');
+			$comment = "E-Mail Sent (<a href='#'>View E-Mail</a>)";
+			$comment .= "<div style='display: none;'>";
+			$comment .= $text;
+			$comment .= "</div>";
+			$historyEmail = Mage::getModel('emailhistory/email');
+			$historyEmail->setOrderId($order->getId());
+			$historyEmail->setText($text);
+			$historyEmail->setEmail($email);
+			$historyEmail->save();
+			
+			$order->addStatusHistoryComment($comment);
+			$order->save();
+			Mage::log('ORDER ' . $order->getId());
+		}
 		try {
 			$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
 		} catch(Exception $e) {

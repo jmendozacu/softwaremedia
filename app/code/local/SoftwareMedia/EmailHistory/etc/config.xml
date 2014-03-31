@@ -1,0 +1,47 @@
+
+<config>
+    <modules>
+        <SoftwareMedia_EmailHistory>
+            <version>0.1.0</version>
+        </SoftwareMedia_EmailHistory>
+    </modules>
+    <global>
+      <helpers>
+            <emailhistory>
+                <class>SoftwareMedia_EmailHistory_Helper</class>
+            </emailhistory>
+        </helpers>
+	   <models>
+			<emailhistory>
+				<class>SoftwareMedia_EmailHistory_Model</class>
+				<resourceModel>emailhistory_mysql4</resourceModel>
+			</emailhistory>
+			<emailhistory_mysql4>
+				<class>SoftwareMedia_EmailHistory_Model_Mysql4</class>
+				<entities>
+					<softwaremedia_emailhistory>
+						<table>emailhistory</table>
+					</softwaremedia_emailhistory>
+				</entities>
+			</emailhistory_mysql4>
+		</models>    
+    	<resources>
+            <emailhistory_setup>
+                <setup>
+                    <module>SoftwareMedia_EmailHistory</module>
+                    <class>Mage_Catalog_Model_Resource_Setup</class>
+                </setup>
+            </emailhistory_setup>
+            <emailhistory_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</emailhistory_write>
+			<emailhistory_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</emailhistory_read>
+        </resources> 
+    </global>
+</config>
