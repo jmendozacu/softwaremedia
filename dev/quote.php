@@ -5,9 +5,7 @@ Mage::app('admin')->setUseSessionInUrl(false);
 
 
 		
-$historyEmail = Mage::getModel('emailhistory/email')->getCollection()
-->addFieldToFilter('order_id',198);
-
-foreach($historyEmail as $email) {
-	echo $email->getEmail();
-}
+Mage::getModel('qquoteadv/qqadvcustomer')->sendReminderEmail(true);
+Mage::getModel('qquoteadv/qqadvcustomer')->send2ndReminderEmail(true);
+Mage::getModel('qquoteadv/qqadvcustomer')->send3rdReminderEmail(true);
+Mage::getModel('qquoteadv/qqadvcustomer')->sendExpireEmail();

@@ -28,7 +28,7 @@ class SoftwareMedia_EmailHistory_Adminhtml_EmailhistoryController extends Mage_A
             if ($newname)
             	$current_email->setEmailName($newname);
             	
-			$current_email->save();
+			
 
 			$template = Mage::getModel('core/email_template');
 			$template->loadDefault('blank_email');
@@ -42,12 +42,14 @@ class SoftwareMedia_EmailHistory_Adminhtml_EmailhistoryController extends Mage_A
 	        $res = $template->send($current_email->getEmail(), $current_email->getEmailName(), $vars);
 
             if (!$res) {
-	            if ($template->getData('error') == 'cs')
+	            if ($template->getData('error') == 'cs') {
 	            	Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Email was sent to client'));
-	            else
+	            	$current_email->save();
+				} else
 	            	Mage::getSingleton('adminhtml/session')->addError($this->__('Message could not be sent'));
             } else {
 	            Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Email was sent to client'));
+	            $current_email->save();
             }
  
             $this->_redirect('adminhtml/sales_order/view/order_id/' . $current_email->getOrderId());

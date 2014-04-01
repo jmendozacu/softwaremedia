@@ -508,7 +508,8 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
     }
      
      
-     public function sendExpireEmail(){
+     public function sendExpireEmail(){	
+     	
         $expireTemplateId = Mage::getStoreConfig('qquoteadv/emails/proposal_expire', $this->getStoreId());
         $expiredQuotes = $this->getCollection()
                                 ->addFieldToFilter('status',array('in'=> array(50,53) ))
@@ -535,6 +536,14 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                 $template->setSenderName($sender['name']);
                 $template->setSenderEmail($sender['email']);
 
+				$model = Mage::getModel('crmaddon/crmaddonmessages')->setQuoteId($_quoteadv->getId());
+				$model->setTemplateId(2);
+				$model->setCreatedAt(now());
+				$model->setCustomerNotified(1);
+				$model->setEmailAddress($_quoteadv->getEmail());
+				$model->setMessage('Automatic quote expired e-mail sent to ' . $_quoteadv->getFirstname() . ' (' . $_quoteadv->getEmail() . ') by <strong>system</strong>');
+				$model->save();
+					
                 $subject = $template['template_subject'];
                 $template->setTemplateSubject($subject);
 
@@ -558,6 +567,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                 $res2 = $template2->send($adminEmail, $adminName, $vars);
             endif;
             
+            $_quoteadv->setData('no_reminder',1);
             // update quote status
             $_quoteadv->setStatus(Ophirah_Qquoteadv_Model_Status::STATUS_PROPOSAL_EXPIRED);
             $_quoteadv->save();
@@ -584,6 +594,10 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
     }
     
     private function _sendReminderEmail($inc = false, $debug = false){      
+    	$num = $inc;
+    	if (!$num)
+    		$num = 1;
+    		
     	if ($inc) 
     		$inc = "_" . $inc;
     		
@@ -609,6 +623,8 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
 	            	echo "Quote " . $_quoteadv->getIncrementId() . " Reminder" . $inc . " Due Today";
 	            	echo "<br />";
             	}
+            	
+
                 if(substr($_quoteadv->getData('proposal_sent'),0 ,4) != 0){
                     $vars['quote']      = $_quoteadv;
                     $vars['customer']   = Mage::getModel('customer/customer')->load($_quoteadv->getCustomerId());
@@ -649,6 +665,14 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                     /*
                      * getProcessedTemplate is called inside send()
                      */
+                     $model = Mage::getModel('crmaddon/crmaddonmessages')->setQuoteId($_quoteadv->getId());
+					$model->setTemplateId(2);
+					$model->setCreatedAt(now());
+					$model->setCustomerNotified(1);
+					$model->setEmailAddress($_quoteadv->getEmail());
+					$model->setMessage('Automatic reminder e-mail #' . $num . ' sent to ' . $_quoteadv->getFirstname() . ' (' . $_quoteadv->getEmail() . ') by <strong>system</strong>');
+					$model->save();
+					
                     if ($debug && $_quoteadv->getEmail()) 
                     	echo "Send to " . $_quoteadv->getEmail() . "<br /><br />";
                    
@@ -714,6 +738,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                  */
                 $processedTemplate = $template->getProcessedTemplate($vars);
 
+				
                 /*
                  * getProcessedTemplate is called inside send()
                  */
