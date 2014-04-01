@@ -40,6 +40,9 @@ class SoftwareMedia_EmailHistory_Adminhtml_EmailhistoryController extends Mage_A
 	        $template->setSenderEmail('customerservice@softwaremedia.com');
 	        $template->setTemplateSubject($current_email->getSubject());
 	        $res = $template->send($current_email->getEmail(), $current_email->getName(), $vars);
+	        echo $current_email->getName();
+	        var_dump($vars);
+	        die();
             if (!$res) {
 	            if ($template->getData('error') == 'cs')
 	            	Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Email was sent to client'));
