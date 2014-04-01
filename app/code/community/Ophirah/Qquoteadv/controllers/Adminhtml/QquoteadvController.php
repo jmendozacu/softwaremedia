@@ -118,7 +118,14 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController
         try {
             $customer = Mage::getModel('customer/customer')->load($customerId);
 
-            $res = $this->sendEmail(array('email' => $customer->getEmail(), 'name' => $customer->getName()));
+			$newemail = $this->getRequest()->getParam('newemail');
+			$newname = $this->getRequest()->getParam('newname');
+			if (!$newemail) 
+				$newemail = $customer->getEmail();
+			if (!$newname) 
+				$newname = $customer->getName();
+					
+            $res = $this->sendEmail(array('email' => $newemail, 'name' => $name));
 
             if (empty($res)) {
                 $message = $this->__("Qquote proposal email was't sent to the client for quote #%s", $realQuoteadvId);

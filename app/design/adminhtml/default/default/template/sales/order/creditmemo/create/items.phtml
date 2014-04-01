@@ -107,7 +107,7 @@
           <?php if ($this->canSendCreditmemoEmail()):?>
           <p>
               <label class="normal" for="send_email"><?php echo Mage::helper('sales')->__('Email Copy of Credit Memo') ?></label>
-              <input id="send_email" name="creditmemo[send_email]" value="1" type="checkbox" />
+              <input id="send_email" name="creditmemo[send_email]" value="1" checked = "checked" type="checkbox" />
           </p>
           <?php endif; ?>
               <?php echo $this->getChildHtml('submit_before') ?>

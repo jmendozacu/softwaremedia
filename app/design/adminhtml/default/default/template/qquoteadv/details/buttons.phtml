@@ -22,6 +22,9 @@ if ( $status == Ophirah_Qquoteadv_Model_Status::STATUS_PROPOSAL || $status == Op
 $btnCreateOrder->setOnclick($onclick);
 ?>
 
+<input type="text" value="<?php echo $quoteModel->getCustomer()->getName(); ?>" name="newname" />
+<input type="text" value="<?php echo $quoteModel->getEmail(); ?>" name="newemail" />
+<br />
 <?php
 
 $button = $this->getLayout()->createBlock('adminhtml/widget_button');
