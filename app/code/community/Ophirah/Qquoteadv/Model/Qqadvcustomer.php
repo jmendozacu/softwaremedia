@@ -567,7 +567,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
                 $res2 = $template2->send($adminEmail, $adminName, $vars);
             endif;
             
-            $_quoteadv->setData('no_reminder',1);
+            $_quoteadv->setData('no_expiry',1);
             // update quote status
             $_quoteadv->setStatus(Ophirah_Qquoteadv_Model_Status::STATUS_PROPOSAL_EXPIRED);
             $_quoteadv->save();
