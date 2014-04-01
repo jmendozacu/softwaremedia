@@ -39,7 +39,7 @@ class SoftwareMedia_EmailHistory_Adminhtml_EmailhistoryController extends Mage_A
 			$template->setSenderName('Software Media');
 	        $template->setSenderEmail('customerservice@softwaremedia.com');
 	        $template->setTemplateSubject($current_email->getSubject());
-	        $res = $template->send($current_email->getEmail(), $current_email->getName(), $vars);
+	        $res = $template->send($current_email->getEmail(), $current_email->setEmailName(), $vars);
 
             if (!$res) {
 	            if ($template->getData('error') == 'cs')
