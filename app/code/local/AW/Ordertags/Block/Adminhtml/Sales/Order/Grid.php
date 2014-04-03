@@ -45,19 +45,22 @@ class AW_Ordertags_Block_Adminhtml_Sales_Order_Grid extends AW_Ordertags_Block_A
 
         $_orderidtotagidTable = Mage::getSingleton('core/resource')->getTableName("ordertags/ordertotag");
         $_tagTable = Mage::getSingleton('core/resource')->getTableName("ordertags/managetags");
-
+		echo $_tagTable;
         $collection = $this->getCollection();
-        $collection->getSelect()
+                $collection->getSelect()
             ->joinleft(
                 array('ot' => $_orderidtotagidTable), $this->_getSalesOrdersTableSyn() . '.entity_id = ot.order_id',
                 array()
             )
             ->joinleft(array('tag' => $_tagTable), 'ot.tag_id = tag.tag_id')
-            ->columns(array('filenames' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(tag.filename) USING utf8)')))
-            ->columns(array('tags' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(tag.tag_id) USING utf8)')))
-            ->group($this->_getSalesOrdersTableSyn() . '.entity_id')
-        ;
-
+            ->columns(array('filenames' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(DISTINCT tag.filename) USING utf8)')))
+            ->columns(array('tags' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(DISTINCT tag.tag_id) USING utf8)')));
+            $collection->getSelect()->where('`sales_flat_order_item`.parent_item_id IS NULL');
+        $collection->getSelect()->group($this->_getSalesOrdersTableSyn() . '.entity_id');
+		//$collection->getSelect()->group('ot.order_id');
+		
+		echo $collection->getSelect();
+		//die();
         $collection->clear();
         $this->setCollection($collection);
         return $this;
