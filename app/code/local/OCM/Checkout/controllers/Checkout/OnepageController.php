@@ -27,10 +27,16 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
 			}
 			
 			//Hijack Canadian Orders
+			
+			//Unhijack canadaian orders jk lol
+			/*
 			if ($data['country_id'] == 'CA') {
 				Mage::getSingleton('core/session')->setCanadaInfo($data);
 				$result['redirect'] = '/qquoteadv/index/switch2CAQquote/';
-			} elseif (!isset($result['error'])) {
+			} else
+			*/
+			
+			if (!isset($result['error'])) {
                 if ($this->getOnepage()->getQuote()->isVirtual()) {
                     $result['goto_section'] = 'payment';
                     $result['update_section'] = array(
