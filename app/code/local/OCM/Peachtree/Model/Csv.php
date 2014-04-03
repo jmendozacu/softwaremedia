@@ -134,6 +134,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'date'        => date('m/d/Y',strtotime( $invoice->getData('order_created_at') ) ),
                 'ship_via'    => $shipVia,
                 'ship_date'   => '', //item, tax, frieght
+                'due_date'   => date('m/d/Y',strtotime( $invoice->getData('order_created_at') ) ),
                 'displayed_terms' => self::DISPLAYED_TERMS,
                 'sales_rep_id'    => OCM_Peachtree_Model_Referer::getNameByCode( $invoice->getData('referer_id') ),
                 'account_receivable' => self::ACCOUNT_RECEIVABLE,
