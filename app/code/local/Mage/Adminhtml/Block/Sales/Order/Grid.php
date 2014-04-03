@@ -55,6 +55,17 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 
 	protected function _prepareCollection() {
 		$collection = Mage::getResourceModel($this->_getCollectionClass());
+		$collection->getSelect()->joinLeft(
+                'sales_flat_order_item',
+                '`sales_flat_order_item`.order_id=`main_table`.entity_id',
+                array(
+                    'skus'  => new Zend_Db_Expr('group_concat(`sales_flat_order_item`.sku SEPARATOR "<br />")'),
+                    'names' => new Zend_Db_Expr('group_concat(`sales_flat_order_item`.name SEPARATOR ",")'),
+                    )
+                );
+                $collection->getSelect()->where('`sales_flat_order_item`.parent_item_id IS NULL');
+                //$collection->getSelect()->group('entity_id');
+				//$collection->getSelect()->group('`sales/order_item`.sku');
 		$collection->addAddressFields();
 		$collection->getSelect()->joinLeft(array('sfo' => 'sales_flat_order'), 'sfo.entity_id=main_table.entity_id', array('sfo.customer_email'));
 
@@ -103,11 +114,13 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'filter_index' => 'main_table.created_at',
 		));
 
+		/*
 		$this->addColumn('billing_company', array(
 			'header' => Mage::helper('sales')->__('Company'),
 			'index' => 'company',
 			'filter_index' => 'billing_o_a.company'
 		));
+		*/
 		$this->addColumn('customer_email', array(
 			'header' => Mage::helper('sales')->__('E-Mail'),
 			'index' => 'customer_email',
@@ -117,18 +130,28 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'header' => Mage::helper('sales')->__('Bill to Name'),
 			'index' => 'billing_name',
 		));
-
+/*
 		$this->addColumn('shipping_name', array(
 			'header' => Mage::helper('sales')->__('Ship to Name'),
 			'index' => 'shipping_name',
 		));
 
+		
 		$this->addColumn('base_grand_total', array(
 			'header' => Mage::helper('sales')->__('G.T. (Base)'),
 			'index' => 'base_grand_total',
 			'type' => 'currency',
 			'currency' => 'base_currency_code',
 		));
+		*/
+		$this->addColumn('skus', array(
+            'header'    => Mage::helper('Sales')->__('Products'),
+            'width'     => '200px',
+            'index'     => 'skus',
+            'type'        => 'text',
+ 
+        ));
+        
 
 		$this->addColumn('grand_total', array(
 			'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
