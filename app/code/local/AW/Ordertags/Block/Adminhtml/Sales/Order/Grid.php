@@ -45,7 +45,7 @@ class AW_Ordertags_Block_Adminhtml_Sales_Order_Grid extends AW_Ordertags_Block_A
 
         $_orderidtotagidTable = Mage::getSingleton('core/resource')->getTableName("ordertags/ordertotag");
         $_tagTable = Mage::getSingleton('core/resource')->getTableName("ordertags/managetags");
-		echo $_tagTable;
+
         $collection = $this->getCollection();
                 $collection->getSelect()
             ->joinleft(
