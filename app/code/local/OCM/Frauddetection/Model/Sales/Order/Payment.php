@@ -43,7 +43,8 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
 		}
 		
 		$billing = $order->getBillingAddress();
-		if ($billing->getCountryId() == "CA") {
+		$shipping = $order->getShippingAddress();
+		if ($billing->getCountryId() == "CA" || $shipping->getCountryId() == "CA") {
 			$orderState = 'new';
 			$orderStatus = 'canada';
 			$result = true;
@@ -102,7 +103,7 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         $message = $order->getCustomerNote();
 
 		
-		if ($billing->getCountryId() == "CA") {
+		if ($billing->getCountryId() == "CA" || $shipping->getCountryId() == "CA") {
 			$orderState = 'new';
 			$orderStatus = 'canada';
 			$result = true;
