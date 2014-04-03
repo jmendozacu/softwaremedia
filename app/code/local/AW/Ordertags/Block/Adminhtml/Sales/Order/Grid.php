@@ -55,7 +55,7 @@ class AW_Ordertags_Block_Adminhtml_Sales_Order_Grid extends AW_Ordertags_Block_A
             ->joinleft(array('tag' => $_tagTable), 'ot.tag_id = tag.tag_id')
             ->columns(array('filenames' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(DISTINCT tag.filename) USING utf8)')))
             ->columns(array('tags' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(DISTINCT tag.tag_id) USING utf8)')));
-            $collection->getSelect()->where('`sales_flat_order_item`.parent_item_id IS NULL');
+           
         $collection->getSelect()->group($this->_getSalesOrdersTableSyn() . '.entity_id');
 		//$collection->getSelect()->group('ot.order_id');
 
