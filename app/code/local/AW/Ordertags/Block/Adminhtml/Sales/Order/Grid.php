@@ -58,7 +58,6 @@ class AW_Ordertags_Block_Adminhtml_Sales_Order_Grid extends AW_Ordertags_Block_A
             $collection->getSelect()->where('`sales_flat_order_item`.parent_item_id IS NULL');
         $collection->getSelect()->group($this->_getSalesOrdersTableSyn() . '.entity_id');
 		//$collection->getSelect()->group('ot.order_id');
-		
 
         $collection->clear();
         $this->setCollection($collection);
