@@ -59,7 +59,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
                 'sales_flat_order_item',
                 '`sales_flat_order_item`.order_id=`main_table`.entity_id',
                 array(
-                    'skus'  => new Zend_Db_Expr('group_concat(`sales_flat_order_item`.sku SEPARATOR "<br />")'),
+                    'sku'  => new Zend_Db_Expr('group_concat(`sales_flat_order_item`.sku SEPARATOR "<br />")'),
                     'names' => new Zend_Db_Expr('group_concat(`sales_flat_order_item`.name SEPARATOR ",")'),
                     )
                 );
@@ -144,10 +144,10 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'currency' => 'base_currency_code',
 		));
 		*/
-		$this->addColumn('skus', array(
+		$this->addColumn('sku', array(
             'header'    => Mage::helper('Sales')->__('Products'),
             'width'     => '200px',
-            'index'     => 'skus',
+            'index'     => 'sku',
             'type'        => 'text',
  
         ));
