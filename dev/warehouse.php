@@ -49,7 +49,7 @@ $api = new SoftwareMedia_Ubervisibility_Helper_Api();
 //var_dump($ubervis_prod);
 //die();
 
-Mage::getModel('ubervisibility/observer')->updateProduct();
+Mage::getModel('ubervisibility/observer')->updateProduct(10);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
 
 

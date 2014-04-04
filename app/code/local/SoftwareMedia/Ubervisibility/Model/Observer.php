@@ -7,7 +7,7 @@
  */
 class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer {
 
-	public function updateProduct() {
+	public function updateProduct($pageSize = 100) {
 		Mage::log('Starting ubervis update');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
@@ -16,7 +16,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		//$collection->addAttributeToFilter('sku','AC-VMPXRBENS11');
 		$collection->addAttributeToSelect('*');
 		$collection->getSelect()->where('e.updated_at > at_ubervis_updated.value OR at_ubervis_updated.value IS NULL');
-		$collection->setPageSize(100);
+		$collection->setPageSize($pageSize);
 
 		foreach ($collection as $prod) {
 			$updated_data = $prod->getData();
@@ -49,6 +49,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['title'] = $updated_data['name'];
 			$data['productDescriptionsId'] = array('productsId' => $prod_id, 'clientsId' => 1);
 			$data['link'] = $prod->getProductUrl();
+			$data['link'] = str_replace('warehouse.php/','',$data['link']);
 			$data['imageLink'] = $prod->getImageUrl();
 			$data['sku'] = $updated_data['sku'];
 			$data['upc'] = $updated_data['upc'];
