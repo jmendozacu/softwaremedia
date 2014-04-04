@@ -2,13 +2,16 @@
 <config>
 	<modules>
 		<OCM_ChasePaymentTech>
-			<version>0.1.7</version>
+			<version>0.1.9</version>
 		</OCM_ChasePaymentTech>
 	</modules>
 
 	<global>
-		<models>
-		
+		<models>			<paygate>
+				<rewrite>
+					<authorizenet_source_cctype>OCM_ChasePaymentTech_Model_Authorizenet_Source_Cctype</authorizenet_source_cctype>
+				</rewrite>
+			</paygate>
 			<chasePaymentTech>
 				<class>OCM_ChasePaymentTech_Model</class>
 				<resourceModel>chasePaymentTech_mysql4</resourceModel>

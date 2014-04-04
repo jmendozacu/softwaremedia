@@ -42,6 +42,8 @@ Mage::app('admin')->setUseSessionInUrl(false);
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
+$helper = Mage::helper('chasePaymentTech');
+
 $profile = Mage::getModel('chasePaymentTech/profiles');
 echo get_class($profile);
 								$profile->setCustomerId('asd');
@@ -49,7 +51,7 @@ echo get_class($profile);
 				$profile->setCardType('21');
 				$profile->setExpMonth('12');
 				$profile->setExpYear('122');
-				$profile->setLast4('1231');
+				$profile->setCardNum('1231');
 				$profile->setActive(0);
 				$profile->save();
 				

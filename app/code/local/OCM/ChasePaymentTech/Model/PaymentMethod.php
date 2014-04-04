@@ -42,32 +42,47 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	public function capture(Varien_Object $payment, $amount) {
+		Mage::log($payment->getCcSaved(),NULL,'payment.log');
+		die();
+		$helper = Mage::helper('chasePaymentTech');
 		$customer = $payment->getOrder()->getCustomer();
 		
 		//die(var_dump($this->getAllProfiles($payment->getOrder()->getCustomer())));
 		$profiles_enabled = Mage::getStoreConfig('payment/chasePaymentTech/use_profiles', Mage::app()->getStore());
 		$customer_profile = null;
 
+		//Only save profile data if customer is logged in
 		if ($profiles_enabled && $customer) {
-			Mage::log("In Profile",NULL,'profile.log');
-			$this->_paymentProcessor->buildProfileAddRequest($payment);
-			$profile = $this->_paymentProcessor->sendRequest(self::PROFILE);
-			Mage::log($profile,NULL,'profile.log');
-			// Verify that we were able to create a customer profile
-			if (isset($profile['CustomerRefNum'])) {
-				Mage::log("Saving Profile",NULL,'profile.log');
-				$customer_profile = $profile['CustomerRefNum'];
-				$profile = Mage::getModel('chasePaymentTech/profiles');
-								$profile->setCustomerId($customer->getId());
-				$profile->setCustomerReferenceNumber($customer_profile);
-				$profile->setCardType($payment->getCcType());
-				$profile->setExpMonth($payment->getCcExpMonth());
-				$profile->setExpYear($payment->getCcExpYear());
-				$profile->setLast4(substr($payment->getCcNumber(),-4));
-				$profile->setActive(0);
-				$profile->save();
-				Mage::log(get_class($profile),NULL,'profile.log');
+			$cardNum = substr($payment->getCcNumber(),-4);
+			Mage::log("Profiles enabled and customer",NULL,'profile.log');
+			
+			//If profile doesn't exist for card and customer, create it
+			$hasProfile = $helper->hasProfile($customer->getId(),$cardNum);
+			Mage::log("Has Profile: " . $helper->hasProfile($customer->getId(),$cardNum),NULL,'profile.log');
+			if (!$hasProfile) {		
+				Mage::log("In Profile",NULL,'profile.log');
+				$this->_paymentProcessor->buildProfileAddRequest($payment);
+				$profile = $this->_paymentProcessor->sendRequest(self::PROFILE);
+				Mage::log($profile,NULL,'profile.log');
+				
+				// Verify that we were able to create a customer profile
+				if (isset($profile['CustomerRefNum'])) {
+					Mage::log("Saving Profile",NULL,'profile.log');
+					$customer_profile = $profile['CustomerRefNum'];
+					$profile = Mage::getModel('chasePaymentTech/profiles');
+					$profile->setCustomerId($customer->getId());
+					$profile->setCustomerReferenceNumber($customer_profile);
+					$profile->setCardType($payment->getCcType());
+					$profile->setExpMonth($payment->getCcExpMonth());
+					$profile->setExpYear($payment->getCcExpYear());
+					$profile->setCardNum($cardNum);
+					$profile->setActive(0);
+					$profile->save();
 
+					Mage::log(get_class($profile),NULL,'profile.log');
+				}
+			} else {
+					Mage::log("Profile Exists",NULL,'profile.log');
 			}
 		}
 
