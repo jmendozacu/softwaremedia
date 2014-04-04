@@ -7,7 +7,7 @@
  */
 class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer {
 
-	public function updateProduct($pageSize = 100) {
+	public function updateProduct() {
 		Mage::log('Starting ubervis update');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
