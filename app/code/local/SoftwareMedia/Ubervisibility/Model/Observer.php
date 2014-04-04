@@ -52,6 +52,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['link'] = $prod->getProductUrl();
 			$data['link'] = str_replace('warehouse.php/','',$data['link']);
 			$data['link'] = str_replace('index.php/','',$data['link']);
+			$data['link'] = str_replace('ubervis.php/','',$data['link']);
 			$data['imageLink'] = $prod->getImageUrl();
 			$data['sku'] = $updated_data['sku'];
 			$data['upc'] = $updated_data['upc'];
