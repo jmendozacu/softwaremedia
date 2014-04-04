@@ -16,7 +16,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		//$collection->addAttributeToFilter('sku','AC-VMPXRBENS11');
 		$collection->addAttributeToSelect('*');
 		$collection->getSelect()->where('e.updated_at > at_ubervis_updated.value OR at_ubervis_updated.value IS NULL');
-		$collection->setPageSize(100);
+		$collection->setPageSize(10);
 
 		foreach ($collection as $prod) {
 			$updated_data = $prod->getData();
@@ -48,8 +48,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 
 			$data['title'] = $updated_data['name'];
 			$data['productDescriptionsId'] = array('productsId' => $prod_id, 'clientsId' => 1);
-			$data['link'] = Mage::getBaseUrl() . $updated_data['url_path'];
-			$data['imageLink'] = Mage::getBaseUrl() . $updated_data['image'];
+			$data['link'] = $prod->getProductUrl();
+			$data['imageLink'] = $prod->getImageUrl();
 			$data['sku'] = $updated_data['sku'];
 			$data['upc'] = $updated_data['upc'];
 			$data['brand'] = $prod->getBrandName();
@@ -60,7 +60,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['cost'] = $updated_data['cost'];
 			$data['price'] = $updated_data['price'];
 			$data['msrp'] = $updated_data['msrp'];
-			
+			var_dump($data);
 			/*
 			$data['package_id'] = $updated_data['package_id'];
 			$data['status'] = $updated_data['status'];
