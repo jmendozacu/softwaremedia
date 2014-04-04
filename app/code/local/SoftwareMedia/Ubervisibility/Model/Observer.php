@@ -45,7 +45,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			}
 
 			$data = array();
-
+			$brand = $prod->getResource()->getAttribute('brand')->getFrontend()->getValue($prod);
+		
 			$data['title'] = $updated_data['name'];
 			$data['productDescriptionsId'] = array('productsId' => $prod_id, 'clientsId' => 1);
 			$data['link'] = $prod->getProductUrl();
@@ -54,7 +55,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['imageLink'] = $prod->getImageUrl();
 			$data['sku'] = $updated_data['sku'];
 			$data['upc'] = $updated_data['upc'];
-			$data['brand'] = $prod->getBrandName();
+			$data['brand'] = $brand;
 			$data['description'] = $updated_data['description'];
 			$data['message'] = $updated_data['stock_message'];
 			$data['edition'] = $updated_data['version'];
