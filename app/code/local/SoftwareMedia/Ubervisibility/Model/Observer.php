@@ -16,7 +16,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		//$collection->addAttributeToFilter('sku','AC-VMPXRBENS11');
 		$collection->addAttributeToSelect('*');
 		$collection->getSelect()->where('e.updated_at > at_ubervis_updated.value OR at_ubervis_updated.value IS NULL');
-		$collection->setPageSize(10);
+		$collection->setPageSize(100);
 
 		foreach ($collection as $prod) {
 			$updated_data = $prod->getData();
@@ -61,6 +61,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['price'] = $updated_data['price'];
 			$data['msrp'] = $updated_data['msrp'];
 			var_dump($data);
+			die();
 			/*
 			$data['package_id'] = $updated_data['package_id'];
 			$data['status'] = $updated_data['status'];
