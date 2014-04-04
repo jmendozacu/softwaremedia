@@ -107,7 +107,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					//Mage::log($return,NULL,'ubervis.log');
 				}
 			}
-			$prod->setUbervisUpdated(date('Y-m-d H:i:s'));
+			$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
 			$prod->save();
 		}
 
