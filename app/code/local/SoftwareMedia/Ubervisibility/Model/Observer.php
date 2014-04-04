@@ -86,11 +86,11 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			
 			//var_dump($data);
 			//die();
-			
+			Mage::log('Updating Descriptions NOw',null,'ubervis.log');
 			//echo $ubervis_prod[0]->descriptions;
 			if ($ubervis_prod->descriptions) {
 				foreach ($ubervis_prod->descriptions as $desc) {
-					age::log('Updating ' . $desc->productDescriptionsId->marketersId . ' prod ' . $prod_id,null,'ubervis.log');
+					Mage::log('Updating ' . $desc->productDescriptionsId->marketersId . ' prod ' . $prod_id,null,'ubervis.log');
 					$newData =  array_merge((array) $desc, $data);
 					$newData['productDescriptionsId']['marketersId']  = $desc->productDescriptionsId->marketersId;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/',$newData);
