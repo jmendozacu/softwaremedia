@@ -60,8 +60,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['cost'] = $updated_data['cost'];
 			$data['price'] = $updated_data['price'];
 			$data['msrp'] = $updated_data['msrp'];
-			var_dump($data);
-			die();
+
 			/*
 			$data['package_id'] = $updated_data['package_id'];
 			$data['status'] = $updated_data['status'];
