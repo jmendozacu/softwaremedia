@@ -27,7 +27,7 @@
 			</ubervisibility>
 		</models>
 	</global>
-	<crontab>
+	<!--crontab>
 		<jobs>
 			<SoftwareMedia_Ubervisibility>
 				<schedule>
@@ -38,5 +38,5 @@
 				</run>
 			</SoftwareMedia_Ubervisibility>
 		</jobs>
-	</crontab>
+	</crontab>-->
 </config>
