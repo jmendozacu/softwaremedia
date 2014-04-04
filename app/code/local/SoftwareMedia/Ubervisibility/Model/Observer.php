@@ -103,7 +103,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					Mage::log('Marketer ' . $marketer->id . " prod id " . $prod_id,null,'ubervis.log');
 					//$data['marketersId'] = $marketer->id;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/', $data);
-					Mage::log($return,NULL,'ubervis.log');
+					//Mage::log($return,NULL,'ubervis.log');
 				}
 			}
 			$prod->setUbervisUpdated(date('Y-m-d H:i:s'));
