@@ -42,6 +42,12 @@ Mage::app('admin')->setUseSessionInUrl(false);
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
+$api = new SoftwareMedia_Ubervisibility_Helper_Api();
+//$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/mpn/VMPXRBENS14/100/0');
+//var_dump($ubervis_prod);
+//$marketers = $api->callApi(Zend_Http_Client::GET, 'marketer/comparison/1');
+//var_dump($ubervis_prod);
+//die();
 
 Mage::getModel('ubervisibility/observer')->updateProduct();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
