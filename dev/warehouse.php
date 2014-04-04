@@ -42,8 +42,18 @@ Mage::app('admin')->setUseSessionInUrl(false);
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
-
-Mage::getModel('ubervisibility/observer')->updateProduct();
+$profile = Mage::getModel('chasePaymentTech/profiles');
+echo get_class($profile);
+								$profile->setCustomerId('asd');
+				$profile->setCustomerReferenceNumber('sadas');
+				$profile->setCardType('21');
+				$profile->setExpMonth('12');
+				$profile->setExpYear('122');
+				$profile->setLast4('1231');
+				$profile->setActive(0);
+				$profile->save();
+				
+//Mage::getModel('ubervisibility/observer')->updateProduct();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
 
 

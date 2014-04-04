@@ -93,11 +93,10 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 			$historyEmail->setOrderId($order->getId());
 			$historyEmail->setText($text);
 			$historyEmail->setEmail($email);
+			$historyEmail->setEmailName($variables['name']);
+			$historyEmail->setSubject($this->getProcessedTemplateSubject($variables));
+			$historyEmail->setCreatedAt(now());
 			$historyEmail->save();
-			
-			$order->addStatusHistoryComment($comment);
-			$order->save();
-			Mage::log('ORDER ' . $order->getId());
 		}
 		try {
 			$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');

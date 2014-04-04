@@ -55,6 +55,14 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 
 	protected function _prepareCollection() {
 		$collection = Mage::getResourceModel($this->_getCollectionClass());
+        $collection->getSelect()->joinLeft(
+                'sales_flat_order_item',
+                '`sales_flat_order_item`.order_id=`main_table`.entity_id',
+                array(
+                    'sku' => new Zend_Db_Expr('group_concat(DISTINCT CONCAT(`sales_flat_order_item`.sku," (", CAST(`sales_flat_order_item`.qty_ordered AS UNSIGNED),")") SEPARATOR "<br />")')
+                    )
+                );
+
 		$collection->addAddressFields();
 		$collection->getSelect()->joinLeft(array('sfo' => 'sales_flat_order'), 'sfo.entity_id=main_table.entity_id', array('sfo.customer_email'));
 
@@ -103,6 +111,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'filter_index' => 'main_table.created_at',
 		));
 
+		
 		$this->addColumn('billing_company', array(
 			'header' => Mage::helper('sales')->__('Company'),
 			'index' => 'company',
@@ -117,18 +126,28 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'header' => Mage::helper('sales')->__('Bill to Name'),
 			'index' => 'billing_name',
 		));
-
+/*
 		$this->addColumn('shipping_name', array(
 			'header' => Mage::helper('sales')->__('Ship to Name'),
 			'index' => 'shipping_name',
 		));
 
+		
 		$this->addColumn('base_grand_total', array(
 			'header' => Mage::helper('sales')->__('G.T. (Base)'),
 			'index' => 'base_grand_total',
 			'type' => 'currency',
 			'currency' => 'base_currency_code',
 		));
+		*/
+		$this->addColumn('sku', array(
+            'header'    => Mage::helper('Sales')->__('Products'),
+            'width'     => '250px',
+            'index'     => 'sku',
+            'type'        => 'text',
+            'filter' => false
+        ));
+        
 
 		$this->addColumn('grand_total', array(
 			'header' => Mage::helper('sales')->__('G.T. (Purchased)'),

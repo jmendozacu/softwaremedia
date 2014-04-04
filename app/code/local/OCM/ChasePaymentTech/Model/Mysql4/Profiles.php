@@ -14,8 +14,7 @@
 class OCM_ChasePaymentTech_Model_Mysql4_Profiles extends Mage_Core_Model_Mysql4_Abstract {
 
 	public function _construct() {
-		parent::_construct();
-		$this->_init('chasePaymentTech/chase_profiles', 'id');
+		$this->_init('chasePaymentTech/profiles', 'id');
 	}
 
 }

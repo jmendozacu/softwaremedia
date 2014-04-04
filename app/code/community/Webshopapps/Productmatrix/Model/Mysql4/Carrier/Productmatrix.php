@@ -244,7 +244,7 @@ class Webshopapps_Productmatrix_Model_Mysql4_Carrier_Productmatrix extends Mage_
             $previousPriority="";
 
             foreach ($finalResults as $data) {
-            	if ($data['delivery_type'] == 'Free Budget') {
+            	if ($data['delivery_type'] == 'Free Budget' || $data['delivery_type'] == 'Free Budget (5-9 Days)') {
             		$budget = $data;
             	}
             	

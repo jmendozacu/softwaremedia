@@ -8,26 +8,19 @@
 
 	<global>
 		<models>
+		
 			<chasePaymentTech>
 				<class>OCM_ChasePaymentTech_Model</class>
+				<resourceModel>chasePaymentTech_mysql4</resourceModel>
 			</chasePaymentTech>
-			<paygate>
-				<rewrite>
-					<authorizenet_source_cctype>OCM_ChasePaymentTech_Model_Authorizenet_Source_Cctype</authorizenet_source_cctype>
-				</rewrite>
-			</paygate>
-			<profiles>
-				<class>OCM_ChasePaymentTech_Model</class>
-				<resourceModel>profiles_mysql4</resourceModel>
-			</profiles>
-			<profiles_mysql4>
+			<chasePaymentTech_mysql4>
 				<class>OCM_ChasePaymentTech_Model_Mysql4</class>
 				<entities>
-					<chase_profiles>
+					<profiles>
 						<table>cm_chase_profiles</table>
-					</chase_profiles>
+					</profiles>
 				</entities>
-			</profiles_mysql4>
+			</chasePaymentTech_mysql4>
 		</models>
 
 

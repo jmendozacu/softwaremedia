@@ -34,7 +34,25 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         
         //Check for fraud
         $result = Mage::helper('ocm_frauddetection')->isViolations($order);
-
+		//Set Fraud Status
+		if ($result) {
+			$orderState = 'new';
+			$orderStatus = 'orders_suspect_hold';
+			$message = $result;
+			Mage::log('Fraud',null,'fraud.log');
+		}
+		
+		$billing = $order->getBillingAddress();
+		$shipping = $order->getShippingAddress();
+		if ($billing->getCountryId() == "CA" || $shipping->getCountryId() == "CA") {
+			$orderState = 'new';
+			$orderStatus = 'canada';
+			$result = true;
+			$message = $result;
+			Mage::log('Canadian Fraud Hold',null,'fraud.log');
+		}
+		
+		
         if ($result && get_class($methodInstance) == 'OCM_ChasePaymentTech_Model_PaymentMethod')
         	$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE;
         else
@@ -69,7 +87,7 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         }
 		Mage::log('Result: ' . $result,null,'fraud.log');	
         $this->_createBillingAgreement();
-		Mage::log('Step 1',null,'fraud.log');	
+		Mage::log('Step 1 ' . $orderStatus,null,'fraud.log');	
         $orderIsNotified = null;
         if ($stateObject->getState() && $stateObject->getStatus()) {
             $orderState      = $stateObject->getState();
@@ -84,12 +102,14 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         $isCustomerNotified = (null !== $orderIsNotified) ? $orderIsNotified : $order->getCustomerNoteNotify();
         $message = $order->getCustomerNote();
 
-		//Set Fraud Status
-		if ($result) {
+		
+		if ($billing->getCountryId() == "CA" || $shipping->getCountryId() == "CA") {
 			$orderState = 'new';
-			$orderStatus = 'orders_suspect_hold';
-			$message = $result;
-			Mage::log('Fraud',null,'fraud.log');
+			$orderStatus = 'canada';
+			$result = true;
+			$message = "Canadian Order Hold";
+			Mage::log('Canadian Fraud Hold',null,'fraud.log');
+			$isCustomerNotified = false;
 		}
 		
         // add message if order was put into review during authorization or capture
@@ -106,7 +126,7 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         elseif (($order->getState() != $orderState) || ($order->getStatus() != $orderStatus) || $message) {
             $order->setState($orderState, $orderStatus, $message, $isCustomerNotified);
         }
-		Mage::log('Step 2',null,'fraud.log');	
+		Mage::log('Step 2 ' . $orderStatus,null,'fraud.log');	
         Mage::dispatchEvent('sales_order_payment_place_end', array('payment' => $this));
 
         return $this;

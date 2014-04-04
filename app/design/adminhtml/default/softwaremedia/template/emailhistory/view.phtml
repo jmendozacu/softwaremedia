@@ -1,1 +1,57 @@
-VIEW
+<?php $current_email = Mage::registry('current_email'); ?>
+<html>
+<head>
+<title><?php echo $current_email->getSubject(); ?></title>
+<style>
+	.content-header h3 {
+	margin: 0 .5em 0 0;
+	color: #eb5e00;
+	font-size: 1.25em;
+	line-height: 1.2em;
+	padding-left: 14px;
+	float: left;
+	}
+	.content-header {
+		margin-bottom: 18px;
+		border-bottom: 4px solid #dfdfdf;
+		padding-bottom: .25em;
+		background: #fff;
+		padding: 18px 0px 6px;
+		position:fixed;
+		width: 100%;
+	}
+	.button-box {
+		float: right;
+		padding-right: 14px;
+	}
+	.submit {
+		border-width: 1px;
+border-style: solid;
+border-color: #ed6502 #a04300 #a04300 #ed6502;
+padding: 1px 7px 2px 7px;
+background: #ffac47 url(http://softwaremedia.local/skin/adminhtml/default/enterprise/images/btn_bg.gif) repeat-x 0 100%;
+color: #fff;
+font: bold 12px arial, helvetica, sans-serif;
+cursor: pointer;
+text-align: center !important;
+white-space: nowrap;
+	}
+</style>
+</head>
+
+
+<div class="content-header">
+	<h3 class="icon-head head-adminhtml-qquoteadv"><?php echo $current_email->getSubject(); ?></h3>
+	<div class="button-box">
+		<form action="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/emailhistory/resend/id/' . $current_email->getId()); ?>">
+		<input name="newname" type="text" value="<?php echo $current_email->getEmailName(); ?>" />
+		<input name="newemail" type="text" value="<?php echo $current_email->getEmail(); ?>" />
+		<input class="submit" type="submit" value="Send E-Mail" />
+		</form>
+	</div>
+	<div style="clear: both;"></div>
+</div>
+<div style="height: 70px;">&nbsp;</div>
+
+
+<?php echo $current_email->getText(); ?>

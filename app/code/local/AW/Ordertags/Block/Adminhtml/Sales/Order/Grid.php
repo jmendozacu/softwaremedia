@@ -47,16 +47,17 @@ class AW_Ordertags_Block_Adminhtml_Sales_Order_Grid extends AW_Ordertags_Block_A
         $_tagTable = Mage::getSingleton('core/resource')->getTableName("ordertags/managetags");
 
         $collection = $this->getCollection();
-        $collection->getSelect()
+                $collection->getSelect()
             ->joinleft(
                 array('ot' => $_orderidtotagidTable), $this->_getSalesOrdersTableSyn() . '.entity_id = ot.order_id',
                 array()
             )
             ->joinleft(array('tag' => $_tagTable), 'ot.tag_id = tag.tag_id')
-            ->columns(array('filenames' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(tag.filename) USING utf8)')))
-            ->columns(array('tags' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(tag.tag_id) USING utf8)')))
-            ->group($this->_getSalesOrdersTableSyn() . '.entity_id')
-        ;
+            ->columns(array('filenames' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(DISTINCT tag.filename) USING utf8)')))
+            ->columns(array('tags' => new Zend_Db_Expr('CONVERT(GROUP_CONCAT(DISTINCT tag.tag_id) USING utf8)')));
+           
+        $collection->getSelect()->group($this->_getSalesOrdersTableSyn() . '.entity_id');
+		//$collection->getSelect()->group('ot.order_id');
 
         $collection->clear();
         $this->setCollection($collection);

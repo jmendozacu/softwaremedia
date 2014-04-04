@@ -7,7 +7,15 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Actio
         $value =  $row->getId();
         $id =  $row->getData($this->getColumn()->getIndex());
         $prodId = $row->getData('product_id');
-        $product = Mage::getModel('catalog/product')->load($prodId);
+        //Reload order invoice item to get all columns available
+        $product = Mage::getModel('sales/order_invoice_item')->load($row->getId());
+        
+        //Base subs off original order item
+        $product = Mage::getModel('sales/order_item')->load($product->getOrderItemId());
+        
+        //Load product from order item
+        $product = Mage::getModel('catalog/product')->load($product->getProductId());
+
         $subs = $product->getSubstitutionProductIds();
         $html = '';
 	    if ($subs && !$this->helper('substitution')->isComplete($id)) {

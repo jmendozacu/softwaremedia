@@ -1,8 +1,21 @@
 <?xml version="1.0"?>
 <layout version="0.1.0">
     <adminhtml_emailhistory_view>
+    <reference name="root">
+        <action method="setTemplate"><template>emailhistory/pop.phtml</template></action>
+    </reference>
         <reference name="content">
             <block type="core/template" name="emailhistory" template="emailhistory/view.phtml" />
         </reference>
     </adminhtml_emailhistory_view>
+    <adminhtml_sales_order_view>
+        <reference name="left">
+            <reference name="sales_order_tabs">
+                <action method="addTab">
+                    <name>emailhistory</name>
+                    <block>emailhistory/adminhtml_sales_order_view_tab_email</block>
+                </action>
+            </reference>
+        </reference>
+    </adminhtml_sales_order_view>
 </layout>

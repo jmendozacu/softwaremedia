@@ -14,6 +14,9 @@ class SoftwareMedia_Substitution_Adminhtml_SubstitutionController extends Mage_A
 		$invoiceId = $this->getRequest()->getParam('invoiceId');
 		$productId = $this->getRequest()->getParam('productId');
 		
+		if (!$productId || !$invoiceId)
+			continue;
+			
 		$invoiceItem = Mage::getModel('sales/order_invoice_item')->load($invoiceId);
 		$productItem = Mage::getModel('catalog/product')->load($productId);
 		

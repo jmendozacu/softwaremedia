@@ -2,7 +2,7 @@
 <config>
     <modules>
         <SoftwareMedia_EmailHistory>
-            <version>0.1.0</version>
+            <version>0.1.4</version>
         </SoftwareMedia_EmailHistory>
     </modules>
     <admin>
@@ -26,6 +26,11 @@
 		</layout>
 	</adminhtml>
     <global>
+    	<blocks>
+            <emailhistory>
+                <class>SoftwareMedia_EmailHistory_Block</class>
+            </emailhistory>
+    	</blocks>
       <helpers>
             <emailhistory>
                 <class>SoftwareMedia_EmailHistory_Helper</class>
@@ -63,5 +68,14 @@
 				</connection>
 			</emailhistory_read>
         </resources> 
+        <template>
+            <email>
+                <blank_email translate="label" module="emailhistory">
+                    <label>Blank Email</label>
+                    <file>blank.html</file>
+                    <type>html</type>
+                </blank_email>
+            </email>
+        </template>
     </global>
 </config>

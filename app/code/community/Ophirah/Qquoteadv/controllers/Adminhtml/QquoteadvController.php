@@ -115,11 +115,33 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController
     }
 
     protected function _sendProposalEmail($customerId, $realQuoteadvId) {
+
         try {
             $customer = Mage::getModel('customer/customer')->load($customerId);
 
-            $res = $this->sendEmail(array('email' => $customer->getEmail(), 'name' => $customer->getName()));
-
+			 $admin = Mage::getSingleton('admin/session')->getUser();
+			 $quoteId = (int) $this->getRequest()->getParam('id');
+			$_quoteadv = Mage::getModel('qquoteadv/qqadvcustomer')->load($quoteId);
+			
+			$newemail = $this->getRequest()->getParam('newemail');
+			$newname = $this->getRequest()->getParam('newname');
+			
+			if (!$newemail) 
+				$newemail = $customer->getEmail();
+			if (!$newname) 
+				$newname = $customer->getName();
+				
+			$model = Mage::getModel('crmaddon/crmaddonmessages')->setQuoteId($quoteId);
+			$model->setTemplateId(2);
+			$model->setCreatedAt(now());
+			$model->setCustomerNotified(1);
+			$model->setEmailAddress($newemail);
+			$model->setMessage('Proposal e-mail sent to ' . $newname . ' (' . $newemail . ') by <strong>' . $admin->getFirstname() . " " .  $admin->getLastname() . '</strong> - Total: ' . $_quoteadv->getGrandTotal());
+			$model->save();
+				
+            $res = $this->sendEmail(array('email' => $newemail, 'name' => $newname));
+			
+			
             if (empty($res)) {
                 $message = $this->__("Qquote proposal email was't sent to the client for quote #%s", $realQuoteadvId);
                 Mage::getSingleton('adminhtml/session')->addError($message);
