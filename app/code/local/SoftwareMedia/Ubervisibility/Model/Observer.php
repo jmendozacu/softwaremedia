@@ -46,14 +46,15 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 
 			$data = array();
 			$brand = $prod->getResource()->getAttribute('brand')->getFrontend()->getValue($prod);
-		
+			$_imageUrl =  Mage::getModel('catalog/product_media_config')->getMediaUrl( $prod->getImage() );
+
 			$data['title'] = $updated_data['name'];
 			$data['productDescriptionsId'] = array('productsId' => $prod_id, 'clientsId' => 1);
 			$data['link'] = $prod->getProductUrl();
 			$data['link'] = str_replace('warehouse.php/','',$data['link']);
 			$data['link'] = str_replace('index.php/','',$data['link']);
 			$data['link'] = str_replace('ubervis.php/','',$data['link']);
-			$data['imageLink'] = $prod->getImageUrl();
+			$data['imageLink'] = $_imageUrl;
 			$data['sku'] = $updated_data['sku'];
 			$data['upc'] = $updated_data['upc'];
 			$data['brand'] = $brand;
