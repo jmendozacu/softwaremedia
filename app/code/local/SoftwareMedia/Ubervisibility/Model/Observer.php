@@ -26,7 +26,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			Mage::log('Updating ' . $updated_data['name']);
 
 			$api = new SoftwareMedia_Ubervisibility_Helper_Api();
-			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/mpn/' . $mpn . '/100/0');
+			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $mpn . '/100/0');
 			if (is_array($ubervis_prod))
 				$ubervis_prod = $ubervis_prod[0];
 				
