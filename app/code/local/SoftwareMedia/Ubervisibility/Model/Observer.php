@@ -47,7 +47,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data = array();
 			$brand = $prod->getResource()->getAttribute('brand')->getFrontend()->getValue($prod);
 			$_imageUrl =  Mage::getModel('catalog/product_media_config')->getMediaUrl( $prod->getImage() );
-
+			$_imageUrl = 'test';
 			$data['title'] = $updated_data['name'];
 			$data['productDescriptionsId'] = array('productsId' => $prod_id, 'clientsId' => 1);
 			$data['link'] = $prod->getProductUrl();
