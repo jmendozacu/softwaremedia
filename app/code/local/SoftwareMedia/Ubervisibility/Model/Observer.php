@@ -19,9 +19,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->addAttributeToSelect('*');
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->setPageSize(100);
-		echo $collection->getSelect();
-		die();
-		
+
 		foreach ($collection as $prod) {
 			$updated_data = $prod->getData();
 			$mpn = $updated_data['manufacturer_pn_2'];
@@ -71,12 +69,12 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['msrp'] = $updated_data['msrp'];
 
 			/*
-			$data['package_id'] = $updated_data['package_id'];
-			$data['status'] = $updated_data['status'];
-			$data['multi_product_version'] = $updated_data['multi_product_version'];
-			$data['product_type'] = $updated_data['product_type'];
-			$data['license_nonlicense_dropdown'] = $updated_data['license_nonlicense_dropdown'];
-			$data['admin_id'] = $updated_data['admin_id'];
+			$data['package_id'] = $prod->getResource()->getAttribute('package_id')->getFrontend()->getValue($prod);;
+			$data['status'] = $prod->getResource()->getAttribute('status')->getFrontend()->getValue($prod);;
+			$data['multi_product_version'] = $prod->getResource()->getAttribute('multi_product_version')->getFrontend()->getValue($prod);
+			$data['product_type'] = $prod->getResource()->getAttribute('product_type')->getFrontend()->getValue($prod);
+			$data['license_nonlicense_dropdown'] = $prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod);
+			$data['admin_id'] = $prod->getResource()->getAttribute('admin_id')->getFrontend()->getValue($prod);
 			*/
 			
 			$stock_model = Mage::getModel('cataloginventory/stock_item');

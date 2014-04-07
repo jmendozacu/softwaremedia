@@ -10,7 +10,7 @@ require "/var/www/magento.softwaremedia.com/htdocs/app/Mage.php";
   //$_SERVER['SERVER_PORT']='443';
   Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID); 
 
-  $profileId = 12; //put your profile id here
+  $profileId = 13; //put your profile id here
   
   $filename =  'cpc_export.log';  
   $recordCount = 0;
