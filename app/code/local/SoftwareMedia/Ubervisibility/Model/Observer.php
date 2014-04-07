@@ -8,6 +8,8 @@
 class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer {
 
 	public function updateProduct() {
+		$from = date('Y-m-d H:i:s', time() - (24*60*60));
+		
 		Mage::log('Starting ubervis update');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
@@ -15,9 +17,11 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->setOrder('warehouse_updated_at','ASC');
 		//$collection->addAttributeToFilter('sku','AC-VMPXRBENS11');
 		$collection->addAttributeToSelect('*');
-		$collection->getSelect()->where('e.updated_at > at_ubervis_updated.value OR at_ubervis_updated.value IS NULL');
+		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->setPageSize(100);
-
+		echo $collection->getSelect();
+		die();
+		
 		foreach ($collection as $prod) {
 			$updated_data = $prod->getData();
 			$mpn = $updated_data['manufacturer_pn_2'];
