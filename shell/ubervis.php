@@ -48,6 +48,7 @@ error_reporting(-1);
 //$marketers = $api->callApi(Zend_Http_Client::GET, 'marketer/comparison/1');
 //var_dump($ubervis_prod);
 //die();
+Mage::log('ubervis started',null,'ubervis.log');
 
 Mage::getModel('ubervisibility/observer')->updateProduct();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
