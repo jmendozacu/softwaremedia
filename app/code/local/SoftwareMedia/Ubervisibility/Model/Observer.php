@@ -33,7 +33,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$prod_id = null;
 
 			if (empty($ubervis_prod)) {
-			echo "Empty";
 				// create product
 				$prodData = array('title' => $updated_data['name']) ;
 				if ($prod->getAdminId())
@@ -47,7 +46,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$api->callApi(Zend_Http_Client::POST, 'product/mpn/', array('productsId' => $prod_id, 'mpn' => $mpn));
 
 			} else {
-			echo "not empty";
 				$prod_id = $ubervis_prod->id;
 			}
 
@@ -87,7 +85,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			else
 				$data['isLicensing'] = false;
 			
-			var_dump($data);
 			$stock_model = Mage::getModel('cataloginventory/stock_item');
 			$stock_model->loadByProduct($prod->getId());
 
@@ -110,7 +107,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					$newData =  array_merge((array) $desc, $data);
 					$newData['productDescriptionsId']['marketersId']  = $desc->productDescriptionsId->marketersId;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/',$newData);
-					var_dump( $return );
 				}
 			} else {
 				$marketers = $api->callApi(Zend_Http_Client::GET, 'marketer/comparison/1');
@@ -119,7 +115,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					Mage::log('Marketer ' . $marketer->id . " prod id " . $prod_id,null,'ubervis.log');
 					//$data['marketersId'] = $marketer->id;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/', $data);
-					echo $return;
 					//Mage::log($return,NULL,'ubervis.log');
 				}
 			}
