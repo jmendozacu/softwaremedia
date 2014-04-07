@@ -65,6 +65,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['brand'] = $brand;
 			$data['description'] = $updated_data['description'];
 			$data['message'] = $updated_data['stock_message'];
+			
 			$data['edition'] = $updated_data['version'];
 			$data['weight'] = $updated_data['weight'];
 			$data['cost'] = $updated_data['cost'];
@@ -78,7 +79,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$data['status'] = 'ACTIVE';
 			else
 				$data['status'] = 'INACTIVE';
-			$data['version']= $prod->getResource()->getAttribute('multi_product_version')->getFrontend()->getValue($prod);
+			if ($updated_data['multi_product_version'])
+				$data['version']= $prod->getResource()->getAttribute('multi_product_version')->getFrontend()->getValue($prod);
 			$data['productType'] = $prod->getResource()->getAttribute('product_type')->getFrontend()->getValue($prod);
 			if ($prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod) == 'Yes')
 				$data['isLicensing'] = true;
