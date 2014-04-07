@@ -13,8 +13,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		Mage::log('Starting ubervis update');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
-		//$collection->addAttributeToFilter('sku','AC-VMPXRBENS11');
-		$collection->setOrder('warehouse_updated_at','ASC');
+		//$collection->addAttributeToFilter('sku','TM-CMRN0046');
+		$collection->setOrder('ubervis_updated','ASC');
 		//$collection->addAttributeToFilter('sku','AC-VMPXRBENS11');
 		$collection->addAttributeToSelect('*');
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
@@ -33,8 +33,12 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$prod_id = null;
 
 			if (empty($ubervis_prod)) {
+			echo "Empty";
 				// create product
-				$ubervis_prod = $api->callApi(Zend_Http_Client::POST, 'product/', array('title' => $updated_data['name']));
+				$prodData = array('title' => $updated_data['name']) ;
+				if ($prod->getAdminId())
+					$prodData['adminId'] = $prod->getAdminId();
+				$ubervis_prod = $api->callApi(Zend_Http_Client::POST, 'product/', $prodData);
 				
 				
 				$prod_id = $ubervis_prod->id;
@@ -43,6 +47,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$api->callApi(Zend_Http_Client::POST, 'product/mpn/', array('productsId' => $prod_id, 'mpn' => $mpn));
 
 			} else {
+			echo "not empty";
 				$prod_id = $ubervis_prod->id;
 			}
 
@@ -68,15 +73,21 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['price'] = $updated_data['price'];
 			$data['msrp'] = $updated_data['msrp'];
 
-			/*
-			$data['package_id'] = $prod->getResource()->getAttribute('package_id')->getFrontend()->getValue($prod);;
-			$data['status'] = $prod->getResource()->getAttribute('status')->getFrontend()->getValue($prod);;
-			$data['multi_product_version'] = $prod->getResource()->getAttribute('multi_product_version')->getFrontend()->getValue($prod);
-			$data['product_type'] = $prod->getResource()->getAttribute('product_type')->getFrontend()->getValue($prod);
-			$data['license_nonlicense_dropdown'] = $prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod);
-			$data['admin_id'] = $prod->getResource()->getAttribute('admin_id')->getFrontend()->getValue($prod);
-			*/
 			
+			$data['shippingGroup'] = strtoupper($prod->getResource()->getAttribute('package_id')->getFrontend()->getValue($prod));
+			
+			if ($prod->getResource()->getAttribute('status')->getFrontend()->getValue($prod) == 'Enabled')
+				$data['status'] = 'ACTIVE';
+			else
+				$data['status'] = 'INACTIVE';
+			$data['version']= $prod->getResource()->getAttribute('multi_product_version')->getFrontend()->getValue($prod);
+			$data['productType'] = $prod->getResource()->getAttribute('product_type')->getFrontend()->getValue($prod);
+			if ($prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod) == 'Yes')
+				$data['isLicensing'] = true;
+			else
+				$data['isLicensing'] = false;
+			
+			var_dump($data);
 			$stock_model = Mage::getModel('cataloginventory/stock_item');
 			$stock_model->loadByProduct($prod->getId());
 
@@ -99,6 +110,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					$newData =  array_merge((array) $desc, $data);
 					$newData['productDescriptionsId']['marketersId']  = $desc->productDescriptionsId->marketersId;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/',$newData);
+					var_dump( $return );
 				}
 			} else {
 				$marketers = $api->callApi(Zend_Http_Client::GET, 'marketer/comparison/1');
@@ -107,6 +119,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					Mage::log('Marketer ' . $marketer->id . " prod id " . $prod_id,null,'ubervis.log');
 					//$data['marketersId'] = $marketer->id;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/', $data);
+					echo $return;
 					//Mage::log($return,NULL,'ubervis.log');
 				}
 			}
