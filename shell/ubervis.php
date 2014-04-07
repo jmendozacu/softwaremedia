@@ -1,6 +1,6 @@
 <?php
 
-require "/var/www/magento.softwaremedia.com/htdocs/shell/app/Mage.php";
+require "/var/www/magento.softwaremedia.com/htdocs/app/Mage.php";
 Mage::app('admin')->setUseSessionInUrl(false);
 
 //$file = fopen(Mage::getBaseDir()."/var/synnex_data/520985.ap","r") or die('could not open file');
