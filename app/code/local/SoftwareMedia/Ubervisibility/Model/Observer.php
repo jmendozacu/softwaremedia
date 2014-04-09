@@ -13,7 +13,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		Mage::log('Starting ubervis update');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
-		//$collection->addAttributeToFilter('sku','TM-CMRN0046');
+		//$collection->addAttributeToFilter('sku','AC-TUINLPENS15');
 		$collection->setOrder('ubervis_updated','ASC');
 		//$collection->addAttributeToFilter('sku','AC-VMPXRBENS11');
 		$collection->addAttributeToSelect('*');
@@ -109,15 +109,22 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					$newData =  array_merge((array) $desc, $data);
 					$newData['productDescriptionsId']['marketersId']  = $desc->productDescriptionsId->marketersId;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/',$newData);
+					//echo "updating";
+					var_dump($return);
 				}
 			} else {
 				$marketers = $api->callApi(Zend_Http_Client::GET, 'marketer/comparison/1');
 				foreach($marketers as $marketer) {
+					//echo "adding";
+					//var_dump($data);
+					$data['cpcFloor'] = 0;
+					$data['siteFloor'] = 0;
 					$data['productDescriptionsId']['marketersId'] = $marketer->id;
 					Mage::log('Marketer ' . $marketer->id . " prod id " . $prod_id,null,'ubervis.log');
 					//$data['marketersId'] = $marketer->id;
 					$return = $api->callApi(Zend_Http_Client::POST, 'product/descriptions/', $data);
 					//Mage::log($return,NULL,'ubervis.log');
+					var_dump($return);
 				}
 			}
 			$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));

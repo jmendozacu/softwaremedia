@@ -8,10 +8,10 @@ Mage::app('admin')->setUseSessionInUrl(false);
 
 $helper = Mage::helper('ocm_fulfillment'); 
 
-  $product = Mage::getModel('catalog/product')->load(6833);
-  $helper->updateStock($product);
+  //$product = Mage::getModel('catalog/product')->load(6833);
+  //$helper->updateStock($product);
   
-  die();
+ // die();
 /*
   echo $product->setData('etilize_manufactureid','Test1');
   $product->save();
