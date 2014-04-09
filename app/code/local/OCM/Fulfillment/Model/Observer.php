@@ -41,7 +41,7 @@ class OCM_Fulfillment_Model_Observer
                 
 				if (substr($prod->getSku(),-2) == 'DL') {
 					$is_download = true;
-				} elseif ($prod->getAttributeSetId() != self::DEFAULT_ATTRIBUTE_SET_ID && $prod->getAttributeSetId() != self::RETAIL_ATTRIBUTE_SET_ID)					
+				} elseif ($prod->getLicenseNonlicenseDropdown() == 1210)					
 					$is_license = true;
 				elseif ($shippingMethod == 'productmatrix_Free_Electronic_Delivery') {
 					$is_download = true;

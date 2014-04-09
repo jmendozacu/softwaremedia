@@ -7,9 +7,12 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$all_price = array();
 		$qty = 0;
 		$subItems = $product->getSubstitutionProducts();
+		$links = $product->getSubstitutionLinkCollection();
+
 		$stock_model = Mage::getModel('cataloginventory/stock_item');
 		$hasResult = false;
-
+		$new_stock_model = Mage::getModel('cataloginventory/stock_item');
+		
 		foreach (array('techdata','synnex','ingram') as $warehouse_name) {
 			if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
 				$hasResult = true;
@@ -57,7 +60,9 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$stock_model->loadByProduct($product->getId());
 		
 		//Add up QTY 
-		foreach($subItems as $item) {
+		foreach($links as $link) {
+			$item = Mage::getModel('catalog/product')->load($link->getLinkedProductId());
+
 			foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
 				if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
 					$hasResult = true;
@@ -65,7 +70,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$prod = Mage::getModel('catalog/product')->load($item->getId());
 				$qty+=$prod->getData($warehouse_name.'_qty');
 				if (!$cost && $prod->getData('cost'))
-					$cost = $prod->getData('cost');
+					$cost = $prod->getData('cost') * $link->getQty();
 			}
 			$qty+=$item->getData('pt_qty');
 		}
@@ -75,7 +80,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		
 		//Additional rules for physical items
 		$stock_model->setData('backorders',0);
-		if($hasResult && !$qty) {
+		if($hasResult && (!$qty || $qty < 0)) {
 			$qty = 9999;
 			if ($product->getData('package_id')==1085) {
 				$stock_model->setData('backorders',1);
@@ -83,6 +88,18 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			}
 		}
 		
+		//Add stock of simple products
+		if ($product->getTypeId() == 'configurable') {
+			//echo "config";
+			
+			$conf = Mage::getModel('catalog/product_type_configurable')->setProduct($product);
+			$col = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
+			foreach($col as $simple_product){
+				$new_stock_model->loadByProduct($simple_product->getId());
+				$qty += $new_stock_model->getData('qty');
+			}
+		}
+
 		if($qty) {
 			$stock_model->setData('is_in_stock',1);
 		} else {
