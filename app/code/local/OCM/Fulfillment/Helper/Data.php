@@ -80,7 +80,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		
 		//Additional rules for physical items
 		$stock_model->setData('backorders',0);
-		if($hasResult && !$qty) {
+		if($hasResult && (!$qty || $qty < 0)) {
 			$qty = 9999;
 			if ($product->getData('package_id')==1085) {
 				$stock_model->setData('backorders',1);
