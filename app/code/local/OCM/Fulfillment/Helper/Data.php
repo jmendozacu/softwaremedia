@@ -9,7 +9,8 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$subItems = $product->getSubstitutionProducts();
 		$stock_model = Mage::getModel('cataloginventory/stock_item');
 		$hasResult = false;
-
+		$new_stock_model = Mage::getModel('cataloginventory/stock_item');
+		
 		foreach (array('techdata','synnex','ingram') as $warehouse_name) {
 			if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
 				$hasResult = true;
@@ -83,6 +84,20 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			}
 		}
 		
+		Mage::log($product->getTypeId(),null,'config.log');
+		if ($product->getTypeId() == 'configurable') {
+			//echo "config";
+			
+			$conf = Mage::getModel('catalog/product_type_configurable')->setProduct($product);
+			$col = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
+			foreach($col as $simple_product){
+				$new_stock_model->loadByProduct($simple_product->getId());
+				$qty += $new_stock_model->getData('qty');
+			}
+		//echo $qty;
+		//die();
+		}
+
 		if($qty) {
 			$stock_model->setData('is_in_stock',1);
 		} else {
