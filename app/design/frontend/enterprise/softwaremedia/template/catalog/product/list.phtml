@@ -30,7 +30,7 @@
     <ol class="products-list" id="products-list">
     <?php foreach ($_productCollection as $_product): ?>
         <?php $msrp = $_product->getMsrp(); ?>
-    
+		<?php $_product = Mage::getModel('catalog/product')->load($_product->getId()); ?>
         <li class="item<?php if( ++$_iterator == sizeof($_productCollection) ): ?> last<?php endif; ?>">
             <?php // Product Image ?>
             <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(335); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
@@ -75,7 +75,27 @@
                     	
                         <li>
                         	<?php if($_product->isSaleable()): ?>
-                        	<span class="availability in-stock"><?php echo $this->__('<span>Availability:</span> In stock. Ships free today.') ?></span>
+                        	<?php $stock_message = $_product->getData('stock_message'); ?>
+                        <?php if ($stock_message): ?>
+                    	<?php $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product);
+							if ($inventory->getBackorders()): ?>
+	                    <span class="availability out-of-stock">
+	                    	<span>Availability:</span> Backordered. Product may take 1-2 weeks for delivery.
+	                    </span>
+	                    <?php else: ?>
+	                    	<?php 
+	                    	if ($stock_message == 'In Stock. Ships Free Today' && date('N') <5 && date('G') >= 16) {
+	                    		echo "<span class=\"availability in-stock\"><span>Availability:</span> In Stock. Ships Free Tomorrow</span>";
+	                    	} elseif ($stock_message == 'In Stock. Ships Free Today' && (date('N') > 5 || (date('N') == 5 && date('G') >= 16))) {
+	                    		echo "<span class=\"availability in-stock\"><span>Availability:</span> In Stock. Ships Free Monday</span>";
+							} else {
+	                    		echo "<span class=\"availability in-stock\"><span>Availability:</span> " . $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message') . "</span>";
+	                    	} 
+	                    	?>
+	                    	
+	                    <?php endif; ?>
+                    <?php endif; ?>
+ 
                             <?php else: ?>
                             <span class="availability out-of-stock"><?php echo $this->__('<span>Availability:</span> Out of stock') ?></span>
                             <?php endif; ?>
