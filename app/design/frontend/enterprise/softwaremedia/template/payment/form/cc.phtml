@@ -34,6 +34,29 @@
         </div>
     </li>
 */ ?>
+<?php 
+	if(Mage::getSingleton('customer/session')->isLoggedIn()) {
+		$customerData = Mage::getSingleton('customer/session')->getCustomer();
+		$profiles =  Mage::getModel('chasePaymentTech/profiles')->loadByCustomer($customerData->getId());	
+	}
+	
+?>
+	<?php if ($profiles): ?>
+	<li>
+        <label for="<?php echo $_code ?>_cc_saved"><?php echo $this->__('Saved Payment Method') ?></label>
+        <div class="input-box">
+            <select id="<?php echo $_code ?>_cc_saved" name="payment[cc_saved]">
+                <option value=""><?php echo $this->__('--Add New--')?></option>
+            <?php $_ccType = $this->getInfoData('cc_type') ?>
+            <?php foreach ($profiles as $profile): ?>
+                <option value="<?php echo $profile->getId() ?>"><?php echo $profile->getClean() ;?></option>
+            <?php endforeach ?>
+            </select>
+        </div>
+    </li>
+    <?php endif; ?>
+    <div id="cc_inputs">
+    
     <li>
         <label for="<?php echo $_code ?>_cc_type" class="required"><em>*</em><?php echo $this->__('Credit Card Type') ?></label>
         <div class="input-box">
@@ -49,7 +72,7 @@
     <li>
         <label for="<?php echo $_code ?>_cc_number" class="required"><em>*</em><?php echo $this->__('Credit Card Number') ?></label>
         <div class="input-box">
-            <input type="text" id="<?php echo $_code ?>_cc_number" name="payment[cc_number]" title="<?php echo $this->__('Credit Card Number') ?>" class="input-text validate-cc-number validate-cc-type" value="" />
+            <input type="text" style="width: 260px;" id="<?php echo $_code ?>_cc_number" name="payment[cc_number]" title="<?php echo $this->__('Credit Card Number') ?>" class="input-text validate-cc-number validate-cc-type" value="" /> <input type="checkbox" value="1" checked="checked" id="<?php echo $_code ?>_save_cc" name="payment[save_cc]"> Save
         </div>
     </li>
     <li id="<?php echo $_code ?>_cc_type_exp_div">
@@ -135,4 +158,20 @@
         </script>
     </li>
     <?php endif; ?>
+    
+    </div>
 </ul>
+
+<script type="text/javascript">
+        //<![CDATA[
+
+        Event.observe($('<?php echo $_code ?>_cc_saved'), 'change', function() {
+        	var elm = $('<?php echo $_code ?>_cc_saved');
+        	if (elm.value) {
+	        	$('cc_inputs').hide();
+        	} else {
+	        	$('cc_inputs').show();
+        	}
+        });
+        //]]>
+</script>

@@ -46,6 +46,9 @@ $helper = Mage::helper('ocm_fulfillment');
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
+
+$helper = Mage::helper('chasePaymentTech');
+
 $api = new SoftwareMedia_Ubervisibility_Helper_Api();
 //$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/mpn/VMPXRBENS14/100/0');
 //var_dump($ubervis_prod);
@@ -53,7 +56,19 @@ $api = new SoftwareMedia_Ubervisibility_Helper_Api();
 //var_dump($ubervis_prod);
 //die();
 
-Mage::getModel('ubervisibility/observer')->updateProduct();
+
+$profile = Mage::getModel('chasePaymentTech/profiles');
+echo get_class($profile);
+								$profile->setCustomerId('asd');
+				$profile->setCustomerReferenceNumber('sadas');
+				$profile->setCardType('21');
+				$profile->setExpMonth('12');
+				$profile->setExpYear('122');
+				$profile->setCardNum('1231');
+				$profile->setActive(0);
+				$profile->save();
+				
+//Mage::getModel('ubervisibility/observer')->updateProduct();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
 
 

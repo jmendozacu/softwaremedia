@@ -473,7 +473,7 @@ class Mage_Checkout_OnepageController extends Mage_Checkout_Controller_Action
 
             $data = $this->getRequest()->getPost('payment', array());
             $result = $this->getOnepage()->savePayment($data);
-
+			Mage::log($data['cc_saved'],null,'pay.log');
             // get section and redirect data
             $redirectUrl = $this->getOnepage()->getQuote()->getPayment()->getCheckoutRedirectUrl();
             if (empty($result['error']) && !$redirectUrl) {
@@ -574,6 +574,9 @@ class Mage_Checkout_OnepageController extends Mage_Checkout_Controller_Action
                     | Mage_Payment_Model_Method_Abstract::CHECK_ORDER_TOTAL_MIN_MAX
                     | Mage_Payment_Model_Method_Abstract::CHECK_ZERO_TOTAL;
                 $this->getOnepage()->getQuote()->getPayment()->importData($data);
+                $pay = $this->getOnepage()->getQuote()->getPayment();
+                Mage::log("pay: " . $pay['cc_saved'],null,'temp.log');
+                Mage::log("data: " . $data['cc_saved'],null,'temp.log');
             }
 
             $this->getOnepage()->saveOrder();
