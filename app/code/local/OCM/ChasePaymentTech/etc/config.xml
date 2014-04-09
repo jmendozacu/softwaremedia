@@ -7,7 +7,8 @@
 	</modules>
 
 	<global>
-		<models>			<paygate>
+		<models>
+			<paygate>
 				<rewrite>
 					<authorizenet_source_cctype>OCM_ChasePaymentTech_Model_Authorizenet_Source_Cctype</authorizenet_source_cctype>
 				</rewrite>
