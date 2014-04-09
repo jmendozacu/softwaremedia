@@ -6,9 +6,13 @@ Mage::app('admin')->setUseSessionInUrl(false);
 //OCM_Fulfillment_Model_Warehouse_Ingram
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 
+$helper = Mage::helper('ocm_fulfillment'); 
 
+  $product = Mage::getModel('catalog/product')->load(6833);
+  $helper->updateStock($product);
+  
+  die();
 /*
-  $product = Mage::getModel('catalog/product')->load(7169);
   echo $product->setData('etilize_manufactureid','Test1');
   $product->save();
 
