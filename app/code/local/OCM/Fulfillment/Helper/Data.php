@@ -84,7 +84,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			}
 		}
 		
-		Mage::log($product->getTypeId(),null,'config.log');
+		//Add stock of simple products
 		if ($product->getTypeId() == 'configurable') {
 			//echo "config";
 			
@@ -94,8 +94,6 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$new_stock_model->loadByProduct($simple_product->getId());
 				$qty += $new_stock_model->getData('qty');
 			}
-		//echo $qty;
-		//die();
 		}
 
 		if($qty) {
