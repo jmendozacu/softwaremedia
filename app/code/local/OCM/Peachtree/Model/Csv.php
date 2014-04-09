@@ -35,7 +35,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             )
             ->addFieldToFilter('order.status', 'complete')
         ;
-        
+
         $invoices->getSelect()
 
             ->joinLeft(
@@ -49,27 +49,27 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                     'applied_rule_ids'    => 'applied_rule_ids',
                     'coupon_rule_name'    => 'coupon_rule_name'
                 )
-            )
-    
-            ->joinLeft(
+            );
+   
+            $invoices->getSelect()->joinLeft(
                 'ocm_peachtree_referer as referer',
                 'referer.order_id = main_table.order_id',
                 array('referer_id')
-            )
-    
-            ->joinLeft(
+            );
+     
+            $invoices->getSelect()->joinLeft(
                 'sales_flat_order_address as shippingaddress',
                 'shippingaddress.entity_id = order.shipping_address_id',
                 array(
                     'ship_region' => 'region')
-            )
-                       
-                ->joinLeft(
+            );
+                 /*     
+                 $invoices->getSelect()->joinInner(
                     'sales_flat_shipment_track as shipment_track',
                     'shipment_track.order_id = main_table.order_id',
                     array('ship_via' => 'title')
-                    )
-        ;        
+                    );        
+ */
 
         foreach ($invoices as $invoice) {
             
@@ -80,7 +80,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 ->addFieldToFilter('main_table.parent_id',$invoice->getId())
                 //->setInvoiceFilter($invoice->getId())
                 ;
-                
+            
+            $track = Mage::getModel('sales/order_shipment_track')->getCollection();
+            $track->addAttributeToFilter('order_id',$invoice->getOrderId());
+            $tracking = $track->getFirstItem();
+            
             $items->getSelect()
                 ->joinLeft(
                     'sales_flat_shipment_item as shipment_item',
@@ -118,7 +122,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             $has_ship_line = ($invoice->getData('shipping_amount')>0) ? 1 : 0;
             $has_promo_line = ($invoice->getData('discount_amount')!=0) ? 1 : 0;
             
-            $shipVia = $invoice->getData('ship_via');
+            $shipVia = $tracking->getData('title');
             $shipVia = str_replace("Federal Express", "Fed-Ex", $shipVia);
             $itemCount = 0;
             foreach($items as $item) {
