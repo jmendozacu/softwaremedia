@@ -2,6 +2,62 @@
 require_once('Mage/Checkout/controllers/OnepageController.php');
 class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageController
 {
+
+    public function savePaymentAction()
+    {
+        if ($this->_expireAjax()) {
+            return;
+        }
+        try {
+            if (!$this->getRequest()->isPost()) {
+                $this->_ajaxRedirectResponse();
+                return;
+            }
+
+            $data = $this->getRequest()->getPost('payment', array());
+            
+            if ($data['cc_saved']) {
+		        $profile = Mage::getModel('chasePaymentTech/profiles')->load($data['cc_saved']);  
+		        $data['cc_type'] = $profile->getCardType();
+		        $data['cc_exp_month'] = $profile->getExpMonth();
+		        $data['cc_exp_year'] = $profile->getExpYear();
+		        $data['cc_last4'] = $profile->getCardNum();
+	        } else {
+		        $data['cc_last4'] = substr($data['cc_number'],-4);
+	        }
+	        
+	        $this->getRequest()->setPost('payment',$data);
+	        
+            $result = $this->getOnepage()->savePayment($data);
+
+            // get section and redirect data
+            $redirectUrl = $this->getOnepage()->getQuote()->getPayment()->getCheckoutRedirectUrl();
+            if (empty($result['error']) && !$redirectUrl) {
+                $this->loadLayout('checkout_onepage_review');
+                $result['goto_section'] = 'review';
+                $result['update_section'] = array(
+                    'name' => 'review',
+                    'html' => $this->_getReviewHtml()
+                );
+            }
+            if ($redirectUrl) {
+                $result['redirect'] = $redirectUrl;
+            }
+        } catch (Mage_Payment_Exception $e) {
+            if ($e->getFields()) {
+                $result['fields'] = $e->getFields();
+            }
+            $result['error'] = $e->getMessage();
+        } catch (Mage_Core_Exception $e) {
+            $result['error'] = $e->getMessage();
+        } catch (Exception $e) {
+            Mage::logException($e);
+            $result['error'] = $this->__('Unable to set Payment Method.');
+        }
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
+    }
+
+
     /**
      * Save checkout billing address
      */

@@ -33,6 +33,8 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	public function authorize(Varien_Object $payment, $amount) {
+		$onePage = Mage::getSingleton('checkout/type_onepage')->getQuote()->getPayment();
+
 		$this->_paymentProcessor->buildRequest($payment, $amount);
 		$authTxResponse = $this->_paymentProcessor->sendRequest(self::AUTHORIZE);
 
@@ -42,20 +44,20 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	public function capture(Varien_Object $payment, $amount) {
-		Mage::log($payment->getCcSaved(),NULL,'payment.log');
-		die();
+		$onePage = Mage::getSingleton('checkout/type_onepage')->getQuote()->getPayment();
+
 		$helper = Mage::helper('chasePaymentTech');
 		$customer = $payment->getOrder()->getCustomer();
 		
 		//die(var_dump($this->getAllProfiles($payment->getOrder()->getCustomer())));
 		$profiles_enabled = Mage::getStoreConfig('payment/chasePaymentTech/use_profiles', Mage::app()->getStore());
 		$customer_profile = null;
-
-		//Only save profile data if customer is logged in
-		if ($profiles_enabled && $customer) {
+		
+		Mage::log("Profiles enabled and customer" . $onePage['save_cc'] . "enabled: " . $profiles_enabled . ' customer: ' . $hasCustomer,NULL,'profile.log');
+		
+		if ($profiles_enabled && $customer && $onePage['save_cc']) {
 			$cardNum = substr($payment->getCcNumber(),-4);
-			Mage::log("Profiles enabled and customer",NULL,'profile.log');
-			
+			Mage::log("Profiles enabled and customer" ,NULL,'profile.log');
 			//If profile doesn't exist for card and customer, create it
 			$hasProfile = $helper->hasProfile($customer->getId(),$cardNum);
 			Mage::log("Has Profile: " . $helper->hasProfile($customer->getId(),$cardNum),NULL,'profile.log');
@@ -86,11 +88,19 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 			}
 		}
 
+		$refNum = null;
+		
+		//Get profile information
+		if ($onePage['cc_saved']) {
+			$profile = Mage::getModel('chasePaymentTech/profiles')->load($onePage['cc_saved']);
+			$refNum = $profile->getCustomerReferenceNumber();
+		}
+
 		if ($payment->getParentTransactionId()) {
-			$this->_paymentProcessor->buildCaptureRequest($payment, $amount, $customer_profile);
+			$this->_paymentProcessor->buildCaptureRequest($payment, $amount);
 			$captureTxResponse = $this->_paymentProcessor->sendRequest(self::CAPTURE);
 		} else {
-			$this->_paymentProcessor->buildRequest($payment, $amount, $customer_profile);
+			$this->_paymentProcessor->buildRequest($payment, $amount, $refNum);
 			$captureTxResponse = $this->_paymentProcessor->sendRequest(self::SALE);
 		}
 
@@ -114,8 +124,8 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	public function getAllProfiles(Varien_Object $customer) {
-		$collection = Mage::getModel('chasePaymentTech/profiles')->getCollection();
-		die(var_dump($collection));
+		$collection = Mage::getModel('chasePaymentTech/profiles')->getCollection()->addFieldToFilter('customer_id',$customer->getId());
+		return $collection;
 	}
 
 	private function _processResponse($payment, $txResponse, $txClose, $txParentClose) {

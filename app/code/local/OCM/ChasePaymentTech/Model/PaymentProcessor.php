@@ -99,9 +99,10 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 			$txRequest->newOrderRequest->avsAddress1 = implode(' ', $billing->getStreet());
 			$txRequest->newOrderRequest->avsCity = $billing->getCity();
 		} else {
+			$txRequest->newOrderRequest->ccAccountNum = NULL;
 			$txRequest->newOrderRequest->customerRefNum = $customerRefNum;
 		}
-
+		
 		$txRequest->newOrderRequest->orderID = $order->getIncrementId();
 		$txRequest->newOrderRequest->amount = round($amount * 100, 0);
 		$txRequest->newOrderRequest->txRefNum = $payment->getParentTransactionId();
@@ -136,7 +137,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		$this->_txRequest = $txRequest;
 	}
 
-	public function buildCaptureRequest(Varien_Object $payment, $amount) {
+	public function buildCaptureRequest(Varien_Object $payment, $amount, $customerRefNum = null) {
 		$order = $payment->getOrder();
 		$billing = $order->getBillingAddress();
 		Mage::log('AMOUNT: ' . $amount, null, 'SDB.log');
@@ -144,6 +145,10 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		$txRequest->markForCaptureRequest = new StdClass();
 		$txRequest->markForCaptureRequest->orbitalConnectionUsername = Mage::getStoreConfig('payment/chasePaymentTech/username', Mage::app()->getStore());
 		$txRequest->markForCaptureRequest->orbitalConnectionPassword = Mage::getStoreConfig('payment/chasePaymentTech/password', Mage::app()->getStore());
+		
+		if ($customerRef)
+			$txRequest->markForCaptureRequest->customerRefNum = $customerRef;
+		
 		$txRequest->markForCaptureRequest->version = '2.8';
 		$txRequest->markForCaptureRequest->industryType = 'EC';
 		$txRequest->markForCaptureRequest->bin = Mage::getStoreConfig('payment/chasePaymentTech/bin', Mage::app()->getStore());
@@ -295,15 +300,15 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		try {
 			$client = new SoapClient($wsdl, array('trace' => 1));
 			$response = $client->$method($request);
-
-			$this->_logger->debug("\nRequest\n" . $client->__getLastRequest());
-			$this->_logger->debug("\nResponse\n" . $client->__getLastResponse());
+			Mage::log($response,NULL,'response.log');
+			$this->_logger->debug("\nRequest\n" . $request);
+			$this->_logger->debug("\nResponse\n" . $response);
 
 			return $response;
 		} catch (SoapFault $fault) {
 			$this->_logger->error('In Send Request - Threw a SoapFault\n' . $fault);
-			$this->_logger->error("\nRequest\n" . $client->__getLastRequest());
-			$this->_logger->error("\nResponse\n" . $client->__getLastResponse());
+			$this->_logger->error("\nRequest\n" . $request);
+			$this->_logger->error("\nResponse\n" . $response);
 		}
 	}
 
