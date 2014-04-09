@@ -161,6 +161,7 @@
 
                     <?php echo $this->getChildHtml('other');?>
                     <?php $stock_message = $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message'); ?>
+                    <?php if($_product->isSaleable()): ?>
                     <?php if ($stock_message): ?>
                     	<?php $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product);
 							if ($inventory->getBackorders()): ?>
@@ -181,6 +182,11 @@
 	                    	
 	                    </p>
 	                    <?php endif; ?>
+	                 <?php endif; ?>
+	                 <?php else: ?>
+	                 <p class="availability out-of-stock" style="text-align: right">
+	                 	Out of Stock
+	                 </p>
                     <?php endif; ?>
                 </div>
 
