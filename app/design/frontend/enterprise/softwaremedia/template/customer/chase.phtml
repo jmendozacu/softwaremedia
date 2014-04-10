@@ -1,0 +1,31 @@
+<?php $profiles = Mage::registry('profiles'); ?>
+
+<div class="chase-payment">
+	<div class="page-title">
+		<h1><?php echo $this->__('My Payment Methods'); ?></h1>
+	</div>
+	<?php if (count($profiles) > 0): ?>
+		<table class="data-table">
+			<thead>
+				<tr>
+					<td>Card Number</td>
+					<td>Card Type</td>
+					<td colspan="2">Expiration</td>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($profiles as $profile): ?>
+					<tr>
+					<td><?php echo $profile->getCardNum(); ?></td>
+					<td><?php echo $profile->getReadableType(); ?></td>
+					<td><?php echo $profile->getExpMonth(); ?>/<?php echo $profile->getExpYear(); ?></td>
+					<td><a href="<?php echo $this->getUrl('chase/customer/delete',array('pid' => $profile->getId())); ?>">Remove</a></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>	
+		</table>
+	<?php else: ?>
+		No Saved Profiles Available
+	<?php endif; ?>
+	
+</div>

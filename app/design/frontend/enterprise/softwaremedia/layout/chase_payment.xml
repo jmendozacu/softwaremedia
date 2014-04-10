@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<layout version="0.1.0">
+	<!-- Customer -->
+	<customer_account>
+	    <reference name="customer_account_navigation">
+	        <action method="addLink" module="chase">
+	        	<name>chase</name>
+	        	<path>chase/customer/index</path>
+	        	<label>My Payment Methods</label>
+	        </action>
+	    </reference>
+	</customer_account>
+	
+	<chase_customer_index>
+      <label>Customer My Account My Payment Methods</label>
+      <update handle="customer_account"/>
+      <reference name="my.account.wrapper">
+      	  <block type="monkey/customer_account_lists" name="magemonkey_additionallists" template="customer/chase.phtml" />
+          <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
+      </reference>
+	</chase_customer_index>
+	<!-- Customer -->
+</layout>

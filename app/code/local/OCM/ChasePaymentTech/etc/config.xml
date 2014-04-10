@@ -51,6 +51,24 @@
 			</ocm_chase_setup>
 		</resources>
 	</global>
+	<frontend>
+		<routers>
+            <chase>
+                <use>standard</use>
+                <args>
+                    <module>OCM_ChasePaymentTech</module>
+                    <frontName>chase</frontName>
+                </args>
+            </chase>
+        </routers>
+		<layout>
+            <updates>
+                <chase>
+                    <file>chase_payment.xml</file>
+                </chase>
+            </updates>
+        </layout>
+	</frontend>
 	<adminhtml>
         <layout>
             <updates>

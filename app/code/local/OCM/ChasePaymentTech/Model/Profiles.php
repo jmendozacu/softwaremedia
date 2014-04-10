@@ -13,9 +13,19 @@
  */
 class OCM_ChasePaymentTech_Model_Profiles extends Mage_Core_Model_Abstract {
 
+	public $ccNames = array(
+		'MC' => 'Mastercard',
+		'VI' => 'Visa',
+		'AE' =>	'American Express'
+	);
+	
 	public function _construct() {
 		parent::_construct();
 		$this->_init('chasePaymentTech/profiles');
+	}
+	
+	public function getReadableType() {
+		return $this->ccNames[$this->getCardType()];
 	}
 	
 	public function addProfile() {
