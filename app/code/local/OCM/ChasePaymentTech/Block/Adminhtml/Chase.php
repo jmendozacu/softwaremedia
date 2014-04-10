@@ -124,14 +124,6 @@ class OCM_ChasePaymentTech_Block_Adminhtml_Chase
                     )
                 );
                 
-        $fieldset->addField('cc_cid', 'text',
-                    array(
-                        'label' => Mage::helper('customer')->__('CVN'),
-                        'name'  => 'cc_number',
-                        'style' => 'width: 5em;',
-                        'class' => 'input_text validate-cc-cvn'
-                    )
-                );
                 
         $paymentCollection =Mage::getModel('chasePaymentTech/profiles')->getCollection()->addFieldToFilter('customer_id',$customer->getId());
         $this->assign('customer', $customer);

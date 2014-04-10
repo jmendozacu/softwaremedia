@@ -36,7 +36,7 @@ class OCM_ChasePaymentTech_Adminhtml_ChaseController extends Mage_Adminhtml_Cont
 
 		if ($hasProfile) {
 			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('peachtree')->__('Duplicate Card'));
-			$this->_redirect('*/customer/edit',array('id' => $customerId));
+			$this->_redirect('*/customer/edit',array('id' => $customerId,'tab' => 'chase'));
 			return;
 		}
 

@@ -44,8 +44,14 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	public function capture(Varien_Object $payment, $amount) {
-		$onePage = Mage::getSingleton('checkout/type_onepage')->getQuote()->getPayment();
-
+	
+		//Get admin Payment of frontend Payment
+		if (Mage::app()->getRequest()->getControllerName() == 'sales_order_create') 
+			$onePage = Mage::getSingleton('adminhtml/sales_order_create')->getQuote()->getPayment();
+		else
+			$onePage = Mage::getSingleton('checkout/type_onepage')->getQuote()->getPayment();
+			
+			
 		$helper = Mage::helper('chasePaymentTech');
 		$customer = $payment->getOrder()->getCustomer();
 		
@@ -54,7 +60,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 		$customer_profile = null;
 		
 		Mage::log("Profiles enabled and customer" . $onePage['save_cc'] . "enabled: " . $profiles_enabled . ' customer: ' . $hasCustomer,NULL,'profile.log');
-		
+
 		if ($profiles_enabled && $customer && $onePage['save_cc']) {
 			$cardNum = substr($payment->getCcNumber(),-4);
 			Mage::log("Profiles enabled and customer" ,NULL,'profile.log');

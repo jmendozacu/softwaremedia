@@ -37,11 +37,13 @@
         <?php foreach ($paymentCollection as $_payment): ?>
         <li id="payment_item_<?php echo $_payment->getId() ?>" >
 
-            <a href="<?php echo $this->getUrl("*/chase/delete",array('customer' => $customer->getId(), 'pid' => $_payment->getId())); ?>" class="btn-remove-payment">
+            <a style="float: right" href="<?php echo $this->getUrl("*/chase/delete",array('customer' => $customer->getId(), 'pid' => $_payment->getId())); ?>" class="btn-remove-payment">
                 <img src="<?php echo $this->getSkinUrl('images/cancel_icon.gif') ?>" alt="Remove address" />
             </a>
     
-                <strong>Card Type:</strong> <?php echo $_payment->getCardType(); ?>
+                <strong>Card Type:</strong> <?php echo $_payment->getCardType(); ?><br />
+                <strong>Last 4:</strong> <?php echo $_payment->getCardNum(); ?><br />
+                <strong>Exp:</strong> <?php echo $_payment->getExpMonth(); ?>/ <?php echo $_payment->getExpYear(); ?>
 
         </li>
         <?php endforeach; ?>

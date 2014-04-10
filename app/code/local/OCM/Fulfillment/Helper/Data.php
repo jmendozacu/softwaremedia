@@ -12,6 +12,9 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$stock_model = Mage::getModel('cataloginventory/stock_item');
 		$hasResult = false;
 		$new_stock_model = Mage::getModel('cataloginventory/stock_item');
+		//$product = Mage::getModel('catalog/product')->load($product->getId());
+		
+		Mage::log('Updating Stock: ' . $product->getSku(),null,'stock.log');
 		
 		foreach (array('techdata','synnex','ingram') as $warehouse_name) {
 			if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
@@ -25,6 +28,10 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 					$all_price[] = $product->getData($warehouse_name.'_price');
 			}  
 		}
+		Mage::log('QTY TechData: ' . $product->getTechdataQty(),null,'stock.log');
+		Mage::log('QTY Ingram: ' . $product->getIngramQty(),null,'stock.log');
+		Mage::log('QTY Synnex: ' . $product->getSynnexQty(),null,'stock.log');
+		Mage::log('QTY Total: ' . $qty,null,'stock.log');
 		
 		/*
 		Regarding prods where cost=0 in PT
@@ -102,8 +109,10 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 
 		if($qty) {
 			$stock_model->setData('is_in_stock',1);
+			Mage::log('IN STOCK: ' . $qty,null,'stock.log');
 		} else {
 			$stock_model->setData('is_in_stock',0);
+			Mage::log('OUT OF STOCK: ' . $qty,null,'stock.log');
 		}
 		
 		$stock_model->setData('qty',$qty);
@@ -111,7 +120,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$product->save();
 			$stock_model->save();
 		} catch (Exception $e) {
-			Mage::log($e->getMessage());
+			Mage::log($e->getMessage(),null,'fulsave.log');
 		}
 	}
 }
