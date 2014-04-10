@@ -82,7 +82,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			if ($updated_data['multi_product_version'])
 				$data['version']= $prod->getResource()->getAttribute('multi_product_version')->getFrontend()->getValue($prod);
 			$data['productType'] = $prod->getResource()->getAttribute('product_type')->getFrontend()->getValue($prod);
-			if ($prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod) == 'Yes')
+			if ($prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod) == 'License Product')
 				$data['isLicensing'] = true;
 			else
 				$data['isLicensing'] = false;
