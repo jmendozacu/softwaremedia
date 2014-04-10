@@ -1,0 +1,68 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<!-- Addresses list -->
+<table cellspacing="0" class="form-edit">
+<tr>
+<td class="address-list">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-customer-address-list"><?php echo Mage::helper('customer')->__('Customer Payment Information') ?></h4>
+    </div>
+    <ul id="payment_list">
+    <?php $_iterator = 0; ?>
+    <?php if(count($paymentCollection)): ?>
+        <?php foreach ($paymentCollection as $_payment): ?>
+        <li id="payment_item_<?php echo $_payment->getId() ?>" >
+
+            <a href="<?php echo $this->getUrl("*/chase/delete",array('customer' => $customer->getId(), 'pid' => $_payment->getId())); ?>" class="btn-remove-payment">
+                <img src="<?php echo $this->getSkinUrl('images/cancel_icon.gif') ?>" alt="Remove address" />
+            </a>
+    
+                <strong>Card Type:</strong> <?php echo $_payment->getCardType(); ?>
+
+        </li>
+        <?php endforeach; ?>
+       <?php else: ?>
+       <li>No saved payment information.</li>
+    <?php endif; ?>
+    </ul>
+</td>
+<td>
+
+    <!-- Address form template -->
+    <div id="payment_form_template" class="entry-edit">
+    <?php
+        // Set form template elements prefix
+        $this->getForm()->setHtmlIdPrefix($_templatePrefix)
+                ->setFieldNameSuffix('payment['.$_templatePrefix.']');
+    ?>
+    <?php echo $this->getForm()->getHtml() ?>
+    <?php echo $this->getAddButtonHtml() ?>
+    </div>
+<!-- -->
+</td>
+</tr>
+</table>

@@ -1,0 +1,11 @@
+<!-- To add a tab on new product page -->
+<layout>
+    <!--adminhtml_customer_edit>
+        <reference name="customer_edit_tabs">
+            <action method="addTab">
+            	<name>customer_edit_tab_chase_payment</name>
+            	<block>chasePaymentTech/adminhtml_chase</block>
+            </action>
+        </reference>
+    </adminhtml_customer_edit-->
+</layout>

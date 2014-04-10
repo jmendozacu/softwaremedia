@@ -27,7 +27,16 @@
 			</chasePaymentTech_mysql4>
 		</models>
 
-
+		<blocks>
+    	<chasePaymentTech>
+       	 <class>OCM_ChasePaymentTech_Block</class>
+		</chasePaymentTech>
+		<adminhtml>
+        <rewrite>
+             <customer_edit_tabs>OCM_ChasePaymentTech_Block_Adminhtml_Tabs</customer_edit_tabs>
+         </rewrite>
+     </adminhtml>
+	 </blocks>
 		<helpers>
 			<chasePaymentTech>
 				<class>OCM_ChasePaymentTech_Helper</class>
@@ -42,7 +51,26 @@
 			</ocm_chase_setup>
 		</resources>
 	</global>
-
+	<adminhtml>
+        <layout>
+            <updates>
+                <chase>
+                    <file>chase_payment.xml</file>
+                </chase>
+            </updates>
+        </layout>
+    </adminhtml>
+    <admin>
+        <routers>
+			<adminhtml>
+				<args>
+    				<modules>
+                        <chase before="Mage_Adminhtml">OCM_ChasePaymentTech_Adminhtml</chase>
+    				</modules>
+				</args>
+			</adminhtml>
+        </routers>
+    </admin>
 	<default>
 		<payment>
 			<chasePaymentTech>

@@ -286,7 +286,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		return $response->return->approvalStatus;
 	}
 
-	private function _getProcStatus($response) {
+	public function _getProcStatus($response) {
 		return $response->return->procStatus;
 	}
 
@@ -294,7 +294,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		return $response->return->profileProcStatus;
 	}
 
-	private function _sendRequest($method, $request) {
+	public function _sendRequest($method, $request) {
 		$wsdl = Mage::getStoreConfig('payment/chasePaymentTech/url', Mage::app()->getStore());
 
 		try {
@@ -306,6 +306,9 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 
 			return $response;
 		} catch (SoapFault $fault) {
+			var_dump($request);
+			echo "<br /><br />";
+			var_dump($response);
 			$this->_logger->error('In Send Request - Threw a SoapFault\n' . $fault);
 			$this->_logger->error("\nRequest\n" . $request);
 			$this->_logger->error("\nResponse\n" . $response);
