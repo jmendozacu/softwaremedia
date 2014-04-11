@@ -16,7 +16,8 @@ class OCM_ChasePaymentTech_Model_Profiles extends Mage_Core_Model_Abstract {
 	public $ccNames = array(
 		'MC' => 'Mastercard',
 		'VI' => 'Visa',
-		'AE' =>	'American Express'
+		'AE' =>	'American Express',
+		'DI' => 'Discover'
 	);
 	
 	public function _construct() {
