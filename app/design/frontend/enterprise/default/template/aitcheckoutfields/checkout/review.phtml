@@ -89,12 +89,28 @@ $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
     <fieldset class="buttons-set" style="text-align:left; border-bottom: none;">
         <ul class="form-list">
         <?php foreach ($aFieldList as $aField): ?>
+			<?php if ($aField['attribute_code'] == 'comment') {
+				$commentField = $aField;
+				continue;
+			} 
+			?>
             <?php echo $this->getFieldHtml($aField); ?>
         <?php endforeach; ?>
         </ul>
     </fieldset>
     <?php endif; ?>
     </div>    
+    
+<?php else : ?>
+<?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
+<?php foreach ($aFieldList as $aField): ?>
+			<?php if ($aField['attribute_code'] == 'comment') {
+				$commentField = $aField;
+				continue;
+			} 
+			?>
+<?php endforeach; ?>
+<?php endif; ?>
 <?php endif; ?>
 <!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
 
@@ -108,6 +124,19 @@ $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
 </script>
 <div id="checkout-review-submit">
     <?php echo $this->getChildHtml('agreements') ?>
+    
+  <?php if ($commentField): ?>
+<form action="" id="checkout-agreements" onsubmit="return false;">
+<ol class="checkout-agreements">
+    <li>
+    	<label style="text-align:left; width:100%;" for="customreview:aitoc_checkout_<?php echo $commentField['attribute_id']; ?>">Order Comments: </label>
+    	<div class="input-box">
+    	<textarea name="customreview[aitoc_checkout_<?php echo $commentField['attribute_id']; ?>]" id="customreview:aitoc_checkout_<?php echo $commentField['attribute_id']; ?>" class=" input-text" title="Order Comments" style="height:50px;" rows="24" cols="80"></textarea>
+    	</div>
+	</li>
+</ol>
+</form>
+<?php endif; ?>
     <div class="buttons-set" id="review-buttons-container">
         <p class="f-left"><?php echo $this->__('Forgot an Item?') ?> <a href="<?php echo $this->getUrl('checkout/cart') ?>"><?php echo $this->__('Edit Your Cart') ?></a></p>
 <button type="submit" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" onclick="if (customreview.save()) review.save();"><span><span><?php echo $this->__('Place Order') ?></span></span></button>

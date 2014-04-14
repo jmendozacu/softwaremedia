@@ -92,7 +92,17 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Referral') ?></label></td>
                 <td class="value"><strong><?php echo $this->getReferer(); ?></strong></td>
             </tr>
+            <?php $data = $this->getOrderCustomData(); ?>
+            <?php foreach ($data as $aItem): ?>
+            <?php if($aItem['code'] == 'comment' && !empty($aItem['value'])){ ?>
             <tr>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Order Comment') ?></label></td>
+                <td class="value"><strong><?php echo nl2br($aItem['value']) ?></strong></td>
+            </tr>
+            <?php } ?>
+
+            <?php endforeach; ?>
+                        <tr>
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Tags') ?></label></td>
                 <td class="value"><strong><?php echo $this->getTags(); ?></strong></td>
             </tr>
@@ -197,7 +207,33 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
      <!-- end c2q -->
 </div>
 <div class="clear"></div>
+<!--     START AITOC CHECKOUT ATTRIBUTES     -->
+<?php if ($aCustomAtrrList = $this->getOrderCustomData()) : ?>
+    <!--Account Information-->
+<div class="entry-edit">
+        <div class="entry-edit-head">
 
+            <h4 class="icon-head head-products"><?php echo Mage::getStoreConfig('aitcheckoutfields/common_settings/aitcheckoutfields_additionalblock_label', $this->getStoreId()); ?></h4>
+        </div>
+<div class="fieldset">
+                <table cellspacing="0" class="form-list" width="100%">
+                
+    <?php foreach ($aCustomAtrrList as $aItem): if(!empty($aItem['value'])){ ?>
+    <?php if ($aItem['code'] == 'comment')
+    	continue;
+    ?>
+                <tr>
+                    <td class="label" width="50%"><?php echo $aItem['label']; ?></td>
+                    <td>&nbsp;</td>
+                    <td><label style="text-align: left;"><?php echo $aItem['value'] ?></label></td>
+                </tr>
+    <?php } endforeach; ?>
+                
+                </table>
+</div>
+</div>
+<div class="clear"></div>
+<?php endif; ?>
 <div class="box-left">
     <!--Billing Address-->
     <div class="entry-edit">

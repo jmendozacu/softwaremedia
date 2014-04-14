@@ -9,6 +9,7 @@ class OCM_Fulfillment_Model_Observer
 	const TAG_WAREHOUSE_ID = 1;
 	const TAG_LICENSING_ID = 2;
 	const TAG_DOWNLOAD_ID = 3;
+	const TAG_CS = 4;
 	
     public function evaluateOrdersDaily()
     {
@@ -17,11 +18,25 @@ class OCM_Fulfillment_Model_Observer
 		//$orders->addFieldToFilter('state','new');
 		$tagToOrderResource = Mage::getResourceModel('ordertags/orderidtotagid');
 		
+		$oAitcheckoutfields  = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
+		
+		
         foreach($orders as $order){
+        
             $is_virtual = false;
             $is_physical = false;
             $is_download = false;
             $is_license = false;
+            $iStoreId = $order->getStoreId();
+            $aCustomAtrrList = $oAitcheckoutfields->getOrderCustomData($order->getId(), $iStoreId, true, true); 
+            if ($aCustomAtrrList) {
+	            foreach($aCustomAtrrList as $aItem) {
+		            if ($aItem['code'] == 'comment' && !empty($aItem['value'])) {
+			            $tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
+			            $order->setState('processing','processing','Order has comments. Tagging Customer Service',FALSE)->save();
+		            }
+	            }
+            }
             
             $shippingMethod = $order->getShippingMethod();
             
@@ -397,6 +412,7 @@ class OCM_Fulfillment_Model_Observer
            
            
        }
+       
        
     }
 
