@@ -96,7 +96,7 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
             <?php foreach ($data as $aItem): ?>
             <?php if($aItem['code'] == 'comment' && !empty($aItem['value'])){ ?>
             <tr>
-                <td class="label"><label><?php echo Mage::helper('sales')->__('Order Comment') ?></label></td>
+                <td class="label"><label><?php echo Mage::helper('sales')->__('Customer Comment') ?></label></td>
                 <td class="value"><strong><?php echo nl2br($aItem['value']) ?></strong></td>
             </tr>
             <?php } ?>
