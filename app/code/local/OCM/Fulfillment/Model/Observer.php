@@ -32,7 +32,7 @@ class OCM_Fulfillment_Model_Observer
             if ($aCustomAtrrList) {
 	            foreach($aCustomAtrrList as $aItem) {
 		            if ($aItem['code'] == 'comment' && !empty($aItem['value'])) {
-			            $tagToOrderResource->addIntoDB($order->getId(), self::TAG_DOWNLOAD_ID);
+			            $tagToOrderResource->addIntoDB($order->getId(), self::TAG_CS);
 			            $order->setState('processing','processing','Order has comments. Tagging Customer Service',FALSE)->save();
 		            }
 	            }
