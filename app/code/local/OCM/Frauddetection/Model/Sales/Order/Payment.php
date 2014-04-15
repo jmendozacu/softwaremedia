@@ -101,7 +101,8 @@ class OCM_Frauddetection_Model_Sales_Order_Payment extends Mage_Sales_Model_Orde
         }
         $isCustomerNotified = (null !== $orderIsNotified) ? $orderIsNotified : $order->getCustomerNoteNotify();
         $message = $order->getCustomerNote();
-
+		if ($result)
+			$message = $result;
 		
 		if ($billing->getCountryId() == "CA" || $shipping->getCountryId() == "CA") {
 			$orderState = 'new';
