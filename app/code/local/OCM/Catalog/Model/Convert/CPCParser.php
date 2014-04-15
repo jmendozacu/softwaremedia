@@ -499,16 +499,39 @@ class OCM_Catalog_Model_Convert_CPCParser
                 }
             }
             
+            $hasCat = false;
+            
             $cats = $product->getCategoryIds();
 			foreach ($cats as $category_id) {
 			    $_cat = Mage::getModel('catalog/category')->load($category_id);
 			    //$this->getParentTopCategory($_cat);
 			    if ($_cat->getParentId() == 51) {
 				    $row['prod_cat'] = $_cat->getName();
+				    $hasCat = true;
 				    break;
 			    }
 			} 
-
+			
+			/*
+			if (!$hasCat) {
+				$parentIds = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
+	            $parentId = array_shift($parentIds);
+	            if ($parentId) {
+		            $parentProduct = Mage::getModel('catalog/product')->load($parentId);
+		            $cats = $parentProduct->getCategoryIds();
+					foreach ($cats as $category_id) {
+					    $_cat = Mage::getModel('catalog/category')->load($category_id);
+					    //$this->getParentTopCategory($_cat);
+					    if ($_cat->getParentId() == 51) {
+						    $row['prod_cat'] = $_cat->getName();
+						    $hasCat = true;
+						    break;
+					    }
+					} 
+	            }
+			}
+			*/
+			
 			$row['condition'] = 'New';
 			$row['availability'] = 'In Stock';
 			
