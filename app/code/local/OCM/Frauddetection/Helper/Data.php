@@ -36,7 +36,9 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         $customerEmail = $order->getCustomerEmail();
         $collection = Mage::getModel('sales/order')->getCollection();
         $customerOrders = $collection->addFieldToFilter('customer_email',$customerEmail)->addFieldToFilter('status', 'complete');
-        
+        if ($customerOrders->getSize()>0)
+        	return false;
+        	
 		Mage::getSingleton('core/session', array('name' => 'adminhtml')); 
 		$session = Mage::getSingleton('admin/session'); 
 		if ( $session->isLoggedIn() ){ 
@@ -49,53 +51,53 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
 		  
         //Only perform check if this is the first order for that customer
         Mage::log('Customer Orders: ' . $customerOrders->getSize(),null,'fraud.log');
-        if($customerOrders->getSize()<1){
-            // compare shippingaddress and billingaddress
-            $shippingAddress = $order->getShippingAddress();
-            $billingAddress = $order->getBillingAddress();
-            if($result==false){
-                if($shippingAddress->getRegion()!=$billingAddress->getRegion()
-                    || $shippingAddress->getPostcode()!=$billingAddress->getPostcode()
-                    || $shippingAddress->getCity()!=$billingAddress->getCity()
-                    || $shippingAddress->getCountryId()!=$billingAddress->getCountryId()
-                    || implode(',',$shippingAddress->getStreet())!=implode(',',$billingAddress->getStreet())){
-                    
-                    $result = "Fraud Detection: Shipping address does not match billing address.";
-                } else {
-                    
-                }
-            }
 
-            // compare customerEmail's domain
-            $pos = strpos($customerEmail,'@');
-            $maildomain = substr($customerEmail,$pos+1);
-            if($result==false){
-                if(in_array($maildomain,$this->_allowMailDomain)){
-                    $result = "Fraud Detection: E-mail address domain in potential blacklist";
-                }
-            }
-            
-            // check order is an international order
-            if($result==false){
-                if(Mage::getStoreConfig('general/country/default')!=$shippingAddress->getCountryId()){
-                    $result = "Fraud Detection: International Order";
-                }
-            }
-            
-            // check order is over $2,000
-            if($result==false){
-                if($order->getSubtotal()>2000){
-                    $result = "Fraud Detection: Order exceeds $2000";
-                }
-            }
-            
-            // check order requires overnight shipping
-            if($result==false){
-                if(in_array($order->getShippingMethod(),$this->_allowShippingMethod)){
-                    $result = "Fraud Detection: Expedited shipping selected";
-                }
+        // compare shippingaddress and billingaddress
+        $shippingAddress = $order->getShippingAddress();
+        $billingAddress = $order->getBillingAddress();
+        if($result==false){
+            if($shippingAddress->getRegion()!=$billingAddress->getRegion()
+                || $shippingAddress->getPostcode()!=$billingAddress->getPostcode()
+                || $shippingAddress->getCity()!=$billingAddress->getCity()
+                || $shippingAddress->getCountryId()!=$billingAddress->getCountryId()
+                || implode(',',$shippingAddress->getStreet())!=implode(',',$billingAddress->getStreet())){
+                
+                $result = "Fraud Detection: Shipping address does not match billing address.";
+            } else {
+                
             }
         }
+
+        // compare customerEmail's domain
+        $pos = strpos($customerEmail,'@');
+        $maildomain = substr($customerEmail,$pos+1);
+        if($result==false){
+            if(in_array($maildomain,$this->_allowMailDomain)){
+                $result = "Fraud Detection: E-mail address domain in potential blacklist";
+            }
+        }
+        
+        // check order is an international order
+        if($result==false){
+            if(Mage::getStoreConfig('general/country/default')!=$shippingAddress->getCountryId()){
+                $result = "Fraud Detection: International Order";
+            }
+        }
+        
+        // check order is over $2,000
+        if($result==false){
+            if($order->getSubtotal()>2000){
+                $result = "Fraud Detection: Order exceeds $2000";
+            }
+        }
+        
+        // check order requires overnight shipping
+        if($result==false){
+            if(in_array($order->getShippingMethod(),$this->_allowShippingMethod)){
+                $result = "Fraud Detection: Expedited shipping selected";
+            }
+        }
+    
         return $result;
     }
 }
