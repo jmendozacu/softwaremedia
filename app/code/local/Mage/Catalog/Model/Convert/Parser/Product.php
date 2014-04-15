@@ -497,7 +497,8 @@ class Mage_Catalog_Model_Convert_Parser_Product
                     $row[$field] = null;
                 }
             }
-
+			$row['condition'] = 'New';
+			
             $batchExport = $this->getBatchExportModel()
                 ->setId(null)
                 ->setBatchId($this->getBatchModel()->getId())
