@@ -24,12 +24,29 @@ class Mestrona_ForwardToConfigurable_ProductController extends Mage_Catalog_Prod
             if (!$parentProduct->getId()) {
                 throw new Exception(sprintf('Can not load parent product with ID %d', $parentId));
             }
+					 //This returns the Label and Value of each selected option as an array. E.g. array( array('label'=>'Length', 'value'=>'32"'))
+		        $attributesInfo = $parentProduct->getTypeInstance()->getSelectedAttributesInfo();
+				var_dump($attributesId);
+		        //This returns the IDs of the attributes that were used to make the configurable product. E.g. array( 0=>513 )
+		        $attributesId = $parentProduct->getTypeInstance()->getUsedProductAttributeIds();
+		        
+		        //An empty array to fill.
+		        $attributes = array();
 
+				
+		        //For as long as $i is less than the amount of value in $attributesID
+		        for ($i = 0; $i < count($attributesId); $i++) {
+		        	$attribute = Mage::getModel('catalog/resource_eav_attribute')->load($attributesId[$i]);
+		            //Add an array to the $attributes array that contains the attribute ID at the current index and the attribute value at the current index
+		            $attributes[$i] =  $attributesId[$i] . "=" . $product->getData($attribute->getName());
+		        }
+				$attrList = implode('&',$attributes);
+				
             if ($parentProduct->isVisibleInCatalog()) {
                 //$this->_redirect();
                 //die($parentProduct->getId());
-                $url = $parentProduct->getProductUrl();
-                //die($url);
+                $url = $parentProduct->getProductUrl(). "?" . $attrList;
+     
 				$this->getResponse()->setHeader('HTTP/1.1, 301 Moved Permanently');
 				$this->getResponse()->setHeader('Location',$url);
 				return;

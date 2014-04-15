@@ -17,6 +17,11 @@
                 </rewrite>
             </catalog>
         </blocks>
+        <models>
+            <ocm_catalog>
+                <class>OCM_Catalog_Model</class>
+            </ocm_catalog>
+        </models>
         <helpers>
             <ocm_catalog>
                 <class>OCM_Catalog_Helper</class>
