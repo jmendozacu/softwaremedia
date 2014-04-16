@@ -502,16 +502,23 @@ class OCM_Catalog_Model_Convert_CPCParser
             $hasCat = false;
             
             $cats = $product->getCategoryIds();
+            $catList = array();
 			foreach ($cats as $category_id) {
 			    $_cat = Mage::getModel('catalog/category')->load($category_id);
-			    //$this->getParentTopCategory($_cat);
-			    if ($_cat->getParentId() == 51) {
-				    $row['prod_cat'] = $_cat->getName();
+			    $top = $this->getParentTopCategory($_cat);
+			    if ($top->getId() == 51) {
+			    	$catList[$_cat->getLevel()] = $this->getCategoryPath($_cat,$_cat->getName());
+				    //$row['prod_cat'] = $_cat->getName();
 				    $hasCat = true;
-				    break;
+				    //break;
 			    }
 			} 
 			
+			if ($hasCat) {
+				ksort($catList);
+				reset($catList);
+				$row['prod_cat'] = current($catList);
+			}
 			/*
 			if (!$hasCat) {
 				$parentIds = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
@@ -547,9 +554,21 @@ class OCM_Catalog_Model_Convert_CPCParser
         return $this;
     }
     
+    public function getCategoryPath($category,$path) {
+    	if($category->getLevel() == 2 || $category->getLevel() == 1) {
+	    	return $path;
+    	} else {
+	    	$parentCategory = Mage::getModel('catalog/category')->load($category->getParentId());
+	    	$path = $parentCategory->getName() . " > " . $path;
+	    	return $this->getCategoryPath($parentCategory,$path);
+    	}
+    		    
+	    
+    }
+    
 	public function getParentTopCategory($category)
     {
-        if($category->getLevel() == 2){
+        if($category->getLevel() == 2 || $category->getLevel() == 1){
             return $category;
         } else {
             $parentCategory = Mage::getModel('catalog/category')->load($category->getParentId());

@@ -72,6 +72,17 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['price'] = $updated_data['price'];
 			$data['msrp'] = $updated_data['msrp'];
 
+			$cats = $prod->getCategoryIds();
+			foreach ($cats as $category_id) {
+			    $_cat = Mage::getModel('catalog/category')->load($category_id);
+			    //$this->getParentTopCategory($_cat);
+			    if ($_cat->getParentId() == 51) {
+				    //$data['prod_cat'] = $_cat->getName();
+				    $hasCat = true;
+				    break;
+			    }
+			} 
+			
 			
 			$data['shippingGroup'] = strtoupper($prod->getResource()->getAttribute('package_id')->getFrontend()->getValue($prod));
 			
