@@ -85,10 +85,11 @@ class TBT_Rewards_Manage_Customer_PointsController extends TBT_Rewards_Admin_Abs
 			$numSuccessfulTransfers = 0;
 			
 			// Prepare the transfer template.
-			$transfer = Mage::getModel ( 'rewards/transfer' )->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_ADMIN_ADJUSTMENT )->setComments ( Mage::helper ( 'rewards/config' )->getDefaultMassTransferComment () )->setCurrencyId ( $currencyId )->setQuantity ( $quantity );
+			
 			
 			foreach ( $customerIds as $customer_id ) {
 				try {
+					$transfer = Mage::getModel ( 'rewards/transfer' )->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_ADMIN_ADJUSTMENT )->setComments ( Mage::helper ( 'rewards/config' )->getDefaultMassTransferComment () )->setCurrencyId ( $currencyId )->setQuantity ( $quantity );
 					$transfer->setId ( null )->setCustomerId ( $customer_id );
 					
 					// get the default starting status - usually Pending
