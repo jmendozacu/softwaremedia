@@ -248,12 +248,20 @@ class Webshopapps_Productmatrix_Model_Mysql4_Carrier_Productmatrix extends Mage_
             		$budget = $data;
             	}
             	
+            	if ($data['delivery_type'] == 'Free Expedited Air (2 Days)') {
+	            	$exp = $data;
+            	}
+            	if ($data['delivery_type'] == 'Free Express (3-5 Days)') {
+	            	$exp1 = $data;
+            	}
+
                 if ($previousPrice==$data['price'] && $data['priority']!=$previousPriority  && is_numeric($data['priority']) && is_numeric($previousPriority)) {
                     continue;
                 } else {
                 	if ($data['package_id'] == 'electronic,physical')
                 		$hasPhysical = true;
-                			
+                		
+                	Mage::log($data['package_id'],null,'pack.log');	
                     $previousPrice=$data['price'];
                     $previousPriority=$data['priority'];
                     $absoluteResults[]=$data;
@@ -262,8 +270,6 @@ class Webshopapps_Productmatrix_Model_Mysql4_Carrier_Productmatrix extends Mage_
         } else {
             $absoluteResults=$finalResults;
         }
-        if ($hasPhysical)
-			$absoluteResults[]=$budget;
 		
         return $absoluteResults;
     }

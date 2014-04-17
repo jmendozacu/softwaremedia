@@ -57,7 +57,10 @@ $api = new SoftwareMedia_Ubervisibility_Helper_Api();
 //die();
 
 
-$profile = Mage::getModel('chasePaymentTech/profiles');
+for ($i=0;$i<100;$i++)
+	$profile = Mage::getModel('ubervisibility/observer')->updateProduct();
+
+die();
 echo get_class($profile);
 								$profile->setCustomerId('asd');
 				$profile->setCustomerReferenceNumber('sadas');
