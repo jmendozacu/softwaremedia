@@ -27,25 +27,30 @@
 <?php $_code=$this->getMethodCode() ?>
 <ul id="payment_form_<?php echo $_code ?>" style="display:none">
 <?php 
+$profiles = array();
 if(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()) {
 		$profiles =  Mage::getModel('chasePaymentTech/profiles')->loadByCustomer(Mage::getSingleton('adminhtml/session_quote')->getCustomerId());	
 	}
 	
 ?>
-	<?php if ($profiles): ?>
-	<li>
+
+	<li<?php if (!$profiles) {echo " style='display: none;'"; } ?>>
         <label for="<?php echo $_code ?>_cc_saved"><?php echo $this->__('Saved Payment Method') ?></label>
         <div class="input-box">
             <select id="<?php echo $_code ?>_cc_saved" name="payment[cc_saved]">
+            	<?php if ($profiles): ?>
                 <option value=""><?php echo $this->__('--Add New--')?></option>
             <?php $_ccType = $this->getInfoData('cc_type') ?>
             <?php foreach ($profiles as $profile): ?>
                 <option value="<?php echo $profile->getId() ?>"><?php echo $profile->getClean() ;?></option>
             <?php endforeach ?>
+            	<?php else: ?>
+            		<option value=""><?php echo $this->__('--No Profiles--')?></option>
+            	<?php endif; ?>
             </select>
         </div>
     </li>
-    <?php endif; ?>
+
     <div id="cc_inputs">
     <li>
         <div class="input-box">
@@ -147,8 +152,8 @@ if(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()) {
 	        	$('chasePaymentTech_cc_number').removeClassName('validate-cc-type');
 	        	$('chasePaymentTech_cc_number').removeClassName('validate-cc-number');
 	        	$('chasePaymentTech_cc_type').removeClassName('validate-cc-type-select');
-	        	$$('#cc_inputs input').invoke("removeClassName","required-entry");
-	        	$$('#cc_inputs select').invoke("removeClassName","required-entry");
+	        	//$$('#cc_inputs input').invoke("removeClassName","required-entry");
+	        	//$$('#cc_inputs select').invoke("removeClassName","required-entry");
 			} else {
 	        	$('cc_inputs').show();
 	        	$('chasePaymentTech_cc_cid').addClassName('validate-cc-cvn');
