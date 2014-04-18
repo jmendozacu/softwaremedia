@@ -78,7 +78,7 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
                                             		continue;
 													?>
                                                <li class="brand-menu-title">
-                                                    <a href="<?php echo $cat->getUrl() ?>">
+                                                    <a href="<?php echo Mage::getModel('core/url')->sessionUrlVar($cat->getUrl()) ?>">
                                                         <span><?php echo $cat->getName() ?></span>
                                                     </a>
                                                 </li>
@@ -136,7 +136,7 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
                                             		continue;
 													?>
                                                 <li class="category-menu-title">
-                                                    <a href="<?php echo $cat->getUrl() ?>">
+                                                    <a href="<?php echo Mage::getModel('core/url')->sessionUrlVar($cat->getUrl()) ?>">
                                                         <span><?php echo $cat->getName() ?></span>
                                                     </a>
                                                 </li>
@@ -162,7 +162,7 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
                                             		continue;
 													?>
                                                 <li class="category-menu-title">
-                                                    <a href="<?php echo $cat->getUrl() ?>">
+                                                    <a href="<?php echo Mage::getModel('core/url')->sessionUrlVar($cat->getUrl()) ?>">
                                                         <span><?php echo $cat->getName() ?></span>
                                                     </a>
                                                 </li>
@@ -187,7 +187,7 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
                                             		continue;
 													?>
                                                 <li class="category-menu-title">
-                                                    <a href="<?php echo $cat->getUrl() ?>">
+                                                    <a href="<?php echo Mage::getModel('core/url')->sessionUrlVar($cat->getUrl()) ?>">
                                                         <span><?php echo $cat->getName() ?></span>
                                                     </a>
                                                 </li>
