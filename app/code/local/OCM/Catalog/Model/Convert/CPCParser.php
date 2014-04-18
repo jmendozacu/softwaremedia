@@ -505,12 +505,10 @@ class OCM_Catalog_Model_Convert_CPCParser
             $catList = array();
 			foreach ($cats as $category_id) {
 			    $_cat = Mage::getModel('catalog/category')->load($category_id);
-			    $top = $this->getParentTopCategory($_cat);
-			    if ($top->getId() == 51) {
-			    	$catList[$_cat->getLevel()] = $this->getCategoryPath($_cat,$_cat->getName());
-				    //$row['prod_cat'] = $_cat->getName();
-				    $hasCat = true;
-				    //break;
+			    $catFeed =  $this->getCategoryPath($_cat);
+			    if ($catFeed) {
+			    	$catList[$_cat->getLevel()] = $this->getCategoryPath($_cat);
+			    	$hasCat = true;
 			    }
 			} 
 			
@@ -554,13 +552,15 @@ class OCM_Catalog_Model_Convert_CPCParser
         return $this;
     }
     
-    public function getCategoryPath($category,$path) {
+    public function getCategoryPath($category) {
+    	if ($category->getFeedCategory()) {
+	    	return $category->getResource()->getAttribute('feed_category')->getFrontend()->getValue($category);
+    	}
     	if($category->getLevel() == 2 || $category->getLevel() == 1) {
-	    	return $path;
+	    	return false;
     	} else {
 	    	$parentCategory = Mage::getModel('catalog/category')->load($category->getParentId());
-	    	$path = $parentCategory->getName() . " > " . $path;
-	    	return $this->getCategoryPath($parentCategory,$path);
+	    	return $this->getCategoryPath($parentCategory);
     	}
     		    
 	    
