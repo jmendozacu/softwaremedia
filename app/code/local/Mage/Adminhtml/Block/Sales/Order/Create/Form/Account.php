@@ -150,7 +150,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Form_Account extends Mage_Adminhtm
         if ($this->getQuote()->getCustomerEmail()) {
             $data['email']  = $this->getQuote()->getCustomerEmail();
         }
-		$data['purchase_order'] = Mage::getSingleton('adminhtml/session')->getData('order_purchase_order');
+		//$data['purchase_order'] = Mage::getSingleton('adminhtml/session')->getData('order_purchase_order');
         return $data;
     }
 }
