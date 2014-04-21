@@ -2,7 +2,7 @@
 <config>
     <modules>
         <OCM_Setup>
-            <version>0.5.0</version>
+            <version>0.4.9</version>
         </OCM_Setup>
     </modules>
     <global>
