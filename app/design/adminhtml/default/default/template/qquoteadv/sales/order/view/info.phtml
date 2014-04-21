@@ -92,6 +92,12 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                 <td class="label"><label><?php echo Mage::helper('sales')->__('Referral') ?></label></td>
                 <td class="value"><strong><?php echo $this->getReferer(); ?></strong></td>
             </tr>
+            <?php if($_order->getPurchaseOrder()): ?>
+<tr>
+    <td class="label"><label><?php echo Mage::helper('sales')->__('Purchase Order') ?></label></td>
+    <td class="value"><strong><?php echo $_order->getPurchaseOrder() ?></strong></td>
+</tr>
+<?php endif; ?>
             <?php $data = $this->getOrderCustomData(); ?>
             <?php foreach ($data as $aItem): ?>
             <?php if($aItem['code'] == 'comment' && !empty($aItem['value'])){ ?>

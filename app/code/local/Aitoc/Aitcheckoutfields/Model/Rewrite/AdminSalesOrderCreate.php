@@ -235,7 +235,7 @@ class Aitoc_Aitcheckoutfields_Model_Rewrite_AdminSalesOrderCreate extends Mage_A
         $mainModel->saveCustomOrderData($orderId, 'adminorderfields');
         $mainModel->clearCheckoutSession('adminorderfields');
         Mage::getSingleton('adminhtml/session')->unsetData('aitcheckoutfields_admin_post_data');
-           		
+        Mage::getSingleton('adminhtml/session')->unsetData('order_purchase_order'); 		
         return $order;
     }
     
@@ -243,6 +243,9 @@ class Aitoc_Aitcheckoutfields_Model_Rewrite_AdminSalesOrderCreate extends Mage_A
     public function importPostData($data){
         $toReturn = parent::importPostData($data);
         
+        if($postData = Mage::app()->getRequest()->getPost('order')['account']['purchase_order'])
+        	Mage::getSingleton('adminhtml/session')->addData(array('order_purchase_order'=>$postData));
+        	
         if($postData = Mage::app()->getRequest()->getPost('aitoc_checkout_fields'))
 		{
 		    if(!Mage::getSingleton('adminhtml/session')->hasData('aitcheckoutfields_admin_post_data'))
