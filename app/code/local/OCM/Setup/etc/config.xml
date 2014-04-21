@@ -6,6 +6,21 @@
         </OCM_Setup>
     </modules>
     <global>
+    	<models>
+            <ocm_setup>
+                <class>OCM_Setup_Model</class>
+            </ocm_setup>
+        </models>
+    	<fieldsets>
+	        <sales_convert_quote>
+	                  <purchase_order>
+	                     <to_order>*</to_order>
+	                  </purchase_order>
+	            </sales_convert_quote>
+	           <sales_convert_order>                                              
+                <purchase_order><to_quote>*</to_quote></purchase_order>
+            </sales_convert_order>
+	    </fieldsets>
         <helpers>
             <ocm_setup>
                 <class>OCM_Setup_Helper</class>
@@ -19,5 +34,16 @@
                 </setup>
             </ocm_setup_setup>
         </resources> 
+        <events>
+        	<sales_order_place_before>
+                <observers>
+                    <customorderstatus>
+                        <type>singleton</type>
+                        <class>OCM_Setup_Model_Observer</class>
+                        <method>saveCustomData</method>
+                    </customorderstatus>
+                </observers>
+            </sales_order_place_before>
+        </events>
     </global>
 </config>
