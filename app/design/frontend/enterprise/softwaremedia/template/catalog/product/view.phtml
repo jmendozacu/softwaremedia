@@ -165,7 +165,7 @@
                     <?php if ($stock_message): ?>
                     	<?php $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product);
 							if ($inventory->getBackorders()): ?>
-	                    <p class="availability">
+	                    <p class="availability in-stock">
 	                    	Backordered. Product may take 1-2 weeks for delivery.
 	                    </p>
 	                    <?php else: ?>
