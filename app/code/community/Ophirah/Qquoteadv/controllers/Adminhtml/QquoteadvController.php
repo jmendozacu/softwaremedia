@@ -1594,7 +1594,7 @@ function hideBox() {
             
             if(!$c2qId) {
                 $name =  $billingAddress->getFirstname();
-                if($name != "") { // &&  count($quote->getCustomer()->getAddresses()) ){
+                //if($name != "") { // &&  count($quote->getCustomer()->getAddresses()) ){
                     /* @var $helper Ophirah_Qquoteadv_Helper_Data */
                     $helper = Mage::helper('qquoteadv');
                     /* @var $admin Mage_Admin_Model_Session */
@@ -1663,9 +1663,9 @@ function hideBox() {
                         //#save c2q id into session
                         $this->getCustomerSession()->setQuoteadvId($c2qId);					
                     }catch(Exception $e){ Mage::log($e->getMessage()); }
-                }else{
-                    $errorMsg[] = $this->__("There was an error, because the customer address was undefined");
-                }
+                //}else{
+                //    $errorMsg[] = $this->__("There was an error, because the customer address was undefined");
+                //}
                 
             }else{ //$c2qId is given
                 

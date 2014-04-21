@@ -127,6 +127,9 @@ function switch2quote(){
 			$(addressinput).removeClassName('required-entry');
 			
 		}
+		if($(addressinput).hasClassName('validate-select')){
+			$(addressinput).removeClassName('validate-select');
+		}
     });
     
     if(has_paymentobj) {
