@@ -242,8 +242,8 @@ class Aitoc_Aitcheckoutfields_Model_Rewrite_AdminSalesOrderCreate extends Mage_A
     // overwrite parent
     public function importPostData($data){
         $toReturn = parent::importPostData($data);
-        
-        if($postData = Mage::app()->getRequest()->getPost('order')['account']['purchase_order'])
+        $data = Mage::app()->getRequest()->getPost('order');
+        if($postData = $data['account']['purchase_order'])
         	Mage::getSingleton('adminhtml/session')->addData(array('order_purchase_order'=>$postData));
         	
         if($postData = Mage::app()->getRequest()->getPost('aitoc_checkout_fields'))
