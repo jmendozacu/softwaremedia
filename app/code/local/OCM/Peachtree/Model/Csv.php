@@ -133,7 +133,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
 				$itemCount++;
             }
             $common_values = array(
-                'customer_id' => $order->getCustomerId(),
+                'customer_id' => 'O'.date('my',strtotime( $invoice->getData('order_created_at') ) ),
                 'invoice_id'  => $invoice->getData('increment_id'),
                 'date'        => date('m/d/Y',strtotime( $invoice->getData('order_created_at') ) ),
                 'ship_via'    => $shipVia,
