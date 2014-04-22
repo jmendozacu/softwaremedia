@@ -158,6 +158,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if (OCM_Peachtree_Model_Referer::checkForUser( $invoice->getData('referer_id')))
             	$common_values['customer_id'] = $common_values['customer_id'] . 'W';
             	
+            if ($order->getCustomerId() == 1117)
+            	$common_values['sales_rep_id'] = 'Buy.com';
+            	
             $i = 1;
             foreach($items as $item) {
             	$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
