@@ -25,7 +25,7 @@
  */
 
 
-class OCM_Catalog_Model_Convert_CPCParser
+class OCM_Catalog_Model_Convert_Cpcparser
     extends Mage_Eav_Model_Convert_Parser_Abstract
 {
     const MULTI_DELIMITER = ' , ';

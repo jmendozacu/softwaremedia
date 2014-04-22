@@ -25,7 +25,7 @@
  */
 
 
-class OCM_Catalog_Model_Convert_CPCAdapter
+class OCM_Catalog_Model_Convert_Cpcadapter
     extends Mage_Eav_Model_Convert_Adapter_Entity
 {
     const MULTI_DELIMITER   = ' , ';
