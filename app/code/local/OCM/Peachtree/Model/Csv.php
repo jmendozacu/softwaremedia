@@ -164,7 +164,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if ($order->getCustomerId() == 1120)
             	$common_values['sales_rep_id'] = 'Best Buy';
             if ($order->getCustomerId() == 1121)
-            	$common_values['sales_rep_id'] = 'Amazon';
+            	$common_values['sales_rep_id'] = 'AMAZONSWM';
             		
             $i = 1;
             foreach($items as $item) {
