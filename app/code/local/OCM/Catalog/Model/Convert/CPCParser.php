@@ -507,13 +507,13 @@ class OCM_Catalog_Model_Convert_CPCParser
 			    $_cat = Mage::getModel('catalog/category')->load($category_id);
 			    $catFeed =  $this->getCategoryPath($_cat);
 			    if ($catFeed) {
-			    	$catList[$_cat->getLevel()] = $this->getCategoryPath($_cat);
+			    	$catList[$catFeed[0]] = $catFeed[1];
 			    	$hasCat = true;
 			    }
 			} 
 			
 			if ($hasCat) {
-				ksort($catList);
+				krsort($catList);
 				reset($catList);
 				$row['prod_cat'] = current($catList);
 			}
@@ -554,7 +554,7 @@ class OCM_Catalog_Model_Convert_CPCParser
     
     public function getCategoryPath($category) {
     	if ($category->getFeedCategory()) {
-	    	return $category->getResource()->getAttribute('feed_category')->getFrontend()->getValue($category);
+	    	return array($category->getLevel(),$category->getResource()->getAttribute('feed_category')->getFrontend()->getValue($category));
     	}
     	if($category->getLevel() == 2 || $category->getLevel() == 1) {
 	    	return false;
