@@ -158,6 +158,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if (OCM_Peachtree_Model_Referer::checkForUser( $invoice->getData('referer_id')))
             	$common_values['customer_id'] = $common_values['customer_id'] . 'W';
             	
+            //Manually set referrer for Buy.com customers
             if ($order->getCustomerId() == 1117)
             	$common_values['sales_rep_id'] = 'Buy.com';
             	
