@@ -34,12 +34,12 @@
     <div class="page-center">
         <div class="quick-access f-right">
             <div class="checkout-link"><?php echo $this->getChildHtml('checkoutLinks') ?></div>
-            <?php echo $this->getChildHtml('topCart') ?>
-            <?php echo $this->getChildHtml('topLinks') ?>
+            <?php echo $this->getChildHtml('topCart',false) ?>
+            <?php echo $this->getChildHtml('topLinks',false) ?>
         </div>
         <div class="f-right">
-            <div class="switches"><?php echo $this->getChildHtml('switches') ?></div>
-            <p class="welcome-msg"><?php echo $this->getChildHtml('welcome') ?> <?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+            <div class="switches"><?php echo $this->getChildHtml('switches',) ?></div>
+            <p class="welcome-msg"><?php echo $this->getChildHtml('welcome',false) ?> <?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
 <a href="<?php echo Mage::helper('customer')->getLogoutUrl(); ?>"><?php echo $this->__(' (Logout)') ?></a>
 <?php endif; ?></p>
             <?php //echo $this->getChildHtml('accountLinks') ?>
