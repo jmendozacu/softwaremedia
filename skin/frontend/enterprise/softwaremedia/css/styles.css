@@ -2911,7 +2911,7 @@ p.link-widget-sku a { color:#999; }
 /* ======================================================================================= */
 
 .cms-index-index .main {width: 100%}
-.page-center {width: 100%;margin: 0 auto;}
+.page-center {width: 1200px;margin: 0 auto;}
 .soft-gift-guide {background: #cc6731;color: #fff;font-size: 14px;text-align: center;line-height: 21px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;}
 .soft-gift-guide a {color: #fff}
 .soft-gift-guide a:hover {color: #000}

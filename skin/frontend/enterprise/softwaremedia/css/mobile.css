@@ -10,6 +10,11 @@
 
 	/* Universal
 	-------------------------------------------------------------- */
+	.page-center,
+    .header-container,
+	.footer-block,
+	.category-title,
+	.page-title { width: 96%; margin: 0 2% !important; }
 	.show-mobile { display: block }
 	.hide-mobile { display: none }
 	.col-main .page-title { margin-top: 12px !important; }
