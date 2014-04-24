@@ -10,6 +10,7 @@ class OCM_Fulfillment_Model_Observer
 	const TAG_LICENSING_ID = 2;
 	const TAG_DOWNLOAD_ID = 3;
 	const TAG_CS = 4;
+	const TAG_SUB = 29;
 	
     public function evaluateOrdersDaily()
     {
@@ -46,7 +47,8 @@ class OCM_Fulfillment_Model_Observer
             		continue;
             		
             	$prod = Mage::getModel('catalog/product')->load($item->getProductId());
-					
+				$links = $prod->getSubstitutionLinkCollection();
+				
                 if($prod->getData('package_id')==1084){
                     $is_virtual = true;
                 } else {
@@ -66,6 +68,9 @@ class OCM_Fulfillment_Model_Observer
 					
             }
 
+			if (count($links) > 0)
+				$tagToOrderResource->addIntoDB($order->getId(), self::TAG_SUB);
+				
             if($is_virtual){ 
             	//Order has both physical and electronic items
             	if ($is_physical) {

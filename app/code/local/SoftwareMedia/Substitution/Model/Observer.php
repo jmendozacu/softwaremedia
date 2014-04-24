@@ -58,8 +58,12 @@ class SoftwareMedia_Substitution_Model_Observer
     }
     
     public function sales_order_invoice_save_after($observer) {
+    	//Exclude comparisson engines from auto sub
+    	$exclude = array(1117,1120,1121);
+    	
     	$invoice = $observer->getInvoice();
-    	//die($invoice->getId());   
+    	$order = Mage::getModel('sales/order')->load($invoice->getOrderId());
+
     	$invoiceItems = Mage::getModel('sales/order_invoice_item')->getCollection()->addFieldToFilter('parent_id',$invoice->getId());
     	
     	$linkModel = Mage::getModel('catalog/product_link');
@@ -72,7 +76,8 @@ class SoftwareMedia_Substitution_Model_Observer
 			foreach($dollection as $link) {
 				Mage::log('Invoice Link Item: ' . $link->getId() . ' Invoice Product Item: ' . $link->getLinkedProductId());
 	       		if ($link->getAuto()) {
-	       			Mage::helper('substitution')->addSub($invoiceItem->getId(),$link->getLinkedProductId());
+	       			if (!in_array($order->getCustomerId(),$exclude))
+	       				Mage::helper('substitution')->addSub($invoiceItem->getId(),$link->getLinkedProductId());
 			   	}
 			}
     	}
