@@ -124,9 +124,9 @@ class Mage_Adminhtml_Block_Report_Grid extends Mage_Adminhtml_Block_Widget_Grid
                 $date = new Zend_Date();
                 $data['report_to'] = $date->toString($this->getLocale()->getDateFormat('short'));
             }
-			if ($this->getFilter('report_period') == 'day') {
-				$data['report_from'] = date("Y-m-d 00:00:00",strtotime($data['report_from']) - 24 * 60 * 60);
-				$data['report_to'] = date("Y-m-d 23:59:59",strtotime($data['report_to']) - 24 * 60 * 60);
+			if ($data['report_period'] == 'day') {
+				//$data['report_from'] = date("Y-m-d 00:00:00",strtotime($data['report_from']) - 24 * 60 * 60);
+				//$data['report_to'] = date("Y-m-d 23:59:59",strtotime($data['report_to']) - 24 * 60 * 60);
 			}
             $this->_setFilterValues($data);
         } else if ($filter && is_array($filter)) {

@@ -108,7 +108,6 @@ class Mage_Reports_Model_Resource_Report_Collection
     public function setState($state)
     {
         $this->_state = $state;
-        echo $state;
         return $this;
     }
     

@@ -273,7 +273,8 @@ class Mage_Reports_Model_Resource_Product_Collection extends Mage_Catalog_Model_
      */
     public function addOrderedQty($from = '', $to = '', $state)
     {
-
+    	$from = date("Y-m-d 00:00:00",strtotime($from) - 24 * 60 * 60);
+    	$to = date("Y-m-d 23:59:59",strtotime($to) - 24 * 60 * 60);
     	
         $adapter              = $this->getConnection();
         $compositeTypeIds     = Mage::getSingleton('catalog/product_type')->getCompositeTypes();
@@ -329,8 +330,6 @@ class Mage_Reports_Model_Resource_Product_Collection extends Mage_Catalog_Model_
             
            if ($state)
            	 $this->getSelect()->where('order.state =\'' . $state . '\'');
-           echo $this->getSelect();
-           echo "<br /><br />";
            
         return $this;
     }
