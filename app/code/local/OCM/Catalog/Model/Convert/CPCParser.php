@@ -541,6 +541,13 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			$row['availability'] = 'In Stock';
 			$row['description_stripped'] = preg_replace("/\s\s+/", " ", $row['description']);
 			
+			
+			if ($row['visibility'] == 'Not Visible Individually' && !$parentIds) {
+				$parentIds = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
+				if (!$parentIds)
+					continue;
+			}
+				
             $batchExport = $this->getBatchExportModel()
                 ->setId(null)
                 ->setBatchId($this->getBatchModel()->getId())
