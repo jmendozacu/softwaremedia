@@ -324,20 +324,23 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 									if (!trim($message = $product->getSerialCodeNotAvailable())) {
 										$message = Mage::helper('serialcodes')->__('Oops! Not available.');
 									}
-									$item->setSerialCodeType($codetype);
-									$pcodes = explode("\n", $item->getSerialCodes());
-									$next = '';
-									if (count(array_filter($pcodes))) {
-										$next = "\n";
-									}
-									if (count(array_filter($pcodes)) < $qty) {
-										$item->setSerialCodes(implode("\n", $pcodes) . $next . $message);
-										$item->setSerialCodePool($sku);
-										$item->save();
-										$saved = 1;
-									}
-									if ($backend && $i == $qty - 1) {
-										$admin->addError(Mage::helper('serialcodes')->__('Ran out of codes for %s.', $product->getName()));
+									if ($paid) {
+										$item->setSerialCodeType($codetype);
+										$pcodes = explode("\n", $item->getSerialCodes());
+										$next = '';
+										if (count(array_filter($pcodes))) {
+											$next = "\n";
+										}
+									
+										if (count(array_filter($pcodes)) < $qty) {
+											$item->setSerialCodes(implode("\n", $pcodes) . $next . $message);
+											$item->setSerialCodePool($sku);
+											$item->save();
+											$saved = 1;
+										}
+										if ($backend && $i == $qty - 1) {
+											$admin->addError(Mage::helper('serialcodes')->__('Ran out of codes for %s.', $product->getName()));
+										}
 									}
 								}
 							}
