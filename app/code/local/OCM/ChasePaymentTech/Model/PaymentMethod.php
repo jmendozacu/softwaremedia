@@ -33,14 +33,68 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	public function authorize(Varien_Object $payment, $amount) {
-		$onePage = Mage::getSingleton('checkout/type_onepage')->getQuote()->getPayment();
+		//Get admin Payment of frontend Payment
+		if (Mage::app()->getRequest()->getControllerName() == 'sales_order_create') 
+			$onePage = Mage::getSingleton('adminhtml/sales_order_create')->getQuote()->getPayment();
+		else
+			$onePage = Mage::getSingleton('checkout/type_onepage')->getQuote()->getPayment();
+			
+			
+		$helper = Mage::helper('chasePaymentTech');
+		$customer = $payment->getOrder()->getCustomer();
+		
+		//die(var_dump($this->getAllProfiles($payment->getOrder()->getCustomer())));
+		$profiles_enabled = Mage::getStoreConfig('payment/chasePaymentTech/use_profiles', Mage::app()->getStore());
+		$customer_profile = null;
+		
+		Mage::log("Profiles enabled and customer" . $onePage['save_cc'] . "enabled: " . $profiles_enabled . ' customer: ' . $hasCustomer,NULL,'profile.log');
 
-		$this->_paymentProcessor->buildRequest($payment, $amount);
-		$authTxResponse = $this->_paymentProcessor->sendRequest(self::AUTHORIZE);
+		if ($profiles_enabled && $customer && $onePage['save_cc']) {
+			$cardNum = substr($payment->getCcNumber(),-4);
+			Mage::log("Profiles enabled and customer" ,NULL,'profile.log');
+			//If profile doesn't exist for card and customer, create it
+			$hasProfile = $helper->hasProfile($customer->getId(),$cardNum);
+			Mage::log("Has Profile: " . $helper->hasProfile($customer->getId(),$cardNum),NULL,'profile.log');
+			if (!$hasProfile) {		
+				Mage::log("In Profile",NULL,'profile.log');
+				$this->_paymentProcessor->buildProfileAddRequest($payment);
+				$profile = $this->_paymentProcessor->sendRequest(self::PROFILE);
+				Mage::log($profile,NULL,'profile.log');
+				
+				// Verify that we were able to create a customer profile
+				if (isset($profile['CustomerRefNum'])) {
+					Mage::log("Saving Profile",NULL,'profile.log');
+					$customer_profile = $profile['CustomerRefNum'];
+					$profile = Mage::getModel('chasePaymentTech/profiles');
+					$profile->setCustomerId($customer->getId());
+					$profile->setCustomerReferenceNumber($customer_profile);
+					$profile->setCardType($payment->getCcType());
+					$profile->setExpMonth($payment->getCcExpMonth());
+					$profile->setExpYear($payment->getCcExpYear());
+					$profile->setCardNum($cardNum);
+					$profile->setActive(0);
+					$profile->save();
+
+					Mage::log(get_class($profile),NULL,'profile.log');
+				}
+			} else {
+					Mage::log("Profile Exists",NULL,'profile.log');
+			}
+		}
+
+		$refNum = null;
+		
+		//Get profile information
+		if ($onePage['cc_saved']) {
+			$profile = Mage::getModel('chasePaymentTech/profiles')->load($onePage['cc_saved']);
+			$refNum = $profile->getCustomerReferenceNumber();
+		}
+
+		$this->_paymentProcessor->buildRequest($payment, $amount, $refNum);
+		$captureTxResponse = $this->_paymentProcessor->sendRequest(self::AUTHORIZE);
 
 		$this->_processResponse($payment, $authTxResponse, 0, 0);
-
-		return $this;
+				return $this;
 	}
 
 	public function capture(Varien_Object $payment, $amount) {
