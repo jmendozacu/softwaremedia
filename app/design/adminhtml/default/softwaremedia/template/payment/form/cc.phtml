@@ -143,7 +143,6 @@ if(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()) {
 </ul>
 <script type="text/javascript">
         //<![CDATA[
-
         Event.observe($('<?php echo $_code ?>_cc_saved'), 'change', function() {
         	var elm = $('<?php echo $_code ?>_cc_saved');
         	if (elm.value) {
@@ -152,8 +151,8 @@ if(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()) {
 	        	$('chasePaymentTech_cc_number').removeClassName('validate-cc-type');
 	        	$('chasePaymentTech_cc_number').removeClassName('validate-cc-number');
 	        	$('chasePaymentTech_cc_type').removeClassName('validate-cc-type-select');
-	        	//$$('#cc_inputs input').invoke("removeClassName","required-entry");
-	        	//$$('#cc_inputs select').invoke("removeClassName","required-entry");
+	        	$$('#cc_inputs input').invoke("removeClassName","required-entry");
+	        	$$('#cc_inputs select').invoke("removeClassName","required-entry");
 			} else {
 	        	$('cc_inputs').show();
 	        	$('chasePaymentTech_cc_cid').addClassName('validate-cc-cvn');
