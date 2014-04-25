@@ -190,8 +190,11 @@ jQuery(function() {
 
     // Category list
      // Clone sidebar to toobar
-     //jQuery('.sidebar').clone().appendTo('.toolbar');
-     //jQuery('.toolbar .sidebar').removeClass('col-left');
+	 if (navigator.userAgent.indexOf('MSIE') == -1 || parseFloat(navigator.userAgent.substring(navigator.userAgent.indexOf('MSIE') + 5)) > 8) {
+     	jQuery('.sidebar').clone().appendTo('.toolbar');
+     	jQuery('.toolbar .sidebar').removeClass('col-left');
+	 }
+
      if (typeof amshopby_start=='function') { amshopby_start(); };
      jQuery('.toolbar #narrow-by-list dt').addClass('amshopby-collapsed');
      jQuery('.toolbar #narrow-by-list dd ol').hide();
