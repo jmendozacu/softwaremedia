@@ -93,7 +93,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 		$this->_paymentProcessor->buildRequest($payment, $amount, $refNum);
 		$captureTxResponse = $this->_paymentProcessor->sendRequest(self::AUTHORIZE);
 
-		$this->_processResponse($payment, $authTxResponse, 0, 0);
+		$this->_processResponse($payment, $captureTxResponse, 0, 0);
 				return $this;
 	}
 
