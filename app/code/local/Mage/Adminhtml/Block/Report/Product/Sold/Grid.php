@@ -72,10 +72,15 @@ class Mage_Adminhtml_Block_Report_Product_Sold_Grid extends Mage_Adminhtml_Block
     protected function _prepareColumns()
     {
         $this->addColumn('name', array(
-            'header'    =>Mage::helper('reports')->__('Product Name'),
+            'header'    =>Mage::helper('reports')->__('Product'),
             'index'     =>'order_items_name'
         ));
-
+        
+		$this->addColumn('sku', array(
+            'header'    =>Mage::helper('reports')->__('SKU'),
+            'index'     =>'sku'
+        ));
+        
 		$this->addColumn('orders', array(
             'header'    =>Mage::helper('reports')->__('Orders'),
             'align'     =>'right',
