@@ -55,7 +55,15 @@
 <head>
 <?php echo $this->getChildHtml('head') ?>
 </head>
+<!--[if lt IE 9>
+<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?> style="min-width: 1200px;">
+<![endif]-->
+<!--[if gte IE 9]>
 <body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+<![endif]-->
+<!-- [if !IE] -->
+<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+<!-- [endif] -->
 <?php echo $this->getChildHtml('after_body_start') ?>
 <div class="wrapper <?php if($mobile_menu == true):?>account-template<?php endif; ?>">
     <?php echo $this->getChildHtml('global_notices') ?>
