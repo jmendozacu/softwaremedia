@@ -1,5 +1,13 @@
 <meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+<!--[if !IE]><!-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+<!--<![endif]-->
+<!--[if gt IE 8]>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+<![endif]-->
+<!--[if lt IE 9]>
+<meta name="viewport" content="width=1200px"/>
+<![endif]-->
 <title><?php echo $this->getTitle() ?></title>
 <meta name="title" content="<?php echo (isset($extra_meta_title) ? htmlspecialchars($extra_meta_title) : ''); ?>" />
 <meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
