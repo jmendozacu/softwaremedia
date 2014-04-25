@@ -212,6 +212,10 @@
 	.review-detail               { width: 100%; }
 	.review-detail .content-item { float: none; margin-top: 20px; }
 
+	/* Products List
+	 ------------------------------------------------------------- */
+	.products-list .product-shop { width: 60%; }
+
 	/* Cart
 	-------------------------------------------------------------- */
 	.box-area,
