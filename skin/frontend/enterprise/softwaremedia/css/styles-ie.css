@@ -257,3 +257,4 @@ iframe.hover-fix { position:absolute; left:-1px; top:-1px; z-index:-1; backgroun
 .sp-methods dt label {display: inline-block;zoom:1;*display: inline}
 
 body {min-width: 1200px; }
+.page-center {width: 95%; }
