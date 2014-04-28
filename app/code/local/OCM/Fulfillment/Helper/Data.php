@@ -78,13 +78,15 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		//Add up QTY 
 		foreach($links as $link) {
 			$item = Mage::getModel('catalog/product')->load($link->getLinkedProductId());
-
+			$sub_model = Mage::getModel('cataloginventory/stock_item');
+			$sub_model->loadByProduct($item->getId());
+			$qty += $sub_model->getData('qty');
 			foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
 				if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
 					$hasResult = true;
 					
 				$prod = Mage::getModel('catalog/product')->load($item->getId());
-				$qty+=$prod->getData($warehouse_name.'_qty');
+				//$qty+=$prod->getData($warehouse_name.'_qty');
 				if (!$cost && $prod->getData('cost'))
 					$cost = $prod->getData('cost') * $link->getQty();
 			}
