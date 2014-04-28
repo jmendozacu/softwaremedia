@@ -81,6 +81,12 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$sub_model = Mage::getModel('cataloginventory/stock_item');
 			$sub_model->loadByProduct($item->getId());
 			$qty += $sub_model->getData('qty');
+			
+			if ($sub_model->getData('manage_stock') == 0)
+				$qty = 9999;
+			
+			Mage::log('Manage Stock: ' . $sub_model->getData('manage_stock'),null,'stock.log');
+			
 			foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
 				if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
 					$hasResult = true;
