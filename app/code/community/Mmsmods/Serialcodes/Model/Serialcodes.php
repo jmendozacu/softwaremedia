@@ -331,7 +331,7 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 										if (count(array_filter($pcodes))) {
 											$next = "\n";
 										}
-									
+
 										if (count(array_filter($pcodes)) < $qty) {
 											$item->setSerialCodes(implode("\n", $pcodes) . $next . $message);
 											$item->setSerialCodePool($sku);
@@ -373,6 +373,9 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 		}
 		foreach ($items as $item) {
 			$product = Mage::getModel('catalog/product')->setStoreId($storeid)->load($item->getProductId());
+			if ($product->getTypeID() == 'configurable') {
+				continue;
+			}
 			if ($source == 'controller' && $item->getProductType() == 'configurable' && !$product->getSerialCodeSendEmail()) {
 				$product = Mage::getModel('catalog/product')->setStoreId($storeid)->load($product->getIdBySku($item->getProductOptionByCode('simple_sku')));
 			}
