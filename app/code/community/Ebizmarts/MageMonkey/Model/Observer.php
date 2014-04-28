@@ -366,6 +366,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
+		Mage::log('registerCheckoutSuccess',null,'testtt.log');
 		if(!Mage::helper('monkey')->canMonkey()){
 			return;
 		}
@@ -377,16 +378,18 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		if(is_object($order) && $order->getId()){
-
+			
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
 			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
 			if($sessionFlag || $forceSubscription == 3){
+				Mage::log('has SessionFlag',null,'testtt.log');
 				//Guest Checkout
 				if( (int)$order->getCustomerGroupId() === Mage_Customer_Model_Group::NOT_LOGGED_IN_ID ){
 					Mage::helper('monkey')->registerGuestCustomer($order);
 				}
 
 				try{
+					Mage::log('Subscribing',null,'testtt.log');
 					$subscriber = Mage::getModel('newsletter/subscriber')
 						->subscribe($order->getCustomerEmail());
 				}catch(Exception $e){
