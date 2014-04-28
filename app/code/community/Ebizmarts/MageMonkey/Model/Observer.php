@@ -327,9 +327,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$request = Mage::app()->getRequest();
 		//Unsubscribe when update customer from admin
 		if (!isset($post['subscription']) && $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
-                 $subscriber = Mage::getModel('newsletter/subscriber')
+                 //$subscriber = Mage::getModel('newsletter/subscriber')
                                ->loadByEmail($customer->getEmail());
-                 $subscriber->setImportMode(TRUE)->unsubscribe();
+                 //$subscriber->setImportMode(TRUE)->unsubscribe();
         }
 
 		return $observer;
@@ -389,14 +389,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 				}
 
 				try{
-					$email = $order->getCustomerEmail();
 					Mage::log('Subscribing',null,'testtt.log');
-					$subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
-					if($subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED &&
-						$subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED) {
-							$subscriber->setImportMode(true)->subscribe($email);
-					}
-					Mage::log('Subscribed',null,'testtt.log');
+					$subscriber = Mage::getModel('newsletter/subscriber')
+						->subscribe($order->getCustomerEmail());
 				}catch(Exception $e){
 					Mage::logException($e);
 				}
