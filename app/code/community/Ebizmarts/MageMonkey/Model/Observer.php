@@ -389,9 +389,14 @@ class Ebizmarts_MageMonkey_Model_Observer
 				}
 
 				try{
+					$email = $order->getCustomerEmail();
 					Mage::log('Subscribing',null,'testtt.log');
-					$subscriber = Mage::getModel('newsletter/subscriber')
-						->subscribe($order->getCustomerEmail());
+					$subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+					if($subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED &&
+						$subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED) {
+							$subscriber->setImportMode(true)->subscribe($email);
+					}
+					Mage::log('Subscribed',null,'testtt.log');
 				}catch(Exception $e){
 					Mage::logException($e);
 				}
