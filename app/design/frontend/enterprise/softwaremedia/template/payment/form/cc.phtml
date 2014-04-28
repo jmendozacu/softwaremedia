@@ -161,7 +161,7 @@
     
     </div>
 </ul>
-
+<?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
 <script type="text/javascript">
         //<![CDATA[
 
@@ -175,3 +175,4 @@
         });
         //]]>
 </script>
+<?php endif; ?>
