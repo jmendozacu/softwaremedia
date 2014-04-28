@@ -59,7 +59,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 			}
 
 			if($isConfirmNeed){
-       			$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
+       			//$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
        			Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
  			}
 
