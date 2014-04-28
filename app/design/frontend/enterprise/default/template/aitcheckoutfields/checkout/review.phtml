@@ -153,7 +153,7 @@ addElementToPost = function (element){
 
 }
 </script>
-<div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
+<div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?> style="padding: 15px 0 0 22px; text-align: left;">
 	<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
 	<label for="magemonkey-trigger"><?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?></label>
 </div>
