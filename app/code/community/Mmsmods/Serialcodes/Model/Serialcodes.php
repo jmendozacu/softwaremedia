@@ -368,12 +368,14 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 	public function sendDeliveryEmail($order, $source = NULL, $items = NULL) {
 		$templatearray = array();
 		$storeid = $order->getStoreId();
+		$isManual = true;
 		if ($items === NULL) {
 			$items = $order->getAllItems();
+			$isManual = false;
 		}
 		foreach ($items as $item) {
 			$product = Mage::getModel('catalog/product')->setStoreId($storeid)->load($item->getProductId());
-			if ($product->getTypeID() == 'configurable') {
+			if ($product->getTypeID() == 'configurable' && !$isManual) {
 				continue;
 			}
 			if ($source == 'controller' && $item->getProductType() == 'configurable' && !$product->getSerialCodeSendEmail()) {
