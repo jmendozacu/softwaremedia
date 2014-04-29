@@ -41,5 +41,15 @@
 
 //]]>
 </script>
+<!--404 Tracking-->
+<script type="text/javascript">
+<?php
+$action = Mage::app()->getRequest()->getActionName();
+if($action == 'noRoute'){?>
+_gaq.push(['_trackEvent', 'Error', '404', 'page: ' + document.location.pathname + document.location.search + ' ref: ' + document.referrer,,true]);
+<?php }?>
+</script>
+<!--End 404 Tracking-->
+
 <!-- END GOOGLE ANALYTICS CODE -->
 <?php endif; ?>

@@ -27,6 +27,7 @@
 <?php $_code=$this->getMethodCode() ?>
 <ul id="payment_form_<?php echo $_code ?>" style="display:none">
 <?php 
+$profiles_enabled = Mage::getStoreConfig('payment/chasePaymentTech/use_profiles', Mage::app()->getStore());
 $profiles = array();
 if(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()) {
 		$profiles =  Mage::getModel('chasePaymentTech/profiles')->loadByCustomer(Mage::getSingleton('adminhtml/session_quote')->getCustomerId());	
@@ -34,7 +35,7 @@ if(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()) {
 	
 ?>
 
-	<li<?php if (!$profiles) {echo " style='display: none;'"; } ?>>
+	<li<?php if (!$profiles || !$profiles_enabled) {echo " style='display: none;'"; } ?>>
         <label for="<?php echo $_code ?>_cc_saved"><?php echo $this->__('Saved Payment Method') ?></label>
         <div class="input-box">
             <select id="<?php echo $_code ?>_cc_saved" name="payment[cc_saved]">
@@ -68,7 +69,7 @@ if(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()) {
         <div class="input-box">
             <label for="<?php echo $_code ?>_cc_number"><?php echo Mage::helper('payment')->__('Credit Card Number') ?> <span class="required">*</span></label><br/>
             <div class="input-box">
-            <input type="text" style="width: 260px;" id="<?php echo $_code ?>_cc_number" name="payment[cc_number]" title="<?php echo $this->__('Credit Card Number') ?>" class="input-text validate-cc-number validate-cc-type" value="<?php echo $this->getInfoData('cc_number')?>"/> <input type="checkbox" value="1" checked="checked" id="<?php echo $_code ?>_save_cc" name="payment[save_cc]"> Save    </li>
+            <input type="text" style="width: 260px;" id="<?php echo $_code ?>_cc_number" name="payment[cc_number]" title="<?php echo $this->__('Credit Card Number') ?>" class="input-text validate-cc-number validate-cc-type" value="<?php echo $this->getInfoData('cc_number')?>"/><?php if ($profiles_enabled):?> <input type="checkbox" value="1" checked="checked" id="<?php echo $_code ?>_save_cc" name="payment[save_cc]"> Save    <?php endif; ?></li>
     <li>
         <div class="input-box">
             <label for="<?php echo $_code ?>_expiration"><?php echo Mage::helper('payment')->__('Expiration Date') ?> <span class="required">*</span></label><br/>

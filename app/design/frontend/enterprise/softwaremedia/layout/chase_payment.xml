@@ -4,7 +4,7 @@
 	<!-- Customer -->
 	<customer_account>
 	    <reference name="customer_account_navigation">
-	        <action method="addLink" module="chase">
+	        <action method="addLink" module="chase" ifconfig="payment/chasePaymentTech/use_profiles">
 	        	<name>chase</name>
 	        	<path>chase/customer/index</path>
 	        	<label>My Payment Methods</label>
