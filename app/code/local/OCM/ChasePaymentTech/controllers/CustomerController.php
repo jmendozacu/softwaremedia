@@ -19,7 +19,7 @@ class OCM_ChasePaymentTech_CustomerController extends Mage_Core_Controller_Front
 		if ($profile->getCustomerId() == Mage::getSingleton('customer/session')->getCustomer()->getId())
 			$profile->delete();
 		else
-			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('peachtree')->__('Not Authorized To Removed Card Information'));
+			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('peachtree')->__('Not Authorized To Remove Card Information'));
 			
 		Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('peachtree')->__('Removed Card Information'));
 		

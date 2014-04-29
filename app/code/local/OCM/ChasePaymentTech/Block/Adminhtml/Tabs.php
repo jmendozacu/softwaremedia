@@ -67,11 +67,13 @@ class OCM_ChasePaymentTech_Block_Adminhtml_Tabs extends Mage_Adminhtml_Block_Wid
                     'url'       => $this->getUrl('*/*/productReviews', array('_current' => true)),
                 ));
             }
+            if (Mage::getStoreConfig('payment/chasePaymentTech/use_profiles', Mage::app()->getStore())) {
 			$this->addTab('chase', array(
 				'after'		=> 'account',
 	            'label'     => Mage::helper('customer')->__('Saved Payment'),
 	            'content'   => $this->getLayout()->createBlock('chasePaymentTech/adminhtml_chase')->toHtml()
 	        ));
+	        }
             if (Mage::getSingleton('admin/session')->isAllowed('catalog/tag')) {
                 $this->addTab('tags', array(
                     'label'     => Mage::helper('customer')->__('Product Tags'),
