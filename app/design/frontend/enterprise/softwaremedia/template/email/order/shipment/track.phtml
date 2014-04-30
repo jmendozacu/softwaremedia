@@ -37,14 +37,20 @@
 		<tbody>
 			<?php
 			$i = 0;
-			foreach ($_shipment->getAllTracks() as $_item): $i++
+			foreach ($_shipment->getAllTracks() as $_item): $i++;
+				$carrier = $_item->getCarrierCode();
+				$carrier_name = $_item->getTitle();
+
+				if (strcasecmp($carrier, 'fedex') == 0) {
+					$carrier_name = 'FedEx';
+				} elseif (strcasecmp($carrier, 'usps') == 0) {
+					$carrier_name = 'USPS';
+				}
 				?>
 				<tr <?php echo $i % 2 ? 'bgcolor="#F6F6F6"' : '' ?>>
-					<td align="left" valign="top" style="padding:3px 9px"><?php echo $this->escapeHtml($_item->getTitle()) ?></td>
+					<td align="left" valign="top" style="padding:3px 9px"><?php echo $this->escapeHtml($carrier_name) ?></td>
 					<td align="center" valign="top" style="padding:3px 9px">
 						<?php
-						$carrier = $_item->getCarrierCode();
-
 						if (strcasecmp($carrier, 'fedex') == 0) {
 							echo '<a href="https://www.fedex.com/fedextrack/?tracknumbers=' . $_item->getNumber() . '">', $this->escapeHtml($_item->getNumber()), '</a>';
 						} elseif (strcasecmp($carrier, 'usps') == 0) {
