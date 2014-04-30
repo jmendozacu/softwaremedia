@@ -539,7 +539,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			
 			$row['condition'] = 'New';
 			$row['availability'] = 'In Stock';
-			$row['description_stripped'] = $row['description'];
+			$row['description'] = strip_tags(trim(preg_replace('/\t+/', '', $row['description'])));
 			
 			
 			if ($row['visibility'] == 'Not Visible Individually' && !$parentIds) {
