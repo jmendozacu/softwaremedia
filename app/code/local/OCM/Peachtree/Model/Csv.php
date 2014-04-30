@@ -159,13 +159,19 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             	$common_values['customer_id'] = $common_values['customer_id'] . 'W';
             	
             //Manually set referrer for Buy.com customers
-            if ($order->getCustomerId() == 1117)
+            if ($order->getCustomerId() == 1117) {
+            	$common_values['customer_id'] = 'BUY.COM';
             	$common_values['sales_rep_id'] = 'Buy.com';
-            if ($order->getCustomerId() == 1120)
+            }
+            if ($order->getCustomerId() == 1120) {
+            	$common_values['customer_id'] = 'BESTBUY.COM';
             	$common_values['sales_rep_id'] = 'Best Buy';
-            if ($order->getCustomerId() == 1121)
-            	$common_values['sales_rep_id'] = 'AMAZONSWM';
-            		
+            }
+            if ($order->getCustomerId() == 1121) {
+            	$common_values['customer_id']  = 'AMAZONSWM';
+            	$common_values['sales_rep_id'] = 'Amazon';
+            }
+            
             $i = 1;
             foreach($items as $item) {
             	$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
