@@ -347,7 +347,6 @@ class Enterprise_Catalog_Model_Index_Action_Url_Rewrite_Category_Refresh
         $requestPath = (!empty($requestPath) ? $requestPath . '/' : '') . $category->getUrlKey();
         $requestPath = $this->_cutRequestPath($requestPath);
         
-        Mage::log($category->getId() . " - " . $requestPath,null,'REBUILD.log');
         
         $urlKeyValue = $this->_getUrlKeyAttributeValueId($category, $store);
         /*
