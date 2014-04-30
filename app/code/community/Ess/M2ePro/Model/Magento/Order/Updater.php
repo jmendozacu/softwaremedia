@@ -228,7 +228,8 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         ) {
             $this->magentoOrder->setStatus($status);
         } else {
-            $this->magentoOrder->setState(Mage_Sales_Model_Order::STATE_PROCESSING, $status);
+        	if ($this->magentoOrder->getState() != Mage_Sales_Model_Order::STATE_PROCESSING)
+            	$this->magentoOrder->setState(Mage_Sales_Model_Order::STATE_PROCESSING, $status);
         }
 
         $this->needSave = true;
