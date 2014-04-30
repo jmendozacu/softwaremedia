@@ -85,6 +85,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             $track->addAttributeToFilter('order_id',$invoice->getOrderId());
             $tracking = $track->getFirstItem();
             
+            var_dump()
             $items->getSelect()
                 ->joinLeft(
                     'sales_flat_shipment_item as shipment_item',
@@ -122,8 +123,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             $has_ship_line = ($invoice->getData('shipping_amount')>0) ? 1 : 0;
             $has_promo_line = ($invoice->getData('discount_amount')!=0) ? 1 : 0;
             
-            $shipVia = $tracking->getData('carrier');
+            $shipVia = $tracking->getData('carrier_code');
             $shipVia = str_replace("Federal Express", "Fed-Ex", $shipVia);
+            $shipVia = str_replace("fedex", "Fed-Ex", $shipVia);
             $itemCount = 0;
             foreach($items as $item) {
             	$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
