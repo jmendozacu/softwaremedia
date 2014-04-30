@@ -63,10 +63,6 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 array(
                     'ship_region' => 'region')
             );
-            
-           
-            echo $invoices->getSelect();
-            die();
                  /*     
                  $invoices->getSelect()->joinInner(
                     'sales_flat_shipment_track as shipment_track',
