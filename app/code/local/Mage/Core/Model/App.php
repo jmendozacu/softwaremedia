@@ -364,7 +364,7 @@ class Mage_Core_Model_App
     protected function _initEnvironment()
     {
         $this->setErrorHandler(self::DEFAULT_ERROR_HANDLER);
-        date_default_timezone_set(Mage_Core_Model_Locale::DEFAULT_TIMEZONE);
+        date_default_timezone_set('America/Denver');
         return $this;
     }
 
