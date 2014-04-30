@@ -85,7 +85,6 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             $track->addAttributeToFilter('order_id',$invoice->getOrderId());
             $tracking = $track->getFirstItem();
             
-            var_dump()
             $items->getSelect()
                 ->joinLeft(
                     'sales_flat_shipment_item as shipment_item',
