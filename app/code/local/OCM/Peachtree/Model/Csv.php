@@ -20,6 +20,13 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
 
     public function getCsv() {
     
+    	$codeMap = array(
+    		'fedex' => 'Fed-Ex',
+    		'dhl' => 'DHL',
+    		'dhlint' => 'DHL',
+    		'usps' => 'United States Postal Service',
+    		'ups' => 'United Parcel Service');
+    		
         if (!$this->getFrom() || !$this->getTo()) {
             return false;
         }
@@ -122,8 +129,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             $has_ship_line = ($invoice->getData('shipping_amount')>0) ? 1 : 0;
             $has_promo_line = ($invoice->getData('discount_amount')!=0) ? 1 : 0;
             
-            $shipVia = $tracking->getData('title');
-            $shipVia = str_replace("Federal Express", "Fed-Ex", $shipVia);
+            $shipVia = $tracking->getData('carrier_code');
+            
+            if (array_key_exists($shipVia, $codeMap))
+            	$shipVia = $codeMap[$shipVia];
+            	
             $itemCount = 0;
             foreach($items as $item) {
             	$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
