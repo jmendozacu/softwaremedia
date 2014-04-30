@@ -122,7 +122,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             $has_ship_line = ($invoice->getData('shipping_amount')>0) ? 1 : 0;
             $has_promo_line = ($invoice->getData('discount_amount')!=0) ? 1 : 0;
             
-            $shipVia = $tracking->getData('title');
+            $shipVia = $tracking->getData('carrier');
             $shipVia = str_replace("Federal Express", "Fed-Ex", $shipVia);
             $itemCount = 0;
             foreach($items as $item) {
