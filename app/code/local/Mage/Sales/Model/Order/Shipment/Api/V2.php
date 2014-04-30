@@ -86,7 +86,7 @@ class Mage_Sales_Model_Order_Shipment_Api_V2 extends Mage_Sales_Model_Order_Ship
 					->addObject($shipment)
 					->addObject($shipment->getOrder())
 					->save();
-				$shipment->sendEmail($email, ($includeComment ? $comment : ''));
+//				$shipment->sendEmail($email);
 			} catch (Mage_Core_Exception $e) {
 				$this->_fault('data_invalid', $e->getMessage());
 			}
@@ -116,6 +116,49 @@ class Mage_Sales_Model_Order_Shipment_Api_V2 extends Mage_Sales_Model_Order_Ship
 		}
 
 		return $carriers;
+	}
+
+	/**
+	 * Add tracking number to order
+	 *
+	 * @param string $shipmentIncrementId
+	 * @param string $carrier
+	 * @param string $title
+	 * @param string $trackNumber
+	 * @return int
+	 */
+	public function addTrack($shipmentIncrementId, $carrier, $title, $trackNumber) {
+		$shipment = Mage::getModel('sales/order_shipment')->loadByIncrementId($shipmentIncrementId);
+
+		/* @var $shipment Mage_Sales_Model_Order_Shipment */
+
+		if (!$shipment->getId()) {
+			$this->_fault('not_exists');
+		}
+
+		$carriers = $this->_getCarriers($shipment);
+
+		if (!isset($carriers[$carrier])) {
+			$this->_fault('data_invalid', Mage::helper('sales')->__('Invalid carrier specified.'));
+		}
+
+		$track = Mage::getModel('sales/order_shipment_track')
+			->setNumber($trackNumber)
+			->setCarrierCode($carrier)
+			->setTitle($title);
+
+		$shipment->addTrack($track);
+
+		try {
+			$shipment->save();
+			$track->save();
+			$email = $shipment->getOrder()->getCustomerEmail();
+			$shipment->sendEmail($email);
+		} catch (Mage_Core_Exception $e) {
+			$this->_fault('data_invalid', $e->getMessage());
+		}
+
+		return $track->getId();
 	}
 
 }
