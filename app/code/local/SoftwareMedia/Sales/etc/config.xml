@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<SoftwareMedia_Sales>
+			<version>0.1.3</version>
+		</SoftwareMedia_Sales>
+	</modules>
+	<global>
+		<resources>
+			<SoftwareMedia_Sales_setup>
+				<setup>
+					<module>SoftwareMedia_Sales</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</SoftwareMedia_Sales_setup>
+		</resources>
+	</global>
+	<admin>
+		<routers>
+			<adminhtml>
+				<args>
+					<modules>
+						<SoftwareMedia_Sales before="Mage_Index">SoftwareMedia_Sales_Adminhtml</SoftwareMedia_Sales>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
+</config>
