@@ -537,7 +537,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			}
 			*/
 			
-			//$row['condition'] = 'New';
+			$row['condition'] = 'New';
 			$row['availability'] = 'In Stock';
 			$row['description_stripped'] = preg_replace("/\s\s+/", " ", $row['description']);
 			
