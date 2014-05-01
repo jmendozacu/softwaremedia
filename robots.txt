@@ -1,7 +1,0 @@
-User-agent: *
-<<<<<<< HEAD
-Disallow:Sitemap:http://magento.instantsearchplus.com/ext_sitemap?u=a9511d71-bfa4-4696-a68a-84b7e1f85e81
-Sitemap:http://magento.instantsearchplus.com/ext_sitemap?u=a9511d71-bfa4-4696-a68a-84b7e1f85e81
-=======
-Disallow: /
->>>>>>> 9f732d76d102694fa6e05bf8e3e116d89c1c8f48
