@@ -116,6 +116,7 @@
     Options +FollowSymLinks
     RewriteEngine on
 
+	RewriteRule ^/?account/(.*)$ /account-error [R,L]
 ############################################
 ## you can put here your magento root folder
 ## path relative to web root
