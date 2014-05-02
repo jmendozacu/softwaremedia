@@ -113,6 +113,12 @@ function switch2quote(){
 		if($(paymentinput).hasClassName('validate-cc-cvn')){
 			$(paymentinput).removeClassName('validate-cc-cvn');
 		}
+		if($(paymentinput).hasClassName('validate-cc-number')){
+			$(paymentinput).removeClassName('validate-cc-number');
+		}
+		if($(paymentinput).hasClassName('validate-cc-type')){
+			$(paymentinput).removeClassName('validate-cc-type');
+		}
 		if($(paymentinput).hasClassName('validate-cc-type-select')){
 			$(paymentinput).removeClassName('validate-cc-type-select');
 		}
