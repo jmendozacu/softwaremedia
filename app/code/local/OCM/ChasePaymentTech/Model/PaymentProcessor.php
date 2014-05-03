@@ -96,13 +96,13 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 			}
 			$txRequest->newOrderRequest->ccCardVerifyNum = $payment->getCcCid();
 			$txRequest->newOrderRequest->avsZip = $billing->getPostcode();
-			$txRequest->newOrderRequest->avsAddress1 = implode(' ', $billing->getStreet());
-			$txRequest->newOrderRequest->avsCity = $billing->getCity();
+			$txRequest->newOrderRequest->avsAddress1 = substr(implode(' ', $billing->getStreet()), 0, 30);
+			$txRequest->newOrderRequest->avsCity = substr($billing->getCity(), 0, 20);
 		} else {
 			$txRequest->newOrderRequest->ccAccountNum = NULL;
 			$txRequest->newOrderRequest->customerRefNum = $customerRefNum;
 		}
-		
+
 		$txRequest->newOrderRequest->orderID = $order->getIncrementId();
 		$txRequest->newOrderRequest->amount = round($amount * 100, 0);
 		$txRequest->newOrderRequest->txRefNum = $payment->getParentTransactionId();
@@ -127,8 +127,8 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		$txRequest->reversalRequest->ccExp = $payment->getCcExpYear() . sprintf('%02d', $payment->getCcExpMonth());
 		$txRequest->reversalRequest->ccCardVerifyNum = $payment->getCcCid();
 		$txRequest->reversalRequest->avsZip = $billing->getPostcode();
-		$txRequest->reversalRequest->avsAddress1 = implode(' ', $billing->getStreet());
-		$txRequest->reversalRequest->avsCity = $billing->getCity();
+		$txRequest->reversalRequest->avsAddress1 = substr(implode(' ', $billing->getStreet()), 0, 30);
+		$txRequest->reversalRequest->avsCity = substr($billing->getCity(), 0, 20);
 		/* $txRequest->newOrderRequest->avsState = $billing->getRegion(); */
 		$txRequest->reversalRequest->orderID = $order->getIncrementId();
 		$txRequest->reversalRequest->amount = round($amount * 100, 0);
@@ -145,10 +145,10 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		$txRequest->markForCaptureRequest = new StdClass();
 		$txRequest->markForCaptureRequest->orbitalConnectionUsername = Mage::getStoreConfig('payment/chasePaymentTech/username', Mage::app()->getStore());
 		$txRequest->markForCaptureRequest->orbitalConnectionPassword = Mage::getStoreConfig('payment/chasePaymentTech/password', Mage::app()->getStore());
-		
+
 		if ($customerRef)
 			$txRequest->markForCaptureRequest->customerRefNum = $customerRef;
-		
+
 		$txRequest->markForCaptureRequest->version = '2.8';
 		$txRequest->markForCaptureRequest->industryType = 'EC';
 		$txRequest->markForCaptureRequest->bin = Mage::getStoreConfig('payment/chasePaymentTech/bin', Mage::app()->getStore());
@@ -158,8 +158,8 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		$txRequest->markForCaptureRequest->ccExp = $payment->getCcExpYear() . sprintf('%02d', $payment->getCcExpMonth());
 		$txRequest->markForCaptureRequest->ccCardVerifyNum = $payment->getCcCid();
 		$txRequest->markForCaptureRequest->avsZip = $billing->getPostcode();
-		$txRequest->markForCaptureRequest->avsAddress1 = implode(' ', $billing->getStreet());
-		$txRequest->markForCaptureRequest->avsCity = $billing->getCity();
+		$txRequest->markForCaptureRequest->avsAddress1 = substr(implode(' ', $billing->getStreet()), 0, 30);
+		$txRequest->markForCaptureRequest->avsCity = substr($billing->getCity(), 0, 20);
 		/* $txRequest->newOrderRequest->avsState = $billing->getRegion(); */
 		$txRequest->markForCaptureRequest->orderID = $order->getIncrementId();
 		$txRequest->markForCaptureRequest->amount = round($amount * 100, 0);
@@ -300,7 +300,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		try {
 			$client = new SoapClient($wsdl, array('trace' => 1));
 			$response = $client->$method($request);
-			Mage::log($response,NULL,'response.log');
+			Mage::log($response, NULL, 'response.log');
 			$this->_logger->debug("\nRequest\n" . $request);
 			$this->_logger->debug("\nResponse\n" . $response);
 
