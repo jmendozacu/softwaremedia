@@ -39,7 +39,7 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
                 	<?php if ($_product->getData('delivery_option')): ?>
                 	<option><?php echo $this->__('Download...') ?></option>
                 	<?php else: ?>
-                    <option><?php echo $this->__('Choose an Option...') ?></option>
+                    <option selected="selected"><?php echo $this->__('Choose an Option...') ?></option>
                     <?php endif; ?>
                   </select>
               </div>
@@ -75,7 +75,6 @@ document.observe("dom:loaded", function() {
 });
 
 function changeSku(confAttributeId, sel) {
-	alert('change');
    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
