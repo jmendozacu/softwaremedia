@@ -50,7 +50,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'order.entity_id = main_table.order_id',
                 array(
                     'order_created_at'    => 'created_at',
-                    'increment_id'    		=> 'order_increment_id',
+                    'order_increment_id'    		=> 'increment_id',
                     'shipping_address_id' => 'shipping_address_id',
                     'is_virtual'          => 'is_virtual',
                     'discount_amount'     => 'discount_amount',
