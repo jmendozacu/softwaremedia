@@ -39,7 +39,7 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
                 	<?php if ($_product->getData('delivery_option')): ?>
                 	<option><?php echo $this->__('Download...') ?></option>
                 	<?php else: ?>
-                    <option><?php echo $this->__('Choose an Option...') ?></option>
+                    <option selected="selected"><?php echo $this->__('Choose an Option...') ?></option>
                     <?php endif; ?>
                   </select>
               </div>
@@ -75,15 +75,14 @@ document.observe("dom:loaded", function() {
 });
 
 function changeSku(confAttributeId, sel) {
-	alert('change');
    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
         var options = spConfig.config.attributes[confAttributeId].options;
         var productId = options.find(function (option) {return option.id == selectedAttributeId}).products[0]
-        $("availability_message").update(productMap[productId]);
+        //$("availability_message").update(productMap[productId]);
     } else {
-        $("availability_message").update("Select an option above");
+        //$("availability_message").update("Select an option above");
     }
 }
 
