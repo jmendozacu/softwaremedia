@@ -36,14 +36,16 @@ class SoftwareMedia_Substitution_Helper_Data extends Mage_Core_Helper_Abstract {
 			$invoiceItem->setName($productItem->getName());
 			$invoiceItem->setSku($productItem->getSku());
 			
+			$orderItem = Mage::getModel('sales/order_item')->load($invoiceItem->getOrderItemId());
+			
 			//TODO: Update Order Invoice QTY and Order Invoice Item QTY
-			$newQty = $invoiceItem->getQty() * $qty;
+			$newQty = $orderItem->getQtyOrdered() * $qty;
 			$invoiceItem->setData('qty',$newQty);
 			$invoiceItem->save();
 			
 			//Load order item and update QTY
-			$orderItem = Mage::getModel('sales/order_item')->load($invoiceItem->getOrderItemId());
-			$orderItem->setQtyInvoiced($orderItem->getQtyInvoiced() * $qty);
+			
+			$orderItem->setQtyInvoiced($orderItem->getQtyOrdered() * $qty);
 			
 			//Save Order Item
 			$orderItem->save();
