@@ -50,7 +50,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'order.entity_id = main_table.order_id',
                 array(
                     'order_created_at'    => 'created_at',
-                    'order_id'    		=> 'entity_id',
+                    'increment_id'    		=> 'order_increment_id',
                     'shipping_address_id' => 'shipping_address_id',
                     'is_virtual'          => 'is_virtual',
                     'discount_amount'     => 'discount_amount',
@@ -143,7 +143,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
 				
 				$itemCount++;
             }
-            $orderId = $invoice->getData('order_id');
+            $orderId = $invoice->getData('order_increment_id');
             
             $common_values = array(
                 'customer_id' => 'O'.date('my',strtotime( $invoice->getData('order_created_at') ) ),
