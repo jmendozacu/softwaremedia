@@ -89,17 +89,17 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 							}
 						}
 
-						if ($found) {
-							$sc_model->setId($pid)
-								->setType(trim($postData['type']))
-								->setSku(trim($sku))
-								->setCode($code)
-								->setStatus($postData['status'])
-								->setNote(trim($postData['note']))
-								->setCreatedTime($ctime)
-								->setUpdateTime($ptime)
-								->save();
-						}
+//						if ($found) {
+						$sc_model->setId($pid)
+							->setType(trim($postData['type']))
+							->setSku(trim($sku))
+							->setCode($code)
+							->setStatus($postData['status'])
+							->setNote(trim($postData['note']))
+							->setCreatedTime($ctime)
+							->setUpdateTime($ptime)
+							->save();
+//						}
 					}
 				}
 				$sc_model->updateInventoryStock($sku);
