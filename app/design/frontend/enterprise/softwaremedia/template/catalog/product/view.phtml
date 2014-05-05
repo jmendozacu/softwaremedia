@@ -165,19 +165,22 @@
                     <?php if ($stock_message): ?>
                     	<?php $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product);
 							if ($inventory->getBackorders()): ?>
-	                    <p class="availability in-stock">
+	                    <p class="availability in-stock" id="availability_message">
 	                    	Backordered. Product may take 1-2 weeks for delivery.
 	                    </p>
 	                    <?php else: ?>
-	                    <p class="availability in-stock">
+	                    <p class="availability in-stock" id="availability_message">
 	                    	<?php 
 	                    	if ($stock_message == 'In Stock. Ships Free Today' && date('N') <5 && date('G') >= 16) {
 	                    		echo "In Stock. Ships Free Tomorrow";
-	                    	} elseif ($stock_message == 'In Stock. Ships Free Today' && (date('N') > 5 || (date('N') == 5 && date('G') >= 16))) {
+	                    	} elseif ($stock_message == 'In Stock. Ships Free Today ' && (date('N') > 5 || (date('N') == 5 && date('G') >= 16))) {
 	                    		echo "In Stock. Ships Free Monday";
 							} else {
-	                    		echo $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message');
-	                    	} 
+	                    		if($stock_message == 'In Stock. Ships Free Today') {
+		                    		echo "In Stock. Ships Free Today (during business hours)";
+								} else { 
+									echo $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message');				}
+	                    	}
 	                    	?>
 	                    	
 	                    </p>

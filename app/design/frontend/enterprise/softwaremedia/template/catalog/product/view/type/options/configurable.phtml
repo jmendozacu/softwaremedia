@@ -39,7 +39,7 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
                 	<?php if ($_product->getData('delivery_option')): ?>
                 	<option><?php echo $this->__('Download...') ?></option>
                 	<?php else: ?>
-                    <option><?php echo $this->__('Choose an Option...') ?></option>
+                    <option selected="selected"><?php echo $this->__('Choose an Option...') ?></option>
                     <?php endif; ?>
                   </select>
               </div>
@@ -62,7 +62,7 @@ $col = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterBy
 $productMap = array();
 foreach($col as $simpleProduct){
 	$simpleProd = Mage::getModel('catalog/product')->load($simpleProduct->getId());
-    $productMap[$simpleProduct->getId()] = $simpleProd->getData('manufacturer_pn_2');
+    $productMap[$simpleProduct->getId()] = $simpleProd->getData('stock_message');
 }
 ?>
 
@@ -70,20 +70,20 @@ foreach($col as $simpleProduct){
 
 document.observe("dom:loaded", function() {
   $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
+  $('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('change');
+  $('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('click');
 });
 
 function changeSku(confAttributeId, sel) {
-/*
    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
         var options = spConfig.config.attributes[confAttributeId].options;
         var productId = options.find(function (option) {return option.id == selectedAttributeId}).products[0]
-        $("sku-container").update("<strong>Part Number: </strong>" + productMap[productId]);
+        //$("availability_message").update(productMap[productId]);
     } else {
-        $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
+        //$("availability_message").update("Select an option above");
     }
-    */
 }
 
 jQuery(document).ready(function(){
