@@ -183,6 +183,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if ($order->getCustomerId() == 1121) {
             	$common_values['customer_id']  = 'AMAZONSWM';
             	$common_values['sales_rep_id'] = 'Amazon';
+            	
+            	$payment = $order->getPayment();
+            	$additionalData = @unserialize($payment->getAdditionalData());
+            	$common_values['invoice_id'] = $additionalData['channel_order_id'];
             }
             
             $i = 1;
