@@ -35,7 +35,7 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
         <dt><label class="required"><em>*</em><?php echo $_attribute->getLabel() ?></label></dt>
         <dd<?php if ($_attribute->decoratedIsLast){?> class="last"<?php }?>>
             <div class="input-box">
-                <select onchange="updateUniform(); return changeSku(<?php echo $_attribute->getAttributeId() ?>, this);" name="super_attribute[<?php echo $_attribute->getAttributeId() ?>]" id="attribute<?php echo $_attribute->getAttributeId() ?>" class="required-entry super-attribute-select">
+                <select onchange="updateUniform(); return changeSku(<?php echo $_attribute->getAttributeId() ?>, this);" name="super_attribute[<?php echo $_attribute->getAttributeId() ?>]" onclick="updateUniform(); return changeSku(<?php echo $_attribute->getAttributeId() ?>, this);" name="super_attribute[<?php echo $_attribute->getAttributeId() ?>]" id="attribute<?php echo $_attribute->getAttributeId() ?>" class="required-entry super-attribute-select">
                 	<?php if ($_product->getData('delivery_option')): ?>
                 	<option><?php echo $this->__('Download...') ?></option>
                 	<?php else: ?>
@@ -70,7 +70,7 @@ foreach($col as $simpleProduct){
 
 document.observe("dom:loaded", function() {
   $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
-  $('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('change');
+  //$('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('change');
   $('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('click');
 });
 
@@ -80,9 +80,9 @@ function changeSku(confAttributeId, sel) {
     if (selectedAttributeId) {
         var options = spConfig.config.attributes[confAttributeId].options;
         var productId = options.find(function (option) {return option.id == selectedAttributeId}).products[0]
-        //$("availability_message").update(productMap[productId]);
+        $("availability_message").update(productMap[productId]);
     } else {
-        //$("availability_message").update("Select an option above");
+        $("availability_message").update("Select an option above");
     }
 }
 
