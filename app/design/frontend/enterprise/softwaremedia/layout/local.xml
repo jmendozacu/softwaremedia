@@ -23,7 +23,10 @@
                 <type>skin_css</type>
                 <name>css/softwaremedia.css</name>
             </action>
-			
+			<action method="addItem">
+            	<type>skin_js</type>
+            	<name>js/jquery.carouFredSel-6.2.1.js</name>
+            </action>
             
             <action method="addItem">
                 <type>skin_js</type>
@@ -66,14 +69,6 @@
         </reference>
          
     </default>
-    <cms_index_index>
-    	<reference name="head">
-    		<action method="addItem">
-            	<type>skin_js</type>
-            	<name>js/jquery.carouFredSel-6.2.1.js</name>
-            </action>
-    	</reference>
-    </cms_index_index>
     <catalog_category_layered>
         <reference name="root">
             <action method="setTemplate">
