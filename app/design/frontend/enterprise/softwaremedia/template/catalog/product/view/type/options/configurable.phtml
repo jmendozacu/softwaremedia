@@ -80,9 +80,9 @@ function changeSku(confAttributeId, sel) {
     if (selectedAttributeId) {
         var options = spConfig.config.attributes[confAttributeId].options;
         var productId = options.find(function (option) {return option.id == selectedAttributeId}).products[0]
-        $("availability_message").update(productMap[productId]);
+        //$("availability_message").update(productMap[productId]);
     } else {
-        $("availability_message").update("Select an option above");
+        //$("availability_message").update("Select an option above");
     }
 }
 
