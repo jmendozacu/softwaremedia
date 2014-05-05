@@ -50,6 +50,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'order.entity_id = main_table.order_id',
                 array(
                     'order_created_at'    => 'created_at',
+                    'order_increment_id'    		=> 'increment_id',
                     'shipping_address_id' => 'shipping_address_id',
                     'is_virtual'          => 'is_virtual',
                     'discount_amount'     => 'discount_amount',
@@ -142,9 +143,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
 				
 				$itemCount++;
             }
+            $orderId = $invoice->getData('order_increment_id');
+            
             $common_values = array(
                 'customer_id' => 'O'.date('my',strtotime( $invoice->getData('order_created_at') ) ),
-                'invoice_id'  => $invoice->getData('increment_id'),
+                'invoice_id'  => $orderId,
                 'date'        => date('m/d/Y',strtotime( $invoice->getData('order_created_at') ) ),
                 'ship_via'    => $shipVia,
                 'ship_date'   => '', //item, tax, frieght
@@ -180,6 +183,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             if ($order->getCustomerId() == 1121) {
             	$common_values['customer_id']  = 'AMAZONSWM';
             	$common_values['sales_rep_id'] = 'Amazon';
+            	
+            	$payment = $order->getPayment();
+            	$additionalData = @unserialize($payment->getAdditionalData());
+            	$common_values['invoice_id'] = $additionalData['channel_order_id'];
             }
             
             $i = 1;
