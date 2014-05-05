@@ -170,17 +170,7 @@
 	                    </p>
 	                    <?php else: ?>
 	                    <p class="availability in-stock" id="availability_message">
-	                    	<?php 
-	                    	if ($stock_message == 'In Stock. Ships Free Today' && date('N') <5 && date('G') >= 16) {
-	                    		echo "In Stock. Ships Free Tomorrow";
-	                    	} elseif ($stock_message == 'In Stock. Ships Free Today ' && (date('N') > 5 || (date('N') == 5 && date('G') >= 16))) {
-	                    		echo "In Stock. Ships Free Monday";
-							} else {
-	                    		echo $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message');
-	                    	}elseif($stock_message == 'In Stock. Ships Free Today') {
-		                    	
-	                    	}
-	                    	?>
+
 	                    	
 	                    </p>
 	                    <?php endif; ?>
