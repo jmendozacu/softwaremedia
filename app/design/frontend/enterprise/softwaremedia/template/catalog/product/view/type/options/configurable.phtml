@@ -70,9 +70,12 @@ foreach($col as $simpleProduct){
 
 document.observe("dom:loaded", function() {
   $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
+  $('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('change');
+  $('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('click');
 });
 
 function changeSku(confAttributeId, sel) {
+	alert('change');
    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
