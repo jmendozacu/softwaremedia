@@ -105,6 +105,7 @@ class OCM_Fulfillment_Model_Observer
 					continue;
 				}
 				
+				$order->setState('processing','processmanually','Electronic item - does not match download or license rules.', FALSE)->save();
             } else { // order has ANY physical products:
            
 				Mage::log('Warehouse Physical',null,'sort.log');
