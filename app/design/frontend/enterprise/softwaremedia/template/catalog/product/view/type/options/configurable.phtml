@@ -71,7 +71,6 @@ foreach($col as $simpleProduct){
 document.observe("dom:loaded", function() {
   $("sku-container").update("<strong>Part Number: </strong> <span>Select an option below</span>");
   //$('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('change');
-  $('attribute<?php echo $_attribute->getAttributeId(); ?>').simulate('click');
 });
 
 function changeSku(confAttributeId, sel) {
@@ -79,7 +78,10 @@ function changeSku(confAttributeId, sel) {
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
         var options = spConfig.config.attributes[confAttributeId].options;
-        var productId = options.find(function (option) {return option.id == selectedAttributeId}).products[0]
+        var productId = options.find(function (option) {return option.id == selectedAttributeId}).products[0];
+        if (productMap[productId] == "In Stock. Ships Free Today")
+        	productMap[productId] = "In Stock. Ships Free Today (during business hours)";
+        	
         $("availability_message").update(productMap[productId]);
     } else {
         $("availability_message").update("Select an option above");
@@ -103,6 +105,7 @@ jQuery(document).ready(function(){
                     $(a).selectedIndex = si;
                    spConfig.configureElement($(a));
                    jQuery('#uniform-'+a+' span').text(o[si].text);
+                   changeSku(values[0],$('attribute' + values[0]));
                 }
             }
         }
@@ -118,6 +121,7 @@ jQuery(document).ready(function(){
                     $(a).selectedIndex = si;
                    spConfig.configureElement($(a));
                    jQuery('#uniform-'+a+' span').text(o[si].text);
+                   changeSku(1055,$('attribute1055'));
                 }
             }
     }

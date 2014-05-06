@@ -21,6 +21,7 @@ class OCM_Fulfillment_Model_Observer
 		
 		$oAitcheckoutfields  = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
 		
+		Mage::log('Warehouse 1',null,'sort.log');
 		
         foreach($orders as $order){
         
@@ -72,6 +73,7 @@ class OCM_Fulfillment_Model_Observer
 				$tagToOrderResource->addIntoDB($order->getId(), self::TAG_SUB);
 				
             if($is_virtual){ 
+            	Mage::log('Warehouse Virtual',null,'sort.log');
             	//Order has both physical and electronic items
             	if ($is_physical) {
             		if ($is_download) {
@@ -105,7 +107,7 @@ class OCM_Fulfillment_Model_Observer
 				
             } else { // order has ANY physical products:
            
-			
+				Mage::log('Warehouse Physical',null,'sort.log');
                 // Get All warehouse availability 
                 $warehouse_model = Mage::getModel('ocm_fulfillment/warehouse');
                 $warehouse_model->loadWarehouseData($items);

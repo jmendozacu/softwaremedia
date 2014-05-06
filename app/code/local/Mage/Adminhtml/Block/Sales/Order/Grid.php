@@ -153,6 +153,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
 			'index' => 'grand_total',
 			'type' => 'currency',
+			'filter_index' => 'main_table.grand_total',
 			'currency' => 'order_currency_code',
 		));
 
