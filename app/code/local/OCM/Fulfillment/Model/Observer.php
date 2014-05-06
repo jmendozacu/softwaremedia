@@ -25,6 +25,15 @@ class OCM_Fulfillment_Model_Observer
 		
         foreach($orders as $order){
         
+        	$orderHistory = Mage::getModel('sales/order_status_history')->getCollection()
+                ->addFieldToFilter('parent_id', $order->getId())
+                ->addFieldToFilter('status','complete');
+                
+            if (count($orderHistory) > 0) {
+	            Mage::log($order->getId(),null,'fulfillment_observer.log');
+	            continue;
+            }
+                
             $is_virtual = false;
             $is_physical = false;
             $is_download = false;
