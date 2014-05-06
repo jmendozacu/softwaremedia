@@ -480,10 +480,16 @@
 
 										</td>
 										<td class="a-center" class='pt-qty'>
-											<div style="height:25px;"><?php echo (!empty($product->getPtQty()) ? $product->getPtQty() : 0); ?></div>
+											<div style="height:25px;"><?php
+												$qty = $product->getPtQty();
+												echo (!empty($qty) ? $qty : 0);
+												?></div>
 										</td>
 										<td class="a-center" class='ingram-qty'>
-											<div style="height:25px;"><?php echo (!empty($product->getIngramQty()) ? $product->getIngramQty() : 0); ?></div>
+											<div style="height:25px;"><?php
+												$qty = $product->getIngramQty();
+												echo (!empty($qty) ? $qty : 0);
+												?></div>
 										</td>
 										<td class="a-center"><span class="price cpc-price" id="ingram-price-<?php echo $product->getSku() ?>"><?php
 												$price = $product->getIngramPrice();
