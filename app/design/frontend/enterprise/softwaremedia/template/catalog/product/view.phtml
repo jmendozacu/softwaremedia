@@ -172,7 +172,8 @@
 	                    <p class="availability in-stock" id="availability_message">
 	                    	<?php 
 	                    	if ($stock_message == 'In Stock. Ships Free Today' && date('N') <5 && date('G') >= 16) {
-	                    		echo "In Stock. Ships Free Tomorrow";
+	                    		//echo "In Stock. Ships Free Tomorrow";
+	                    		echo "In Stock. Ships Free Today (during business hours)";
 	                    	} elseif ($stock_message == 'In Stock. Ships Free Today ' && (date('N') > 5 || (date('N') == 5 && date('G') >= 16))) {
 	                    		echo "In Stock. Ships Free Monday";
 							} else {

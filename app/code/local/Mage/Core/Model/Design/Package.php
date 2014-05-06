@@ -770,15 +770,14 @@ class Mage_Core_Model_Design_Package {
 				$secure = $store->isFrontUrlSecure() && Mage::app()->getRequest()->isSecure();
 			}
 
-			$baseUrl = '/';
 			if ('skin' == $fileDirParts[0]) {
-//                $baseUrl = Mage::getBaseUrl('skin', $secure);
+				$baseUrl = '/skin/';
 				$fileDirParts = array_slice($fileDirParts, 1);
 			} elseif ('media' == $fileDirParts[0]) {
-//                $baseUrl = Mage::getBaseUrl('media', $secure);
+				$baseUrl = '/media/';
 				$fileDirParts = array_slice($fileDirParts, 1);
 			} else {
-//                $baseUrl = Mage::getBaseUrl('web', $secure);
+				$baseUrl = '/web/';
 			}
 
 			foreach ($pathParts as $key => $part) {
