@@ -22,15 +22,23 @@ class SoftwareMedia_Substitution_Model_Observer
         
         foreach($dollection as $link) {
 	        if ($link->getPriceSync()) {
-			$syncProd = Mage::getModel('catalog/product')->load($link->getProductId());
-			
-			//Only save product if prices are different to prcent potential loops
-			if ($product->getPrice() != $syncProd->getPrice() || $product->getCpcPrice() != $syncProd->getCpcPrice() || $product->getMsrp() != $syncProd->getMsrp() || $product->getCost() != $syncProd->getCost()) {
-				$syncProd->setPrice($product->getPrice());
-				$syncProd->setCpcPrice($product->getCpcPrice());
-				$syncProd->setMsrp($product->getMsrp());
-				$syncProd->save();
-			}
+				$syncProd = Mage::getModel('catalog/product')->load($link->getProductId());
+				
+				//Only save product if prices are different to prcent potential loops
+				$qty = $link->getQty();
+				
+				$newPrice = round($product->getPrice() * $qty,2);
+				$newCpc = round($product->getCpcPrice() * $qty,2);
+				$newMsrp = round($product->getMsrp() * $qty,2);
+				$newCost = round($product->getCost() * $qty,2);
+				
+				if ($newPrice != $syncProd->getPrice() || $newCpc != $syncProd->getCpcPrice() || $newMsrp != $syncProd->getMsrp() || $newCost != $syncProd->getCost()) {
+					$syncProd->setPrice($newPrice);
+					$syncProd->setCpcPrice($newCpc);
+					$syncProd->setMsrp($newMsrp);
+					$syncProd->setCost($newCost);
+					$syncProd->save();
+				}
 	        }
         }
 
