@@ -26,20 +26,19 @@
 /** @var $this Enterprise_TargetRule_Block_Catalog_Product_Item */
 $_item = $this->getItem();
 if ($_item):
-?>
-    <div class="item">
-        <?php echo $this->getReviewsSummaryHtml($_item) ?>
-        <a href="<?php echo $this->getProductUrl($_item) ?>" class="product-image" title="<?php echo $this->escapeHtml($_item->getName()) ?>"><img src="<?php echo $this->helper('catalog/image')->init($_item, 'small_image'); ?>" alt="<?php echo $this->escapeHtml($_item->getName()) ?>" title="<?php echo $this->escapeHtml($_item->getName()) ?>" /></a>
-        <div class="new-description">
-            <h3><a href="<?php echo $this->getProductUrl($_item) ?>" title="<?php echo $this->escapeHtml($_item->getName()) ?>"><?php echo $this->escapeHtml($_item->getName()) ?></a></h3>
-            <?php echo $this->getPriceHtml($_item, true, '-upsell') ?>
-            <?php if($_item->getData('msrp')):?>
-						    <?php $_coreHelper = $this->helper('core');?>
-						    <div class="product-msrp" style="text-align: right;font-weight: bold;">
-						        <p style="font-size: 16px;" class=""><label><?php echo $this->__('MSRP: ') ?></label><span style="text-decoration: line-through;"><?php echo $_coreHelper->currency($_item->getMsrp(), true, false)?></span></p>
-						    </div>
-						<?php endif;?>
-						<?php echo $this->getReviewsSummaryHtml($_item, 'short') ?>
-        </div>
-    </div>
-<?php endif;?>
+	?>
+	<div class="item">
+		<a href="<?php echo $this->getProductUrl($_item) ?>" class="product-image" title="<?php echo $this->escapeHtml($_item->getName()) ?>"><img src="<?php echo $this->helper('catalog/image')->init($_item, 'small_image'); ?>" alt="<?php echo $this->escapeHtml($_item->getName()) ?>" title="<?php echo $this->escapeHtml($_item->getName()) ?>" /></a>
+		<div class="new-description">
+			<h3><a href="<?php echo $this->getProductUrl($_item) ?>" title="<?php echo $this->escapeHtml($_item->getName()) ?>"><?php echo $this->escapeHtml($_item->getName()) ?></a></h3>
+			<?php echo $this->getPriceHtml($_item, true, '-upsell') ?>
+			<?php if ($_item->getData('msrp')): ?>
+				<?php $_coreHelper = $this->helper('core'); ?>
+				<div class="product-msrp" style="text-align: right;font-weight: bold;">
+					<p style="font-size: 16px;" class=""><label><?php echo $this->__('MSRP: ') ?></label><span style="text-decoration: line-through;"><?php echo $_coreHelper->currency($_item->getMsrp(), true, false) ?></span></p>
+				</div>
+			<?php endif; ?>
+			<?php echo $this->getReviewsSummaryHtml($_item) ?>
+		</div>
+	</div>
+<?php endif; ?>
