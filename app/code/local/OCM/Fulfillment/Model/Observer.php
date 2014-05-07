@@ -27,7 +27,7 @@ class OCM_Fulfillment_Model_Observer
         
         	$orderHistory = Mage::getModel('sales/order_status_history')->getCollection()
                 ->addFieldToFilter('parent_id', $order->getId())
-                ->addFieldToFilter('status','complete');
+                ->addFieldToFilter('status',array('complete','closed'));
                 
             if (count($orderHistory) > 0) {
 	            Mage::log($order->getId(),null,'fulfillment_observer.log');
