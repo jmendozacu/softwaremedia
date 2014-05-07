@@ -31,7 +31,7 @@ class OCM_Fulfillment_Model_Observer {
                 
             if (count($orderHistory) > 0) {
 	            Mage::log($order->getId(),null,'fulfillment_observer.log');
-	            continue;
+	            //continue;
             }
                 
             $is_virtual = false;
