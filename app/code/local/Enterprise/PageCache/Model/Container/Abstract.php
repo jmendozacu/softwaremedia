@@ -74,7 +74,9 @@ abstract class Enterprise_PageCache_Model_Container_Abstract {
 	 * @return bool
 	 */
 	public function applyWithoutApp(&$content) {
-		$cacheId = $this->_getCacheId() . (!empty($_COOKIE['softwaremedia_ovchn']) ? $_COOKIE['softwaremedia_ovchn'] : '');
+		$cookieVal = (!empty($_COOKIE['softwaremedia_ovchn']) ? '1' : '');
+		//Mage::log($cookieVal,null,'cookie.log');
+		$cacheId = $this->_getCacheId() . $cookieVal;
 
 		if ($cacheId === false) {
 			$this->_applyToContent($content, '');
@@ -131,7 +133,9 @@ abstract class Enterprise_PageCache_Model_Container_Abstract {
 	 * @return Enterprise_PageCache_Model_Container_Abstract
 	 */
 	public function saveCache($blockContent, $tags = array()) {
-		$cacheId = $this->_getCacheId() . (!empty($_COOKIE['softwaremedia_ovchn']) ? $_COOKIE['softwaremedia_ovchn'] : '');
+		$cookieVal = (!empty($_COOKIE['softwaremedia_ovchn']) ? '1' : '');
+		//Mage::log($cookieVal,null,'cookie.log');
+		$cacheId = $this->_getCacheId() . $cookieVal;
 		if ($cacheId !== false) {
 			$this->_saveCache($blockContent, $cacheId, $tags);
 		}
