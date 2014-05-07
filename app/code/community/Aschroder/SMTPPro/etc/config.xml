@@ -10,7 +10,7 @@
 <config>
 	<modules>
 		<Aschroder_SMTPPro>
-			<version>1.4.3</version>
+			<version>1.4.3.1</version>
 		</Aschroder_SMTPPro>
 	</modules>
 	<frontend>
@@ -113,6 +113,13 @@
 					<children>
 						<system>
 							<children>
+								<tools>
+									<children>
+										<smtppro>
+											<title>Email Logs</title>
+										</smtppro>
+									</children>
+								</tools>
 								<config>
 									<children>
 										<smtppro>
