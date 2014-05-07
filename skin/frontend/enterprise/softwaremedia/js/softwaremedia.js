@@ -292,12 +292,14 @@ var window_width = jQuery(window).width();
 }
 
 jQuery(function() {
-init();
+	init();
+	if (getQueryVariable('ovchn')) {
+		document.cookie="softwaremedia_ovchn=" + getQueryVariable('ovchn');
+	}
 });
 
 jQuery(window).resize(function(){
 	init();
-	alert(getQueryVariable('ovchn'));
 
 });
 
