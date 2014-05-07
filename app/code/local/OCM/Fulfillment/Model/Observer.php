@@ -19,53 +19,44 @@ class OCM_Fulfillment_Model_Observer {
 		//$orders->addFieldToFilter('state','new');
 		$tagToOrderResource = Mage::getResourceModel('ordertags/orderidtotagid');
 
-		$oAitcheckoutfields = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
-
-		Mage::log('Warehouse 1', null, 'sort.log');
-
-		foreach ($orders as $order) {
-
-			$orderHistory = Mage::getModel('sales/order_status_history')->getCollection()
-				->addFieldToFilter('parent_id', $order->getId())
-				->addFieldToFilter('status', 'complete');
-
-			if (count($orderHistory) > 0) {
-				Mage::log($order->getId(), null, 'fulfillment_observer.log');
-				continue;
-			}
-
-			$is_virtual = false;
-			$is_physical = false;
-			$is_download = false;
-			$is_license = false;
-			$iStoreId = $order->getStoreId();
-			$aCustomAtrrList = $oAitcheckoutfields->getOrderCustomData($order->getId(), $iStoreId, true, true);
-			if ($aCustomAtrrList) {
-				foreach ($aCustomAtrrList as $aItem) {
-					if ($aItem['code'] == 'comment' && !empty($aItem['value'])) {
-						$tagToOrderResource->addIntoDB($order->getId(), self::TAG_CS);
-						$order->setState('processing', 'processing', 'Order has comments. Tagging Customer Service', FALSE)->save();
-					}
-				}
-			}
-
-			$shippingMethod = $order->getShippingMethod();
-
-			if ($shippingMethod == 'Expedited_Processing' || $shippingMethod == 'Overnight' || $shippingMethod == 'Overnight_Saturday' || $shippingMethod == 'Priority_Overnight' || $shippingMethod == 'Standard_Overnight') {
-				try {
-					$tagToOrderResource->addIntoDB($order->getId(), self::TAG_PRIORITY);
-				} catch (Exception $e) {
-					Mage::log('Unable to add priority tag to ' . $order->getId());
-					Mage::log($e->getTraceAsString());
-				}
-			}
-
-			$items = $order->getAllItems();
-			foreach ($items as $item) {
-				if ($item->getHasChildren())
-					continue;
-
-				$prod = Mage::getModel('catalog/product')->load($item->getProductId());
+		$oAitcheckoutfields  = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
+		
+		Mage::log('Warehouse 1',null,'sort.log');
+		
+        foreach($orders as $order){
+        
+        	$orderHistory = Mage::getModel('sales/order_status_history')->getCollection()
+                ->addFieldToFilter('parent_id', $order->getId())
+                ->addFieldToFilter('status',array('complete','closed'));
+                
+            if (count($orderHistory) > 0) {
+	            Mage::log($order->getId(),null,'fulfillment_observer.log');
+	            continue;
+            }
+                
+            $is_virtual = false;
+            $is_physical = false;
+            $is_download = false;
+            $is_license = false;
+            $iStoreId = $order->getStoreId();
+            $aCustomAtrrList = $oAitcheckoutfields->getOrderCustomData($order->getId(), $iStoreId, true, true); 
+            if ($aCustomAtrrList) {
+	            foreach($aCustomAtrrList as $aItem) {
+		            if ($aItem['code'] == 'comment' && !empty($aItem['value'])) {
+			            $tagToOrderResource->addIntoDB($order->getId(), self::TAG_CS);
+			            $order->setState('processing','processing','Order has comments. Tagging Customer Service',FALSE)->save();
+		            }
+	            }
+            }
+            
+            $shippingMethod = $order->getShippingMethod();
+            
+            $items = $order->getAllItems();
+            foreach($items as $item){
+            	if ($item->getHasChildren())
+            		continue;
+            		
+            	$prod = Mage::getModel('catalog/product')->load($item->getProductId());
 				$links = $prod->getSubstitutionLinkCollection();
 
 				if ($prod->getData('package_id') == 1084) {
