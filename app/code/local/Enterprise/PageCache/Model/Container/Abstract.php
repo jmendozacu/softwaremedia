@@ -74,7 +74,10 @@ abstract class Enterprise_PageCache_Model_Container_Abstract {
 	 * @return bool
 	 */
 	public function applyWithoutApp(&$content) {
-		$cookieVal = (!empty($_COOKIE['softwaremedia_ovchn']) ? '1' : '');
+		$cookieVal = '';
+		if (!empty($_COOKIE['softwaremedia_ovchn']) || $_REQUEST['ovchn'])
+			$cookieVal = '1';
+			
 		//Mage::log($cookieVal,null,'cookie.log');
 		$cacheId = $this->_getCacheId() . $cookieVal;
 
@@ -133,7 +136,10 @@ abstract class Enterprise_PageCache_Model_Container_Abstract {
 	 * @return Enterprise_PageCache_Model_Container_Abstract
 	 */
 	public function saveCache($blockContent, $tags = array()) {
-		$cookieVal = (!empty($_COOKIE['softwaremedia_ovchn']) ? '1' : '');
+		$cookieVal = '';
+		if (!empty($_COOKIE['softwaremedia_ovchn']) || $_REQUEST['ovchn'])
+			$cookieVal = '1';
+			
 		//Mage::log($cookieVal,null,'cookie.log');
 		$cacheId = $this->_getCacheId() . $cookieVal;
 		if ($cacheId !== false) {
