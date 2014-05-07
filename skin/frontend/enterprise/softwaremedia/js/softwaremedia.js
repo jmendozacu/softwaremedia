@@ -292,11 +292,15 @@ var window_width = jQuery(window).width();
 }
 
 jQuery(function() {
-init();
+	init();
+	if (getQueryVariable('ovchn')) {
+		document.cookie="softwaremedia_ovchn=" + getQueryVariable('ovchn');
+	}
 });
 
 jQuery(window).resize(function(){
-init();
+	init();
+
 });
 
 function showPolicyDetails(header_element_id) {
@@ -310,6 +314,17 @@ header_div.setAttribute("class", "policies_link");
 details_div.style.display = "block";
 header_div.setAttribute("class", "policies_link2");
 }
+}
+
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
 }
 
 
