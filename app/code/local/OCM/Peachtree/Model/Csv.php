@@ -34,7 +34,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
         $csv = '';
 
         $invoices = Mage::getModel('sales/order_invoice')->getCollection()
-            ->addFieldToFilter('order_history.created_at', array(
+            ->addFieldToFilter('shistory.history_complete', array(
                 'from' => $this->getFrom(),
                 'to' => date('Y-m-d',strtotime($this->getTo()) + 60 * 60 * 24),
                 'date' => true, // specifies conversion of comparison values
@@ -60,14 +60,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                     'coupon_rule_name'    => 'coupon_rule_name'
                 )
             )
-            
             ->joinLeft(
-                'sales_flat_order_status_history as order_history',
-                'order_history.parent_id = order.entity_id',
-                array(
-                    'order_completed_at'    => 'created_at'
-                )
-            );
+        array('shistory' => new Zend_Db_Expr( '(SELECT created_at as history_complete, parent_id as parent_id FROM sales_flat_order_status_history AS ohist WHERE ohist.status = "complete" ORDER BY created_at ASC LIMIT 1)')),
+        'shistory.parent_id = order.entity_id'
+			);
             
    
             $invoices->getSelect()->joinLeft(
