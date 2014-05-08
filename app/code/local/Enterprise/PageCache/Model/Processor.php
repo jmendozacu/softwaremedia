@@ -154,7 +154,6 @@ class Enterprise_PageCache_Model_Processor
             }
         }
 
-		Mage::log($uri,null,'cache.log');
         $this->_requestId       = $uri;
         $this->_requestCacheId  = $this->prepareCacheId($this->_requestId);
 
