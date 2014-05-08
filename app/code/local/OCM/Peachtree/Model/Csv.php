@@ -39,9 +39,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'to' => date('Y-m-d',strtotime($this->getTo()) + 60 * 60 * 24),
                 'date' => true, // specifies conversion of comparison values
             )
-            )
-            ->addFieldToFilter('order_history.status', 'complete')
-        ;
+            );
 
         $invoices->getSelect()
 
