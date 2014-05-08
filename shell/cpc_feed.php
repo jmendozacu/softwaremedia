@@ -3,7 +3,7 @@
 //if ($_SERVER['REMOTE_ADDR'] !== '<your server ip address') {
 //  die("You are not a cron job!");
 //}
-require "/var/www/magento.softwaremedia.com/htdocs/app/Mage.php";
+require "/var/www/magento/htdocs/app/Mage.php";
 // wget -O - http://<www.example.com>/Cron_Import.php/?files=3XSEEEE.csv
   umask(0);
 
