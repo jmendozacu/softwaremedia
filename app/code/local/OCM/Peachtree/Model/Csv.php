@@ -34,17 +34,19 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
         $csv = '';
 
         $invoices = Mage::getModel('sales/order_invoice')->getCollection()
-            ->addFieldToFilter('order.updated_at', array(
+            ->addFieldToFilter('order_history.created_at', array(
                 'from' => $this->getFrom(),
                 'to' => date('Y-m-d',strtotime($this->getTo()) + 60 * 60 * 24),
                 'date' => true, // specifies conversion of comparison values
             )
             )
-            ->addFieldToFilter('order.status', 'complete')
+            ->addFieldToFilter('order_history.status', 'complete')
         ;
 
         $invoices->getSelect()
 
+			
+            
             ->joinLeft(
                 'sales_flat_order as order',
                 'order.entity_id = main_table.order_id',
@@ -57,7 +59,16 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                     'applied_rule_ids'    => 'applied_rule_ids',
                     'coupon_rule_name'    => 'coupon_rule_name'
                 )
+            )
+            
+            ->joinLeft(
+                'sales_flat_order_status_history as order_history',
+                'order_history.parent_id = order.entity_id',
+                array(
+                    'order_completed_at'    => 'created_at'
+                )
             );
+            
    
             $invoices->getSelect()->joinLeft(
                 'ocm_peachtree_referer as referer',
@@ -71,6 +82,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 array(
                     'ship_region' => 'region')
             );
+            
+            $invoices->getSelect()->group('order.entity_id');
+            //die();
                  /*     
                  $invoices->getSelect()->joinInner(
                     'sales_flat_shipment_track as shipment_track',
@@ -82,7 +96,6 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
         foreach ($invoices as $invoice) {
             
             $shipTime = false;
-            
             //$items = $invoice->getAllItems();
             $items = Mage::getResourceModel('sales/order_invoice_item_collection')
                 ->addFieldToFilter('main_table.parent_id',$invoice->getId())
@@ -106,6 +119,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
                 )
             ;
+            //echo $items->getSelect();
             
             $has_points_line = false;
             
@@ -190,6 +204,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             }
             
             $i = 1;
+            
             foreach($items as $item) {
             	$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
             	if ($orderItem->getParentItemId())
@@ -275,7 +290,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 
             }
         }
-                
+        //die(); 
         return $csv;
     }
 
