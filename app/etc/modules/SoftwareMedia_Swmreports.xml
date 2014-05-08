@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config>
 	<modules>
-		<SoftwareMedia_Reports>
+		<SoftwareMedia_Swmreports>
 			<active>true</active>
 			<codePool>local</codePool>
 			<depends>
@@ -9,6 +9,6 @@
 				<Mage_Admin/>
 				<Mage_Catalog/>
 			</depends>
-		</SoftwareMedia_Reports>
+		</SoftwareMedia_Swmreports>
 	</modules>
 </config>

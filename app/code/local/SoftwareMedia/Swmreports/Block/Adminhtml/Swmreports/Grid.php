@@ -11,11 +11,11 @@
  *
  * @author david
  */
-class SoftwareMedia_Reports_Block_Adminhtml_Reports_Grid extends Mage_Adminhtml_Block_Report_Grid {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports_Grid extends Mage_Adminhtml_Block_Report_Grid {
 
 	public function __construct() {
 		parent::__construct();
-		$this->setId('reportsGrid');
+		$this->setId('swmreportsGrid');
 		$this->setDefaultSort('sku');
 		$this->setDefaultDir('ASC');
 		$this->setSaveParametersInSession(true);
@@ -24,21 +24,21 @@ class SoftwareMedia_Reports_Block_Adminhtml_Reports_Grid extends Mage_Adminhtml_
 
 	protected function _prepareCollection() {
 		parent::_prepareCollection();
-		$this->getCollection()->initReport('SoftwareMedia/reports');
+		$this->getCollection()->initReport('SoftwareMedia/swmreports');
 		return $this;
 	}
 
 	protected function _prepareColumns() {
 		$this->addColumn('SKU', array(
-			'header' => Mage::helper('reports')->__('SKU'),
+			'header' => Mage::helper('swmreports')->__('SKU'),
 			'index' => 'sku',
 		));
 		$this->addColumn('SKU', array(
-			'header' => Mage::helper('reports')->__('SKU'),
+			'header' => Mage::helper('swmreports')->__('SKU'),
 			'index' => 'sku',
 		));
 		$this->addColumn('SKU', array(
-			'header' => Mage::helper('reports')->__('SKU'),
+			'header' => Mage::helper('swmreports')->__('SKU'),
 			'index' => 'sku',
 		));
 		$this->addExportType('*/*/exportCsv', Mage::helper('reports')->__('CSV'));

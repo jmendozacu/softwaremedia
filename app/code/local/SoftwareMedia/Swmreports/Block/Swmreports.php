@@ -11,17 +11,17 @@
  *
  * @author david
  */
-class SoftwareMedia_Reports_Block_Reports extends Mage_Core_Block_Template {
+class SoftwareMedia_Swmreports_Block_Swmreports extends Mage_Core_Block_Template {
 
 	public function _prepareLayout() {
 		parent::_prepareLayout();
 	}
 
 	public function getReports() {
-		if (!$this->hasData('reports')) {
-			$this->setData('reports', Mage::registry('reports'));
+		if (!$this->hasData('swmreports')) {
+			$this->setData('swmreports', Mage::registry('swmreports'));
 		}
-		return $this->getData('reports');
+		return $this->getData('swmreports');
 	}
 
 }

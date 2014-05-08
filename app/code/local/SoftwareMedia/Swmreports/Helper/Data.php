@@ -11,6 +11,6 @@
  *
  * @author david
  */
-class SoftwareMedia_Reports_Helper_Data extends Mage_Core_Helper_Abstract {
+class SoftwareMedia_Swmreports_Helper_Data extends Mage_Core_Helper_Abstract {
 
 }

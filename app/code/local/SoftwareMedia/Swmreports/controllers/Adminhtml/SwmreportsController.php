@@ -11,7 +11,7 @@
  *
  * @author david
  */
-class SoftwareMedia_Reports_Adminhtml_ReportsController extends Mage_Adminhtml_Controller_Action {
+class SoftwareMedia_Swmreports_Adminhtml_SwmreportsController extends Mage_Adminhtml_Controller_Action {
 
 	public function __construct() {
 		die('test');

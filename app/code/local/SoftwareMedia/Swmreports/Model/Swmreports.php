@@ -11,7 +11,7 @@
  *
  * @author david
  */
-class SoftwareMedia_Reports_Model_Reports extends Mage_Reports_Model_Mysql4_Product_Collection {
+class SoftwareMedia_Swmreports_Model_Swmreports extends Mage_Reports_Model_Mysql4_Product_Collection {
 
 	function __construct() {
 		parent::__construct();

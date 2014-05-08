@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 	<modules>
-		<SoftwareMedia_Reports>
+		<SoftwareMedia_Swmreports>
 			<version>0.1.0.1</version>
-		</SoftwareMedia_Reports>
+		</SoftwareMedia_Swmreports>
 	</modules>
 	<global>
 		<resources>
-			<SoftwareMedia_Reports_setup>
+			<SoftwareMedia_Swmreports_setup>
 				<setup>
-					<module>SoftwareMedia_Reports</module>
+					<module>SoftwareMedia_Swmreports</module>
 				</setup>
 				<connection>
 					<use>core_setup</use>
 				</connection>
-			</SoftwareMedia_Reports_setup>
+			</SoftwareMedia_Swmreports_setup>
 		</resources>
 	</global>
 	<admin>
@@ -22,8 +22,8 @@
 			<reports>
 				<use>admin</use>
 				<args>
-					<module>SoftwareMedia_Reports</module>
-					<frontname>reports</frontname>
+					<module>SoftwareMedia_Swmreports</module>
+					<frontname>swmreports</frontname>
 				</args>
 			</reports>
 		</routers>
@@ -32,15 +32,15 @@
 		<menu>
 			<report>
 				<children>
-					<reports translate="title" module="reports">
+					<swmreports translate="title" module="swmreports">
 						<title>SoftwareMedia</title>
 						<children>
 							<manage_stock>
 								<title>Manage Stock No</title>
-								<action>reports/adminhtml_reports</action>
+								<action>swmreports/adminhtml_swmreports</action>
 							</manage_stock>
 						</children>
-					</reports>
+					</swmreports>
 				</children>
 			</report>
 		</menu>
@@ -53,10 +53,15 @@
 					<children>
 						<report>
 							<children>
-								<reports translate="title" module="reports">
+								<swmreports translate="title" module="swmreports">
 									<title>SoftwareMedia Reports</title>
-									<action>reports/adminhtml_reports</action>
-								</reports>
+									<children>
+										<manage_stock>
+											<title>Manage Stock No</title>
+											<action>swmreports/adminhtml_swmreports</action>
+										</manage_stock>
+									</children>
+								</swmreports>
 							</children>
 						</report>
 					</children>
@@ -65,48 +70,48 @@
 		</acl>
 		<layout>
 			<updates>
-				<reports>
-					<file>reports.xml</file>
-				</reports>
+				<swmreports>
+					<file>swmreports.xml</file>
+				</swmreports>
 			</updates>
 		</layout>
 	</adminhtml>
 	<global>
 		<models>
-			<reports>
-				<class>SoftwareMedia_Reports_Model</class>
-				<resourceModel>reports</resourceModel>
-			</reports>
+			<swmreports>
+				<class>SoftwareMedia_Swmreports_Model</class>
+				<resourceModel>swmreports</resourceModel>
+			</swmreports>
 		</models>
 		<resources>
-			<reports_setup>
+			<swmreports_setup>
 				<setup>
-					<module>SoftwareMedia_Reports</module>
+					<module>SoftwareMedia_Swmreports</module>
 				</setup>
 				<connection>
 					<use>core_setup</use>
 				</connection>
-			</reports_setup>
-			<reports_write>
+			</swmreports_setup>
+			<swmreports_write>
 				<connection>
 					<use>core_write</use>
 				</connection>
-			</reports_write>
-			<reports_read>
+			</swmreports_write>
+			<swmreports_read>
 				<connection>
 					<use>core_read</use>
 				</connection>
-			</reports_read>
+			</swmreports_read>
 		</resources>
 		<blocks>
-			<reports>
-				<class>SoftwareMedia_Reports_Block</class>
-			</reports>
+			<swmreports>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</swmreports>
 		</blocks>
 		<helpers>
-			<reports>
-				<class>SoftwareMedia_Reports_Helper</class>
-			</reports>
+			<swmreports>
+				<class>SoftwareMedia_Swmreports_Helper</class>
+			</swmreports>
 		</helpers>
 	</global>
 </config>

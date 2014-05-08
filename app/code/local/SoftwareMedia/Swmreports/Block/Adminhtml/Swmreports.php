@@ -11,12 +11,12 @@
  *
  * @author david
  */
-class SoftwareMedia_Reports_Block_Adminhtml_Reports extends Mage_Adminhtml_Block_Widget_Grid_Container {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports extends Mage_Adminhtml_Block_Widget_Grid_Container {
 
 	public function __construct() {
-		$this->_controller = 'adminhtml_reports';
-		$this->_blockGroup = 'reports';
-		$this->_headerText = Mage::helper('reports')->__('SoftwareMedia Report');
+		$this->_controller = 'adminhtml_swmreports';
+		$this->_blockGroup = 'swmreports';
+		$this->_headerText = Mage::helper('swmreports')->__('SoftwareMedia Report');
 		parent::__construct();
 		$this->_removeButton('add');
 	}
