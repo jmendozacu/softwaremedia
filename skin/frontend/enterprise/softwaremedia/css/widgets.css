@@ -40,10 +40,10 @@
 .widget .products-list { list-style:none; margin-bottom:0; padding-left:0; }
 .widget .add-to-links { list-style:none; padding-left:0; margin:5px 0; }
 
-/* Widget Banner */
-.widget-banner { height: 229px !important; clear:both; display:block; width:100%; overflow:hidden; text-align:center; }
+/* Widget Banner height: 229px !important;  */
+.widget-banner { clear:both; display:block; width:100%; overflow:hidden; text-align:center; }
 .widget-banner li { margin:7px 0; }
-.widget-banner ul, .widget-banner ul li, .widget-banner .caroufredsel_wrapper { height: 229px !important; }
+/* .widget-banner ul, .widget-banner ul li, .widget-banner .caroufredsel_wrapper { height: 229px !important; } */
 
 
 .top-container .widget-banner li { margin:0; }
