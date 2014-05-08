@@ -13,18 +13,13 @@
  */
 class SoftwareMedia_Swmreports_Adminhtml_SwmreportsController extends Mage_Adminhtml_Controller_Action {
 
-	public function __construct() {
-		die('test');
-	}
-
 	protected function _initAction() {
 		$this->loadLayout();
 		return $this;
 	}
 
 	public function indexAction() {
-		die('test');
-//		$this->_initAction()->renderLayout();
+		$this->_initAction()->renderLayout();
 	}
 
 	public function exportCsvAction() {

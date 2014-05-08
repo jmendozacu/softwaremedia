@@ -16,7 +16,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports extends Mage_Adminhtml
 	public function __construct() {
 		$this->_controller = 'adminhtml_swmreports';
 		$this->_blockGroup = 'swmreports';
-		$this->_headerText = Mage::helper('swmreports')->__('SoftwareMedia Report');
+		$this->_headerText = Mage::helper('swmreports')->__('Manage Stock No Report');
 		parent::__construct();
 		$this->_removeButton('add');
 	}
