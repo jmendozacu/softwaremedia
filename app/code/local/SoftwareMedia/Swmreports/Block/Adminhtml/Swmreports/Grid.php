@@ -23,33 +23,21 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports_Grid extends Mage_Admi
 	}
 
 	protected function _prepareCollection() {
-		if ($this->getRequest()->getParam('website')) {
-			$storeIds = Mage::app()->getWebsite($this->getRequest()->getParam('website'))->getStoreIds();
-			$storeId = array_pop($storeIds);
-		} else if ($this->getRequest()->getParam('group')) {
-			$storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
-			$storeId = array_pop($storeIds);
-		} else if ($this->getRequest()->getParam('store')) {
-			$storeId = (int) $this->getRequest()->getParam('store');
-		} else {
-			$storeId = '';
-		}
 
 		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('name')
+			->addAttributeToSelect('brand')
+			->addAttributeToSelect('attribute_set_id')
 			->addAttributeToFilter('status', array('eq' => '1'))
 			->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.use_config_manage_stock=1 or {{table}}.manage_stock=1')
-			->joinAttribute('brand', 'catalog_product/brand', 'entity_id', null, 'left', $storeId)
-			->setStoreId($storeId)
-			->setOrder('sku', Varien_Data_Collection::SORT_ORDER_ASC)
 		;
-
-		if ($storeId) {
-			$collection->addStoreFilter($storeId);
-		}
 
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
+	}
+
+	public function toOptionHash($valueField = 'id', $labelField = 'name') {
+		return $this->_toOptionHash($valueField, $labelField);
 	}
 
 	protected function _prepareColumns() {
@@ -59,10 +47,38 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports_Grid extends Mage_Admi
 			'index' => 'sku'
 		));
 
+		$sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
+			->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
+			->load()
+			->toOptionHash();
+
+		$this->addColumn('set_name', array(
+			'header' => Mage::helper('catalog')->__('Attrib. Set Name'),
+			'width' => '100px',
+			'index' => 'attribute_set_id',
+			'type' => 'options',
+			'options' => $sets,
+		));
+
+		$valuesCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+			->setAttributeFilter(1031)
+			->setStoreFilter(0)
+			->load();
+
+		$propOptions = array();
+		if ($valuesCollection->getSize() > 0) {
+			foreach ($valuesCollection as $item) {
+				$propOptions[$item->getId()] = $item->getValue();
+			}
+		}
+
 		$this->addColumn('brand', array(
 			'header' => Mage::helper('swmreports')->__('Product Brand'),
-			'index' => 'brand'
+			'index' => 'brand',
+			'type' => 'options',
+			'options' => $propOptions,
 		));
+
 		$this->addColumn('name', array('header' => Mage::helper('swmreports')->__('Product Name'),
 			'index' => 'name'
 		));
@@ -86,10 +102,9 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports_Grid extends Mage_Admi
 			'index' => 'id',
 		));
 
-		$this->addExportType('*/*/exportCsv', Mage::helper('swmreports')->__('CSV'));
-		$this->addExportType('*/*/exportXml', Mage::helper('swmreports')->__('XML'));
-		parent::_prepareColumns(
-		);
+//		$this->addExportType('*/*/exportCsv', Mage::helper('swmreports')->__('CSV'));
+//		$this->addExportType('*/*/exportXml', Mage::helper('swmreports')->__('XML'));
+		parent::_prepareColumns();
 	}
 
 	public function getRowUrl($item) {

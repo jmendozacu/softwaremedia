@@ -22,12 +22,19 @@ class SoftwareMedia_Swmreports_Adminhtml_SwmreportsController extends Mage_Admin
 		$this->_initAction()->renderLayout();
 	}
 
+	/**
+	 * Export order grid to CSV format
+	 */
 	public function exportCsvAction() {
-		// TODO
+		$fileName = 'products.csv';
+		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_swmreports');
+		$this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
 	}
 
 	public function exportXmlAction() {
-		// TODO
+		$fileName = 'products.xml';
+		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_swmreports');
+		$this->_prepareDownloadResponse($fileName, $grid->getExcelFile($fileName));
 	}
 
 }
