@@ -59,7 +59,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 )
             )
             ->joinLeft(
-        array('shistory' => new Zend_Db_Expr( '(SELECT created_at as history_complete, parent_id as parent_id FROM sales_flat_order_status_history AS ohist WHERE ohist.status = "complete" ORDER BY created_at ASC LIMIT 1)')),
+        array('shistory' => new Zend_Db_Expr( '(SELECT created_at as history_complete, parent_id as parent_id FROM sales_flat_order_status_history AS ohist WHERE ohist.status = "complete"  GROUP BY parent_id ORDER BY created_at DESC)')),
         'shistory.parent_id = order.entity_id'
 			);
             
