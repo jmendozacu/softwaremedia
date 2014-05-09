@@ -11,7 +11,8 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         'rocketmail.com', 
         'earthlink.net', 
         'aol.com', 
-        'live.com'
+        'live.com',
+        'dr.com'
     );
     protected $_allowShippingMethod = array(
         'EUROPE_FIRST_INTERNATIONAL_PRIORITY',
@@ -36,9 +37,17 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         $customerEmail = $order->getCustomerEmail();
         $collection = Mage::getModel('sales/order')->getCollection();
         $customerOrders = $collection->addFieldToFilter('customer_email',$customerEmail)->addFieldToFilter('status', 'complete');
+        
+        $pos = strpos($customerEmail,'@');
+        $maildomain = substr($customerEmail,$pos+1);
+        if ($maildomain = 'dr.com')
+        	return "Fraud Detection: Blacklist e-mail";
+        	
         if ($customerOrders->getSize()>0)
         	return false;
-        	
+        else
+        	return "Fraud Detection: First time order, please review";
+        		
 		Mage::getSingleton('core/session', array('name' => 'adminhtml')); 
 		$session = Mage::getSingleton('admin/session'); 
 		if ( $session->isLoggedIn() ){ 
