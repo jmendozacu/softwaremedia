@@ -12,7 +12,9 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         'earthlink.net', 
         'aol.com', 
         'live.com',
-        'dr.com'
+        'dr.com',
+        'engineer.com',
+        'mail.com'
     );
     protected $_allowShippingMethod = array(
         'EUROPE_FIRST_INTERNATIONAL_PRIORITY',
@@ -40,7 +42,7 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         
         $pos = strpos($customerEmail,'@');
         $maildomain = substr($customerEmail,$pos+1);
-        if ($maildomain = 'dr.com')
+        if ($maildomain == 'dr.com')
         	return "Fraud Detection: Blacklist e-mail";
         	
         if ($customerOrders->getSize()>0)
