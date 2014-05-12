@@ -476,7 +476,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
 						$row[$field] = $value;
 						break;
 					case 'image':
-						$row[$field] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'catalog/product/' . trim($value,'/');
+						$row[$field] = 'http://www.softwaremedia.com/catalog/product/' . trim($value,'/');
 						break;
 					default:
 						$row[$field] = $value;
