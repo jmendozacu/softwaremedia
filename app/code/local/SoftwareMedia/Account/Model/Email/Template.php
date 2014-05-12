@@ -48,10 +48,10 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 
 		$variables['email'] = reset($emails);
 		$variables['name'] = reset($names);
-		
-		
-	
-			
+
+
+
+
 		$mail = $this->getMail();
 
 		$dev = Mage::helper('smtppro')->getDevelopmentMode();
@@ -100,8 +100,8 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 		}
 		try {
 			$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
-		} catch(Exception $e) {
-			
+		} catch (Exception $e) {
+
 		}
 		// If we are using store emails as reply-to's set the header
 		// Check the header is not already set by the application.
@@ -119,10 +119,10 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 			}
 			Mage::log('ReplyToStoreEmail is enabled, just set Reply-To header: ' . $this->getSenderEmail());
 		}
-		
+
 		//Clone mail to use default sender if sending w/ user Office 365 fails
 		$cloneMail = clone $mail;
-		
+
 		$helper = Mage::helper('smtppro');
 		$transport = $helper->getTransport($this->getDesignConfig()->getStore());
 		$configs = $helper->getConfigs();
@@ -131,12 +131,12 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 		} else {
 			$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
 		}
-		
+
 		$transportNoOffice = $helper->getTransportNoOffice($this->getDesignConfig()->getStore());
 		$configsNoOffice = $helper->getConfigs();
 
-		
-		
+
+
 		if (!empty($configsNoOffice) && $this->getSenderEmail() != $configsNoOffice['username']) {
 			$cloneMail->setFrom($configsNoOffice['username'], $this->getSenderName());
 		} else {
@@ -144,9 +144,10 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 		}
 		$this->setData('error', "");
 		try {
+			$mailObject = serialize($mail);
 
 			Mage::log('About to send email');
-			$mail->send($transport); // Zend_Mail warning..
+			Mage::helper('smtppro')->asyncRequest(Mage::getBaseUrl() . 'smtppro/async/mail/', array('mail_object' => $mailObject, 'website_model_id' => $this->getDesignConfig()->getStore()));
 			Mage::log('Finished sending email');
 
 			// Record one email for each receipient
@@ -166,10 +167,8 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 				Mage::logException($e);
 				Mage::log('About to resend email');
 				$cloneMail->send($transportNoOffice); // Zend_Mail warning..
-				Mage::log('Finished resending email');	
+				Mage::log('Finished resending email');
 				//Mage::logException($er);
-				
-				
 			} catch (Exception $er) {
 				Mage::log('Error: ' . $er->getMessage());
 				Mage::logException($er);
