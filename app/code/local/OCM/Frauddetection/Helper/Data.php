@@ -47,8 +47,8 @@ class OCM_Frauddetection_Helper_Data extends Mage_Core_Helper_Abstract
         	
         if ($customerOrders->getSize()>0)
         	return false;
-        //else
-        	//return "Fraud Detection: First time order, please review";
+        else
+        	return "Fraud Detection: First time order, please review";
         		
 		Mage::getSingleton('core/session', array('name' => 'adminhtml')); 
 		$session = Mage::getSingleton('admin/session'); 
