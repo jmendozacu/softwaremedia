@@ -10,7 +10,7 @@
 <config>
 	<modules>
 		<Aschroder_SMTPPro>
-			<version>1.4.3.1</version>
+			<version>1.4.5</version>
 		</Aschroder_SMTPPro>
 	</modules>
 	<frontend>
@@ -43,6 +43,9 @@
 			<smtppro_mysql4>
 				<class>Aschroder_SMTPPro_Model_Mysql4</class>
 				<entities>
+					<queue>
+						<table>smtppro_async_queue</table>
+					</queue>
 					<email_log>
 						<table>smtppro_email_log</table>
 					</email_log>
@@ -56,6 +59,7 @@
 			<core>
 				<rewrite>
 					<email>Aschroder_SMTPPro_Model_Email</email>
+					<email_template>Aschroder_SMTPPro_Model_Email_Template</email_template>
 				</rewrite>
 			</core>
 		</models>
@@ -113,13 +117,6 @@
 					<children>
 						<system>
 							<children>
-								<tools>
-									<children>
-										<smtppro>
-											<title>Email Logs</title>
-										</smtppro>
-									</children>
-								</tools>
 								<config>
 									<children>
 										<smtppro>
