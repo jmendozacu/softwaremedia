@@ -11,7 +11,6 @@ class OCM_Fulfillment_Model_Observer {
 	const TAG_DOWNLOAD_ID = 3;
 	const TAG_CS = 4;
 	const TAG_SUB = 29;
-	const TAG_PRIORITY = 31;
 
 	public function evaluateOrdersDaily() {
 		$orders = Mage::getModel('sales/order')->getCollection();
@@ -22,15 +21,12 @@ class OCM_Fulfillment_Model_Observer {
 		$oAitcheckoutfields = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
 
 		Mage::log('Warehouse 1', null, 'sort.log');
-		Mage::log('Preparing', null, 'ship.log');
 
 		foreach ($orders as $order) {
 
-			Mage::log('Order: ' . print_r($order, true), null, 'ship.log');
 			$orderHistory = Mage::getModel('sales/order_status_history')->getCollection()
 				->addFieldToFilter('parent_id', $order->getId())
 				->addFieldToFilter('status', array('complete', 'closed'));
-			Mage::log('Order History: ' . print_r($orderHistory, true), null, 'ship.log');
 
 			if (count($orderHistory) > 0) {
 				Mage::log($order->getId(), null, 'fulfillment_observer.log');
@@ -42,9 +38,7 @@ class OCM_Fulfillment_Model_Observer {
 			$is_download = false;
 			$is_license = false;
 			$iStoreId = $order->getStoreId();
-			Mage::log('iStoreId: ' . print_r($iStoreId, true), null, 'ship.log');
 			$aCustomAtrrList = $oAitcheckoutfields->getOrderCustomData($order->getId(), $iStoreId, true, true);
-			Mage::log('aCustomAttrList: ' . print_r($aCustomAtrrList, true), null, 'ship.log');
 			if ($aCustomAtrrList) {
 				foreach ($aCustomAtrrList as $aItem) {
 					if ($aItem['code'] == 'comment' && !empty($aItem['value'])) {
@@ -55,16 +49,6 @@ class OCM_Fulfillment_Model_Observer {
 			}
 
 			$shippingMethod = $order->getShippingMethod();
-			Mage::log('Shipping Method: ' . $shippingMethod, null, 'ship.log');
-
-			if (stripos($shippingMethod, 'Expedited_Processing') > -1 || stripos($shippingMethod, 'Overnight') > -1 || stripos($shippingMethod, 'Overnight_Saturday') > -1 || stripos($shippingMethod, 'Priority_Overnight') > -1 || stripos($shippingMethod, 'Standard_Overnight') > -1) {
-				try {
-					$tagToOrderResource->addIntoDB($order->getId(), self::TAG_PRIORITY);
-				} catch (Exception $e) {
-					Mage::log('Unable to add priority tag to ' . $order->getId(), null, 'ship.log');
-					Mage::log($e->getTraceAsString(), null, 'ship.log');
-				}
-			}
 
 			$items = $order->getAllItems();
 			foreach ($items as $item) {
