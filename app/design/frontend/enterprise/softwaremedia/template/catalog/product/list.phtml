@@ -176,6 +176,7 @@ $_product = $this->getProduct();
 			<?php $_columnCount = $this->getColumnCount(); ?>
 			<?php $i = 0;
 			foreach ($_productCollection as $_product): ?>
+				<?php $_product = Mage::getModel('catalog/product')->load($_product->getId()); ?>
 					<?php $msrp = $_product->getMsrp(); ?>
 					<?php if ($i++ % $_columnCount == 0): ?>
 					<ul class="products-grid">
