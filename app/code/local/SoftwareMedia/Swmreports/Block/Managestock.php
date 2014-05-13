@@ -11,17 +11,17 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Swmreports extends Mage_Core_Block_Template {
+class SoftwareMedia_Swmreports_Block_Managestock extends Mage_Core_Block_Template {
 
 	public function _prepareLayout() {
 		parent::_prepareLayout();
 	}
 
 	public function getReports() {
-		if (!$this->hasData('swmreports')) {
-			$this->setData('swmreports', Mage::registry('swmreports'));
+		if (!$this->hasData('managestock')) {
+			$this->setData('managestock', Mage::registry('managestock'));
 		}
-		return $this->getData('swmreports');
+		return $this->getData('managestock');
 	}
 
 }

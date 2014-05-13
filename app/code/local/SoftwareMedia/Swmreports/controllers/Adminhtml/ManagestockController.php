@@ -11,7 +11,7 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Adminhtml_SwmreportsController extends Mage_Adminhtml_Controller_Action {
+class SoftwareMedia_Swmreports_Adminhtml_ManagestockController extends Mage_Adminhtml_Controller_Action {
 
 	protected function _initAction() {
 		$this->loadLayout();
@@ -26,14 +26,14 @@ class SoftwareMedia_Swmreports_Adminhtml_SwmreportsController extends Mage_Admin
 	 * Export order grid to CSV format
 	 */
 	public function exportCsvAction() {
-		$fileName = 'products.csv';
-		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_swmreports');
+		$fileName = 'manage_stock.csv';
+		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_managestock');
 		$this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
 	}
 
 	public function exportXmlAction() {
-		$fileName = 'products.xml';
-		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_swmreports');
+		$fileName = 'manage_stock.xml';
+		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_managestock');
 		$this->_prepareDownloadResponse($fileName, $grid->getExcelFile($fileName));
 	}
 

@@ -11,12 +11,12 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports extends Mage_Adminhtml_Block_Widget_Grid_Container {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Managestock extends Mage_Adminhtml_Block_Widget_Grid_Container {
 
 	public function __construct() {
-		$this->_controller = 'adminhtml_swmreports';
-		$this->_blockGroup = 'swmreports';
-		$this->_headerText = Mage::helper('swmreports')->__('Manage Stock No Report');
+		$this->_controller = 'adminhtml_managestock';
+		$this->_blockGroup = 'managestock';
+		$this->_headerText = Mage::helper('managestock')->__('Manage Stock No Report');
 		parent::__construct();
 		$this->_removeButton('add');
 	}

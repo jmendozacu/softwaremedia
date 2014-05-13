@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<SoftwareMedia_Swmreports>
-			<version>0.1.0.4</version>
+			<version>0.1.0.5</version>
 		</SoftwareMedia_Swmreports>
 	</modules>
 	<global>
@@ -37,7 +37,7 @@
 						<children>
 							<manage_stock>
 								<title>Manage Stock No</title>
-								<action>swmreports/adminhtml_swmreports</action>
+								<action>swmreports/adminhtml_managestock</action>
 							</manage_stock>
 						</children>
 					</swmreports>
@@ -58,7 +58,7 @@
 									<children>
 										<manage_stock>
 											<title>Manage Stock No</title>
-											<action>swmreports/adminhtml_swmreports</action>
+											<action>swmreports/adminhtml_managestock</action>
 										</manage_stock>
 									</children>
 								</swmreports>
@@ -70,19 +70,13 @@
 		</acl>
 		<layout>
 			<updates>
-				<swmreports>
-					<file>swmreports.xml</file>
-				</swmreports>
+				<managestock>
+					<file>managestock.xml</file>
+				</managestock>
 			</updates>
 		</layout>
 	</adminhtml>
 	<global>
-		<models>
-			<swmreports>
-				<class>SoftwareMedia_Swmreports_Model</class>
-				<resourceModel>swmreports</resourceModel>
-			</swmreports>
-		</models>
 		<resources>
 			<swmreports_setup>
 				<setup>
@@ -107,11 +101,17 @@
 			<swmreports>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</swmreports>
+			<managestock>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</managestock>
 		</blocks>
 		<helpers>
 			<swmreports>
 				<class>SoftwareMedia_Swmreports_Helper</class>
 			</swmreports>
+			<managestock>
+				<class>SoftwareMedia_Swmreports_Helper</class>
+			</managestock>
 		</helpers>
 	</global>
 </config>

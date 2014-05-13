@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<layout version="0.1.0">
-	<swmreports_adminhtml_swmreports_index>
-		<reference name="content">
-			<block type="swmreports/adminhtml_swmreports" name="swmreports" />
-		</reference>
-	</swmreports_adminhtml_swmreports_index>
-</layout>

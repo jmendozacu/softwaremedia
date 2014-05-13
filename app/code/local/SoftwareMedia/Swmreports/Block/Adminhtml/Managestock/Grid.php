@@ -11,11 +11,11 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports_Grid extends Mage_Adminhtml_Block_Widget_Grid {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Managestock_Grid extends Mage_Adminhtml_Block_Widget_Grid {
 
 	public function __construct() {
 		parent::__construct();
-		$this->setId('swmreportsGrid');
+		$this->setId('managestockGrid');
 		$this->setDefaultSort('sku');
 		$this->setDefaultDir('ASC');
 		$this->setSaveParametersInSession(true);
@@ -43,7 +43,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports_Grid extends Mage_Admi
 	protected function _prepareColumns() {
 
 		$this->addColumn('sku', array(
-			'header' => Mage::helper('swmreports')->__('Product SKU'),
+			'header' => Mage::helper('managestock')->__('Product SKU'),
 			'index' => 'sku'
 		));
 
@@ -73,13 +73,13 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Swmreports_Grid extends Mage_Admi
 		}
 
 		$this->addColumn('brand', array(
-			'header' => Mage::helper('swmreports')->__('Product Brand'),
+			'header' => Mage::helper('managestock')->__('Product Brand'),
 			'index' => 'brand',
 			'type' => 'options',
 			'options' => $propOptions,
 		));
 
-		$this->addColumn('name', array('header' => Mage::helper('swmreports')->__('Product Name'),
+		$this->addColumn('name', array('header' => Mage::helper('managestock')->__('Product Name'),
 			'index' => 'name'
 		));
 
