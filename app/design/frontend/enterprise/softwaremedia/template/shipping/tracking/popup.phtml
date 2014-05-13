@@ -54,15 +54,29 @@
                     </tr>
                     <?php endif; ?>
                     <?php if($track->getErrorMessage()): ?>
-                    <tr>
-                        <th class="label"><?php echo $this->__('Error:'); ?></th>
-                        <td class="error"><?php echo $this->__('Tracking information is currently not available. Please '); if ($this->getContactUsEnabled()) : ?><a href="<?php echo $this->getContactUs() ?>" title="<?php echo $this->__('contact us') ?>" onclick="this.target='_blank'"><?php echo $this->__('contact us') ?></a><?php echo $this->__(' for more information or '); endif; echo $this->__('email us at '); ?><a href="mailto:<?php echo $this->getStoreSupportEmail() ?>"><?php echo $this->getStoreSupportEmail() ?></a></td>
-                    </tr>
-                    <?php elseif($track->getTrackSummary()): ?>
+                    	<?php if ($track->getCarrier() == 'usps'): ?>
+                    	<tr>
+	                        <th class="label"><?php echo $this->__('Link:'); ?></th>
+	                        <td class="value"><a href="https://www.fedex.com/fedextrack/index.html?tracknumbers=<?php echo $track->getTracking(); ?>" onclick="this.target='_blank'">Please click here to track your order externally.</a></td>
+	                    </tr>
+
+                    	<?php elseif ($track->getCarrier() == 'fedex'): ?>
+                    	<tr>
+	                        <th class="label"><?php echo $this->__('Link:'); ?></th>
+	                        <td class="value">Unable to get tracking information. Click here to <a href="https://www.fedex.com/fedextrack/index.html?tracknumbers=<?php echo $track->getTracking(); ?>" onclick="this.target='_blank'">track your order externally.</a></td>
+	                    </tr>
+                    	<?php else: ?>
+	                    <tr>
+	                        <th class="label"><?php echo $this->__('Error:'); ?></th>
+	                        <td class="error"><?php echo $this->__('Tracking information is currently not available. Please '); if ($this->getContactUsEnabled()) : ?><a href="<?php echo $this->getContactUs() ?>" title="<?php echo $this->__('contact us') ?>" onclick="this.target='_blank'"><?php echo $this->__('contact us') ?></a><?php echo $this->__(' for more information or '); endif; echo $this->__('email us at '); ?><a href="mailto:<?php echo $this->getStoreSupportEmail() ?>"><?php echo $this->getStoreSupportEmail() ?></a></td>
+	                    </tr>
+	                     <?php endif; ?>
+	                    <?php elseif($track->getTrackSummary()): ?>
                     <tr>
                         <th class="label"><?php echo $this->__('Info:'); ?></th>
                         <td class="value"><?php echo $track->getTrackSummary(); ?></td>
                     </tr>
+                   
                     <?php elseif($track->getUrl()): ?>
                     <tr>
                         <th class="label"><?php echo $this->__('Track:'); ?></th>
