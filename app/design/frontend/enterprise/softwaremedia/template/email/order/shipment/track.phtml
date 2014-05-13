@@ -54,7 +54,11 @@
 						if (strcasecmp($carrier, 'fedex') == 0) {
 							echo '<a href="https://www.fedex.com/fedextrack/?tracknumbers=' . $_item->getNumber() . '">', $this->escapeHtml($_item->getNumber()), '</a>';
 						} elseif (strcasecmp($carrier, 'usps') == 0) {
-							echo '<a href="https://tools.usps.com/go/TrackConfirmAction.action?tRef=fullpage&tLc=1&tLabels=' . $_item->getNumber() . '">', $this->escapeHtml($_item->getNumber()), '</a>';
+							if (strlen($_item->getNumber()) > 21)
+								echo '<a href="https://www.fedex.com/fedextrack/?tracknumbers=' . $_item->getNumber() . '">', $this->escapeHtml($_item->getNumber()), '</a>';
+							else
+								echo '<a href="https://tools.usps.com/go/TrackConfirmAction.action?tRef=fullpage&tLc=1&tLabels=' . $_item->getNumber() . '">', $this->escapeHtml($_item->getNumber()), '</a>';
+								
 						} else {
 							echo $this->escapeHtml($_item->getNumber());
 						}
