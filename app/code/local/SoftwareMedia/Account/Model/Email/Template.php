@@ -7,7 +7,7 @@
  *
  * @author Ashley Schroder (aschroder.com)
  */
-class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_Template {
+class SoftwareMedia_Account_Model_Email_Template extends Aschroder_SMTPPro_Model_Email_Template {
 
 	public function __construct() {
 		parent::__construct();
@@ -15,6 +15,7 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 		$this->setData('configs');
 	}
 
+	/*
 	public function send($email, $name = null, array $variables = array()) {
 
 		// If it's not enabled, just return the parent result.
@@ -180,5 +181,6 @@ class SoftwareMedia_Account_Model_Email_Template extends Mage_Core_Model_Email_T
 
 		return true;
 	}
+	*/
 
 }
