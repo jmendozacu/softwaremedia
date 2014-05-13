@@ -29,8 +29,9 @@ $_product = $this->getProduct();
 			<?php $_iterator = 0; ?>
 		    <ol class="products-list" id="products-list">
 				<?php foreach ($_productCollection as $_product): ?>
+					
 					<?php $msrp = $_product->getMsrp(); ?>
-					<?php $_product = Mage::getModel('catalog/product')->load($_product->getId()); ?>
+					<?php //$_product = Mage::getModel('catalog/product')->load($_product->getId()); ?>
 			        <li class="item<?php if (++$_iterator == sizeof($_productCollection)): ?> last<?php endif; ?>">
 						<?php // Product Image ?>
 			            <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(335); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
@@ -176,7 +177,7 @@ $_product = $this->getProduct();
 			<?php $_columnCount = $this->getColumnCount(); ?>
 			<?php $i = 0;
 			foreach ($_productCollection as $_product): ?>
-				<?php $_product = Mage::getModel('catalog/product')->load($_product->getId()); ?>
+				<?php //$_product = Mage::getModel('catalog/product')->load($_product->getId()); ?>
 					<?php $msrp = $_product->getMsrp(); ?>
 					<?php if ($i++ % $_columnCount == 0): ?>
 					<ul class="products-grid">

@@ -43,10 +43,12 @@ class OrganicInternet_SimpleConfigurableProducts_Catalog_Model_Product_Type_Conf
    			$sp = Mage::getModel('catalog/product')->load($sp->getValue());
    			
    			if ($sp->getSpecialPrice() != '')
-   				$product->setFinalPrice($sp->getSpecialPrice());
+   				$p = $sp->getSpecialPrice();
    			else
-   				$product->setFinalPrice($sp->getFinalPrice());
-   			return $product->getFinalPrice();
+   				$p = $sp->getFinalPrice();
+   				
+   			$product->setFinalPrice($p);
+   			return $p;
     	}
     	else {
 /*
@@ -106,7 +108,7 @@ class OrganicInternet_SimpleConfigurableProducts_Catalog_Model_Product_Type_Conf
         }
 
         $childProducts = $product->getTypeInstance(true)->getUsedProductCollection($product);
-        $childProducts->addAttributeToSelect(array('price', 'special_price', 'status', 'special_from_date', 'special_to_date'));
+        $childProducts->addAttributeToSelect(array('price', 'cpc_price', 'special_price', 'status', 'special_from_date', 'special_to_date'));
 
         if ($checkSalable) {
             $salableChildProducts = array();

@@ -7,7 +7,7 @@
  * @author     Jeff Losee
  */
  
-class SoftwareMedia_Substitution_Model_Catalog_Product extends Mage_Catalog_Model_Product
+class SoftwareMedia_Substitution_Model_Catalog_Product extends OCM_Price_Model_Catalog_Product
 {
 	const LINK_TYPE_SUBSTITUTION   = 6;
 	
