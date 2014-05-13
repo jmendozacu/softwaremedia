@@ -74,7 +74,21 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		} else {
 			$mail->setBodyHTML($text);
 		}
-
+		if ($variables['order']) {
+			$order = Mage::getModel('sales/order')->load($variables['order']->getIncrementId(), 'increment_id');
+			$comment = "E-Mail Sent (<a href='#'>View E-Mail</a>)";
+			$comment .= "<div style='display: none;'>";
+			$comment .= $text;
+			$comment .= "</div>";
+			$historyEmail = Mage::getModel('emailhistory/email');
+			$historyEmail->setOrderId($order->getId());
+			$historyEmail->setText($text);
+			$historyEmail->setEmail($email);
+			$historyEmail->setEmailName($variables['name']);
+			$historyEmail->setSubject($this->getProcessedTemplateSubject($variables));
+			$historyEmail->setCreatedAt(now());
+			$historyEmail->save();
+		}
 		$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
 		$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
 
