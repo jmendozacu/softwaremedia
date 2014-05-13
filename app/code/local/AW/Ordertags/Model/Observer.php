@@ -1,4 +1,5 @@
 <?php
+
 /**
  * aheadWorks Co.
  *
@@ -23,238 +24,230 @@
  * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
  * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
  */
+class AW_Ordertags_Model_Observer extends Mage_Core_Block_Abstract {
 
-class AW_Ordertags_Model_Observer extends Mage_Core_Block_Abstract
-{
-    const AW_COLLPUR_CONFIG_PATH = 'collpur/general/enable';
+	const AW_COLLPUR_CONFIG_PATH = 'collpur/general/enable';
 
-    /**
-     * Observing order status changes$orderId
-     *
-     * @param mixed $observer
-     */
-    public function orderStatusChanged($observer)
-    {
-        $order = $observer->getEvent()->getOrder();
-        if ($order->getStatus()) {
-            $objectToValidate = $this->_prepareToValidate($order);
-            Mage::getModel('ordertags/managetags')->validateObject($objectToValidate, $order);
+	/**
+	 * Observing order status changes$orderId
+	 *
+	 * @param mixed $observer
+	 */
+	public function orderStatusChanged($observer) {
+		$order = $observer->getEvent()->getOrder();
+		if ($order->getStatus()) {
+			$objectToValidate = $this->_prepareToValidate($order);
+			Mage::getModel('ordertags/managetags')->validateObject($objectToValidate, $order);
 
-            /*
-             * If order contains deals
-             * 1. Get order with similar deal ids
-             * 2. Re-validate them, but only if dealExtension is enabled
-             */
-            if (
-                Mage::helper('ordertags')->extensionEnabled('AW_Collpur', self::AW_COLLPUR_CONFIG_PATH)
-                && !Mage::registry('aw_collpur_close_as_failed')
-            ) { // AW_Collpur_Model_Deal->closeAsFailed
-                if ($this->_orderHasDealItems($order)) {
-                    $relatedOrders = $this->_getOrdersWithDeals($this->getDealItemIds(), $exclude = $order->getId());
-                    $this->revalidateOrders($relatedOrders);
-                }
-            }
-            /* *************************************************************** */
-        }
-    }
+			/*
+			 * If order contains deals
+			 * 1. Get order with similar deal ids
+			 * 2. Re-validate them, but only if dealExtension is enabled
+			 */
+			if (
+				Mage::helper('ordertags')->extensionEnabled('AW_Collpur', self::AW_COLLPUR_CONFIG_PATH) && !Mage::registry('aw_collpur_close_as_failed')
+			) { // AW_Collpur_Model_Deal->closeAsFailed
+				if ($this->_orderHasDealItems($order)) {
+					$relatedOrders = $this->_getOrdersWithDeals($this->getDealItemIds(), $exclude = $order->getId());
+					$this->revalidateOrders($relatedOrders);
+				}
+			}
+			/*			 * ************************************************************** */
+		}
+	}
 
-    /**
-     * Trigger "aw_collpur_deal_status_changed" Event
-     * Compatibility with Group Deals
-     */
-    public function dealStatusChanged($observer)
-    {
-        $orderIds = $this->_getOrdersWithDeals((array)$observer->getDeal()->getId());
-        $this->revalidateOrders($orderIds);
-    }
+	/**
+	 * Trigger "aw_collpur_deal_status_changed" Event
+	 * Compatibility with Group Deals
+	 */
+	public function dealStatusChanged($observer) {
+		$orderIds = $this->_getOrdersWithDeals((array) $observer->getDeal()->getId());
+		$this->revalidateOrders($orderIds);
+	}
 
-    /**
-     * @param array $orderIds
-     * return void
-     */
-    public function revalidateOrders($orderIds)
-    {
-        if (!empty($orderIds)) {
-            $relatedOrders = Mage::getModel('sales/order')->getCollection()->addFieldToFilter(
-                'entity_id', array('in' => $orderIds)
-            );
-            foreach ($relatedOrders as $relatedOrder) {
-                $objectToValidate = $this->_prepareToValidate($relatedOrder);
-                Mage::getModel('ordertags/managetags')->validateObject($objectToValidate, $relatedOrder);
-            }
-        }
-    }
+	/**
+	 * @param array $orderIds
+	 * return void
+	 */
+	public function revalidateOrders($orderIds) {
+		if (!empty($orderIds)) {
+			$relatedOrders = Mage::getModel('sales/order')->getCollection()->addFieldToFilter(
+				'entity_id', array('in' => $orderIds)
+			);
+			foreach ($relatedOrders as $relatedOrder) {
+				$objectToValidate = $this->_prepareToValidate($relatedOrder);
+				Mage::getModel('ordertags/managetags')->validateObject($objectToValidate, $relatedOrder);
+			}
+		}
+	}
 
-    private function _orderHasDealItems($order)
-    {
-        $dealIds = array();
-        foreach ($order->getAllItems() as $item) {
-            $buyRequest = Mage::helper('collpur')->getBuyRequest($item);
-            if ($buyRequest && $dealId = $buyRequest->getData('deal_id')) {
-                $dealIds[] = $dealId;
-            }
-        }
-        if (!empty($dealIds)) {
-            $this->setDealItemIds($dealIds);
-            return true;
-        }
+	private function _orderHasDealItems($order) {
+		$dealIds = array();
+		foreach ($order->getAllItems() as $item) {
+			$buyRequest = Mage::helper('collpur')->getBuyRequest($item);
+			if ($buyRequest && $dealId = $buyRequest->getData('deal_id')) {
+				$dealIds[] = $dealId;
+			}
+		}
+		if (!empty($dealIds)) {
+			$this->setDealItemIds($dealIds);
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /**
-     * @param array $dealIds
-     * @param array|string|boolean $excludeOrders
-     *
-     * @return array
-     *
-     */
-    private function _getOrdersWithDeals($dealIds, $excludeOrders = false)
-    {
-        if (!$dealIds) {
-            return array();
-        }
-        $excludeOrders = (array)$excludeOrders;
-        $dealIds = (array)$dealIds;
+	/**
+	 * @param array $dealIds
+	 * @param array|string|boolean $excludeOrders
+	 *
+	 * @return array
+	 *
+	 */
+	private function _getOrdersWithDeals($dealIds, $excludeOrders = false) {
+		if (!$dealIds) {
+			return array();
+		}
+		$excludeOrders = (array) $excludeOrders;
+		$dealIds = (array) $dealIds;
 
-        $purchases = Mage::getModel('collpur/dealpurchases')->getCollection()->addFieldToFilter(
-            'deal_id', array('in' => $dealIds)
-        );
+		$purchases = Mage::getModel('collpur/dealpurchases')->getCollection()->addFieldToFilter(
+			'deal_id', array('in' => $dealIds)
+		);
 
-        if ($excludeOrders) {
-            $purchases->addFieldToFilter('order_id', array('nin' => $excludeOrders));
-        }
+		if ($excludeOrders) {
+			$purchases->addFieldToFilter('order_id', array('nin' => $excludeOrders));
+		}
 
-        $orderIds = array();
-        foreach ($purchases as $purchase) {
-            $orderIds[] = $purchase->getOrderId();
-        }
+		$orderIds = array();
+		foreach ($purchases as $purchase) {
+			$orderIds[] = $purchase->getOrderId();
+		}
 
-        return array_unique($orderIds);
-    }
+		return array_unique($orderIds);
+	}
 
-    public function pageLoadBefore($observer)
-    {
-        $moduleDisabled = Mage::getStoreConfig('advanced/modules_disable_output/AW_Ordertags');
-        if (!$moduleDisabled) {
-            $node = Mage::getConfig()->getNode('global/blocks/adminhtml/rewrite');
-            $dnode = Mage::getConfig()->getNode('global/blocks/adminhtml/drewrite/sales_order_grid');
-            $node->appendChild($dnode);
-        }
-    }
+	public function pageLoadBefore($observer) {
+		$moduleDisabled = Mage::getStoreConfig('advanced/modules_disable_output/AW_Ordertags');
+		if (!$moduleDisabled) {
+			$node = Mage::getConfig()->getNode('global/blocks/adminhtml/rewrite');
+			$dnode = Mage::getConfig()->getNode('global/blocks/adminhtml/drewrite/sales_order_grid');
+			$node->appendChild($dnode);
+		}
+	}
 
-    private function _prepareToValidate($_order)
-    {
-        $orderItemTotal = 0;
-        $objToValidate = new Varien_Object();
-        $orderItems = $_order->getAllItems();
+	private function _prepareToValidate($_order) {
+		$orderItemTotal = 0;
+		$objToValidate = new Varien_Object();
+		$orderItems = $_order->getAllItems();
 
-        $skus = array();
-        foreach ($orderItems as $item) {
+		$skus = array();
+		foreach ($orderItems as $item) {
 
-            $orderItemTotal += $item->getQtyInvoiced();
+			$orderItemTotal += $item->getQtyInvoiced();
 
-            if ($item->getParentItem()) {
-                continue;
-            }
+			if ($item->getParentItem()) {
+				continue;
+			}
 
-            $skus[] = $item->getSku();
+			$skus[] = $item->getSku();
 
-            if ($item->getProductType() == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE) {
-                $this->_addConfProductSku($item, $skus);
-            }
-        }
+			if ($item->getProductType() == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE) {
+				$this->_addConfProductSku($item, $skus);
+			}
+		}
 
-        if (count($skus)) {
-            $objToValidate->setSku($skus);
-        }
+		if (count($skus)) {
+			$objToValidate->setSku($skus);
+		}
 
-        if (isset($orderItemTotal)) {
-            $objToValidate->setOrderItemsTotal($orderItemTotal);
-        }
+		if (isset($orderItemTotal)) {
+			$objToValidate->setOrderItemsTotal($orderItemTotal);
+		}
 
-        /* Import additional data from order */
-        $this->_importDataFromOrder($objToValidate, $_order);
+		/* Import additional data from order */
+		$this->_importDataFromOrder($objToValidate, $_order);
 
 
-        /* Add deals info to object IF group deals extension is installed */
-        if (Mage::helper('ordertags')->extensionEnabled('AW_Collpur', self::AW_COLLPUR_CONFIG_PATH)) {
-            $this->_addDealsInfoToObject($objToValidate, $orderItems);
-        }
-        /*****************************************************************/
-        $objToValidate->setPaymentMethod($_order->getPayment()->getMethod());
+		/* Add deals info to object IF group deals extension is installed */
+		if (Mage::helper('ordertags')->extensionEnabled('AW_Collpur', self::AW_COLLPUR_CONFIG_PATH)) {
+			$this->_addDealsInfoToObject($objToValidate, $orderItems);
+		}
+		/*		 * ************************************************************** */
+		$objToValidate->setPaymentMethod($_order->getPayment()->getMethod());
 
-        return $objToValidate;
-    }
+		return $objToValidate;
+	}
 
-    private function _importDataFromOrder($obj, $order)
-    {
-        $obj
-            ->setStoreId($order->getStoreId())
-            ->setOrderId($order->getEntityId())
-            ->setOrderTotal($order->getSubtotal())
-            ->setOrderGrandTotal($order->getGrandTotal())
-            ->setOrderStatus($order->getStatus())
-        ;
+	private function _importDataFromOrder($obj, $order) {
+		$obj
+			->setStoreId($order->getStoreId())
+			->setOrderId($order->getEntityId())
+			->setOrderTotal($order->getSubtotal())
+			->setOrderGrandTotal($order->getGrandTotal())
+			->setOrderStatus($order->getStatus())
+		;
 
-        $orderShipingAdress = $order->getShippingAddress();
-        $orderBillingAddress = $order->getBillingAddress();
+		$orderShipingAdress = $order->getShippingAddress();
+		$orderBillingAddress = $order->getBillingAddress();
+		$orderShippingMethod = $order->getShippingMethod();
 
-        if ($orderShipingAdress) {
-            $obj->setData('shipping_country', $orderShipingAdress->getCountryId());
-        }
-        if ($orderBillingAddress) {
-            $obj->setData('billing_country', $orderBillingAddress->getCountryId());
-        }
+		if ($orderShipingAdress) {
+			$obj->setData('shipping_country', $orderShipingAdress->getCountryId());
+		}
+		if ($orderBillingAddress) {
+			$obj->setData('billing_country', $orderBillingAddress->getCountryId());
+		}
+		if ($orderShippingMethod) {
+			$obj->setData('shipping_method', $orderShippingMethod);
+		}
+	}
 
-    }
+	private function _addConfProductSku($item, &$skus) {
+		$confProduct = Mage::getSingleton('catalog/product')->load($item->getProductId());
+		if (!$confProduct->getId() || ($confProduct->getId() != $item->getProductId())) {
+			return false;
+		}
 
-    private function _addConfProductSku($item, &$skus)
-    {
-        $confProduct = Mage::getSingleton('catalog/product')->load($item->getProductId());
-        if (!$confProduct->getId() || ($confProduct->getId() != $item->getProductId())) {
-            return false;
-        }
+		$sku = $confProduct->getSku();
+		if (!empty($sku)) {
+			$skus[] = $sku;
+			return true;
+		}
 
-        $sku = $confProduct->getSku();
-        if (!empty($sku)) {
-            $skus[] = $sku;
-            return true;
-        }
+		return false;
+	}
 
-        return false;
-    }
+	private function _addDealsInfoToObject($obj, $orderItems) {
+		$numberOfDealsInOrder = 0;
+		$dealsProgress = array();
 
-    private function _addDealsInfoToObject($obj, $orderItems)
-    {
-        $numberOfDealsInOrder = 0;
-        $dealsProgress = array();
+		foreach ($orderItems as $item) {
+			if ($item->getParentItem()) {
+				continue;
+			}
+			$buyRequest = Mage::helper('collpur')->getBuyRequest($item);
+			$dealId = $buyRequest->getData('deal_id');
+			if ($buyRequest && $dealId) {
+				$numberOfDealsInOrder++;
+			}
 
-        foreach ($orderItems as $item) {
-            if ($item->getParentItem()) {
-                continue;
-            }
-            $buyRequest = Mage::helper('collpur')->getBuyRequest($item);
-            $dealId = $buyRequest->getData('deal_id');
-            if ($buyRequest && $dealId) {
-                $numberOfDealsInOrder++;
-            }
+			$deal = Mage::getModel('collpur/deal')->load($dealId);
 
-            $deal = Mage::getModel('collpur/deal')->load($dealId);
+			if ($deal->getId()) {
+				if ($deal->getProgress() == AW_Collpur_Model_Source_Progress::PROGRESS_EXPIRED || $deal->isFailed()) {
+					$dealsProgress[] = 'failed';
+				} elseif ($deal->getIsSuccess()) {
+					$dealsProgress[] = 'successed';
+				} else {
+					$dealsProgress[] = 'pending';
+				}
+			}
+			$dealsProgress = array_unique($dealsProgress);
+		}
 
-            if ($deal->getId()) {
-                if ($deal->getProgress() == AW_Collpur_Model_Source_Progress::PROGRESS_EXPIRED || $deal->isFailed()) {
-                    $dealsProgress[] = 'failed';
-                } elseif ($deal->getIsSuccess()) {
-                    $dealsProgress[] = 'successed';
-                } else {
-                    $dealsProgress[] = 'pending';
-                }
-            }
-            $dealsProgress = array_unique($dealsProgress);
-        }
+		$obj->setData('order_contains_deal', $numberOfDealsInOrder);
+		$obj->setData('order_deal_status', $dealsProgress);
+	}
 
-        $obj->setData('order_contains_deal', $numberOfDealsInOrder);
-        $obj->setData('order_deal_status', $dealsProgress);
-    }
 }
