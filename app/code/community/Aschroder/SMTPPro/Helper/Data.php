@@ -82,7 +82,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 			Mage::log('Preparing the SMTP Email transport, details are: \n '
 				. "  username=" . $username . "\n"
-				. "  password='" . $password  . "'\n"
+				. "  password=" . "MASKED" /* . $password  */ . "\n"
 				. "  host=" . $host . "\n"
 				. "  port=" . $port . "\n"
 				. "  ssl=" . $ssl . "\n"
@@ -123,8 +123,8 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 				Mage::log(
 					"No email configured -
-					you need to specify one in the magento configuration,
-					otherwise your connection will fail");
+                    you need to specify one in the magento configuration,
+                    otherwise your connection will fail");
 			}
 
 			$password = Mage::getStoreConfig('system/googlesettings/gpassword', $id);
@@ -168,7 +168,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 			$username = Mage::getStoreConfig('system/smtpsettings/username', $id);
 			$password = Mage::getStoreConfig('system/smtpsettings/password', $id);
-	
+
 
 			$host = Mage::getStoreConfig('system/smtpsettings/host', $id);
 			$port = Mage::getStoreConfig('system/smtpsettings/port', $id);
@@ -177,7 +177,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 			Mage::log('Preparing the SMTP Email transport, details are: \n '
 				. "  username=" . $username . "\n"
-				. "  password='" . $password  . "'\n"
+				. "  password='" . $password . "'\n"
 				. "  host=" . $host . "\n"
 				. "  port=" . $port . "\n"
 				. "  ssl=" . $ssl . "\n"
@@ -248,6 +248,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 		return $transport;
 	}
+
 	public function log($to, $template, $subject, $email, $isHtml) {
 
 		$log = Mage::getModel('smtppro/email_log')
@@ -257,6 +258,30 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 			->setEmailBody($isHtml ? $email : nl2br($email))
 			->save();
 		return $this;
+	}
+
+	public function asyncRequest($url, $params) {
+		$params = json_encode($params);
+		$queueItemId = Mage::getModel('smtppro/queue')->setParams($params)->save()->getId();
+		if ($queueItemId) {
+			$post_string = '&queue_item_id=' . $queueItemId;
+
+			$parts = parse_url($url);
+
+			$fp = fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80, $errno, $errstr, 30);
+
+			$out = "POST " . $parts['path'] . " HTTP/1.1\r\n";
+			$out.= "Host: " . $parts['host'] . "\r\n";
+			$out.= "Content-Type: application/x-www-form-urlencoded\r\n";
+			$out.= "Content-Length: " . strlen($post_string) . "\r\n";
+			$out.= "Connection: Close\r\n\r\n";
+			if (isset($post_string))
+				$out.= $post_string;
+			fwrite($fp, $out);
+			fclose($fp);
+		} else {
+			Mage::log('asyncRequest failed; could not save queueItem into smtppro_async_queue table');
+		}
 	}
 
 }
