@@ -373,6 +373,8 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 			$items = $order->getAllItems();
 			$isManual = false;
 		}
+		Mage::log('Order:  ' . print_r($order->getIncrementId(), true), null, 'serial_codes.log');
+		Mage::log('Source: ' . $source, null, 'serial_codes.log');
 		foreach ($items as $item) {
 			$product = Mage::getModel('catalog/product')->setStoreId($storeid)->load($item->getProductId());
 			if ($product->getTypeID() == 'configurable' && !$isManual) {
@@ -381,6 +383,8 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 			if ($source == 'controller' && $item->getProductType() == 'configurable' && !$product->getSerialCodeSendEmail()) {
 				$product = Mage::getModel('catalog/product')->setStoreId($storeid)->load($product->getIdBySku($item->getProductOptionByCode('simple_sku')));
 			}
+			Mage::log('Qty Refunded: ' . print_r($item->getQtyRefunded(), true), null, 'serial_codes.log');
+			Mage::log('Serial Code Send Email: ' . print_r($product->getSerialCodeSendEmail(), true), null, 'serial_codes.log');
 			if (($product->getSerialCodeSendEmail() && !($source == 'invoicing' && $item->getQtyRefunded() > 0)) || $source == 'controller') {
 				if ($parentitem = $item->getParentItem()) {
 					if ($parentitem->getProductType() == 'configurable') {
