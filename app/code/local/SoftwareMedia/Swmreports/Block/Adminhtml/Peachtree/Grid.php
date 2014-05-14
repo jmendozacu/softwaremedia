@@ -49,6 +49,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Grid extends Mage_Admin
 
 	public function getTotals() {
 		$totals = new Varien_Object();
+		$orders = array();
 		$fields = array(
 			'qty_invoiced' => 0, //actual column index, see _prepareColumns()
 			'base_row_invoiced' => 0,
@@ -60,10 +61,15 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Grid extends Mage_Admin
 			foreach ($fields as $field => $value) {
 				$fields[$field]+=$item->getData($field);
 			}
+
+			$order_id = $item->getData('increment_id');
+			if (!in_array($order_id, $orders)) {
+				$orders[$order_id] = $order_id;
+			}
 		}
 
 		//First column in the grid
-		$fields['customer_firstname'] = 'Totals';
+		$fields['increment_id'] = 'Totals: ' . count($orders);
 		$totals->setData($fields);
 		return $totals;
 	}
