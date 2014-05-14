@@ -39,6 +39,9 @@ class SoftwareMedia_Swmreports_Adminhtml_PeachtreeController extends Mage_Adminh
 		$content .= '"Online Orders"' . PHP_EOL;
 		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_online_grid')->getCsv();
 		$content .= PHP_EOL . PHP_EOL;
+		$content .= '"Pending Orders"' . PHP_EOL;
+		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_pending_grid')->getCsv();
+		$content .= PHP_EOL . PHP_EOL;
 		$content .= '"Freight Orders"' . PHP_EOL;
 		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_freight_grid')->getCsv();
 		$content .= PHP_EOL . PHP_EOL;
@@ -47,6 +50,9 @@ class SoftwareMedia_Swmreports_Adminhtml_PeachtreeController extends Mage_Adminh
 		$content .= PHP_EOL . PHP_EOL;
 		$content .= '"Canceled/Closed Orders"' . PHP_EOL;
 		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_closed_grid')->getCsv();
+		$content .= PHP_EOL . PHP_EOL;
+		$content .= '"Total Orders"' . PHP_EOL;
+		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_total_grid')->getCsv();
 
 		$this->_prepareDownloadResponse($fileName, $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_grid')->getCsvFileFromContent($content));
 	}
