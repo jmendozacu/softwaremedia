@@ -11,12 +11,12 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Amazon_Grid extends SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Grid {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Bestbuy_Grid extends SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Grid {
 
 	public function __construct() {
 		parent::__construct();
 
-		$this->setCustomHeader('Amazon Orders');
+		$this->setCustomHeader('BestBuy Orders');
 	}
 
 	protected function _prepareCollection() {
@@ -28,7 +28,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Amazon_Grid extends Sof
 			->addAttributeToSelect('base_cost')
 			->addAttributeToSelect('created_at')
 			->join('sales/order', 'entity_id=order_id AND status = "complete"', array('increment_id', 'customer_firstname' => 'customer_firstname', 'customer_lastname' => 'customer_lastname', 'customer_email' => 'customer_email'), null, 'left')
-			->addAttributeToFilter('customer_email', array('eq' => 'amazon@softwaremedia.com'))
+			->addAttributeToFilter('customer_email', array('eq' => 'bestbuy@softwaremedia.com'))
 			->addAttributeToFilter('qty_invoiced', array('gt' => 0))
 		;
 

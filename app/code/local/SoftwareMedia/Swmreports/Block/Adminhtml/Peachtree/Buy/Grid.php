@@ -11,35 +11,12 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Buy_Grid extends Mage_Adminhtml_Block_Widget_Grid {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Buy_Grid extends SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Grid {
 
 	public function __construct() {
 		parent::__construct();
-		$this->setId('peachtreeGrid');
-		$this->setDefaultSort('sku');
-		$this->setDefaultDir('ASC');
-		$this->setSaveParametersInSession(true);
-		$this->setSubReportSize(false);
-	}
 
-	public function getTotals() {
-		$totals = new Varien_Object();
-		$fields = array(
-			'qty_invoiced' => 0, //actual column index, see _prepareColumns()
-			'base_row_invoiced' => 0,
-			'base_cost' => 0,
-		);
-
-		foreach ($this->getCollection() as $item) {
-			foreach ($fields as $field => $value) {
-				$fields[$field]+=$item->getData($field);
-			}
-		}
-
-		//First column in the grid
-		$fields['customer_firstname'] = 'Totals';
-		$totals->setData($fields);
-		return $totals;
+		$this->setCustomHeader('Buy.com Orders');
 	}
 
 	protected function _prepareCollection() {
@@ -50,68 +27,21 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Buy_Grid extends Mage_A
 			->addAttributeToSelect('base_row_invoiced')
 			->addAttributeToSelect('base_cost')
 			->addAttributeToSelect('created_at')
-			->join('sales/order', 'entity_id=order_id', array('customer_firstname' => 'customer_firstname', 'customer_lastname' => 'customer_lastname', 'customer_email' => 'customer_email'), null, 'left')
+			->join('sales/order', 'entity_id=order_id AND status = "complete"', array('increment_id', 'customer_firstname' => 'customer_firstname', 'customer_lastname' => 'customer_lastname', 'customer_email' => 'customer_email'), null, 'left')
 			->addAttributeToFilter('customer_email', array('eq' => 'buy@softwaremedia.com'))
 			->addAttributeToFilter('qty_invoiced', array('gt' => 0))
 		;
 
-//		foreach ($collection as $key => $item) {
-//			die(var_dump($item));
-//		}
+		$collection->getSelect()->columns(
+			array(
+				'total_cost' => '(main_table.base_cost * main_table.qty_invoiced)',
+				'profit' => '(main_table.base_row_invoiced - (main_table.base_cost * main_table.qty_invoiced))',
+				'created_date' => 'main_table.created_at',
+			)
+		);
 
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
-	}
-
-	public function toOptionHash($valueField = 'id', $labelField = 'name') {
-		return $this->_toOptionHash($valueField, $labelField);
-	}
-
-	protected function _prepareColumns() {
-
-		// Customer Name
-		$this->addColumn('Customer_Name', array(
-			'header' => Mage::helper('peachtree')->__('Name'),
-			'index' => array('customer_firstname', 'customer_lastname'),
-			'type' => 'concat',
-			'separator' => ' ',
-		));
-
-		$this->addColumn('Item', array(
-			'header' => Mage::helper('peachtree')->__('Item ID'),
-			'index' => 'sku'
-		));
-
-		$this->addColumn('Qty_Invoiced', array(
-			'header' => Mage::helper('peachtree')->__('Qty Invoiced'),
-			'index' => 'qty_invoiced',
-			'type' => 'number'
-		));
-
-		$this->addColumn('Amount', array(
-			'header' => Mage::helper('peachtree')->__('Amount'),
-			'index' => 'base_row_invoiced',
-			'type' => 'currency'
-		));
-
-		// TODO: Multiply cost with qty
-		$this->addColumn('Cost', array(
-			'header' => Mage::helper('peachtree')->__('Cost'),
-			'index' => 'base_cost',
-			'type' => 'currency'
-		));
-
-		$this->addColumn('Created_Date', array(
-			'header' => Mage::helper('peachtree')->__('Created Date'),
-			'index' => 'created_at',
-			'type' => 'date'
-		));
-
-		parent::_prepareColumns();
-	}
-
-	public function getRowUrl($item) {
-		return false;
 	}
 
 }

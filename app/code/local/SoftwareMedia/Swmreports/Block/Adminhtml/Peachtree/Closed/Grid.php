@@ -11,12 +11,12 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Amazon_Grid extends SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Grid {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Closed_Grid extends SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Grid {
 
 	public function __construct() {
 		parent::__construct();
 
-		$this->setCustomHeader('Amazon Orders');
+		$this->setCustomHeader('Canceled/Closed Orders');
 	}
 
 	protected function _prepareCollection() {
@@ -27,8 +27,9 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Amazon_Grid extends Sof
 			->addAttributeToSelect('base_row_invoiced')
 			->addAttributeToSelect('base_cost')
 			->addAttributeToSelect('created_at')
-			->join('sales/order', 'entity_id=order_id AND status = "complete"', array('increment_id', 'customer_firstname' => 'customer_firstname', 'customer_lastname' => 'customer_lastname', 'customer_email' => 'customer_email'), null, 'left')
-			->addAttributeToFilter('customer_email', array('eq' => 'amazon@softwaremedia.com'))
+			->join('sales/order', 'entity_id=order_id AND status IN ("canceled","closed")', array('increment_id', 'customer_firstname' => 'customer_firstname', 'customer_lastname' => 'customer_lastname', 'customer_email' => 'customer_email'), null, 'left')
+//			->addAttributeToFilter('customer_email', array('nlike' => '%@softwaremedia.com'))
+			->addAttributeToFilter('base_row_invoiced', array('gt' => 0))
 			->addAttributeToFilter('qty_invoiced', array('gt' => 0))
 		;
 
