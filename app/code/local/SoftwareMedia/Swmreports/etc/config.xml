@@ -39,6 +39,10 @@
 								<title>Manage Stock No</title>
 								<action>swmreports/adminhtml_managestock</action>
 							</manage_stock>
+							<peachtree>
+								<title>PT Compare</title>
+								<action>swmreports/adminhtml_peachtree</action>
+							</peachtree>
 						</children>
 					</swmreports>
 				</children>
@@ -60,6 +64,10 @@
 											<title>Manage Stock No</title>
 											<action>swmreports/adminhtml_managestock</action>
 										</manage_stock>
+										<peachtree>
+											<title>PT Compare</title>
+											<action>swmreports/adminhtml_peachtree</action>
+										</peachtree>
 									</children>
 								</swmreports>
 							</children>
@@ -73,6 +81,9 @@
 				<managestock>
 					<file>managestock.xml</file>
 				</managestock>
+				<peachtree>
+					<file>peachtree_report.xml</file>
+				</peachtree>
 			</updates>
 		</layout>
 	</adminhtml>
@@ -104,6 +115,9 @@
 			<managestock>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</managestock>
+			<peachtree>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</peachtree>
 		</blocks>
 		<helpers>
 			<swmreports>
@@ -112,6 +126,9 @@
 			<managestock>
 				<class>SoftwareMedia_Swmreports_Helper</class>
 			</managestock>
+			<peachtree>
+				<class>SoftwareMedia_Swmreports_Helper</class>
+			</peachtree>
 		</helpers>
 	</global>
 </config>
