@@ -117,6 +117,13 @@
 					<children>
 						<system>
 							<children>
+								<tools>
+									<children>
+										<smtppro>
+											<title>Email Logs</title>
+										</smtppro>
+									</children>
+								</tools>
 								<config>
 									<children>
 										<smtppro>
