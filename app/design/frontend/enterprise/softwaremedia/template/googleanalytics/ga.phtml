@@ -1,0 +1,87 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php if (!Mage::helper('core/cookie')->isUserNotAllowSaveCookie()): ?>
+<?php $accountId = Mage::getStoreConfig(Mage_GoogleAnalytics_Helper_Data::XML_PATH_ACCOUNT) ?>
+<!-- BEGIN GOOGLE ANALYTICS CODEs -->
+<script type="text/javascript">
+//<![CDATA[
+    var _gaq = _gaq || [];
+    <?php echo $this->_getPageTrackingCode($accountId) ?>
+    <?php echo $this->_getOrdersTrackingCode() ?>
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+//]]>
+</script>
+<!--404 Tracking-->
+<script type="text/javascript">
+<?php
+$action = Mage::app()->getRequest()->getActionName();
+if($action == 'noRoute'){?>
+_gaq.push(['_trackEvent', 'Error', '404', document.location.pathname + document.location.search]);
+<?php }?>
+</script>
+<!--End 404 Tracking-->
+
+<!-- END GOOGLE ANALYTICS CODE -->
+<?php endif; ?>
+
+<!-- Bing Tracking Code -->
+<?php
+    //Get Order Number & Order Total
+    $order = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId());
+    $amount = number_format($order->getGrandTotal(),2);
+    $shipping = number_format($order->getShippingAmount(),2);
+    $tax = number_format($order->getTaxAmount(),2);
+?>
+<script type="text/javascript"> if (!window.mstag) mstag = {loadTag : function(){},time : (new Date()).getTime()};</script> <script id="mstag_tops" type="text/javascript" src="//flex.msn.com/mstag/site/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/mstag.js"></script> <script type="text/javascript"> mstag.loadTag("analytics", {dedup:"1",domainId:"17963",type:"1",taxcost:"<?php echo $tax; ?>",shippingcost:"<?php echo $shipping; ?>",revenue:"<?php echo $amount; ?>",actionid:"131473"})</script> <noscript> <iframe src="//flex.msn.com/mstag/tag/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/analytics.html?dedup=1&domainId=17963&type=1&taxcost=<?php echo $tax; ?>&shippingcost=<?php echo $shipping; ?>&revenue=<?php echo $amount; ?>&actionid=131473" frameborder="0" scrolling="no" width="1" height="1" style="visibility:hidden;display:none"> </iframe> </noscript>
+
+<!-- End Bing Tracking Code -->
+
+<!-- Google Code for Purchase/Sale Conversion Page -->
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 1072660807;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "666666";
+var google_conversion_label = "Fr87CL2NPxDHgr7_Aw";
+var google_conversion_value = "<?php echo $amount; ?>";
+var google_remarketing_only = false;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/1072660807/?value=<?php echo $amount; ?>&amp;label=Fr87CL2NPxDHgr7_Aw&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
