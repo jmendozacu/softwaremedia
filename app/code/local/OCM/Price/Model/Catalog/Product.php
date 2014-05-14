@@ -10,7 +10,7 @@ class OCM_Price_Model_Catalog_Product extends TBT_RewardsOnly_Model_Catalog_Prod
     
         $price = $this->_getData('final_price');
         if ($price !== null) {
-            return $price;
+            //return $price;
         }
         return $this->getPriceModel()->getFinalPrice($qty, $this);
     }
