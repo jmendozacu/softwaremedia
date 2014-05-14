@@ -1489,7 +1489,8 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote
             if ($item->getHasError()) {
                 $message = $item->getMessage();
                 if (!in_array($message, $errors)) { // filter duplicate messages
-                    $errors[] = $message;
+                	if ($message != "This product is currently out of stock.")
+                    	$errors[] = $message;
                 }
             }
         }
