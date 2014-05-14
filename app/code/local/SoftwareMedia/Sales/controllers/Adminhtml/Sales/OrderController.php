@@ -42,7 +42,8 @@ class SoftwareMedia_Sales_Adminhtml_Sales_OrderController extends Mage_Adminhtml
 		if ($order = $this->_initOrder()) {
 			try {
 				$can_void = $order->canVoidPayment();
-				if ($can_void) {
+				$has_invoices = $order->hasInvoices();
+				if ($can_void && $has_invoices) {
 					// Void the order when canceled
 					$order->getPayment()->void(
 						new Varien_Object() // workaround for backwards compatibility
