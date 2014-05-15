@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Order_Item_OptionsFinder
@@ -83,6 +83,19 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         $options  = array();
         $products = array();
 
+        //------------------------------
+        $configGroup = '/order/magento/settings/';
+        $configKey   = 'create_with_first_product_options_when_variation_unavailable';
+        $configValue = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue($configGroup, $configKey);
+
+        if (empty($channelOptions) && !$configValue) {
+            return array(
+                'associated_options'  => array(),
+                'associated_products' => array()
+            );
+        }
+        //------------------------------
+
         // Variation info unavailable - return first value for each required option
         // ---------------
         if (empty($channelOptions)) {
@@ -104,15 +117,17 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
         // Map variation with magento options
         // ---------------
         foreach ($magentoOptions as $magentoOption) {
+            $magentoOption['labels'] = array_filter($magentoOption['labels']);
+
             $valueLabel = $this->getValueLabel($channelOptions, $magentoOption['labels']);
             if ($valueLabel == '') {
-                $this->failedOptions[] = $magentoOption['labels'][0];
+                $this->failedOptions[] = array_shift($magentoOption['labels']);
                 continue;
             }
 
             $magentoValue = $this->getMagentoValue($valueLabel, $magentoOption['values']);
             if (is_null($magentoValue)) {
-                $this->failedOptions[] = $magentoOption['labels'][0];
+                $this->failedOptions[] = array_shift($magentoOption['labels']);
                 continue;
             }
 
@@ -220,6 +235,16 @@ class Ess_M2ePro_Model_Order_Item_OptionsFinder
     private function getGroupedAssociatedProduct()
     {
         $variationName = array_shift($this->variation);
+
+        //------------------------------
+        $configGroup = '/order/magento/settings/';
+        $configKey   = 'create_with_first_product_options_when_variation_unavailable';
+        $configValue = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue($configGroup, $configKey);
+
+        if ((is_null($variationName) || strlen(trim($variationName)) == 0) && !$configValue) {
+            return null;
+        }
+        //------------------------------
 
         $associatedProducts = $this->magentoProduct->getProductVariationsForOrder();
 

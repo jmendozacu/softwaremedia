@@ -1,7 +1,7 @@
 <?php
 
 /*
-* @copyright  Copyright (c) 2012 by  ESS-UA.
+* @copyright  Copyright (c) 2013 by  ESS-UA.
 */
 
 class Ess_M2ePro_Model_Wizard_Buy extends Ess_M2ePro_Model_Wizard
@@ -19,18 +19,6 @@ class Ess_M2ePro_Model_Wizard_Buy extends Ess_M2ePro_Model_Wizard
     public function isActive()
     {
         return Mage::helper('M2ePro/Component_Buy')->isActive();
-    }
-
-    // ########################################
-
-    public function disableChildWizards()
-    {
-        /* @var $wizardHelper Ess_M2ePro_Helper_Wizard */
-        $wizardHelper = Mage::helper('M2ePro/Wizard');
-
-        $wizardHelper->setStatus('buyNewSku', Ess_M2ePro_Helper_Wizard::STATUS_SKIPPED);
-
-        return true;
     }
 
     // ########################################

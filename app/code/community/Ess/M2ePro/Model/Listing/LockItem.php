@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Listing_LockItem extends Ess_M2ePro_Model_LockItem
@@ -22,11 +22,7 @@ class Ess_M2ePro_Model_Listing_LockItem extends Ess_M2ePro_Model_LockItem
             throw new Exception('Listing id is not defined.');
         }
 
-        $this->setNick('listing_'.$params['component'].'_'.$params['id']);
-
-        $maxDeactivateTime = (int)Mage::helper('M2ePro/Module')->getConfig()
-                                        ->getGroupValue('/listings/lockItem/','max_deactivate_time');
-        $this->setMaxDeactivateTime($maxDeactivateTime);
+        $this->setNick(strtolower($params['component']).'_listing_'.(int)$params['id']);
 
         parent::__construct($params);
     }

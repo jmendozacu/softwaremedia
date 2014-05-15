@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Observer_Invoice
@@ -12,9 +12,9 @@ class Ess_M2ePro_Model_Observer_Invoice
     {
         try {
 
-            if (Mage::helper('M2ePro')->getGlobalValue('skip_invoice_observer')) {
+            if (Mage::helper('M2ePro/Data_Global')->getValue('skip_invoice_observer')) {
                 // Not process invoice observer when set such flag
-                Mage::helper('M2ePro')->unsetGlobalValue('skip_invoice_observer');
+                Mage::helper('M2ePro/Data_Global')->unsetValue('skip_invoice_observer');
                 return;
             }
 
@@ -24,18 +24,20 @@ class Ess_M2ePro_Model_Observer_Invoice
 
             try {
                 /** @var $order Ess_M2ePro_Model_Order */
-                $order = Mage::helper('M2ePro/Component')
-                    ->getUnknownObject('Order', $magentoOrderId, 'magento_order_id');
+                $order = Mage::helper('M2ePro/Component_Ebay')
+                    ->getObject('Order', $magentoOrderId, 'magento_order_id');
             } catch (Exception $e) {
                 return;
             }
 
-            if (!$order->isComponentModeEbay()) {
+            if (!$order->getChildObject()->canUpdatePaymentStatus()) {
                 return;
             }
 
+            $this->createChange($order);
+
             Mage::getSingleton('M2ePro/Order_Log_Manager')
-                ->setInitiator(Ess_M2ePro_Model_Order_Log::INITIATOR_EXTENSION);
+                ->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
             $result = $order->getChildObject()->updatePaymentStatus();
 
@@ -44,9 +46,24 @@ class Ess_M2ePro_Model_Observer_Invoice
 
         } catch (Exception $exception) {
 
-            Mage::helper('M2ePro/Exception')->process($exception,true);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
             return;
         }
+    }
+
+    //####################################
+
+    private function createChange(Ess_M2ePro_Model_Order $order)
+    {
+        // save change
+        //------------------------------
+        $orderId   = $order->getId();
+        $action    = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_PAYMENT;
+        $creator   = Ess_M2ePro_Model_Order_Change::CREATOR_TYPE_OBSERVER;
+        $component = $order->getComponentMode();
+
+        Mage::getModel('M2ePro/Order_Change')->create($orderId, $action, $creator, $component, array());
+        //------------------------------
     }
 
     //####################################
@@ -59,7 +76,8 @@ class Ess_M2ePro_Model_Observer_Invoice
 
     private function addSessionErrorMessage(Ess_M2ePro_Model_Order $order)
     {
-        $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_log/order', array('order_id' => $order->getId()));
+        $url = Mage::helper('adminhtml')
+            ->getUrl('M2ePro/adminhtml_ebay_log/order', array('order_id' => $order->getId()));
 
         $startLink = '<a href="' . $url . '" target="_blank">';
         $endLink = '</a>';

@@ -1,12 +1,13 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_Model_Servicing_Dispatcher
+final class Ess_M2ePro_Model_Servicing_Dispatcher
 {
     const DEFAULT_INTERVAL = 3600;
+    const MAX_MEMORY_LIMIT = 256;
 
     // ########################################
 
@@ -16,24 +17,34 @@ class Ess_M2ePro_Model_Servicing_Dispatcher
 
         if (!is_null($minInterval) &&
             $timeLastUpdate + (int)$minInterval > Mage::helper('M2ePro')->getCurrentGmtDate(true)) {
-            return;
+            return false;
         }
 
         $this->setLastUpdateDateTime();
-        $this->processTasks($this->getRegisteredTasks());
+        return $this->processTasks($this->getRegisteredTasks());
+    }
+
+    public function processTask($allowedTask)
+    {
+        return $this->processTasks(array($allowedTask));
     }
 
     public function processTasks(array $allowedTasks = array())
     {
-        $responseData = Mage::getModel('M2ePro/Connector_Server_Api_Dispatcher')
+        Mage::helper('M2ePro/Client')->setMemoryLimit(self::MAX_MEMORY_LIMIT);
+        Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
+
+        $responseData = Mage::getModel('M2ePro/Connector_M2ePro_Dispatcher')
                                     ->processVirtual('servicing','update','data',
                                                      $this->getRequestData($allowedTasks));
 
         if (!is_array($responseData)) {
-            return;
+            return false;
         }
 
         $this->dispatchResponseData($responseData,$allowedTasks);
+
+        return true;
     }
 
     // ########################################
@@ -86,7 +97,10 @@ class Ess_M2ePro_Model_Servicing_Dispatcher
             'messages',
             'settings',
             'backups',
-            'exceptions'
+            'exceptions',
+            'analytic',
+            'marketplaces',
+            'cron'
         );
     }
 
@@ -94,8 +108,8 @@ class Ess_M2ePro_Model_Servicing_Dispatcher
 
     private function getLastUpdateTimestamp()
     {
-        $lastUpdateDate = Mage::helper('M2ePro/Module')->getConfig()
-                            ->getGroupValue('/cache/servicing/','last_update_time');
+        $lastUpdateDate = Mage::helper('M2ePro/Module')->getCacheConfig()
+                            ->getGroupValue('/servicing/','last_update_time');
 
         if (is_null($lastUpdateDate)) {
             return Mage::helper('M2ePro')->getCurrentGmtDate(true) - 3600*24*30;
@@ -106,8 +120,8 @@ class Ess_M2ePro_Model_Servicing_Dispatcher
 
     private function setLastUpdateDateTime()
     {
-        Mage::helper('M2ePro/Module')->getConfig()
-            ->setGroupValue('/cache/servicing/', 'last_update_time',
+        Mage::helper('M2ePro/Module')->getCacheConfig()
+            ->setGroupValue('/servicing/', 'last_update_time',
                             Mage::helper('M2ePro')->getCurrentGmtDate());
     }
 

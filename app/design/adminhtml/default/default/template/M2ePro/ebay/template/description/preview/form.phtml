@@ -18,15 +18,15 @@
                 <input type="hidden" name="show" value="1" />
                 <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>" />
 
-                <?php if ($errorTxt = $this->getData('error_txt')): ?>
-                    <span style="color: red; font-weight: bold;"><?php echo Mage::helper('M2ePro')->escapeHtml($errorTxt); ?></span>
+                <?php if ($errorMessage = $this->getData('error_message')): ?>
+                    <span style="color: red; font-weight: bold;"><?php echo Mage::helper('M2ePro')->escapeHtml($errorMessage); ?></span>
                     <br /><br />
                 <?php endif; ?>
 
-                <?php echo Mage::helper('M2ePro')->__('Enter Product Id'); ?>: <input id="product_id" type="text" name="id" value="" class="input-text" />
+                <?php echo Mage::helper('M2ePro')->__('Enter Product Id'); ?>:&nbsp;&nbsp;<input id="product_id" type="text" name="id" value="<?php echo $this->getData('product_id'); ?>" class="input-text" />
 
-                <?php echo $this->getChildHtml('display_product_description') ?>
-                <?php echo Mage::helper('M2ePro')->__('or') ?>
+                &nbsp;&nbsp;<?php echo $this->getChildHtml('display_product_description') ?>
+                &nbsp;&nbsp;<?php echo Mage::helper('M2ePro')->__('or') ?>&nbsp;&nbsp;
                 <?php echo $this->getChildHtml('display_random_product_description') ?>
 
             </form>

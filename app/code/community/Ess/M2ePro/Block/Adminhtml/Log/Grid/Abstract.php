@@ -1,11 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract extends Ess_M2ePro_Block_Adminhtml_Component_Grid
+abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract
+    extends Mage_Adminhtml_Block_Widget_Grid
 {
+    //####################################
+
+    protected function getEntityId()
+    {
+        $entityData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
+        if (isset($entityData['id'])) {
+            return $entityData['id'];
+        }
+
+        return NULL;
+    }
+
     //####################################
 
     protected function _getLogTypeList()
@@ -30,8 +44,8 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract extends Ess_M2ePro_B
     protected function _getLogInitiatorList()
     {
         return array(
-            Ess_M2ePro_Model_Log_Abstract::INITIATOR_USER => Mage::helper('M2ePro')->__('Manual'),
-            Ess_M2ePro_Model_Log_Abstract::INITIATOR_EXTENSION => Mage::helper('M2ePro')->__('Automatic')
+            Ess_M2ePro_Helper_Data::INITIATOR_USER => Mage::helper('M2ePro')->__('Manual'),
+            Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION => Mage::helper('M2ePro')->__('Automatic')
         );
     }
 
@@ -89,7 +103,7 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract extends Ess_M2ePro_B
     {
         switch ($row->getData('initiator')) {
 
-            case Ess_M2ePro_Model_Log_Abstract::INITIATOR_EXTENSION:
+            case Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION:
                 $value = '<span style="text-decoration: underline;">'.$value.'</span>';
                 break;
 
@@ -102,8 +116,26 @@ abstract class Ess_M2ePro_Block_Adminhtml_Log_Grid_Abstract extends Ess_M2ePro_B
 
     public function callbackDescription($value, $row, $column, $isExport)
     {
-        $value = Mage::getModel('M2ePro/Log_Abstract')->decodeDescription($value);
-        return Mage::helper('M2ePro')->escapeHtml($value);
+        $fullDescription = Mage::getModel('M2ePro/Log_Abstract')->decodeDescription($row->getData('description'));
+        $fullDescription = htmlentities($fullDescription);
+        $row->setData('description', $fullDescription);
+        $value = $column->getRenderer()->render($row);
+
+        return $this->prepareLongText($fullDescription, $value);
+    }
+
+    //####################################
+
+    protected function prepareLongText($fullText, $renderedText)
+    {
+        if (strlen($fullText) == strlen($renderedText)) {
+            return $renderedText;
+        }
+
+        $renderedText .= '&nbsp;(<a href="javascript:void(0)" onclick="LogHandlerObj.showFullText(this);">more</a>)
+                          <div style="display: none;"><br />'.$fullText.'<br /><br /></div>';
+
+        return $renderedText;
     }
 
     //####################################

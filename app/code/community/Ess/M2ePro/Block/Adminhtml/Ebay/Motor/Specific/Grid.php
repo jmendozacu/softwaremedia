@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Specific_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -26,7 +26,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Specific_Grid extends Mage_Adminhtml
 
     protected function _prepareCollection()
     {
-        $collection = Mage::getModel('M2ePro/Ebay_Motor_Specific')->getCollection();
+        $collection = new Ess_M2ePro_Model_Mysql4_Ebay_MotorSpecifics_Collection('epid');
 
         $this->setCollection($collection);
 
@@ -49,8 +49,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Specific_Grid extends Mage_Adminhtml
             'type'   => 'options',
             'index'  => 'product_type',
             'options'  => array(
-                Ess_M2ePro_Model_Ebay_Motor_Specific::TYPE_VEHICLE => Mage::helper('M2ePro')->__('Car / Truck'),
-                Ess_M2ePro_Model_Ebay_Motor_Specific::TYPE_MOTORCYCLE => Mage::helper('M2ePro')->__('Motorcycle'),
+                Ess_M2ePro_Helper_Component_Ebay_MotorSpecific::TYPE_VEHICLE => Mage::helper('M2ePro')->__('Car / Truck'),
+                Ess_M2ePro_Helper_Component_Ebay_MotorSpecific::TYPE_MOTORCYCLE => Mage::helper('M2ePro')->__('Motorcycle'),
             )
         ));
 
@@ -108,24 +108,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Specific_Grid extends Mage_Adminhtml
         return parent::_prepareColumns();
     }
 
-    public function getMainButtonsHtml()
-    {
-        $url = $this->getUrl('*/adminhtml_ebay_template_general/edit', array(
-            'id' => $this->getRequest()->getParam('general_template_id'), 'tab' => 'specific'
-        ));
-
-        $buttonBlock = $this->getLayout()
-            ->createBlock('adminhtml/widget_button')
-            ->setData( array(
-                'id' => 'change_motors_specifics_attribute',
-                'label'   => Mage::helper('M2ePro')->__('Change Compatibility Attribute'),
-                'onclick' => 'window.open(\''.$url.'\', \'_blank\')',
-                'class' => 'button_link'
-            ) );
-
-        return $buttonBlock->toHtml() . parent::getMainButtonsHtml();
-    }
-
     protected function _prepareMassaction()
     {
         // Set massaction identifiers
@@ -147,11 +129,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Specific_Grid extends Mage_Adminhtml
             'url'     => '',
             'confirm' => Mage::helper('M2ePro')->__('Are you sure?')
         ));
-
-        $this->getMassactionBlock()->addItem('copy_attribute_value', array(
-            'label'   => Mage::helper('M2ePro')->__('Show ePIDs'),
-            'url'     => ''
-        ));
         //--------------------------------
 
         return parent::_prepareMassaction();
@@ -160,7 +137,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Specific_Grid extends Mage_Adminhtml
     public function getMassactionBlockName()
     {
         // this is required for correct work of massaction js
-        return 'M2ePro/adminhtml_component_grid_massaction';
+        return 'M2ePro/adminhtml_grid_massaction';
     }
 
     //##############################################################
@@ -184,10 +161,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Motor_Specific_Grid extends Mage_Adminhtml
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/adminhtml_ebay_listing/motorSpecificGrid', array(
-            '_current' => true,
-            'general_template_id' => $this->getRequest()->getParam('general_template_id')
-        ));
+        return $this->getUrl('*/adminhtml_ebay_listing/motorSpecificGrid', array('_current' => true));
     }
 
     public function getRowUrl($row)

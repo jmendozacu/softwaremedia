@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Buy_Order_ShippingAddress extends Ess_M2ePro_Model_Order_ShippingAddress
@@ -26,7 +26,7 @@ class Ess_M2ePro_Model_Buy_Order_ShippingAddress extends Ess_M2ePro_Model_Order_
     {
         $email = $this->order->getData('buyer_email');
 
-        if ($email == '') {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $email = str_replace(' ', '-', strtolower($this->order->getChildObject()->getBuyerName()));
             $email .= Ess_M2ePro_Model_Magento_Customer::FAKE_EMAIL_POSTFIX;
         }

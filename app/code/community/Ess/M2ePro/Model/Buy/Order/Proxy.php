@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
@@ -79,7 +79,7 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
             'component_mode'    => Ess_M2ePro_Helper_Component_Buy::NICK,
             'payment_method'    => '',
             'channel_order_id'  => $this->order->getBuyOrderId(),
-            'channel_final_fee' => 0, // todo
+            'channel_final_fee' => 0,
             'transactions'      => array()
         );
 
@@ -90,31 +90,36 @@ class Ess_M2ePro_Model_Buy_Order_Proxy extends Ess_M2ePro_Model_Order_Proxy
     {
         return array(
             'shipping_method' => $this->order->getShippingMethod(),
-            'shipping_price'  => $this->order->getShippingPrice(),
+            'shipping_price'  => $this->getBaseShippingPrice(),
             'carrier_title'   => Mage::helper('M2ePro')->__('Rakuten.com Shipping')
         );
+    }
+
+    protected function getShippingPrice()
+    {
+        return $this->order->getShippingPrice();
     }
 
     // ########################################
 
     public function getTaxRate()
     {
-        return 0; // todo
+        return 0;
     }
 
     public function hasVat()
     {
-        return false; // todo
+        return true;
     }
 
     public function hasTax()
     {
-        return false; // todo
+        return false;
     }
 
     public function isShippingPriceIncludesTax()
     {
-        return false; // todo
+        return true;
     }
 
     public function isTaxModeNone()

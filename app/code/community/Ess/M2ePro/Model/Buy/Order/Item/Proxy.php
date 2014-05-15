@@ -1,14 +1,17 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
+/**
+ * @property Ess_M2ePro_Model_Buy_Order_Item $item
+ */
 class Ess_M2ePro_Model_Buy_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item_Proxy
 {
     // ########################################
 
-    public function getPrice()
+    public function getOriginalPrice()
     {
         return $this->item->getPrice();
     }

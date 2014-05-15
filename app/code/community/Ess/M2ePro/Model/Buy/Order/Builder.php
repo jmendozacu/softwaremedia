@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
@@ -41,7 +41,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         // Init general data
         // ------------------
         $this->setData('account_id', $this->account->getId());
-        $this->setData('marketplace_id', Ess_M2ePro_Helper_Component_Buy::MARKETPLACE_VIRTUAL_ID);
+        $this->setData('marketplace_id', Ess_M2ePro_Helper_Component_Buy::MARKETPLACE_ID);
 
         $this->setData('seller_id', $data['seller_id']);
         $this->setData('buy_order_id', $data['order_id']);
@@ -92,6 +92,7 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         if ($existOrdersNumber == 0) {
             $this->status = self::STATUS_NEW;
             $this->order = Mage::helper('M2ePro/Component_Buy')->getModel('Order');
+            $this->order->setStatusUpdateRequired(true);
             return;
         }
         // --------------------
@@ -100,6 +101,10 @@ class Ess_M2ePro_Model_Buy_Order_Builder extends Mage_Core_Model_Abstract
         // --------------------
         $this->order = reset($existOrders);
         $this->status = self::STATUS_UPDATED;
+
+        if (is_null($this->order->getMagentoOrderId())) {
+            $this->order->setStatusUpdateRequired(true);
+        }
         // --------------------
     }
 

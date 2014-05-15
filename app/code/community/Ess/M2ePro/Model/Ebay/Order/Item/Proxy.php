@@ -1,21 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
+/**
+ * @property Ess_M2ePro_Model_Ebay_Order_Item $item
+ */
 class Ess_M2ePro_Model_Ebay_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item_Proxy
 {
     // ########################################
 
-    public function getVariation()
+    public function getOriginalPrice()
     {
-        return $this->item->getVariation();
-    }
+        $price = $this->item->getPrice();
 
-    public function getPrice()
-    {
-        return $this->item->getPrice();
+        if ($this->getProxyOrder()->isTaxModeNone() && $this->hasTax()) {
+            $price += $this->item->getTaxAmount();
+        }
+
+        return $price;
     }
 
     public function getOriginalQty()
@@ -25,7 +29,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item
 
     public function getTaxRate()
     {
-        return $this->item->getEbayOrder()->getTaxRate();
+        return $this->item->getTaxRate();
     }
 
     public function getAdditionalData()

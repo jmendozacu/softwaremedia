@@ -1,9 +1,12 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
+/**
+ * @property Ess_M2ePro_Model_Amazon_Order_Item $item
+ */
 class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_Item_Proxy
 {
     // ########################################
@@ -23,9 +26,18 @@ class Ess_M2ePro_Model_Amazon_Order_Item_Proxy extends Ess_M2ePro_Model_Order_It
 
     // ########################################
 
-    public function getPrice()
+    public function getOriginalPrice()
     {
-        return $this->item->getPrice() + $this->item->getGiftPrice();
+        $price = $this->item->getPrice() + $this->item->getGiftPrice() - $this->item->getDiscountAmount();
+
+        if ($this->getProxyOrder()->isTaxModeNone() && $this->hasTax()) {
+            $taxAmount = Mage::getSingleton('tax/calculation')
+                ->calcTaxAmount($price, $this->getTaxRate(), false, false);
+
+            $price += $taxAmount;
+        }
+
+        return $price;
     }
 
     public function getOriginalQty()

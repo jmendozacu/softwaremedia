@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Edit_ShippingAddress_Form extends Mage_Adminhtml_Block_Widget_Form
@@ -18,7 +18,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Edit_ShippingAddress_Form extends Ma
         //------------------------------
 
         $this->setTemplate('M2ePro/ebay/order/edit/shipping_address.phtml');
-        $this->order = Mage::helper('M2ePro')->getGlobalValue('temp_data');
+        $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
     }
 
     protected function _prepareForm()
@@ -38,35 +38,22 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Edit_ShippingAddress_Form extends Ma
 
     protected function _beforeToHtml()
     {
-        //------------------------------
-        $unsortedCountries = Mage::getModel('directory/country_api')->items();
-
-        $unsortedCountriesNames = array();
-        foreach($unsortedCountries as $country) {
-            $unsortedCountriesNames[] = $country['name'];
-        }
-        sort($unsortedCountriesNames,SORT_STRING);
-
-        $sortedCountries = array();
-        foreach($unsortedCountriesNames as $name) {
-            foreach($unsortedCountries as $country) {
-                if ($country['name'] == $name) {
-                    $sortedCountries[] = $country;
-                    break;
-                }
-            }
-        }
-
-        $this->setData('countries', $sortedCountries);
-        //------------------------------
-
         $buyerEmail = $this->order->getData('buyer_email');
-        stripos($buyerEmail, 'Invalid Request') !== false && $buyerEmail = '';
-        $this->setData('buyer_email', $buyerEmail);
+        if (stripos($buyerEmail, 'Invalid Request') !== false) {
+            $buyerEmail = '';
+        }
 
+        try {
+            $regionCode = $this->order->getShippingAddress()->getRegionCode();
+        } catch (Exception $e) {
+            $regionCode = null;
+        }
+
+        $this->setData('countries', Mage::helper('M2ePro/Magento')->getCountries());
+        $this->setData('buyer_email', $buyerEmail);
         $this->setData('buyer_name', $this->order->getData('buyer_name'));
         $this->setData('address', $this->order->getShippingAddress()->getData());
-        $this->setData('region_code', $this->order->getShippingAddress()->getRegionCode());
+        $this->setData('region_code', $regionCode);
 
         return parent::_beforeToHtml();
     }

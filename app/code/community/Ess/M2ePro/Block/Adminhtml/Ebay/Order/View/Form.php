@@ -1,14 +1,25 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Mage_Adminhtml_Block_Widget_Container
 {
+    // ##########################################################
+
     public $shippingAddress = array();
 
-    public $realMagentoOrderId = NULL;
+    public $ebayWarehouseAddress = array();
+
+    public $globalShippingServiceDetails = array();
+
+    public $realMagentoOrderId = null;
+
+    /** @var $order Ess_M2ePro_Model_Order */
+    public $order = null;
+
+    // ##########################################################
 
     public function __construct()
     {
@@ -20,8 +31,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Mage_Adminhtml_Blo
         $this->setTemplate('M2ePro/ebay/order.phtml');
         //------------------------------
 
-        /** @var $order Ess_M2ePro_Model_Order */
-        $this->order = Mage::helper('M2ePro')->getGlobalValue('temp_data');
+        $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
     }
 
     protected function _beforeToHtml()
@@ -36,6 +46,19 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Mage_Adminhtml_Blo
         }
         // ---------------
 
+        // ---------------
+        if (!is_null($magentoOrder) && $magentoOrder->hasShipments()) {
+            $url = $this->getUrl('*/adminhtml_order/resubmitShippingInfo', array('id' => $this->order->getId()));
+            $data = array(
+                'class'   => '',
+                'label'   => Mage::helper('M2ePro')->__('Resend Shipping Information'),
+                'onclick' => 'setLocation(\''.$url.'\');',
+            );
+            $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+            $this->setChild('resubmit_shipping_info', $buttonBlock);
+        }
+        // ---------------
+
         // Shipping data
         // ---------------
         /** @var $shippingAddress Ess_M2ePro_Model_Ebay_Order_ShippingAddress */
@@ -43,6 +66,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Mage_Adminhtml_Blo
 
         $this->shippingAddress = $shippingAddress->getData();
         $this->shippingAddress['country_name'] = $shippingAddress->getCountryName();
+        // ---------------
+
+        // Global Shipping data
+        // ---------------
+        $globalShippingDetails = $this->order->getChildObject()->getGlobalShippingDetails();
+        if (!empty($globalShippingDetails)) {
+            $this->ebayWarehouseAddress = $globalShippingDetails['warehouse_address'];
+            $this->globalShippingServiceDetails = $globalShippingDetails['service_details'];
+        }
         // ---------------
 
         $this->setChild('item', $this->getLayout()->createBlock('M2ePro/adminhtml_ebay_order_view_item'));
@@ -53,29 +85,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_Form extends Mage_Adminhtml_Blo
         ));
 
         return parent::_beforeToHtml();
-    }
-
-    public function getTaxSuffix()
-    {
-        if ($this->order->getChildObject()->hasVat()) {
-            return ' (' . Mage::helper('M2ePro')->__('Incl. Tax') .') ';
-        } else if ($this->order->getChildObject()->hasTax()) {
-            return ' (' . Mage::helper('M2ePro')->__('Excl. Tax') .') ';
-        }
-        return '';
-    }
-
-    public function getShippingTaxSuffix()
-    {
-        $ebayOrder = $this->order->getChildObject();
-
-        if ($ebayOrder->isShippingPriceIncludesTax()) {
-            return ' (' . Mage::helper('M2ePro')->__('Incl. Tax') . ') ';
-        } else if ($ebayOrder->getTaxRate() > 0) {
-            return ' (' . Mage::helper('M2ePro')->__('Excl. Tax') . ') ';
-        }
-
-        return '';
     }
 
     private function getStore()

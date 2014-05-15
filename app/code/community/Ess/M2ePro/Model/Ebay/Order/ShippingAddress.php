@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order_ShippingAddress
@@ -17,6 +17,7 @@ class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order
             'city'           => $this->getData('city'),
             'postcode'       => $this->getPostalCode(),
             'telephone'      => $this->getPhone(),
+            'company'        => $this->getData('company'),
             'street'         => array_filter($this->getData('street'))
         );
     }
@@ -25,7 +26,7 @@ class Ess_M2ePro_Model_Ebay_Order_ShippingAddress extends Ess_M2ePro_Model_Order
     {
         $email = $this->order->getData('buyer_email');
 
-        if (stripos($email, 'Invalid Request') !== false || $email == '') {
+        if (stripos($email, 'Invalid Request') !== false || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $email = str_replace(' ', '-', strtolower($this->order->getChildObject()->getBuyerUserId()));
             $email .= Ess_M2ePro_Model_Magento_Customer::FAKE_EMAIL_POSTFIX;
         }

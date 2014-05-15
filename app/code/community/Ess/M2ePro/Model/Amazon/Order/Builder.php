@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
@@ -211,7 +211,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
      */
     private function createOrUpdateOrder()
     {
-        if ($this->getData('status') == Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED) {
+        if (!$this->isNew() && $this->getData('status') == Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED) {
             $this->order->setData('status', Ess_M2ePro_Model_Amazon_Order::STATUS_CANCELED);
             $this->order->setData('purchase_update_date', $this->getData('purchase_update_date'));
         } else {
@@ -307,7 +307,7 @@ class Ess_M2ePro_Model_Amazon_Order_Builder extends Mage_Core_Model_Abstract
         }
 
         $magentoOrderComments = array();
-        $magentoOrderComments[] = 'Order was canceled on Amazon.';
+        $magentoOrderComments[] = '<b>Attention!</b> Order was canceled on Amazon.';
 
         try {
             $this->order->cancelMagentoOrder();

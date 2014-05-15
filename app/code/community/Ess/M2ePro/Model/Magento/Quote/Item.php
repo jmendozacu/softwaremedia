@@ -1,13 +1,13 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Magento_Quote_Item
 {
-    /** @var Ess_M2ePro_Model_Magento_Quote */
-    private $quoteBuilder = NULL;
+    /** @var Mage_Sales_Model_Quote */
+    private $quote = NULL;
 
     /** @var Ess_M2ePro_Model_Order_Item_Proxy */
     private $proxyItem = NULL;
@@ -18,21 +18,11 @@ class Ess_M2ePro_Model_Magento_Quote_Item
     /** @var Mage_GiftMessage_Model_Message */
     private $giftMessage = NULL;
 
-    private $channelCurrencyPrice = 0;
-
     // ########################################
 
-    public function setQuoteBuilder(Ess_M2ePro_Model_Magento_Quote $quoteBuilder)
+    public function init(Mage_Sales_Model_Quote $quote, Ess_M2ePro_Model_Order_Item_Proxy $proxyItem)
     {
-        $this->quoteBuilder = $quoteBuilder;
-
-        return $this;
-    }
-
-    // ########################################
-
-    public function setProxyItem(Ess_M2ePro_Model_Order_Item_Proxy $proxyItem)
-    {
+        $this->quote = $quote;
         $this->proxyItem = $proxyItem;
 
         return $this;
@@ -63,10 +53,6 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         // tax class id should be set before price calculation
         $this->product->setTaxClassId($this->getProductTaxClassId());
 
-        $price = $this->getBaseCurrencyPrice();
-        $this->product->setPrice($price);
-        $this->product->setSpecialPrice($price);
-
         return $this->product;
     }
 
@@ -78,7 +64,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $associatedProductId = reset($associatedProducts);
 
         $product = Mage::getModel('catalog/product')
-            ->setStoreId($this->quoteBuilder->getQuote()->getStoreId())
+            ->setStoreId($this->quote->getStoreId())
             ->load($associatedProductId);
 
         return $product->getId() ? $product : null;
@@ -86,103 +72,20 @@ class Ess_M2ePro_Model_Magento_Quote_Item
 
     // ########################################
 
-    /**
-     * Return product price without conversion to store base currency
-     *
-     * @return float
-     */
-    public function getChannelCurrencyPrice()
-    {
-        $this->calculateChannelCurrencyPrice();
-
-        return $this->channelCurrencyPrice;
-    }
-
-    /**
-     * Return product price converted to store base currency
-     *
-     * @return float
-     */
-    private function getBaseCurrencyPrice()
-    {
-        $this->calculateChannelCurrencyPrice();
-
-        $currency = $this->quoteBuilder->getProxyOrder()->getCurrency();
-        $store    = $this->quoteBuilder->getQuote()->getStore();
-        $price    = $this->channelCurrencyPrice;
-
-        if (in_array($currency, $store->getAvailableCurrencyCodes(true))) {
-            $currencyConvertRate = $store->getBaseCurrency()->getRate($currency);
-            $currencyConvertRate == 0 && $currencyConvertRate = 1;
-            $price = $price / $currencyConvertRate;
-        }
-
-        return $price;
-    }
-
-    /**
-     * Calculate product price based on tax information and account settings
-     */
-    private function calculateChannelCurrencyPrice()
-    {
-        if ($this->channelCurrencyPrice > 0) {
-            return;
-        }
-
-        /** @var $taxCalculator Mage_Tax_Model_Calculation */
-        $taxCalculator = Mage::getSingleton('tax/calculation');
-        $this->channelCurrencyPrice = $this->proxyItem->getPrice();
-
-        if ($this->needToAddTax()) {
-            $this->channelCurrencyPrice += $taxCalculator
-                ->calcTaxAmount($this->channelCurrencyPrice, $this->proxyItem->getTaxRate(), false, false);
-        } elseif ($this->needToSubtractTax()) {
-            $this->channelCurrencyPrice -= $taxCalculator
-                ->calcTaxAmount($this->channelCurrencyPrice, $this->proxyItem->getTaxRate(), true, false);
-        }
-
-        $this->channelCurrencyPrice = round($this->channelCurrencyPrice, 2);
-    }
-
-    private function needToAddTax()
-    {
-        return $this->quoteBuilder->getProxyOrder()->isTaxModeNone() && $this->proxyItem->hasTax();
-    }
-
-    private function needToSubtractTax()
-    {
-        if (!$this->quoteBuilder->getProxyOrder()->isTaxModeChannel() &&
-            !$this->quoteBuilder->getProxyOrder()->isTaxModeMixed()) {
-            return false;
-        }
-
-        if (!$this->proxyItem->hasVat()) {
-            return false;
-        }
-
-        /** @var $taxCalculator Mage_Tax_Model_Calculation */
-        $taxCalculator = Mage::getSingleton('tax/calculation');
-        $store = $this->quoteBuilder->getQuote()->getStore();
-
-        $request = new Varien_Object();
-        $request->setProductClassId($this->getProduct()->getTaxClassId());
-
-        return $this->proxyItem->getTaxRate() != $taxCalculator->getStoreRate($request, $store);
-    }
-
-    //-----------------------------------------
-
     private function getProductTaxClassId()
     {
-        $proxyOrder = $this->quoteBuilder->getProxyOrder();
+        $proxyOrder = $this->proxyItem->getProxyOrder();
         $taxRate = $this->proxyItem->getTaxRate();
-        $hasRatesForCountry = Mage::getSingleton('M2ePro/Magento_Tax_Helper')->hasRatesForCountry(
-            $this->quoteBuilder->getQuote()->getShippingAddress()->getCountryId()
-        );
+        $isOrderHasRate = $this->proxyItem->getProxyOrder()->getTaxRate() > 0;
+        $hasRatesForCountry = Mage::getSingleton('M2ePro/Magento_Tax_Helper')
+            ->hasRatesForCountry($this->quote->getShippingAddress()->getCountryId());
+        $calculationBasedOnOrigin = Mage::getSingleton('M2ePro/Magento_Tax_Helper')
+            ->isCalculationBasedOnOrigin($this->quote->getStore());
 
         if ($proxyOrder->isTaxModeNone()
             || ($proxyOrder->isTaxModeChannel() && $taxRate == 0)
-            || ($proxyOrder->isTaxModeMagento() && !$hasRatesForCountry)
+            || ($proxyOrder->isTaxModeMagento() && !$hasRatesForCountry && !$calculationBasedOnOrigin)
+            || ($proxyOrder->isTaxModeMixed() && $taxRate == 0 && $isOrderHasRate)
         ) {
             return Ess_M2ePro_Model_Magento_Product::TAX_CLASS_ID_NONE;
         }
@@ -200,8 +103,8 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $taxRuleBuilder = Mage::getModel('M2ePro/Magento_Tax_Rule_Builder');
         $taxRuleBuilder->buildTaxRule(
             $taxRate,
-            $this->quoteBuilder->getQuote()->getShippingAddress()->getCountryId(),
-            $this->quoteBuilder->getQuote()->getCustomerTaxClassId()
+            $this->quote->getShippingAddress()->getCountryId(),
+            $this->quote->getCustomerTaxClassId()
         );
 
         $taxRule = $taxRuleBuilder->getRule();
@@ -217,10 +120,10 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $taxCalculator = Mage::getSingleton('tax/calculation');
 
         $request = $taxCalculator->getRateRequest(
-            $this->quoteBuilder->getQuote()->getShippingAddress(),
-            $this->quoteBuilder->getQuote()->getBillingAddress(),
-            $this->quoteBuilder->getQuote()->getCustomerTaxClassId(),
-            $this->quoteBuilder->getQuote()->getStore()
+            $this->quote->getShippingAddress(),
+            $this->quote->getBillingAddress(),
+            $this->quote->getCustomerTaxClassId(),
+            $this->quote->getStore()
         );
         $request->setProductClassId($this->getProduct()->getTaxClassId());
 
@@ -244,8 +147,12 @@ class Ess_M2ePro_Model_Magento_Quote_Item
         $magentoProduct = Mage::getModel('M2ePro/Magento_Product')->setProduct($this->getProduct());
         $options = $this->proxyItem->getOptions();
 
+        if (empty($options)) {
+            return $request;
+        }
+
         if ($magentoProduct->isSimpleType()) {
-            !empty($options) && $request->setOptions($options);
+            $request->setOptions($options);
         } else if ($magentoProduct->isBundleType()) {
             $request->setBundleOption($options);
         } else if ($magentoProduct->isConfigurableType()) {
@@ -259,7 +166,9 @@ class Ess_M2ePro_Model_Magento_Quote_Item
 
     public function getGiftMessageId()
     {
-        return $this->getGiftMessage() ? $this->getGiftMessage()->getId() : null;
+        $giftMessage = $this->getGiftMessage();
+
+        return $giftMessage ? $giftMessage->getId() : null;
     }
 
     public function getGiftMessage()
@@ -274,7 +183,7 @@ class Ess_M2ePro_Model_Magento_Quote_Item
             return NULL;
         }
 
-        $giftMessageData['customer_id'] = (int)$this->quoteBuilder->getQuote()->getCustomerId();
+        $giftMessageData['customer_id'] = (int)$this->quote->getCustomerId();
         /** @var $giftMessage Mage_GiftMessage_Model_Message */
         $giftMessage = Mage::getModel('giftmessage/message')->addData($giftMessageData);
 

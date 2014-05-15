@@ -1,11 +1,18 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mage_Adminhtml_Block_Widget_Grid
 {
+    // ##########################################################
+
+    /** @var $order Ess_M2ePro_Model_Order */
+    protected $order = null;
+
+    // ##########################################################
+
     public function __construct()
     {
         parent::__construct();
@@ -23,8 +30,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
         $this->setFilterVisibility(false);
         //------------------------------
 
-        /** @var $order Ess_M2ePro_Model_Order */
-        $this->order = Mage::helper('M2ePro')->getGlobalValue('temp_data');
+        $this->order = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
     }
 
     protected function _prepareCollection()
@@ -63,7 +69,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
             'index' => 'sum',
             'type' => 'number',
             'sortable' => false,
-            'frame_callback' => array($this, 'callbackColumnAmount')
+            'frame_callback' => array($this, 'callbackColumnSum')
         ));
 
         $this->addColumn('transaction_date', array(
@@ -81,7 +87,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
 
     public function callbackColumnTransactionId($value, $row, $column, $isExport)
     {
-        if (strtolower($this->order->getData('payment_method')) != 'paypal') {
+        if (strtolower($this->order->getChildObject()->getPaymentMethod()) != 'paypal') {
             return $value;
         }
 
@@ -92,12 +98,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_View_ExternalTransaction extends Mag
 
     public function callbackColumnFee($value, $row, $column, $isExport)
     {
-        return Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getData('currency'), $value);
+        return Mage::getSingleton('M2ePro/Currency')->formatPrice(
+            $this->order->getChildObject()->getCurrency(), $value
+        );
     }
 
-    public function callbackColumnAmount($value, $row, $column, $isExport)
+    public function callbackColumnSum($value, $row, $column, $isExport)
     {
-        return Mage::getSingleton('M2ePro/Currency')->formatPrice($this->order->getData('currency'), $value);
+        return Mage::getSingleton('M2ePro/Currency')->formatPrice(
+            $this->order->getChildObject()->getCurrency(), $value
+        );
     }
 
     public function getRowUrl($row)

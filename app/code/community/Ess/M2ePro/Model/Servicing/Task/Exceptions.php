@@ -33,15 +33,21 @@ class Ess_M2ePro_Model_Servicing_Task_Exceptions implements Ess_M2ePro_Model_Ser
         $this->initResponseData();
         $data = $this->prepareAndCheckReceivedData($data);
 
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
+            '/debug/exceptions/','filters_mode',(int)$data['is_filter_enable']
+        );
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
+            '/debug/fatal_error/','send_to_server',(int)$data['send_to_server']['fatal']
+        );
+        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
+            '/debug/exceptions/','send_to_server',(int)$data['send_to_server']['exception']
+        );
+
         $receivedFilters = $data['filters'];
         $currentFilters = $this->getCurrentFilters();
 
         $this->addNewReceivedFilters($currentFilters,$receivedFilters);
         $this->clearRemovedFilters($currentFilters,$receivedFilters);
-
-        Mage::helper('M2ePro/Module')->getConfig()->setGroupValue(
-            '/debug/exceptions/','filters_mode',(int)$data['is_filter_enable']
-        );
     }
 
     // ########################################
@@ -55,8 +61,22 @@ class Ess_M2ePro_Model_Servicing_Task_Exceptions implements Ess_M2ePro_Model_Ser
         $this->connectionWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
     }
 
+    // ########################################
+
     private function prepareAndCheckReceivedData($data)
     {
+        //-- Send To Server
+        // -------------------------------------
+        if (!isset($data['send_to_server']['fatal']) || !is_bool($data['send_to_server']['fatal'])) {
+            $data['send_to_server']['fatal'] = true;
+        }
+        if (!isset($data['send_to_server']['exception']) || !is_bool($data['send_to_server']['exception'])) {
+            $data['send_to_server']['exception'] = true;
+        }
+        // -------------------------------------
+
+        //-- Exceptions Filters
+        // -------------------------------------
         if (!isset($data['is_filter_enable']) || !is_bool($data['is_filter_enable'])) {
             $data['is_filter_enable'] = false;
         }
@@ -68,8 +88,8 @@ class Ess_M2ePro_Model_Servicing_Task_Exceptions implements Ess_M2ePro_Model_Ser
         $validatedFilters = array();
 
         $allowedFilterTypes = array(
-            Ess_M2ePro_Helper_Exception::FILTER_TYPE_TYPE,
-            Ess_M2ePro_Helper_Exception::FILTER_TYPE_INFO
+            Ess_M2ePro_Helper_Module_Exception::FILTER_TYPE_TYPE,
+            Ess_M2ePro_Helper_Module_Exception::FILTER_TYPE_INFO
         );
 
         foreach ($data['filters'] as $filter) {
@@ -83,6 +103,7 @@ class Ess_M2ePro_Model_Servicing_Task_Exceptions implements Ess_M2ePro_Model_Ser
         }
 
         $data['filters'] = $validatedFilters;
+        // -------------------------------------
 
         return $data;
     }
