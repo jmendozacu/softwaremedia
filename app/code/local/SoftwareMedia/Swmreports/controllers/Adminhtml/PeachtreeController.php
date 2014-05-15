@@ -42,8 +42,8 @@ class SoftwareMedia_Swmreports_Adminhtml_PeachtreeController extends Mage_Adminh
 		$content .= '"Pending Orders"' . PHP_EOL;
 		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_pending_grid')->getCsv();
 		$content .= PHP_EOL . PHP_EOL;
-		$content .= '"Freight Orders"' . PHP_EOL;
-		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_freight_grid')->getCsv();
+		$content .= '"Extra Orders"' . PHP_EOL;
+		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_extra_grid')->getCsv();
 		$content .= PHP_EOL . PHP_EOL;
 		$content .= '"Discount Orders"' . PHP_EOL;
 		$content .= $this->getLayout()->createBlock('swmreports/adminhtml_peachtree_discount_grid')->getCsv();
