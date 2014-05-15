@@ -51,11 +51,30 @@ class OCM_Fulfillment_Model_Observer {
 			$shippingMethod = $order->getShippingMethod();
 
 			$items = $order->getAllItems();
+			
+			//Generate items comment
+			$itemsComment = "";
+			
 			foreach ($items as $item) {
 				if ($item->getHasChildren())
 					continue;
-
+				
 				$prod = Mage::getModel('catalog/product')->load($item->getProductId());
+				
+				//Generate order comment
+				$comment = "";
+				//Check warehouse QTY and price
+				foreach (array('techdata','synnex','ingram') as $warehouse_name) {
+					if($prod->getData($warehouse_name.'_price') > 0) {
+						$comment .= "Available at " . ucfirst($warehouse_name) . " for " . $prod->getData($warehouse_name.'_price') . "<br>";
+					}
+				}
+				if ($comment) {
+					$itemsComment .= "<br><u>" . $item->getSku() . "</u><br>";
+					$itemsComment .= $comment ."<br>";
+				}
+				
+				
 				$links = $prod->getSubstitutionLinkCollection();
 
 				if ($prod->getData('package_id') == 1084) {
@@ -75,7 +94,10 @@ class OCM_Fulfillment_Model_Observer {
 					$is_virtual = true;
 				}
 			}
-
+			
+			if ($itemsComment)
+				$order->setState('processing', 'processing', '<b><i>Distribution Info</i></b><br>' . $itemsComment, FALSE)->save();
+			
 			if (count($links) > 0)
 				$tagToOrderResource->addIntoDB($order->getId(), self::TAG_SUB);
 
