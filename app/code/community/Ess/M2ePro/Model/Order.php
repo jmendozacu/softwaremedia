@@ -1,13 +1,10 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 /**
- * @method Ess_M2ePro_Model_Ebay_Order|Ess_M2ePro_Model_Amazon_Order|Ess_M2ePro_Model_Buy_Order getChildObject()
- * @method Ess_M2ePro_Model_Order setStatusUpdateRequired(boolean $flag)
- * @method boolean getStatusUpdateRequired()
  */
 class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -165,6 +162,12 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     // ########################################
 
+    /**
+     * Mark whole order as one that requires user action
+     *
+     * @param $required
+     * @return $this
+     */
     public function setActionRequired($required)
     {
         $this->setData('state', $required ? self::STATE_ACTION_REQUIRED : self::STATE_NORMAL);
@@ -220,6 +223,8 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     // ---------------------------------------
 
     /**
+     * Check whether the order has only single item ordered
+     *
      * @return bool
      */
     public function isSingle()
@@ -228,6 +233,8 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     }
 
     /**
+     * Check whether the order has multiple items ordered
+     *
      * @return bool
      */
     public function isCombined()
@@ -237,18 +244,52 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     // ---------------------------------------
 
-    public function hasListingItems()
+    /**
+     * Get instances of the channel items (Ebay_Item, Amazon_Item etc)
+     *
+     * @return array
+     */
+    public function getChannelItems()
     {
-        $relatedChannelItems = $this->getChildObject()->getRelatedChannelItems();
+        $channelItems = array();
 
-        return count($relatedChannelItems) > 0;
+        foreach ($this->getItemsCollection()->getItems() as $item) {
+            $channelItem = $item->getChildObject()->getChannelItem();
+
+            if (is_null($channelItem)) {
+                continue;
+            }
+
+            $channelItems[] = $channelItem;
+        }
+
+        return $channelItems;
     }
 
+    // ---------------------------------------
+
+    /**
+     * Check whether the order has items, listed by M2E Pro (also true for mapped 3rd party listings)
+     *
+     * @return bool
+     */
+    public function hasListingItems()
+    {
+        $channelItems = $this->getChannelItems();
+
+        return count($channelItems) > 0;
+    }
+
+    /**
+     * Check whether the order has items, listed by 3rd party software
+     *
+     * @return bool
+     */
     public function hasOtherListingItems()
     {
-        $relatedChannelItems = $this->getChildObject()->getRelatedChannelItems();
+        $channelItems = $this->getChannelItems();
 
-        return count($relatedChannelItems) != $this->getItemsCollection()->count();
+        return count($channelItems) != $this->getItemsCollection()->count();
     }
 
     // ########################################
@@ -265,22 +306,22 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     public function addSuccessLog($message, array $params = array())
     {
-        $this->addLog($message, Ess_M2ePro_Model_Order_Log::TYPE_SUCCESS, $params);
+        $this->addLog($message, Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS, $params);
     }
 
     public function addNoticeLog($message, array $params = array())
     {
-        $this->addLog($message, Ess_M2ePro_Model_Order_Log::TYPE_NOTICE, $params);
+        $this->addLog($message, Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE, $params);
     }
 
     public function addWarningLog($message, array $params = array())
     {
-        $this->addLog($message, Ess_M2ePro_Model_Order_Log::TYPE_WARNING, $params);
+        $this->addLog($message, Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING, $params);
     }
 
     public function addErrorLog($message, array $params = array())
     {
-        $this->addLog($message, Ess_M2ePro_Model_Order_Log::TYPE_ERROR, $params);
+        $this->addLog($message, Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR, $params);
     }
 
     // ########################################
@@ -292,7 +333,6 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
     {
         if (is_null($this->shippingAddress)) {
             $this->shippingAddress = $this->getChildObject()->getShippingAddress();
-            $this->shippingAddress->setOrder($this);
         }
 
         return $this->shippingAddress;
@@ -338,6 +378,12 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     // ########################################
 
+    /**
+     * Find the store, where order should be placed
+     *
+     * @param bool $strict
+     * @throws Exception
+     */
     public function associateWithStore($strict = true)
     {
         $storeId = $this->getStoreId() ? $this->getStoreId() : $this->getChildObject()->getAssociatedStoreId();
@@ -365,6 +411,12 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
 
     // ########################################
 
+    /**
+     * Associate each order item with product in magento
+     *
+     * @param bool $strict
+     * @throws Exception|null
+     */
     public function associateItemsWithProducts($strict = true)
     {
         $exception = null;
@@ -383,6 +435,29 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
         if ($strict && $exception) {
             throw $exception;
         }
+    }
+
+    // ########################################
+
+    public function isReservable()
+    {
+        if (!is_null($this->getMagentoOrderId())) {
+            return false;
+        }
+
+        if ($this->getAccount()->getChildObject()->getQtyReservationDays() <= 0) {
+            return false;
+        }
+
+        if ($this->getReserve()->isPlaced()) {
+            return false;
+        }
+
+        if (method_exists($this->getChildObject(), 'isReservable')) {
+            return $this->getChildObject()->isReservable();
+        }
+
+        return true;
     }
 
     // ########################################
@@ -445,46 +520,51 @@ class Ess_M2ePro_Model_Order extends Ess_M2ePro_Model_Component_Parent_Abstract
             /** @var $magentoOrderBuilder Ess_M2ePro_Model_Magento_Order */
             $magentoOrderBuilder = Mage::getModel('M2ePro/Magento_Order', $magentoQuoteBuilder->getQuote());
             $magentoOrderBuilder->buildOrder();
-            $magentoOrderBuilder->addComments($proxy->getComments());
 
             $this->magentoOrder = $magentoOrderBuilder->getOrder();
-
-            $this->setData('magento_order_id', $this->magentoOrder->getId());
-            $this->setActionRequired(false);
-            $this->save();
 
             unset($magentoQuoteBuilder);
             unset($magentoOrderBuilder);
             // ---------------
 
-            $this->afterCreateMagentoOrder();
-
         } catch (Exception $e) {
+
+            Mage::dispatchEvent('m2epro_order_place_failure', array('order' => $this));
 
             $this->addErrorLog('Magento Order was not created. Reason: %msg%', array('msg' => $e->getMessage()));
 
             // reserve qty back only if it was canceled before the order creation process started
             // ---------------
-            if (is_null($this->getMagentoOrderId())
-                && $this->getReserve()->getFlag('order_reservation')
-                && $this->getAccount()->getChildObject()->getQtyReservationDays() > 0
-            ) {
-                $reserve = $this->getReserve();
-
-                if (!$reserve->isPlaced()) {
-                    $reserve->place();
-                }
+            if ($this->isReservable() && $this->getReserve()->getFlag('order_reservation')) {
+                $this->getReserve()->place();
             }
             // ---------------
 
             throw $e;
         }
 
+        $this->setData('magento_order_id', $this->magentoOrder->getId());
+        $this->setActionRequired(false);
+        $this->save();
+
+        $this->afterCreateMagentoOrder();
+
         return $this->magentoOrder;
     }
 
     public function afterCreateMagentoOrder()
     {
+        // add history comments
+        //------------------------------
+        /** @var $magentoOrderUpdater Ess_M2ePro_Model_Magento_Order_Updater */
+        $magentoOrderUpdater = Mage::getModel('M2ePro/Magento_Order_Updater');
+        $magentoOrderUpdater->setMagentoOrder($this->getMagentoOrder());
+        $magentoOrderUpdater->updateComments($this->getProxy()->getComments());
+        $magentoOrderUpdater->finishUpdate();
+        //------------------------------
+
+        Mage::dispatchEvent('m2epro_order_place_success', array('order' => $this));
+
         $this->addSuccessLog('Magento Order #%order_id% was created.', array(
             '!order_id' => $this->getMagentoOrder()->getRealOrderId()
         ));

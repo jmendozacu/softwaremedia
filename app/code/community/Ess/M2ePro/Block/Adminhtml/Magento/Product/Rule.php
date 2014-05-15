@@ -4,12 +4,19 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule extends Mage_Adminhtml_Block_Widget_Form
+class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule
+    extends Mage_Adminhtml_Block_Widget_Form
 {
+    // ########################################
+
     protected function _prepareForm()
     {
+        /** @var Ess_M2ePro_Model_Magento_Product_Rule $model */
         $model = $this->getData('rule_model');
+        $storeId = $model->getStoreId();
         $prefix = $model->getPrefix();
+        $attributeSets = is_array($model->getAttributeSets())
+            ? implode(',', $model->getAttributeSets()) : $model->getAttributeSets();
 
         $form = new Varien_Data_Form();
         $form->setHtmlId($prefix);
@@ -17,7 +24,13 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule extends Mage_Adminhtml_Blo
         $renderer = Mage::getBlockSingleton('adminhtml/widget_form_renderer_fieldset')
             ->setTemplate('M2ePro/magento/product/rule.phtml')
             ->setNewChildUrl(
-                $this->getUrl('*/adminhtml_general/magentoRuleGetNewConditionHtml', array('prefix' => $prefix))
+                $this->getUrl(
+                    '*/adminhtml_general/magentoRuleGetNewConditionHtml',
+                    array(
+                        'prefix' => $prefix,
+                        'store' => $storeId,
+                    )
+                )
             );
 
         $fieldset = $form->addFieldset($prefix, array())->setRenderer($renderer);
@@ -33,4 +46,6 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Product_Rule extends Mage_Adminhtml_Blo
 
         return parent::_prepareForm();
     }
+
+    // ########################################
 }

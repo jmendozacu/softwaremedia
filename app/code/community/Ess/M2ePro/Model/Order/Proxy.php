@@ -1,9 +1,12 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
+/**
+ * Provides all needed information for order creation in magento.
+ */
 abstract class Ess_M2ePro_Model_Order_Proxy
 {
     const CHECKOUT_GUEST    = 'guest';
@@ -38,24 +41,34 @@ abstract class Ess_M2ePro_Model_Order_Proxy
     public function getItems()
     {
         if (is_null($this->items)) {
-            $this->items = array();
+            $items = array();
 
             foreach ($this->order->getParentObject()->getItemsCollection()->getItems() as $item) {
-                $this->items[] = $item->getProxy();
+                $items[] = $item->getProxy();
             }
 
-            $this->mergeItems($this->items);
+            $this->items = $this->mergeItems($items);
         }
 
-        return  $this->items;
+        return $this->items;
     }
 
     /**
+     * Order may have multiple items ordered, but some of them may be mapped to single product in magento.
+     * We have to merge them to avoid qty and price calculation issues.
+     *
      * @param Ess_M2ePro_Model_Order_Item_Proxy[] $items
+     * @return Ess_M2ePro_Model_Order_Item_Proxy[]
      */
-    protected function mergeItems(array &$items)
+    protected function mergeItems(array $items)
     {
-        foreach ($items as $key => $item) {
+        $unsetItems = array();
+
+        foreach ($items as $key => &$item) {
+            if (in_array($key, $unsetItems)) {
+                continue;
+            }
+
             foreach ($items as $nestedKey => $nestedItem) {
                 if ($key == $nestedKey) {
                     continue;
@@ -67,9 +80,15 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
                 $item->merge($nestedItem);
 
-                unset($items[$nestedKey]);
+                $unsetItems[] = $nestedKey;
             }
         }
+
+        foreach ($unsetItems as $key) {
+            unset($items[$key]);
+        }
+
+        return $items;
     }
 
     // ########################################
@@ -139,6 +158,20 @@ abstract class Ess_M2ePro_Model_Order_Proxy
      */
     abstract public function getCustomer();
 
+    public function getCustomerFirstName()
+    {
+        $addressData = $this->getAddressData();
+
+        return $addressData['firstname'];
+    }
+
+    public function getCustomerLastName()
+    {
+        $addressData = $this->getAddressData();
+
+        return $addressData['lastname'];
+    }
+
     /**
      * Return shipping address info
      *
@@ -172,9 +205,24 @@ abstract class Ess_M2ePro_Model_Order_Proxy
         return $this->addressData;
     }
 
+    public function getBillingAddressData()
+    {
+        return $this->getAddressData();
+    }
+
+    /**
+     * Check whether the billing address information should be validated or not
+     *
+     * @return bool
+     */
+    public function shouldIgnoreBillingAddressValidation()
+    {
+        return false;
+    }
+
     // ########################################
 
-    private function getNameParts($fullName)
+    protected function getNameParts($fullName)
     {
         $fullName = trim($fullName);
 
@@ -200,9 +248,16 @@ abstract class Ess_M2ePro_Model_Order_Proxy
      */
     abstract public function getCurrency();
 
-    protected function convertPrice($price)
+    public function convertPrice($price)
     {
-        return Mage::getSingleton('M2ePro/Currency')->convertPrice($price, $this->getCurrency(), $this->getStore());
+        return Mage::getSingleton('M2ePro/Currency')
+            ->convertPrice($price, $this->getCurrency(), $this->getStore());
+    }
+
+    public function convertPriceToBase($price)
+    {
+        return Mage::getSingleton('M2ePro/Currency')
+            ->convertPriceToBaseCurrency($price, $this->getCurrency(), $this->getStore());
     }
 
     // ########################################
@@ -223,15 +278,32 @@ abstract class Ess_M2ePro_Model_Order_Proxy
      */
     abstract public function getShippingData();
 
+    abstract protected function getShippingPrice();
+
+    /**
+     * Return shipping price converted to the base store currency
+     *
+     * @return float
+     */
+    protected function getBaseShippingPrice()
+    {
+        return $this->convertPriceToBase($this->getShippingPrice());
+    }
+
     // ########################################
 
+    /**
+     * Return comments, which should be added to the order history
+     *
+     * @return array
+     */
     public function getComments()
     {
         return array_merge($this->getGeneralComments(), $this->getChannelComments());
     }
 
     /**
-     * Return channel related order comments array
+     * Return channel related order comments
      *
      * @return array
      */
@@ -241,7 +313,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
     }
 
     /**
-     * Return general order comments array
+     * Return general order comments
      *
      * @return array
      */
@@ -251,7 +323,7 @@ abstract class Ess_M2ePro_Model_Order_Proxy
 
         /** @var $currencyHelper Ess_M2ePro_Model_Currency */
         $currencyHelper = Mage::getSingleton('M2ePro/Currency');
-        $currencyConvertRate = $currencyHelper->getConvertRateFromBase($this->getCurrency(), $store);
+        $currencyConvertRate = $currencyHelper->getConvertRateFromBase($this->getCurrency(), $store, 4);
 
         if ($currencyHelper->isBase($this->getCurrency(), $store)) {
             return array();

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Observer_Shipment
@@ -12,9 +12,9 @@ class Ess_M2ePro_Model_Observer_Shipment
     {
         try {
 
-            if (Mage::helper('M2ePro')->getGlobalValue('skip_shipment_observer')) {
+            if (Mage::helper('M2ePro/Data_Global')->getValue('skip_shipment_observer')) {
                 // Not process invoice observer when set such flag
-                Mage::helper('M2ePro')->unsetGlobalValue('skip_shipment_observer');
+                Mage::helper('M2ePro/Data_Global')->unsetValue('skip_shipment_observer');
                 return;
             }
 
@@ -30,18 +30,22 @@ class Ess_M2ePro_Model_Observer_Shipment
                 return;
             }
 
+            if (is_null($order)) {
+                return;
+            }
+
+            if (!in_array($order->getComponentMode(), Mage::helper('M2ePro/Component')->getActiveComponents())) {
+                return;
+            }
+
             Mage::getSingleton('M2ePro/Order_Log_Manager')
-                ->setInitiator(Ess_M2ePro_Model_Order_Log::INITIATOR_EXTENSION);
+                ->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
             // -------------
             /** @var $shipmentHandler Ess_M2ePro_Model_Order_Shipment_Handler */
-            $shipmentHandler = $this->getShipmentHandler($order);
+            $shipmentHandler = Mage::getModel('M2ePro/Order_Shipment_Handler')->factory($order->getComponentMode());
             $result = $shipmentHandler->handle($order, $shipment);
             // -------------
-
-            if (!is_null(Mage::helper('M2ePro')->getGlobalValue('cron_running'))) {
-                return;
-            }
 
             switch ($result) {
                 case Ess_M2ePro_Model_Order_Shipment_Handler::HANDLE_RESULT_SUCCEEDED:
@@ -54,34 +58,12 @@ class Ess_M2ePro_Model_Observer_Shipment
 
         } catch (Exception $exception) {
 
-            Mage::helper('M2ePro/Exception')->process($exception,true);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
 
         }
     }
 
     //####################################
-
-    private function getShipmentHandler(Ess_M2ePro_Model_Order $order)
-    {
-        $handler = null;
-
-        switch ($order->getComponentMode()) {
-            case Ess_M2ePro_Helper_Component_Buy::NICK:
-            case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                $handler = Mage::getModel('M2ePro/Order_Shipment_Handler');
-                break;
-
-            case Ess_M2ePro_Helper_Component_Ebay::NICK:
-                $handler = Mage::getModel('M2ePro/Ebay_Order_Shipment_Handler');
-                break;
-        }
-
-        if (!$handler) {
-            throw new LogicException('Shipment handler not found.');
-        }
-
-        return $handler;
-    }
 
     private function addSessionSuccessMessage(Ess_M2ePro_Model_Order $order)
     {
@@ -97,7 +79,9 @@ class Ess_M2ePro_Model_Observer_Shipment
             case Ess_M2ePro_Helper_Component_Buy::NICK:
                 $message = Mage::helper('M2ePro')->__('Updating Rakuten.com Order Status to Shipped in Progress...');
                 break;
-
+            case Ess_M2ePro_Helper_Component_Play::NICK:
+                $message = Mage::helper('M2ePro')->__('Updating Play.com Order Status to Shipped in Progress...');
+                break;
         }
 
         if ($message) {
@@ -107,7 +91,13 @@ class Ess_M2ePro_Model_Observer_Shipment
 
     private function addSessionErrorMessage(Ess_M2ePro_Model_Order $order)
     {
-        $url = Mage::helper('adminhtml')->getUrl('M2ePro/adminhtml_log/order', array('order_id' => $order->getId()));
+        if ($order->isComponentModeEbay()) {
+            $url = Mage::helper('adminhtml')
+                ->getUrl('M2ePro/adminhtml_ebay_log/order', array('order_id' => $order->getId()));
+        } else {
+            $url = Mage::helper('adminhtml')
+                ->getUrl('M2ePro/adminhtml_common_log/order', array('order_id' => $order->getId()));
+        }
 
         $startLink = '<a href="' . $url . '" target="_blank">';
         $endLink = '</a>';

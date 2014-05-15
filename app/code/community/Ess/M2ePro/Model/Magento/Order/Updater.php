@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Magento_Order_Updater
@@ -228,8 +228,7 @@ class Ess_M2ePro_Model_Magento_Order_Updater
         ) {
             $this->magentoOrder->setStatus($status);
         } else {
-        	if ($this->magentoOrder->getState() != Mage_Sales_Model_Order::STATE_PROCESSING)
-            	$this->magentoOrder->setState(Mage_Sales_Model_Order::STATE_PROCESSING, $status);
+            $this->magentoOrder->setState(Mage_Sales_Model_Order::STATE_PROCESSING, $status);
         }
 
         $this->needSave = true;

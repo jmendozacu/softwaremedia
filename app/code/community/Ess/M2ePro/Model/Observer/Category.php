@@ -1,238 +1,194 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Observer_Category
 {
+    private $cacheLoadedListings = array();
+    private $cacheAutoCategoriesByCategoryId = array();
+
     //####################################
 
     public function catalogCategoryChangeProducts(Varien_Event_Observer $observer)
     {
         try {
 
+            /** @var Mage_Catalog_Model_Category $category */
+            $category = $observer->getData('category');
+
+            $categoryId = (int)$category->getId();
+            $websiteId = (int)$category->getStore()->getWebsiteId();
+
             $changedProductsIds = $observer->getData('product_ids');
+            $postedProductsIds = array_keys($observer->getData('category')->getData('posted_products'));
 
             if (!is_array($changedProductsIds) || count($changedProductsIds) <= 0) {
                 return;
             }
 
-            $addedProducts = array();
-            $deletedProducts = array();
+            $websitesProductsIds = array(
+                0 => $changedProductsIds // website for default store view
+            );
 
-            $postedProductsIds = array_keys($observer->getData('category')->getData('posted_products'));
+            if ($websiteId == 0) {
 
-            foreach ($changedProductsIds as $productId) {
+                foreach ($changedProductsIds as $productId) {
+                    $productModel = Mage::getModel('M2ePro/Magento_Product')->setProductId($productId);
+                    foreach ($productModel->getWebsiteIds() as $websiteId) {
+                        $websitesProductsIds[$websiteId][] = $productId;
+                    }
+                }
 
-                if (in_array($productId,$postedProductsIds)) {
-                    $addedProducts[] = $productId;
-                } else {
-                    $deletedProducts[] = $productId;
+            } else {
+                $websitesProductsIds[$websiteId] = $changedProductsIds;
+            }
+
+            /** @var Ess_M2ePro_Model_Observer_Ebay_Category $ebayCategoryObserver */
+            $ebayCategoryObserver = Mage::getModel('M2ePro/Observer_Ebay_Category');
+
+            foreach ($websitesProductsIds as $websiteId => $productIds) {
+                foreach ($productIds as $productId) {
+
+                    if (in_array($productId,$postedProductsIds)) {
+                        $this->synchProductWithAddedCategoryId($productId,$categoryId,$websiteId);
+                        $ebayCategoryObserver->synchProductWithAddedCategoryId($productId,$categoryId,$websiteId);
+                    } else {
+                        $this->synchProductWithDeletedCategoryId($productId,$categoryId,$websiteId);
+                        $ebayCategoryObserver->synchProductWithDeletedCategoryId($productId,$categoryId,$websiteId);
+                    }
                 }
             }
 
-            if (count($addedProducts) <= 0 && count($deletedProducts) <= 0) {
-                return;
-            }
-
-            self::synchChangesWithListings($observer->getData('category')->getId(),
-                                           $addedProducts, $deletedProducts);
-
         } catch (Exception $exception) {
-
-            Mage::helper('M2ePro/Exception')->process($exception,true);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
             return;
         }
     }
 
     //####################################
 
-    public static function synchChangesWithListings($categoryId,
-                                                    $addedProducts,
-                                                    $deletedProducts)
+    public function synchProductWithAddedCategoryId($product, $categoryId, $websiteId)
     {
-        try {
+        $autoCategories = $this->getAutoCategoriesByCategory($categoryId);
 
-            // Check listings categories
-            //---------------------------
-            $listingsCategories = Mage::getModel('M2ePro/Listing_Category')
-                                            ->getCollection()
-                                            ->addFieldToFilter('category_id', $categoryId)
-                                            ->toArray();
+        foreach ($autoCategories as $autoCategory) {
 
-            if ($listingsCategories['totalRecords'] <= 0) {
-                return;
+            /** @var $autoCategory Ess_M2ePro_Model_Listing_Category */
+
+            /** @var $listing Ess_M2ePro_Model_Listing */
+            $listing = $this->getLoadedListing($autoCategory->getListingId());
+
+            if ((int)$listing->getData('store_website_id') != $websiteId) {
+                continue;
             }
 
-            $listingsIds = array();
-            foreach ($listingsCategories['items'] as $listingCategory) {
-                $listingsIds[] = (int)$listingCategory['listing_id'];
-            }
-            $listingsIds = array_unique($listingsIds);
-
-            if (count($listingsIds) <= 0) {
-                return;
+            if ($listing->isCategoriesAddActionNone()) {
+                continue;
             }
 
-            $listingsModels = array();
-            foreach ($listingsIds as $listingId) {
-
-                /** @var $tempModel Ess_M2ePro_Model_Listing */
-                $tempModel = Mage::getModel('M2ePro/Listing')->loadInstance($listingId);
-
-                if (!$tempModel->isSourceCategories()) {
-                    continue;
-                }
-
-                /** @var $listingStoreObject Mage_Core_Model_Store */
-                $listingStoreObject = Mage::getModel('core/store')->load($tempModel->getStoreId());
-                $tempModel->setData('store_website_id',$listingStoreObject->getWebsite()->getId());
-
-                $listingsModels[] = $tempModel;
+            if (!$listing->isSourceCategories() || $listing->isComponentModeEbay()) {
+                continue;
             }
 
-            if (count($listingsModels) <= 0) {
-                return;
-            }
-            //---------------------------
+            /** @var Mage_Catalog_Model_Product $product */
+            $product = Mage::helper('M2ePro/Magento_Product')->getCachedAndLoadedProduct($product);
 
-            // Add new products
-            //---------------------------
-            foreach ($addedProducts as $product) {
-
-                if (!($product instanceof Mage_Catalog_Model_Product)) {
-                    $product = Mage::getModel('catalog/product')->load((int)$product);
-                }
-
-                $productId = (int)$product->getId();
-
-                if ((bool)Mage::helper('M2ePro/Module')->getConfig()
-                        ->getGroupValue('/listings/categories_add_actions/', 'ignore_not_visible') &&
-                    (int)$product->getVisibility() == Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE) {
-                    continue;
-                }
-
-                foreach ($listingsModels as $listingModel) {
-
-                    /** @var $listingModel Ess_M2ePro_Model_Listing */
-
-                    if ((int)$listingModel->getData('store_website_id') > 0 &&
-                        !in_array($listingModel->getData('store_website_id'),$product->getWebsiteIds())) {
-                        continue;
-                    }
-
-                    // Cancel when auto add none set
-                    //------------------------------
-                    if ($listingModel->getData('categories_add_action') ==
-                        Ess_M2ePro_Model_Listing::CATEGORIES_ADD_ACTION_NONE) {
-                        continue;
-                    }
-                    //------------------------------
-
-                    // Only add product
-                    //------------------------------
-                    if ($listingModel->getData('categories_add_action') ==
-                        Ess_M2ePro_Model_Listing::CATEGORIES_ADD_ACTION_ADD) {
-                        $listingModel->addProduct($product);
-                    }
-                    //------------------------------
-
-                    // Add product and list
-                    //------------------------------
-                    if ($listingModel->getData('categories_add_action') ==
-                        Ess_M2ePro_Model_Listing::CATEGORIES_ADD_ACTION_ADD_LIST) {
-
-                        /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
-                        $listingProduct = $listingModel->addProduct($product);
-
-                        if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
-                            $tempListingsProducts = $listingModel->getProducts(true,array('product_id'=>$productId));
-                            count($tempListingsProducts) > 0 && $listingProduct = array_shift($tempListingsProducts);
-                        }
-
-                        if ($listingProduct instanceof Ess_M2ePro_Model_Listing_Product) {
-                            $paramsTemp = array();
-                            $paramsTemp['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_OBSERVER;
-                            $listingProduct->isListable() && $listingProduct->listAction($paramsTemp);
-                        }
-                    }
-                    //------------------------------
-                }
-            }
-            //---------------------------
-
-            // Delete products
-            //---------------------------
-            foreach ($deletedProducts as $product) {
-
-                if (!($product instanceof Mage_Catalog_Model_Product)) {
-                    $product = Mage::getModel('catalog/product')->load((int)$product);
-                }
-
-                $productId = (int)$product->getId();
-
-                foreach ($listingsModels as $listingModel) {
-
-                    /** @var $listingModel Ess_M2ePro_Model_Listing */
-
-                    if ((int)$listingModel->getData('store_website_id') > 0 &&
-                        !in_array($listingModel->getData('store_website_id'),$product->getWebsiteIds())) {
-                        continue;
-                    }
-
-                    // Cancel when auto delete none set
-                    //------------------------------
-                    if ($listingModel->getData('categories_delete_action') ==
-                        Ess_M2ePro_Model_Listing::CATEGORIES_DELETE_ACTION_NONE) {
-                        continue;
-                    }
-                    //------------------------------
-
-                    // Find needed product
-                    //------------------------------
-                    $listingsProducts = $listingModel->getProducts(true,array('product_id'=>$productId));
-
-                    if (count($listingsProducts) <= 0) {
-                        continue;
-                    }
-
-                    $listingProduct = array_shift($listingsProducts);
-
-                    if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
-                        continue;
-                    }
-                    //------------------------------
-
-                    // Only stop product
-                    //------------------------------
-                    if ($listingModel->getData('categories_delete_action') ==
-                        Ess_M2ePro_Model_Listing::CATEGORIES_DELETE_ACTION_STOP) {
-                        $paramsTemp = array();
-                        $paramsTemp['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_OBSERVER;
-                        $listingProduct->isStoppable() && $listingProduct->stopAction($paramsTemp);
-                    }
-                    //------------------------------
-
-                    // Stop product on marketplace and remove
-                    //------------------------------
-                    if ($listingModel->getData('categories_delete_action') ==
-                        Ess_M2ePro_Model_Listing::CATEGORIES_DELETE_ACTION_STOP_REMOVE) {
-                        $paramsTemp = array();
-                        $paramsTemp['remove'] = true;
-                        $paramsTemp['status_changer'] = Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_OBSERVER;
-                        $listingProduct->stopAction($paramsTemp);
-                    }
-                    //------------------------------
-                }
-            }
-            //---------------------------
-
-        } catch (Exception $exception) {
-
-            Mage::helper('M2ePro/Exception')->process($exception,true);
-            return;
+            $listing->addProduct($product);
         }
+    }
+
+    public function synchProductWithDeletedCategoryId($product, $categoryId, $websiteId)
+    {
+        $autoCategories = $this->getAutoCategoriesByCategory($categoryId);
+
+        foreach ($autoCategories as $autoCategory) {
+
+            /** @var $autoCategory Ess_M2ePro_Model_Listing_Category */
+
+            /** @var $listing Ess_M2ePro_Model_Listing */
+            $listing = $this->getLoadedListing($autoCategory->getListingId());
+
+            if ((int)$listing->getData('store_website_id') != $websiteId) {
+                continue;
+            }
+
+            if ($listing->isCategoriesDeleteActionNone()) {
+                continue;
+            }
+
+            if (!$listing->isSourceCategories() || $listing->isComponentModeEbay()) {
+                continue;
+            }
+
+            /** @var Mage_Catalog_Model_Product $product */
+            $product = Mage::helper('M2ePro/Magento_Product')->getCachedAndLoadedProduct($product);
+
+            $listingsProducts = $listing->getProducts(true,array('product_id'=>(int)$product->getId()));
+
+            if (count($listingsProducts) <= 0) {
+                continue;
+            }
+
+            foreach ($listingsProducts as $listingProduct) {
+
+                if (!($listingProduct instanceof Ess_M2ePro_Model_Listing_Product)) {
+                    continue;
+                }
+
+                try {
+
+                    if ($listing->isCategoriesDeleteActionStop()) {
+                        $listingProduct->isStoppable() && Mage::getModel('M2ePro/StopQueue')->add($listingProduct);
+                    }
+
+                    if ($listing->isCategoriesDeleteActionStopRemove()) {
+                        $listingProduct->isStoppable() && Mage::getModel('M2ePro/StopQueue')->add($listingProduct);
+                        $listingProduct->addData(array('status'=>Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED))->save();
+                        $listingProduct->deleteInstance();
+                    }
+
+                } catch (Exception $exception) {}
+            }
+        }
+    }
+
+    //####################################
+
+    private function getLoadedListing($listing)
+    {
+        if ($listing instanceof Ess_M2ePro_Model_Listing) {
+            return $listing;
+        }
+
+        $listingId = (int)$listing;
+
+        if (isset($this->cacheLoadedListings[$listingId])) {
+            return $this->cacheLoadedListings[$listingId];
+        }
+
+        /** @var $listing Ess_M2ePro_Model_Listing */
+        $listing = Mage::helper('M2ePro/Component')->getUnknownObject('Listing',$listingId);
+
+        /** @var $listingStoreObject Mage_Core_Model_Store */
+        $listingStoreObject = Mage::getModel('core/store')->load($listing->getStoreId());
+        $listing->setData('store_website_id',$listingStoreObject->getWebsite()->getId());
+
+        return $this->cacheLoadedListings[$listingId] = $listing;
+    }
+
+    private function getAutoCategoriesByCategory($categoryId)
+    {
+        if (isset($this->cacheAutoCategoriesByCategoryId[$categoryId])) {
+            return $this->cacheAutoCategoriesByCategoryId[$categoryId];
+        }
+
+        return $this->cacheAutoCategoriesByCategoryId[$categoryId] =
+                                Mage::getModel('M2ePro/Listing_Category')
+                                        ->getCollection()
+                                        ->addFieldToFilter('category_id', $categoryId)
+                                        ->getItems();
     }
 
     //####################################

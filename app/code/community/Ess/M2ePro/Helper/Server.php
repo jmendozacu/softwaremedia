@@ -1,252 +1,167 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
 {
     // ########################################
 
-    public function getHost()
+    public function getEndpoint()
     {
-        $domain = $this->getDomain();
-        return $domain == '' ? $this->getIp() : $domain;
+        return $this->getBaseUrl().'index.php';
     }
 
-    //-----------------------------------------
-
-    public function getDomain()
+    public function switchEndpoint()
     {
-        $backupDomain = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/cache/location_info/', 'domain');
-
-        if (!is_null($backupDomain)) {
-            strpos($backupDomain,'www.') === 0 && $backupDomain = substr($backupDomain,4);
-            return strtolower(trim($backupDomain));
-        }
-
-        $serverDomain = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : NULL;
-
-        if (!is_null($serverDomain)) {
-            strpos($serverDomain,'www.') === 0 && $serverDomain = substr($serverDomain,4);
-            return strtolower(trim($serverDomain));
-        }
-
-        throw new Exception('Server domain is not defined');
+        return $this->switchBaseUrl();
     }
 
-    public function getIp()
+    // ----------------------------------------
+
+    public function getAdminKey()
     {
-        $backupIp = Mage::helper('M2ePro/Module')->getConfig()->getGroupValue('/cache/location_info/', 'ip');
-
-        if (!is_null($backupIp)) {
-            return strtolower(trim($backupIp));
-        }
-
-        $serverIp = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : NULL;
-        is_null($serverIp) && $serverIp = isset($_SERVER['LOCAL_ADDR']) ? $_SERVER['LOCAL_ADDR'] : NULL;
-
-        if (!is_null($serverIp)) {
-            return strtolower(trim($serverIp));
-        }
-
-        throw new Exception('Server IP is not defined');
+        return (string)Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','admin_key');
     }
 
-    public function getBaseDirectory()
+    public function getApplicationKey()
     {
-        $backupDirectory = Mage::helper('M2ePro/Module')->getConfig()
-                                    ->getGroupValue('/cache/location_info/', 'directory');
-
-        if (!is_null($backupDirectory)) {
-            return $backupDirectory;
-        }
-
-        return Mage::getBaseDir();
-    }
-
-    // ########################################
-
-    public function isDeveloper()
-    {
-        return (bool)Mage::getIsDeveloperMode();
-    }
-
-    public function getSystem()
-    {
-        return php_uname();
-    }
-
-    public function getBaseUrl()
-    {
-        return str_replace('index.php/','',Mage::getBaseUrl());
-    }
-
-    // ########################################
-
-    public function getPhpVersion()
-    {
-        return @phpversion();
-    }
-
-    public function getPhpApiName()
-    {
-        return @php_sapi_name();
-    }
-
-    public function getPhpSettings()
-    {
-        return array(
-            'memory_limit' => $this->getMemoryLimit(),
-            'max_execution_time' => @ini_get('max_execution_time'),
-            'phpinfo' => $this->getPhpInfoArray()
+        $moduleName = Mage::helper('M2ePro/Module')->getName();
+        return (string)Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue(
+            '/'.$moduleName.'/server/','application_key'
         );
     }
 
-    public function getMemoryLimit($inMegabytes = true)
+    // ########################################
+
+    public function sendRequest(array $postData,
+                                array $headers,
+                                $timeout = 300,
+                                $secondAttempt = false)
     {
-        $memoryLimit = trim(ini_get('memory_limit'));
+        $curlObject = curl_init();
 
-        if ($memoryLimit == '') {
-            return 0;
-        }
+        //set the server we are using
+        curl_setopt($curlObject, CURLOPT_URL, $this->getEndpoint());
 
-        $lastMemoryLimitLetter = strtolower(substr($memoryLimit, -1));
-        switch($lastMemoryLimitLetter) {
-            case 'g':
-                $memoryLimit *= 1024;
-            case 'm':
-                $memoryLimit *= 1024;
-            case 'k':
-                $memoryLimit *= 1024;
-        }
+        // stop CURL from verifying the peer's certificate
+        curl_setopt($curlObject, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curlObject, CURLOPT_SSL_VERIFYHOST, false);
 
-        if ($inMegabytes) {
-            $memoryLimit /= 1024 * 1024;
-        }
+        // disable http headers
+        curl_setopt($curlObject, CURLOPT_HEADER, false);
 
-        return $memoryLimit;
-    }
+        // set the headers using the array of headers
+        curl_setopt($curlObject, CURLOPT_HTTPHEADER, $headers);
 
-    public function getPhpInfoArray()
-    {
-        try {
+        // set the data body of the request
+        curl_setopt($curlObject, CURLOPT_POST, true);
+        curl_setopt($curlObject, CURLOPT_POSTFIELDS, http_build_query($postData,'','&'));
 
-            ob_start(); phpinfo(INFO_ALL);
+        // set it to return the transfer as a string from curl_exec
+        curl_setopt($curlObject, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlObject, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($curlObject, CURLOPT_TIMEOUT, $timeout);
 
-            $pi = preg_replace(
-            array(
-                '#^.*<body>(.*)</body>.*$#m', '#<h2>PHP License</h2>.*$#ms',
-                '#<h1>Configuration</h1>#',  "#\r?\n#", "#</(h1|h2|h3|tr)>#", '# +<#',
-                "#[ \t]+#", '#&nbsp;#', '#  +#', '# class=".*?"#', '%&#039;%',
-                '#<tr>(?:.*?)" src="(?:.*?)=(.*?)" alt="PHP Logo" /></a><h1>PHP Version (.*?)</h1>(?:\n+?)</td></tr>#',
-                '#<h1><a href="(?:.*?)\?=(.*?)">PHP Credits</a></h1>#',
-                '#<tr>(?:.*?)" src="(?:.*?)=(.*?)"(?:.*?)Zend Engine (.*?),(?:.*?)</tr>#',
-                "# +#", '#<tr>#', '#</tr>#'),
-            array(
-                '$1', '', '', '', '</$1>' . "\n", '<', ' ', ' ', ' ', '', ' ',
-                '<h2>PHP Configuration</h2>'."\n".'<tr><td>PHP Version</td><td>$2</td></tr>'.
-                "\n".'<tr><td>PHP Egg</td><td>$1</td></tr>',
-                '<tr><td>PHP Credits Egg</td><td>$1</td></tr>',
-                '<tr><td>Zend Engine</td><td>$2</td></tr>' . "\n" .
-                '<tr><td>Zend Egg</td><td>$1</td></tr>', ' ', '%S%', '%E%'
-            ), ob_get_clean()
-            );
+        $response = curl_exec($curlObject);
+        curl_close($curlObject);
 
-            $sections = explode('<h2>', strip_tags($pi, '<h2><th><td>'));
-            unset($sections[0]);
+        if ($response === false) {
 
-            $pi = array();
-            foreach ($sections as $section) {
-                $n = substr($section, 0, strpos($section, '</h2>'));
-                preg_match_all(
-                    '#%S%(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?(?:<td>(.*?)</td>)?%E%#',
-                    $section,
-                    $askapache,
-                    PREG_SET_ORDER
-                );
-                foreach ($askapache as $m) {
-                    if (!isset($m[0]) || !isset($m[1]) || !isset($m[2])) {
-                        continue;
-                    }
-                    $pi[$n][$m[1]]=(!isset($m[3])||$m[2]==$m[3])?$m[2]:array_slice($m,2);
-                }
+            if ($this->switchEndpoint() && !$secondAttempt) {
+                return $this->sendRequest($postData,$headers,$timeout,true);
             }
 
-        } catch (Exception $exception) {
-            return array();
+            throw new Exception('Server connection is failed. Please try again later.');
         }
 
-        return $pi;
+        return $response;
     }
 
     // ########################################
 
-    public function getMysqlVersion()
+    private function getBaseUrl()
     {
-        return Mage::getSingleton('core/resource')->getConnection('core_read')->getServerVersion();
-    }
+        $index = $this->getBaseUrlIndex();
 
-    public function getMysqlApiName()
-    {
-        $connection = Mage::getSingleton('core/resource')->getConnection('core_read')->getConnection();
-        return $connection instanceof PDO ? $connection->getAttribute(PDO::ATTR_CLIENT_VERSION) : 'N/A';
-    }
+        $baseUrl = Mage::helper('M2ePro/Primary')->getConfig()
+                        ->getGroupValue('/server/','baseurl_'.$index);
 
-    public function getMysqlSettings()
-    {
-        $sqlQuery = "SHOW VARIABLES
-                     WHERE `Variable_name` IN ('connect_timeout','wait_timeout')";
+        if (empty($baseUrl) || ($index > 1 && $this->isBaseUrlEmergencyTimeExceeded())) {
 
-        $settingsArray = Mage::getSingleton('core/resource')
-                            ->getConnection('core_read')
-                            ->fetchAll($sqlQuery);
+            $index = 1;
+            $this->setBaseUrlIndex($index);
 
-        $settings = array();
-        foreach ($settingsArray as $settingItem) {
-            $settings[$settingItem['Variable_name']] = $settingItem['Value'];
+            $baseUrl = Mage::helper('M2ePro/Primary')->getConfig()
+                            ->getGroupValue('/server/','baseurl_'.$index);
         }
 
-        $phpInfo = $this->getPhpInfoArray();
-        $settings = array_merge($settings,isset($phpInfo['mysql'])?$phpInfo['mysql']:array());
-
-        return $settings;
+        return $baseUrl;
     }
 
-    public function getMysqlTotals()
+    private function switchBaseUrl()
     {
-        $moduleTables = Mage::helper('M2ePro/Module')->getMySqlTables();
-        $magentoTables = Mage::helper('M2ePro/Magento')->getMySqlTables();
+        $currentIndex = $this->getBaseUrlIndex();
+        $nextIndex = $currentIndex + 1;
 
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $baseUrl = Mage::helper('M2ePro/Primary')->getConfig()
+                        ->getGroupValue('/server/','baseurl_'.$nextIndex);
 
-        $totalRecords = 0;
-        foreach ($moduleTables as $moduleTable) {
-            $moduleTable = Mage::getSingleton('core/resource')->getTableName($moduleTable);
-            $dbSelect = $connRead->select()->from($moduleTable,new Zend_Db_Expr('COUNT(*)'));
-            $totalRecords += (int)$connRead->fetchOne($dbSelect);
+        if (!empty($baseUrl)) {
+            $this->setBaseUrlIndex($nextIndex);
+            return true;
         }
 
-        return array(
-            'magento_tables' => count($magentoTables),
-            'module_tables' => count($moduleTables),
-            'module_records' => $totalRecords
-        );
+        if ($currentIndex > 1) {
+            $this->setBaseUrlIndex(1);
+            return true;
+        }
+
+        return false;
     }
 
-    // ########################################
+    // ----------------------------------------
 
-    public function updateMySqlConnection()
+    private function getBaseUrlIndex()
     {
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
+        $index = Mage::helper('M2ePro/Module')->getCacheConfig()
+                        ->getGroupValue('/server/baseurl/','current_index');
+        is_null($index) && $this->setBaseUrlIndex($index = 1);
+        return (int)$index;
+    }
 
-        try {
-            $connRead->query('SELECT 1');
-        } catch (Exception $exception) {
-            $connRead->closeConnection();
+    private function setBaseUrlIndex($index)
+    {
+        $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
+        $currentIndex = $cacheConfig->getGroupValue('/server/baseurl/','current_index');
+
+        if (!is_null($currentIndex) && $currentIndex == $index) {
+            return;
         }
+
+        $cacheConfig->setGroupValue('/server/baseurl/','current_index',$index);
+
+        if ((is_null($currentIndex) || $currentIndex == 1) && $index > 1) {
+            $cacheConfig->setGroupValue('/server/baseurl/','date_of_emergency_state',
+                                        Mage::helper('M2ePro/Data')->getCurrentGmtDate());
+        }
+
+        if (!is_null($currentIndex) && $currentIndex > 1 && $index == 1) {
+            $cacheConfig->deleteGroupValue('/server/baseurl/','date_of_emergency_state');
+        }
+    }
+
+    // ----------------------------------------
+
+    private function isBaseUrlEmergencyTimeExceeded()
+    {
+        $currentTimestamp = Mage::helper('M2ePro/Data')->getCurrentGmtDate(true);
+
+        $emergencyDateTime = Mage::helper('M2ePro/Module')->getCacheConfig()
+                                    ->getGroupValue('/server/baseurl/','date_of_emergency_state');
+
+        return is_null($emergencyDateTime) || strtotime($emergencyDateTime) + 86400 < $currentTimestamp;
     }
 
     // ########################################

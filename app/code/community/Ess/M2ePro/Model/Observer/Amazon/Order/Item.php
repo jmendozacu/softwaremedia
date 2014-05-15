@@ -1,11 +1,13 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Observer_Amazon_Order_Item
 {
+    //####################################
+
     public function associateItemWithProduct(Varien_Event_Observer $observer)
     {
         try {
@@ -25,13 +27,15 @@ class Ess_M2ePro_Model_Observer_Amazon_Order_Item
 
                 /** @var $productOtherInstance Ess_M2ePro_Model_Listing_Other */
                 $productOtherInstance = $collection->getFirstItem();
-                $productOtherInstance->mapProduct($productId, Ess_M2ePro_Model_Log_Abstract::INITIATOR_EXTENSION);
+                $productOtherInstance->mapProduct($productId, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
             }
 
         } catch (Exception $exception) {
 
-            Mage::helper('M2ePro/Exception')->process($exception,true);
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
             return;
         }
     }
+
+    //####################################
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
@@ -104,7 +104,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
                 continue;
             }
 
-            $otherListing->mapProduct($magentoProductId, Ess_M2ePro_Model_Log_Abstract::INITIATOR_EXTENSION);
+            $otherListing->mapProduct($magentoProductId, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
             return true;
         }
@@ -128,7 +128,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Other_Mapping
             }
             for($i=0;$i<10;$i++) {
                 if (!isset($this->mappingSettings[(int)$value['priority']+$i])) {
-                    $this->mappingSettings[(string)$value['priority']+$i] = (string)$key;
+                    $this->mappingSettings[(int)$value['priority']+$i] = (string)$key;
                     break;
                 }
             }
