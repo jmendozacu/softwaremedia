@@ -6,6 +6,12 @@
 
 class Ess_M2ePro_Block_Adminhtml_Listing_Product_Rule extends Mage_Adminhtml_Block_Widget_Form
 {
+    // #################################################
+
+    protected $_isShowHideProductsOption = false;
+
+    // #################################################
+
     public function __construct()
     {
         parent::__construct();
@@ -18,12 +24,26 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Product_Rule extends Mage_Adminhtml_Blo
         $this->setTemplate('M2ePro/listing/product/rule.phtml');
     }
 
+    // #################################################
+
+    public function setShowHideProductsOption($isShow = true)
+    {
+        $this->_isShowHideProductsOption = $isShow;
+        return $this;
+    }
+
+    public function isShowHideProductsOption()
+    {
+        return $this->_isShowHideProductsOption;
+    }
+
+    // #################################################
+
     protected function _prepareForm()
     {
-        $formAction = $this->getData('form_action');
         $form = new Varien_Data_Form(array(
             'id'      => 'rule_form',
-            'action'  => $formAction,
+            'action'  => '',
             'method'  => 'post',
             'enctype' => 'multipart/form-data'
         ));
@@ -35,21 +55,14 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Product_Rule extends Mage_Adminhtml_Blo
 
     protected function _beforeToHtml()
     {
-        $buttonBlock = $this->getLayout()
-            ->createBlock('adminhtml/widget_button')
-            ->setData( array(
-                'label'   => Mage::helper('M2ePro')->__('Filter'),
-                'onclick' => 'ProductGridHandlerObj.set_attribute_filter();',
-                'id' => 'rule_filter_button'
-            ) );
-        $this->setChild('rule_filter_button',$buttonBlock);
-
-        $ruleModel = Mage::helper('M2ePro')->getGlobalValue('rule_model');
+        $ruleModel = Mage::helper('M2ePro/Data_Global')->getValue('rule_model');
         $ruleBlock = $this->getLayout()
                           ->createBlock('M2ePro/adminhtml_magento_product_rule')
-                          ->setData('rule_model', $ruleModel);
+                          ->setData(array('rule_model' => $ruleModel));
         $this->setChild('rule_block', $ruleBlock);
 
         return parent::_beforeToHtml();
     }
+
+    // #################################################
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
@@ -68,7 +68,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     const _ACTION_MOVE_FROM_OTHER_LISTING = 'Move from other listing';
 
     const ACTION_CHANGE_STATUS_ON_CHANNEL = 25;
-    const _ACTION_CHANGE_STATUS_ON_CHANNEL = 'Change item status on channel';
+    const _ACTION_CHANGE_STATUS_ON_CHANNEL = 'Change item status on Channel';
 
     const ACTION_INVENTORY_SYNCHRONIZATION = 26;
     const _ACTION_INVENTORY_SYNCHRONIZATION = 'Inventory synchronization';
@@ -84,7 +84,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     //####################################
 
     public function addListingMessage($listingId,
-                                      $initiator = parent::INITIATOR_UNKNOWN,
+                                      $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                       $actionId = NULL,
                                       $action = NULL,
                                       $description = NULL,
@@ -108,7 +108,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
     public function addProductMessage($listingId,
                                       $productId,
                                       $listingProductId,
-                                      $initiator = parent::INITIATOR_UNKNOWN,
+                                      $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                       $actionId = NULL,
                                       $action = NULL,
                                       $description = NULL,
@@ -205,7 +205,7 @@ class Ess_M2ePro_Model_Listing_Log extends Ess_M2ePro_Model_Log_Abstract
 
     private function makeDataForAdd($listingId,
                                     $creator,
-                                    $initiator = parent::INITIATOR_UNKNOWN,
+                                    $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                     $productId = NULL,
                                     $listingProductId = NULL,
                                     $actionId = NULL,

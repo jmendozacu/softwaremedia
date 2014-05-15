@@ -32,11 +32,20 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
 
     // ########################################
 
+    static public function isAllowedUpcExemption()
+    {
+        return (bool)(int)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+            '/buy/template/new_sku/','upc_exemption'
+        );
+    }
+
+    // ########################################
+
     public function getCoreData()
     {
-        $msrp = $this->getPriceMsrp();
+        $msrpPrice = $this->getPriceMsrp();
 
-        return array(
+        $coreData = array(
             'seller_sku' => $this->getSellerSku(),
             'gtin' => $this->getGtin(),
             'isbn' => $this->getIsbn(),
@@ -51,10 +60,17 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
             'keywords' => $this->getKeywords(),
             'features' => $this->getFeatures(),
             'weight' => $this->getWeight(),
-            'listing_price' => $msrp,
-            'msrp' => $msrp,
+            'listing_price' => $msrpPrice,
+            'msrp' => $msrpPrice,
             'category_id' => $this->getCategoryId(),
         );
+
+        if (self::isAllowedUpcExemption() && is_null($coreData['gtin'])) {
+            unset($coreData['gtin']);
+            $coreData['upc_exemption'] = '1';
+        }
+
+        return $coreData;
     }
 
     public function getAttributesData()
@@ -73,9 +89,8 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
                     break;
 
                 case Ess_M2ePro_Model_Buy_Template_NewProduct_Attribute::ATTRIBUTE_MODE_CUSTOM_ATTRIBUTE:
-                    $value = $this->listingProduct
-                            ->getMagentoProduct()
-                            ->getAttributeValue($src['custom_attribute']);
+                    $value = $this->listingProduct->getActualMagentoProduct()
+                                                  ->getAttributeValue($src['custom_attribute']);
 
                     $value = str_replace(',','^',$value);
                     break;
@@ -111,13 +126,19 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
     public function getSellerSku()
     {
         $src = $this->coreTemplate->getSellerSkuSource();
-        return $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+        return $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
     }
 
     public function getGtin()
     {
+        $gtin = NULL;
         $src = $this->coreTemplate->getGtinSource();
-        return $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+
+        if ($this->coreTemplate->isGtinCustomAttribute()) {
+            $gtin = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
+        }
+
+        return $gtin;
     }
 
     public function getIsbn()
@@ -126,7 +147,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         $src = $this->coreTemplate->getIsbnSource();
 
         if ($this->coreTemplate->isIsbnCustomAttribute()) {
-            $isbn = $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+            $isbn = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
         }
 
         return $isbn;
@@ -138,7 +159,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         $src = $this->coreTemplate->getAsinSource();
 
         if ($this->coreTemplate->isAsinCustomAttribute()) {
-            $asin = $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+            $asin = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
         }
 
         return $asin;
@@ -150,11 +171,13 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         $src = $this->coreTemplate->getMfgSource();
 
         if ($src['template'] != '') {
-            $mfgName = Mage::getSingleton('M2ePro/Template_Description_Parser')->parseTemplate(
+            $mfgName = Mage::helper('M2ePro/Module_Renderer_Description')->parseTemplate(
                 $src['template'],
-                $this->listingProduct->getMagentoProduct()->getProduct()
+                $this->listingProduct->getActualMagentoProduct()
             );
         }
+
+        is_string($mfgName) && trim($mfgName);
 
         return $mfgName;
     }
@@ -166,7 +189,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         if ($this->coreTemplate->isMfgPartNumberCustomValue()) {
             $mfgPartNumber = $src['custom_value'];
         } else {
-            $mfgPartNumber = $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+            $mfgPartNumber = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
         }
 
         return $mfgPartNumber;
@@ -180,7 +203,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         if ($this->coreTemplate->isProductSetIdCustomValue()) {
             $productSetId = $src['custom_value'];
         } elseif ($this->coreTemplate->isProductSetIdCustomAttribute()) {
-            $productSetId = $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+            $productSetId = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
         }
 
         return $productSetId;
@@ -192,20 +215,22 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
 
         switch ($src['mode']) {
             case Ess_M2ePro_Model_Buy_Template_NewProduct_Core::TITLE_MODE_PRODUCT_NAME:
-                $title = $this->listingProduct->getMagentoProduct()->getName();
+                $title = $this->listingProduct->getActualMagentoProduct()->getName();
                 break;
 
             case Ess_M2ePro_Model_Buy_Template_NewProduct_Core::TITLE_MODE_CUSTOM_TEMPLATE:
-                $title = Mage::getSingleton('M2ePro/Template_Description_Parser')->parseTemplate(
+                $title = Mage::helper('M2ePro/Module_Renderer_Description')->parseTemplate(
                     $src['template'],
-                    $this->listingProduct->getMagentoProduct()->getProduct()
+                    $this->listingProduct->getActualMagentoProduct()
                 );
                 break;
 
             default:
-                $title = $this->listingProduct->getMagentoProduct()->getName();
+                $title = $this->listingProduct->getActualMagentoProduct()->getName();
                 break;
         }
+
+        is_string($title) && trim($title);
 
         return $title;
     }
@@ -218,31 +243,31 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
 
         switch ($src['mode']) {
             case Ess_M2ePro_Model_Buy_Template_NewProduct_Core::DESCRIPTION_MODE_PRODUCT_FULL:
-                $description = $this->listingProduct->getMagentoProduct()->getProduct()->getDescription();
+                $description = $this->listingProduct->getActualMagentoProduct()->getProduct()->getDescription();
                 $description = $templateProcessor->filter($description);
                 break;
 
             case Ess_M2ePro_Model_Buy_Template_NewProduct_Core::DESCRIPTION_MODE_PRODUCT_SHORT:
-                $description = $this->listingProduct->getMagentoProduct()->getProduct()->getShortDescription();
+                $description = $this->listingProduct->getActualMagentoProduct()->getProduct()->getShortDescription();
                 $description = $templateProcessor->filter($description);
                 break;
 
             case Ess_M2ePro_Model_Buy_Template_NewProduct_Core::DESCRIPTION_MODE_CUSTOM_TEMPLATE:
-                $description = Mage::getSingleton('M2ePro/Template_Description_Parser')->parseTemplate(
+                $description = Mage::helper('M2ePro/Module_Renderer_Description')->parseTemplate(
                     $src['template'],
-                    $this->listingProduct->getMagentoProduct()->getProduct()
+                    $this->listingProduct->getActualMagentoProduct()
                 );
                 break;
 
             default:
-                return;
+                $description = '';
                 break;
         }
 
         $description = str_replace(array('<![CDATA[', ']]>'), '', $description);
         $description = preg_replace('/[^(\x20-\x7F)]*/','', $description);
 
-        return strip_tags($description);
+        return trim(strip_tags($description));
     }
 
     public function getMainImage()
@@ -250,15 +275,15 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         $imageLink = NULL;
 
         if ($this->coreTemplate->isMainImageBroductBase()) {
-            $imageLink = $this->listingProduct->getMagentoProduct()->getImageLink('image');
+            $imageLink = $this->listingProduct->getActualMagentoProduct()->getImageLink('image');
         }
 
         if ($this->coreTemplate->isMainImageAttribute()) {
             $src = $this->coreTemplate->getMainImageSource();
-            $imageLink = $this->listingProduct->getMagentoProduct()->getImageLink($src['attribute']);
+            $imageLink = $this->listingProduct->getActualMagentoProduct()->getImageLink($src['attribute']);
         }
 
-        return $imageLink;
+        return trim($imageLink);
     }
 
     public function getAdditionalImages()
@@ -268,16 +293,16 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         $src = $this->coreTemplate->getAdditionalImageSource();
 
         if ($this->coreTemplate->isAdditionalImageNone()) {
-            return;
+            return NULL;
         }
 
         if ($this->coreTemplate->isAdditionalImageProduct()) {
             $limitImages = (int)$src['limit'];
-            $galleryImages = $this->listingProduct->getMagentoProduct()->getGalleryImagesLinks((int)$src['limit']);
+            $galleryImages = $this->listingProduct->getActualMagentoProduct()->getGalleryImagesLinks((int)$src['limit']);
         }
 
         if ($this->coreTemplate->isAdditionalImageCustomAttribute()) {
-            $galleryImagesTemp = $this->listingProduct->getMagentoProduct()->getAttributeValue($src['attribute']);
+            $galleryImagesTemp = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['attribute']);
             $galleryImagesTemp = (array)explode(',', $galleryImagesTemp);
 
             foreach ($galleryImagesTemp as $tempImageLink) {
@@ -288,7 +313,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
             }
         }
 
-        $mainImageLink = $this->listingProduct->getMagentoProduct()->getImageLink('image');
+        $mainImageLink = $this->listingProduct->getActualMagentoProduct()->getImageLink('image');
         $isMainImageInArray = array_search($mainImageLink,$galleryImages);
         if ($isMainImageInArray !== false) {
             unset($galleryImages[$isMainImageInArray]);
@@ -296,7 +321,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
 
         $galleryImages = array_unique($galleryImages);
         if (count($galleryImages) <= 0) {
-            return;
+            return NULL;
         }
 
         $galleryImages = array_slice($galleryImages,0,$limitImages);
@@ -306,23 +331,23 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
 
     public function getFeatures()
     {
-        $src = $this->coreTemplate->getFeaturesSource();
+        $features = NULL;
 
-        if ($this->coreTemplate->isFeaturesNone()) {
-            return;
-        } else {
+        if ($this->coreTemplate->isFeaturesCustomTemplate()) {
+
+            $src = $this->coreTemplate->getFeaturesSource();
             foreach ($src['template'] as $feature) {
-                $features[] = strip_tags(
-                    Mage::getSingleton('M2ePro/Template_Description_Parser')->parseTemplate(
+                $features[] = trim(strip_tags(
+                    Mage::helper('M2ePro/Module_Renderer_Description')->parseTemplate(
                         $feature,
-                        $this->listingProduct->getMagentoProduct()->getProduct()
+                        $this->listingProduct->getActualMagentoProduct()
                     )
-                );
+                ));
             }
-        }
 
-        $features = implode('|',$features);
-        $features = preg_replace('/[^(\x20-\x7F)]*/','', $features);
+            $features = implode('|',$features);
+            $features = preg_replace('/[^(\x20-\x7F)]*/','', $features);
+        }
 
         return $features;
     }
@@ -332,11 +357,11 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         $src = $this->coreTemplate->getKeywordsSource();
 
         if ($this->coreTemplate->isKeywordsNone()) {
-            return;
+            return NULL;
         } elseif ($this->coreTemplate->isKeywordsCustomValue()) {
             $keywords = $src['custom_value'];
         } elseif ($this->coreTemplate->isKeywordsCustomAttribute()) {
-            $keywords = $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+            $keywords = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
         }
 
         $keywords = preg_replace('/(?<=,)\s/','',$keywords);
@@ -354,7 +379,7 @@ class Ess_M2ePro_Model_Buy_Template_NewProduct_Source
         if ($this->coreTemplate->isWeightCustomValue()) {
             $weight = $src['custom_value'];
         } else {
-            $weight = $this->listingProduct->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
+            $weight = $this->listingProduct->getActualMagentoProduct()->getAttributeValue($src['custom_attribute']);
         }
 
         $weight = str_replace(',','.',$weight);

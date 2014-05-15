@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
@@ -11,7 +11,9 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
     const NICK  = 'buy';
     const TITLE = 'Rakuten.com (Beta)';
 
-    const MARKETPLACE_VIRTUAL_ID = 33;
+    const DEFAULT_CURRENCY = 'USD';
+
+    const MARKETPLACE_ID = 33;
 
     // ########################################
 
@@ -28,11 +30,6 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
     public function isActive()
     {
         return $this->isEnabled() && $this->isAllowed();
-    }
-
-    public function isDefault()
-    {
-        return Mage::helper('M2ePro/Component')->getDefaultComponent() == self::NICK;
     }
 
     public function isObject($modelName, $value, $field = NULL)
@@ -53,6 +50,13 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro/Component')->getComponentObject(self::NICK, $modelName, $value, $field);
     }
 
+    public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
+    {
+        return Mage::helper('M2ePro/Component')->getCachedComponentObject(
+            self::NICK, $modelName, $value, $field, $tags
+        );
+    }
+
     public function getCollection($modelName)
     {
         return $this->getModel($modelName)->getCollection();
@@ -60,28 +64,22 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
 
     // ########################################
 
-    public function getVirtualMarketplaceId()
+    /**
+     * @return Ess_M2ePro_Model_Marketplace
+     */
+    public function getMarketplace()
     {
-        return self::MARKETPLACE_VIRTUAL_ID;
+        return $this->getCachedObject('Marketplace', $this->getMarketplaceId());
     }
 
-    // ########################################
-
-    public function getItemUrl($productId, $marketplaceId = NULL)
+    public function getMarketplaceId()
     {
-        $marketplaceId = (int)$marketplaceId;
-        $marketplaceId <= 0 && $marketplaceId = self::MARKETPLACE_VIRTUAL_ID;
-
-        $domain = $this->getCachedObject('Marketplace',$marketplaceId)->getUrl();
-
-        return 'http://'.$domain.'/pr/SellerListings.aspx?sku='.$productId;
+        return self::MARKETPLACE_ID;
     }
 
-    // ########################################
-
-    public function clearAllCache()
+    public function getItemUrl($productId)
     {
-        Mage::helper('M2ePro')->removeTagCacheValues(self::NICK);
+        return 'http://'.$this->getMarketplace()->getUrl().'/prod/'.$productId.'.html';
     }
 
     // ########################################
@@ -148,11 +146,9 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
 
     // ########################################
 
-    public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
+    public function clearCache()
     {
-        return Mage::helper('M2ePro/Component')->getCachedComponentObject(
-            self::NICK, $modelName, $value, $field, $tags
-        );
+        Mage::helper('M2ePro/Data_Cache')->removeTagValues(self::NICK);
     }
 
     // ########################################

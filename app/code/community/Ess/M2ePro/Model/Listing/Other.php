@@ -1,12 +1,16 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
+    // ########################################
+
     public $isCacheEnabled = false;
+
+    // ########################################
 
     /**
      * @var Ess_M2ePro_Model_Account
@@ -137,6 +141,13 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
         return is_null($temp) ? NULL : (int)$temp;
     }
 
+    public function getAdditionalData()
+    {
+        $additionalData = $this->getData('additional_data');
+        is_string($additionalData) && $additionalData = json_decode($additionalData,true);
+        return is_array($additionalData) ? $additionalData : array();
+    }
+
     //---------------------------------------
 
     public function getStatus()
@@ -264,9 +275,18 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
             'changed_to_value'=>'value_new',
         );
 
+        $limit = Mage::helper('M2ePro/Module')->getSynchronizationConfig()->getGroupValue(
+            '/settings/product_change/', 'max_count_per_one_time'
+        );
         $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
                              ->select()
-                             ->from(array('pc' => $productsChangesTable),$fields)
+                             ->from($productsChangesTable,'*')
+                             ->order(array('id ASC'))
+                             ->limit($limit);
+
+        $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
+                             ->select()
+                             ->from(array('pc' => $dbSelect),$fields)
                              ->join(array('lo' => $listingsOthersTable),'`pc`.`product_id` = `lo`.`product_id`','id')
                              ->where('`pc`.`action` = ?',(string)Ess_M2ePro_Model_ProductChange::ACTION_UPDATE)
                              ->where("`pc`.`attribute` IN ('".implode("','",$attributes)."')");
@@ -326,7 +346,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
 
     // ########################################
 
-    public static function unmapDeletedProduct($product)
+    public function unmapDeletedProduct($product)
     {
         $productId = $product instanceof Mage_Catalog_Model_Product ?
                         (int)$product->getId() : (int)$product;
@@ -337,13 +357,13 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
                                     ->getItems();
 
         foreach ($listingsOther as $listingOther) {
-            $listingOther->unmapProduct(Ess_M2ePro_Model_Log_Abstract::INITIATOR_EXTENSION);
+            $listingOther->unmapProduct(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
         }
     }
 
     //-----------------------------------------
 
-    public function mapProduct($productId, $logsInitiator = Ess_M2ePro_Model_Log_Abstract::INITIATOR_UNKNOWN)
+    public function mapProduct($productId, $logsInitiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN)
     {
         $this->addData(array('product_id'=>$productId))->save();
         $this->getChildObject()->afterMapProduct();
@@ -360,7 +380,7 @@ class Ess_M2ePro_Model_Listing_Other extends Ess_M2ePro_Model_Component_Parent_A
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
     }
 
-    public function unmapProduct($logsInitiator = Ess_M2ePro_Model_Log_Abstract::INITIATOR_UNKNOWN)
+    public function unmapProduct($logsInitiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN)
     {
         $this->getChildObject()->beforeUnmapProduct();
         $this->setData('product_id', NULL)->save();

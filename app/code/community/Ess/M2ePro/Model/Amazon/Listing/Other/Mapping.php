@@ -1,16 +1,11 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
 {
-    /**
-     * @var Ess_M2ePro_Model_Marketplace|null
-     */
-    protected $marketplace = NULL;
-
     /**
      * @var Ess_M2ePro_Model_Account|null
      */
@@ -20,10 +15,8 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
 
     // ########################################
 
-    public function initialize(Ess_M2ePro_Model_Marketplace $marketplace = NULL,
-                               Ess_M2ePro_Model_Account $account = NULL)
+    public function initialize(Ess_M2ePro_Model_Account $account = NULL)
     {
-        $this->marketplace = $marketplace;
         $this->account = $account;
         $this->mappingSettings = NULL;
     }
@@ -53,24 +46,16 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
             return false;
         }
 
-        $accountsMarketplaces = array();
+        $sortedItems = array();
 
+        /** @var $otherListing Ess_M2ePro_Model_Listing_Other */
         foreach ($otherListingsFiltered as $otherListing) {
-
-            /** @var $otherListing Ess_M2ePro_Model_Listing_Other */
-
-            $identifier = $otherListing->getAccountId().'_'.$otherListing->getMarketplaceId();
-
-            if (!isset($accountsMarketplaces[$identifier])) {
-                $accountsMarketplaces[$identifier] = array();
-            }
-
-            $accountsMarketplaces[$identifier][] = $otherListing;
+            $sortedItems[$otherListing->getAccountId()][] = $otherListing;
         }
 
         $result = true;
 
-        foreach ($accountsMarketplaces as $otherListings) {
+        foreach ($sortedItems as $otherListings) {
             foreach ($otherListings as $otherListing) {
                 /** @var $otherListing Ess_M2ePro_Model_Listing_Other */
                 $temp = $this->autoMapOtherListingProduct($otherListing);
@@ -88,7 +73,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         }
 
         $this->setAccountByOtherListingProduct($otherListing);
-        $this->setMarketplaceByOtherListingProduct($otherListing);
 
         if (!$this->getAccount()->getChildObject()->isOtherListingsMappingEnabled()) {
             return false;
@@ -119,30 +103,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
             $logModel = Mage::getModel('M2ePro/Listing_Other_Log');
             $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Amazon::NICK);
 
-            //TODO temporarily type simple filter
-            //---------------------------
-            $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
-            $magentoProduct->setProductId($magentoProductId);
-            if ($magentoProduct->isProductWithVariations()) {
-                $messageString = Mage::getModel('M2ePro/Log_Abstract')->encodeDescription(
-                // ->__('Item was not mapped to %id% Product as this is a multi variations product.');
-                    'Item was not mapped to %id% Product as this is a multi variations product.',
-                    array('!id'=>$magentoProductId)
-                );
-
-                $logModel->addProductMessage($otherListing->getId(),
-                    Ess_M2ePro_Model_Log_Abstract::INITIATOR_EXTENSION,
-                    NULL,
-                    Ess_M2ePro_Model_Listing_Other_Log::ACTION_MAP_LISTING,
-                    $messageString,
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
-
-                continue;
-            }
-            //---------------------------
-
-            $otherListing->mapProduct($magentoProductId, Ess_M2ePro_Model_Log_Abstract::INITIATOR_EXTENSION);
+            $otherListing->mapProduct($magentoProductId, Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
 
             return true;
         }
@@ -166,7 +127,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
             }
             for($i=0;$i<10;$i++) {
                 if (!isset($this->mappingSettings[(int)$value['priority']+$i])) {
-                    $this->mappingSettings[(string)$value['priority']+$i] = (string)$key;
+                    $this->mappingSettings[(int)$value['priority']+$i] = (string)$key;
                     break;
                 }
             }
@@ -311,14 +272,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         return $this->account;
     }
 
-    /**
-     * @return Ess_M2ePro_Model_Marketplace
-     */
-    protected function getMarketplace()
-    {
-        return $this->marketplace;
-    }
-
     //-----------------------------------------
 
     protected function setAccountByOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
@@ -332,17 +285,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Other_Mapping
         );
 
         $this->mappingSettings = NULL;
-    }
-
-    protected function setMarketplaceByOtherListingProduct(Ess_M2ePro_Model_Listing_Other $otherListing)
-    {
-        if (!is_null($this->marketplace) && $this->marketplace->getId() == $otherListing->getMarketplaceId()) {
-            return;
-        }
-
-        $this->marketplace = Mage::helper('M2ePro/Component_Amazon')->getCachedObject(
-            'Marketplace', $otherListing->getMarketplaceId()
-        );
     }
 
     // ########################################

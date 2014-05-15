@@ -1,15 +1,18 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 abstract class Ess_M2ePro_Model_Order_Item_Proxy
 {
-    /** @var Ess_M2ePro_Model_Ebay_Order_Item|Ess_M2ePro_Model_Amazon_Order_Item|Ess_M2ePro_Model_Buy_Order_Item */
+    /** @var Ess_M2ePro_Model_Ebay_Order_Item|Ess_M2ePro_Model_Amazon_Order_Item|
+     * Ess_M2ePro_Model_Buy_Order_Item|Ess_M2ePro_Model_Play_Order_Item */
     protected $item = NULL;
 
     protected $qty = NULL;
+
+    protected $subtotal = NULL;
 
     protected $additionalData = array();
 
@@ -18,6 +21,14 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
     public function __construct(Ess_M2ePro_Model_Component_Child_Abstract $item)
     {
         $this->item = $item;
+        $this->subtotal = $this->getOriginalPrice() * $this->getOriginalQty();
+    }
+
+    // ########################################
+
+    public function getProxyOrder()
+    {
+        return $this->item->getParentObject()->getOrder()->getProxy();
     }
 
     // ########################################
@@ -32,30 +43,40 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
             return false;
         }
 
-        $thisVariations = $this->getLowerCasedVariation();
-        $thatVariations = $that->getLowerCasedVariation();
+        $thisOptions = $this->getOptions();
+        $thatOptions = $that->getOptions();
 
-        $thisVariationsKeys = array_keys($thisVariations);
-        $thatVariationsKeys = array_keys($thatVariations);
+        $thisOptionsKeys = array_keys($thisOptions);
+        $thatOptionsKeys = array_keys($thatOptions);
 
-        $thisVariationValues = array_values($thisVariations);
-        $thatVariationValues = array_values($thatVariations);
+        $thisOptionsValues = array_values($thisOptions);
+        $thatOptionsValues = array_values($thatOptions);
 
-        if (count($thisVariations) == count($thatVariations)
-            && count(array_diff($thisVariationsKeys, $thatVariationsKeys)) <= 0
-            && count(array_diff($thisVariationValues, $thatVariationValues)) <= 0
+        if (count($thisOptions) != count($thatOptions)
+            || count(array_diff($thisOptionsKeys, $thatOptionsKeys)) > 0
+            || count(array_diff($thisOptionsValues, $thatOptionsValues)) > 0
         ) {
-            return true;
+            return false;
         }
 
-        return false;
+        // grouped products have no options, that's why we have to compare associated products
+        $thisAssociatedProducts = $this->getAssociatedProducts();
+        $thatAssociatedProducts = $that->getAssociatedProducts();
+
+        if (count($thisAssociatedProducts) != count($thatAssociatedProducts)
+            || count(array_diff($thisAssociatedProducts, $thatAssociatedProducts)) > 0
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     public function merge(Ess_M2ePro_Model_Order_Item_Proxy $that)
     {
-        // merge qty
         // --------
         $this->setQty($this->getQty() + $that->getOriginalQty());
+        $this->subtotal += $that->getOriginalPrice() * $that->getOriginalQty();
         // --------
 
         // merge additional data
@@ -105,40 +126,27 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
         return $this->item->getParentObject()->getAssociatedProducts();
     }
 
-    /**
-     * Return variation information
-     *
-     * 'option_name' => 'option_value'
-     *
-     * @return array
-     */
-    public function getVariation()
-    {
-        return array();
-    }
-
-    /**
-     * Return both options names and values in lower case
-     *
-     * @return array
-     */
-    public function getLowerCasedVariation()
-    {
-        $variation = $this->getVariation();
-
-        if (empty($variation)) {
-            return array();
-        }
-
-        $lowerCasedVariation = array();
-        foreach ($variation as $attributeLabel => $optionLabel) {
-            $lowerCasedVariation[trim(strtolower($attributeLabel))] = trim(strtolower($optionLabel));
-        }
-
-        return array_filter($lowerCasedVariation);
-    }
-
     // ########################################
+
+    /**
+     * Return price converted to the base store currency
+     *
+     * @return float
+     */
+    public function getBasePrice()
+    {
+        return $this->getProxyOrder()->convertPriceToBase($this->getPrice());
+    }
+
+    /**
+     * Return price in channel currency
+     *
+     * @return float
+     */
+    public function getPrice()
+    {
+        return $this->subtotal / $this->getQty();
+    }
 
     /**
      * Return item purchase price
@@ -146,7 +154,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
      * @abstract
      * @return float
      */
-    abstract public function getPrice();
+    abstract public function getOriginalPrice();
 
     /**
      * Return item purchase qty
@@ -186,13 +194,13 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
     }
 
     /**
-     * Check whether item has Tax (not VAT)
+     * Check whether item has Tax
      *
      * @return bool
      */
     public function hasTax()
     {
-        return $this->item->getParentObject()->getOrder()->getProxy()->hasTax();
+        return $this->getProxyOrder()->hasTax();
     }
 
     /**
@@ -202,7 +210,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
      */
     public function hasVat()
     {
-        return $this->item->getParentObject()->getOrder()->getProxy()->hasVat();
+        return $this->getProxyOrder()->hasVat();
     }
 
     // ########################################

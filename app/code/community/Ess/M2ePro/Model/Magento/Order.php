@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Magento_Order
@@ -89,19 +89,6 @@ class Ess_M2ePro_Model_Magento_Order
         $orderObj->save();
 
         return $orderObj;
-    }
-
-    public function addComments(array $comments)
-    {
-        if (count($comments) == 0) {
-            return;
-        }
-
-        $comments = implode('<br /><br />', $comments);
-        $header = '<br /><b><u>' . Mage::helper('M2ePro')->__('M2E Pro Notes') . ':</u></b><br /><br />';
-
-        $this->order->addStatusHistoryComment($header . $comments);
-        $this->order->save();
     }
 
     // ########################################

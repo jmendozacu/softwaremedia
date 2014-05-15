@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
@@ -10,6 +10,8 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
     const ACTION_UPDATE_SHIPPING = 'update_shipping';
 
     const CREATOR_TYPE_OBSERVER = 1;
+
+    const MAX_ALLOWED_PROCESSING_ATTEMPTS = 3;
 
     //####################################
 
@@ -28,7 +30,7 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
 
     public function getAction()
     {
-        return (int)$this->getData('action');
+        return $this->getData('action');
     }
 
     public function getCreatorType()
@@ -36,11 +38,82 @@ class Ess_M2ePro_Model_Order_Change extends Ess_M2ePro_Model_Abstract
         return (int)$this->getData('creator_type');
     }
 
+    public function getComponent()
+    {
+        return $this->getData('component');
+    }
+
     public function getParams()
     {
         $params = json_decode($this->getData('params'), true);
 
         return is_array($params) ? $params : array();
+    }
+
+    public function getHash()
+    {
+        return $this->getData('hash');
+    }
+
+    //####################################
+
+    public function isPaymentUpdateAction()
+    {
+        return $this->getAction() == self::ACTION_UPDATE_PAYMENT;
+    }
+
+    public function isShippingUpdateAction()
+    {
+        return $this->getAction() == self::ACTION_UPDATE_SHIPPING;
+    }
+
+    //####################################
+
+    public static function create($orderId, $action, $creatorType, $component, array $params)
+    {
+        if (!is_numeric($orderId)) {
+            throw new InvalidArgumentException('Order ID is invalid.');
+        }
+
+        if (!in_array($action, array(self::ACTION_UPDATE_PAYMENT, self::ACTION_UPDATE_SHIPPING))) {
+            throw new InvalidArgumentException('Action is invalid.');
+        }
+
+        if (!in_array($creatorType, array(self::CREATOR_TYPE_OBSERVER))) {
+            throw new InvalidArgumentException('Creator is invalid.');
+        }
+
+        $hash = self::generateHash($orderId, $action, $params);
+
+        /** @var Ess_M2ePro_Model_Order_Change $change */
+        $change = Mage::getModel('M2ePro/Order_Change')
+            ->getCollection()
+                ->addFieldToFilter('order_id', $orderId)
+                ->addFieldToFilter('action', $action)
+                ->addFieldToFilter('component', $component)
+                ->addFieldToFilter('hash', $hash)
+                ->getFirstItem();
+
+        if ($change->getId()) {
+            return;
+        }
+
+        $change->addData(array(
+            'order_id'     => $orderId,
+            'action'       => $action,
+            'params'       => json_encode($params),
+            'creator_type' => $creatorType,
+            'component'    => $component,
+            'hash'         => $hash
+        ));
+        $change->save();
+    }
+
+    //####################################
+
+    public static function generateHash($orderId, $action, array $params)
+    {
+        return sha1($orderId.'-'.$action.'-'.serialize($params));
     }
 
     //####################################

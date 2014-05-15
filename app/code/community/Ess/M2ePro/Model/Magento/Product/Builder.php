@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
@@ -39,21 +39,6 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
         // --------
 
         // --------
-        $stockData = array(
-            'qty'                         => $this->getData('qty'),
-            'is_in_stock'                 => 1,
-            'use_config_manage_stock'     => 1,
-            'use_config_min_qty'          => 1,
-            'use_config_min_sale_qty'     => 1,
-            'use_config_max_sale_qty'     => 1,
-            'is_qty_decimal'              => 0,
-            'use_config_backorders'       => 1,
-            'use_config_notify_stock_qty' => 1
-        );
-        $this->product->setStockData($stockData);
-        // --------
-
-        // --------
         $this->product->setPrice($this->getData('price'));
         $this->product->setVisibility(Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE);
         $this->product->setTaxClassId($this->getData('tax_class_id'));
@@ -68,7 +53,7 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
         }
 
         if (empty($websiteIds)) {
-            $websiteIds = array(Mage::helper('M2ePro/Magento')->getDefaultWebsiteId());
+            $websiteIds = array(Mage::helper('M2ePro/Magento_Store')->getDefaultWebsiteId());
         }
 
         $this->product->setWebsiteIds($websiteIds);
@@ -98,11 +83,36 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
         // --------
 
         // --------
-        $this->product->save();
+        $this->product->getResource()->save($this->product);
+        // --------
+
+        // --------
+        $this->createStockItem();
         // --------
     }
 
     // ########################################
+
+    private function createStockItem()
+    {
+        /** @var $stockItem Mage_CatalogInventory_Model_Stock_Item */
+        $stockItem = Mage::getModel('cataloginventory/stock_item');
+        $stockItem->assignProduct($this->product);
+
+        $stockItem->addData(array(
+            'qty'                         => $this->getData('qty'),
+            'stock_id'                    => 1,
+            'is_in_stock'                 => 1,
+            'use_config_min_qty'          => 1,
+            'use_config_min_sale_qty'     => 1,
+            'use_config_max_sale_qty'     => 1,
+            'is_qty_decimal'              => 0,
+            'use_config_backorders'       => 1,
+            'use_config_notify_stock_qty' => 1
+        ));
+
+        $stockItem->save();
+    }
 
     private function makeGallery()
     {

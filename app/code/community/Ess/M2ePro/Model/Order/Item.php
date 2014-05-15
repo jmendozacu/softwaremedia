@@ -1,11 +1,10 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 /**
- * @method Ess_M2ePro_Model_Ebay_Order_Item|Ess_M2ePro_Model_Amazon_Order_Item getChildObject()
  */
 class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abstract
 {
@@ -86,6 +85,11 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return (int)$this->getData('state');
     }
 
+    public function getQtyReserved()
+    {
+        return (int)$this->getData('qty_reserved');
+    }
+
     public function setAssociatedOptions(array $options)
     {
         $this->setSetting('product_details', 'associated_options', $options);
@@ -119,6 +123,11 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         return $this->getSetting('product_details', 'reserved_products', array());
     }
 
+    /**
+     * Checks whether an order item has the data (variation info, sku etc), by which variations can be repaired
+     *
+     * @return bool
+     */
     public function hasRepairInput()
     {
         $repairInput = $this->getChildObject()->getRepairInput();
@@ -128,6 +137,12 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
 
     // ########################################
 
+    /**
+     * Mark order item as one that requires user action
+     *
+     * @param $required
+     * @return $this
+     */
     public function setActionRequired($required)
     {
         $this->setData('state', $required ? self::STATE_ACTION_REQUIRED : self::STATE_NORMAL);
@@ -212,16 +227,46 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
 
     // ########################################
 
+    public function getStoreId()
+    {
+        $channelItem = $this->getChildObject()->getChannelItem();
+
+        if (is_null($channelItem)) {
+            return $this->getOrder()->getStoreId();
+        }
+
+        $storeId = $channelItem->getStoreId();
+
+        if ($storeId != Mage_Core_Model_App::ADMIN_STORE_ID) {
+            return $storeId;
+        }
+
+        if (is_null($this->getProductId())) {
+            return Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
+        }
+
+        $storeIds = Mage::getModel('M2ePro/Magento_Product')
+            ->setProductId($this->getProductId())
+            ->getStoreIds();
+
+        if (empty($storeIds)) {
+            return Mage_Core_Model_App::ADMIN_STORE_ID;
+        }
+
+        return array_shift($storeIds);
+    }
+
+    // ########################################
+
+    /**
+     * Associate order item with product in magento
+     *
+     * @throws Exception
+     */
     public function associateWithProduct()
     {
-        if (is_null($this->getProductId())) {
+        if (is_null($this->getProductId()) || !$this->getMagentoProduct()->exists()) {
             $this->assignProduct($this->getChildObject()->getAssociatedProductId());
-        } else if (!$this->getMagentoProduct()->exists()) {
-            $this->setData('product_id', null);
-            $this->setActionRequired(true);
-            $this->save();
-
-            throw new Exception('Product does not exist.');
         }
 
         if (!in_array($this->getMagentoProduct()->getTypeId(), self::$supportedProductTypes)) {
@@ -238,7 +283,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
 
         $this->associateVariationWithOptions();
 
-        if ($this->getMagentoProduct()->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED) {
+        if (!$this->getMagentoProduct()->isStatusEnabled()) {
             $this->setActionRequired(true)->save();
             throw new Exception('Product is disabled.');
         }
@@ -246,10 +291,23 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
 
     // ########################################
 
+    /**
+     * Associate order item variation with options of magento product
+     *
+     * @throws LogicException
+     * @throws Exception
+     */
     private function associateVariationWithOptions()
     {
-        if (!$this->isComponentModeEbay()) {
-            // todo add amazon support when variations will be available there
+        $variation = $this->getChildObject()->getVariation();
+        $magentoProduct = $this->getMagentoProduct();
+
+        // do nothing for amazon & buy & play order item, if it is mapped to product with required options,
+        // but there is no information available about sold variation
+        if (empty($variation)
+            && ($this->isComponentModeAmazon() || $this->isComponentModeBuy() || $this->isComponentModePlay())
+            && ($magentoProduct->isStrictVariationProduct() || $magentoProduct->isProductWithVariations())
+        ) {
             return;
         }
 
@@ -257,8 +315,7 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         $existProducts = $this->getAssociatedProducts();
 
         if (count($existProducts) == 1
-            && ($this->getMagentoProduct()->isGroupedType()
-                || $this->getMagentoProduct()->isConfigurableType())
+            && ($magentoProduct->isGroupedType() || $magentoProduct->isConfigurableType())
         ) {
             // grouped and configurable products can have only one associated product mapped with sold variation
             // so if count($existProducts) == 1 - there is no need for further actions
@@ -266,8 +323,8 @@ class Ess_M2ePro_Model_Order_Item extends Ess_M2ePro_Model_Component_Parent_Abst
         }
 
         /** @var $optionsFinder Ess_M2ePro_Model_Order_Item_OptionsFinder */
-        $optionsFinder = Mage::getModel('M2ePro/Order_Item_OptionsFinder', $this->getChildObject()->getVariation());
-        $optionsFinder->setMagentoProduct($this->getMagentoProduct());
+        $optionsFinder = Mage::getModel('M2ePro/Order_Item_OptionsFinder', $variation);
+        $optionsFinder->setMagentoProduct($magentoProduct);
 
         try {
             $productDetails = $optionsFinder->getProductDetails();

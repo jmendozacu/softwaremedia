@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
@@ -13,6 +13,9 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     const MARKETPLACE_US     = 1;
     const MARKETPLACE_MOTORS = 9;
+    const MARKETPLACE_AUSTRALIA = 4;
+
+    const LISTING_DURATION_GTC = 100;
 
     // ########################################
 
@@ -29,11 +32,6 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
     public function isActive()
     {
         return $this->isEnabled() && $this->isAllowed();
-    }
-
-    public function isDefault()
-    {
-        return Mage::helper('M2ePro/Component')->getDefaultComponent() == self::NICK;
     }
 
     public function isObject($modelName, $value, $field = NULL)
@@ -54,9 +52,42 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
         return Mage::helper('M2ePro/Component')->getComponentObject(self::NICK, $modelName, $value, $field);
     }
 
+    public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
+    {
+        return Mage::helper('M2ePro/Component')->getCachedComponentObject(
+            self::NICK, $modelName, $value, $field, $tags
+        );
+    }
+
     public function getCollection($modelName)
     {
         return $this->getModel($modelName)->getCollection();
+    }
+
+    public function getListingProductByEbayItem($ebayItem, $accountId)
+    {
+        // Get listing product
+        //-----------------------------
+        $readConnection = Mage::getResourceModel('core/config')->getReadConnection();
+
+        $ebayItem  = $readConnection->quoteInto('?', $ebayItem);
+        $accountId = $readConnection->quoteInto('?', $accountId);
+
+        /** @var $collection Ess_M2ePro_Model_Mysql4_Listing_Product_Collection */
+        $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Product');
+        $collection->getSelect()->join(
+            array('mei' => Mage::getResourceModel('M2ePro/Ebay_Item')->getMainTable()),
+            "(second_table.ebay_item_id = mei.id AND mei.item_id = {$ebayItem}
+                                                 AND mei.account_id = {$accountId})",
+            array()
+        );
+        //-----------------------------
+
+        if ($collection->getSize() == 0) {
+            return NULL;
+        }
+
+        return $collection->getFirstItem();
     }
 
     // ########################################
@@ -89,12 +120,26 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     // ########################################
 
-    public function clearAllCache()
+    public function getCurrencies()
     {
-        Mage::helper('M2ePro')->removeTagCacheValues(self::NICK);
+        return array(
+            'AUD' => 'Australian Dollar',
+            'GBP' => 'British Pound',
+            'CAD' => 'Canadian Dollar',
+            'CNY' => 'Chinese Renminbi',
+            'EUR' => 'Euro',
+            'HKD' => 'Hong Kong Dollar',
+            'INR' => 'Indian Rupees',
+            'MYR' => 'Malaysian Ringgit',
+            'PHP' => 'Philippines Peso',
+            'PLN' => 'Polish Zloty',
+            'SGD' => 'Singapore Dollar',
+            'SEK' => 'Sweden Krona',
+            'CHF' => 'Swiss Franc',
+            'TWD' => 'Taiwanese Dollar',
+            'USD' => 'US Dollar',
+        );
     }
-
-    // ########################################
 
     public function getCarrierTitle($carrierCode, $title = null)
     {
@@ -124,11 +169,33 @@ class Ess_M2ePro_Helper_Component_Ebay extends Mage_Core_Helper_Abstract
 
     // ########################################
 
-    public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
+    public function isShowTaxCategory()
     {
-        return Mage::helper('M2ePro/Component')->getCachedComponentObject(
-            self::NICK, $modelName, $value, $field, $tags
+        return (bool)Mage::helper('M2ePro/Module')->getConfig()->getGroupValue(
+            '/view/ebay/template/selling_format/', 'show_tax_category'
         );
+    }
+
+    public function getAvailableDurations()
+    {
+        $helper = Mage::helper('M2ePro');
+
+        return array(
+            '1' => $helper->__('1 day'),
+            '3' => $helper->__('3 days'),
+            '5' => $helper->__('5 days'),
+            '7' => $helper->__('7 days'),
+            '10' => $helper->__('10 days'),
+            '30' => $helper->__('30 days'),
+            self::LISTING_DURATION_GTC => $helper->__('Good Till Cancelled'),
+        );
+    }
+
+    // ########################################
+
+    public function clearCache()
+    {
+        Mage::helper('M2ePro/Data_Cache')->removeTagValues(self::NICK);
     }
 
     // ########################################

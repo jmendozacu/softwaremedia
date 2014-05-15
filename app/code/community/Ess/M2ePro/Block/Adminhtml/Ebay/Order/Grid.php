@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -29,7 +29,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
 
     public function getMassactionBlockName()
     {
-        return 'M2ePro/adminhtml_component_grid_massaction';
+        return 'M2ePro/adminhtml_grid_massaction';
     }
 
     protected function _prepareCollection()
@@ -54,21 +54,17 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         }
         //------------------------------
 
-        // Add Filter By Items State
+        // Add Filter By Marketplace
         //------------------------------
-        if ($state = $this->getRequest()->getParam('ebayState')) {
-            $state = (int)$state;
+        if ($marketplaceId = $this->getRequest()->getParam('ebayMarketplace')) {
+            $collection->addFieldToFilter('`main_table`.marketplace_id', $marketplaceId);
+        }
+        //------------------------------
 
-            $dbSelect = Mage::getResourceModel('core/config')->getReadConnection()
-                ->select()
-                ->from(
-                    Mage::getResourceModel('M2ePro/Order_Item')->getMainTable(),
-                    new Zend_Db_Expr('DISTINCT `order_id`')
-                )
-                ->where('`component_mode` = ?', Ess_M2ePro_Helper_Component_Ebay::NICK)
-                ->where('`state` = ?', $state);
-
-            $collection->getSelect()->where('`main_table`.`state` = '.$state.' OR `main_table`.`id` IN ?', $dbSelect);
+        // Add Not Created Magento Orders Filter
+        //------------------------------
+        if ($this->getRequest()->getParam('not_created_only')) {
+            $collection->addFieldToFilter('magento_order_id', array('null' => true));
         }
         //------------------------------
 
@@ -196,9 +192,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             'filter_condition_callback' => array($this, 'callbackFilterShippingCondition')
         ));
 
-        $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_order/index', array(
-            'tab' => Ess_M2ePro_Block_Adminhtml_Component_Abstract::TAB_ID_EBAY
-        ));
+        $back = Mage::helper('M2ePro')->makeBackUrlParam('*/adminhtml_ebay_order/index', array());
 
         $this->addColumn('action', array(
             'header'  => Mage::helper('M2ePro')->__('Action'),
@@ -275,6 +269,12 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
              'url'      => $this->getUrl('*/adminhtml_ebay_order/updatePaymentStatus'),
              'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
+
+        $this->getMassactionBlock()->addItem('resend_shipping', array(
+             'label'    => Mage::helper('M2ePro')->__('Resend Shipping Information'),
+             'url'      => $this->getUrl('*/adminhtml_order/resubmitShippingInfo'),
+             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+        ));
         //--------------------------------
 
         return parent::_prepareMassaction();
@@ -327,54 +327,53 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             $logRows[] = array(
                 'type' => $log->getData('type'),
                 'text' => Mage::getSingleton('M2ePro/Log_Abstract')->decodeDescription($log->getData('message')),
+                'initiator' => $this->getInitiatorForAction($log->getData('initiator')),
                 'date' => Mage::app()->getLocale()->date(strtotime($log->getData('create_date')))->toString($format)
             );
         }
-
-        $lastLogRow = $logRows[0];
         // --------------------------------
 
-        // Get log icon
-        // --------------------------------
-        $icon = 'normal';
-        $iconTip = Mage::helper('M2ePro')->escapeHtml(
-            Mage::helper('M2ePro')->__('Last order action was completed successfully.')
+        $tips = array(
+            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'Last order action was completed successfully.',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'Last order action was completed with error(s).',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'Last order action was completed with warning(s).'
         );
 
-        if ($lastLogRow['type'] == Ess_M2ePro_Model_Order_Log::TYPE_ERROR) {
-            $icon = 'error';
-            $iconTip = Mage::helper('M2ePro')->escapeHtml(
-                Mage::helper('M2ePro')->__('Last order action was completed with error(s).')
-            );
-        } else if ($lastLogRow['type'] == Ess_M2ePro_Model_Order_Log::TYPE_WARNING) {
-            $icon = 'warning';
-            $iconTip = Mage::helper('M2ePro')->escapeHtml(
-                Mage::helper('M2ePro')->__('Last order action was completed with warning(s).')
-            );
+        $icons = array(
+            Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS => 'normal',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR => 'error',
+            Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING => 'warning'
+        );
+
+        $summary = $this->getLayout()->createBlock('M2ePro/adminhtml_log_grid_summary', '', array(
+            'entity_id' => $orderId,
+            'rows' => $logRows,
+            'tips' => $tips,
+            'icons' => $icons,
+            'view_help_handler' => 'OrderHandlerObj.viewOrderHelp',
+            'hide_help_handler' => 'OrderHandlerObj.hideOrderHelp',
+        ));
+
+        return $summary->toHtml();
+    }
+
+    public function getInitiatorForAction($initiator)
+    {
+        $string = '';
+
+        switch ((int)$initiator) {
+            case Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN:
+                $string = '';
+                break;
+            case Ess_M2ePro_Helper_Data::INITIATOR_USER:
+                $string = Mage::helper('M2ePro')->__('Manual');
+                break;
+            case Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION:
+                $string = Mage::helper('M2ePro')->__('Automatic');
+                break;
         }
 
-        $iconSrc = $this->getSkinUrl('M2ePro').'/images/log_statuses/'.$icon.'.png';
-        // --------------------------------
-
-        $gridId = $this->getId();
-        $logRows = base64_encode(json_encode($logRows));
-
-        $html = <<<HTML
-<span style="float: right;">
-    <a title="{$iconTip}" id="orders_grid_help_icon_open_{$orderId}"
-       href="javascript:void(0);"
-       onclick="OrderHandlerObj.viewOrderHelp({$orderId}, '{$logRows}', '{$gridId}');">
-        <img src="{$iconSrc}" alt="{$iconTip}" />
-    </a>
-    <a title="{$iconTip}" id="orders_grid_help_icon_close_{$orderId}" style="display: none;"
-       href="javascript:void(0);"
-       onclick="OrderHandlerObj.hideOrderHelp({$orderId}, '{$gridId}');">
-        <img src="{$iconSrc}" alt="{$iconTip}" />
-    </a>
-</span>
-HTML;
-
-        return $html;
+        return $string;
     }
 
     //--------------------------------------------------------------
@@ -383,8 +382,8 @@ HTML;
     {
         $returnString = str_replace('-', '-<br />', $value);
 
-        if ($row['selling_manager_record_number'] > 0) {
-            $returnString .= '<br /> [ <b>SM: </b> # ' . $row['selling_manager_record_number'] . ' ]';
+        if ($row['selling_manager_id'] > 0) {
+            $returnString .= '<br /> [ <b>SM: </b> # ' . $row['selling_manager_id'] . ' ]';
         }
 
         return $returnString;
@@ -403,8 +402,27 @@ HTML;
                 $html .= '<br />';
             }
 
+            $isShowEditLink = false;
+
+            $product = $item->getProduct();
+            if (!is_null($product)) {
+                /** @var Ess_M2ePro_Model_Magento_Product $magentoProduct */
+                $magentoProduct = Mage::getModel('M2ePro/Magento_Product');
+                $magentoProduct->setProduct($product);
+
+                $associatedProducts = $item->getAssociatedProducts();
+                $associatedOptions = $item->getAssociatedOptions();
+
+                if ($magentoProduct->isProductWithVariations()
+                    && empty($associatedOptions)
+                    && empty($associatedProducts)
+                ) {
+                    $isShowEditLink = true;
+                }
+            }
+
             $editItemHtml = '';
-            if ($item->isActionRequired()) {
+            if ($isShowEditLink) {
                 $orderItemId = $item->getId();
                 $orderItemEditLabel = Mage::helper('M2ePro')->__('edit');
 
@@ -432,7 +450,7 @@ HTML;
                 $optionsLabel = Mage::helper('M2ePro')->__('Options');
 
                 $additionalHtml = '';
-                if (!is_null($item->getProductId()) && $item->isActionRequired()) {
+                if ($isShowEditLink) {
                     $additionalHtml = $editItemHtml;
                 }
 
@@ -473,14 +491,9 @@ HTML;
             $itemId = Mage::helper('M2ePro')->escapeHtml($item->getItemId());
             $itemTitle = Mage::helper('M2ePro')->escapeHtml($item->getTitle());
 
-            $additionalHtml = '';
-            if (is_null($item->getProductId()) && $item->isActionRequired()) {
-                $additionalHtml = $editItemHtml;
-            }
-
             $html .= <<<HTML
 <b>{$itemLabel}: #</b> <a href="{$itemUrl}" target="_blank">{$itemId}</a><br />
-{$itemTitle}{$additionalHtml}<br />
+{$itemTitle}<br />
 <small>{$skuHtml}{$variationHtml}{$transactionHtml}</small>
 HTML;
         }
@@ -539,7 +552,7 @@ HTML;
 
         $collection
             ->getSelect()
-                ->where('ebay_order_id LIKE ? OR selling_manager_record_number LIKE ?', '%'.$value.'%');
+                ->where('ebay_order_id LIKE ? OR selling_manager_id LIKE ?', '%'.$value.'%');
     }
 
     protected function callbackFilterItems($collection, $column)
@@ -609,10 +622,23 @@ HTML;
     public function getRowUrl($row)
     {
         $back = Mage::helper('M2ePro')->makeBackUrlParam(
-            '*/adminhtml_order/index', array('tab' => Ess_M2ePro_Block_Adminhtml_Component_Abstract::TAB_ID_EBAY)
+            '*/adminhtml_ebay_order/index'
         );
 
         return $this->getUrl('*/adminhtml_ebay_order/view', array('id' => $row->getId(), 'back' => $back));
+    }
+
+    //##############################################################
+
+    protected function _toHtml()
+    {
+        $tempGridIds = array();
+        Mage::helper('M2ePro/Component_Ebay')->isActive() && $tempGridIds[] = $this->getId();
+
+        $generalBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_order_general');
+        $generalBlock->setGridIds($tempGridIds);
+
+        return $generalBlock->toHtml() . parent::_toHtml();
     }
 
     //##############################################################

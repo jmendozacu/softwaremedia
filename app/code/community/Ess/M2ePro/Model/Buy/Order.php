@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2012 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 /**
@@ -10,8 +10,6 @@
 class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Abstract
 {
     // ########################################
-
-    private $relatedBuyItems = NULL;
 
     private $subTotalPrice = NULL;
 
@@ -40,26 +38,6 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
     public function getBuyAccount()
     {
         return $this->getParentObject()->getAccount()->getChildObject();
-    }
-
-    // ########################################
-
-    /**
-     * @return array
-     */
-    public function getRelatedChannelItems()
-    {
-        if (is_null($this->relatedBuyItems)) {
-            $this->relatedBuyItems = array();
-
-            foreach ($this->getParentObject()->getItemsCollection()->getItems() as $item) {
-                if (!is_null($item->getChildObject()->getBuyItem())) {
-                    $this->relatedBuyItems[] = $item->getChildObject()->getBuyItem();
-                }
-            }
-        }
-
-        return $this->relatedBuyItems;
     }
 
     // ########################################
@@ -153,9 +131,9 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
     {
         $storeId = NULL;
 
-        $relatedChannelItems = $this->getRelatedChannelItems();
+        $channelItems = $this->getParentObject()->getChannelItems();
 
-        if (count($relatedChannelItems) == 0) {
+        if (count($channelItems) == 0) {
             // 3rd party order
             // ---------------
             $storeId = $this->getBuyAccount()->getMagentoOrdersListingsOtherStoreId();
@@ -166,14 +144,14 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
             if ($this->getBuyAccount()->isMagentoOrdersListingsStoreCustom()) {
                 $storeId = $this->getBuyAccount()->getMagentoOrdersListingsStoreId();
             } else {
-                $firstChannelItem = reset($relatedChannelItems);
+                $firstChannelItem = reset($channelItems);
                 $storeId = $firstChannelItem->getStoreId();
             }
             // ---------------
         }
 
         if ($storeId == 0) {
-            $storeId = Mage::helper('M2ePro/Magento')->getDefaultStoreId();
+            $storeId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
         }
 
         return $storeId;
@@ -285,22 +263,21 @@ class Ess_M2ePro_Model_Buy_Order extends Ess_M2ePro_Model_Component_Child_Buy_Ab
         foreach ($this->getParentObject()->getItemsCollection()->getItems() as $item) {
             /** @var $item Ess_M2ePro_Model_Order_Item */
 
-            $change = array(
-                'component'    => Ess_M2ePro_Helper_Component_Buy::NICK,
-                'order_id'     => $this->getParentObject()->getId(),
-                'action'       => Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING,
-                'creator_type' => Ess_M2ePro_Model_Order_Change::CREATOR_TYPE_OBSERVER,
-                'params'       => json_encode(array(
-                    'buy_order_id'      => $this->getBuyOrderId(),
-                    'buy_order_item_id' => $item->getChildObject()->getBuyOrderItemId(),
-                    'qty'               => $item->getChildObject()->getQtyPurchased(),
-                    'tracking_type'     => $trackingProvider,
-                    'tracking_number'   => $trackingDetails['tracking_number'],
-                    'ship_date'         => $shipDate
-                ))
+            $params = array(
+                'buy_order_id'      => $this->getBuyOrderId(),
+                'buy_order_item_id' => $item->getChildObject()->getBuyOrderItemId(),
+                'qty'               => $item->getChildObject()->getQtyPurchased(),
+                'tracking_type'     => $trackingProvider,
+                'tracking_number'   => $trackingDetails['tracking_number'],
+                'ship_date'         => $shipDate
             );
 
-            Mage::getModel('M2ePro/Order_Change')->setData($change)->save();
+            $orderId     = $this->getParentObject()->getId();
+            $action      = Ess_M2ePro_Model_Order_Change::ACTION_UPDATE_SHIPPING;
+            $creatorType = Ess_M2ePro_Model_Order_Change::CREATOR_TYPE_OBSERVER;
+            $component   = Ess_M2ePro_Helper_Component_Buy::NICK;
+
+            Mage::getModel('M2ePro/Order_Change')->create($orderId, $action, $creatorType, $component, $params);
         }
 
         return true;

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
@@ -51,7 +51,7 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
     const _ACTION_CHANGE_CUSTOM_ATTRIBUTE = 'Change of product custom attribute in magento store';
 
     const ACTION_CHANGE_STATUS_ON_CHANNEL = 18;
-    const _ACTION_CHANGE_STATUS_ON_CHANNEL = 'Change item status on channel';
+    const _ACTION_CHANGE_STATUS_ON_CHANNEL = 'Change item status on Channel';
 
     //####################################
 
@@ -63,7 +63,7 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
 
     //####################################
 
-    public function addGlobalMessage($initiator = parent::INITIATOR_UNKNOWN,
+    public function addGlobalMessage($initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                      $actionId = NULL,
                                      $action = NULL,
                                      $description = NULL,
@@ -83,7 +83,7 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
     }
 
     public function addProductMessage($listingOtherId,
-                                      $initiator = parent::INITIATOR_UNKNOWN,
+                                      $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                       $actionId = NULL,
                                       $action = NULL,
                                       $description = NULL,
@@ -141,6 +141,10 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
             if ($this->componentMode == Ess_M2ePro_Helper_Component_Buy::NICK) {
                 $dataForAdd['identifier'] = $listingOther->getChildObject()->getGeneralId();
             }
+
+            if ($this->componentMode == Ess_M2ePro_Helper_Component_Play::NICK) {
+                $dataForAdd['identifier'] = $listingOther->getChildObject()->getGeneralId();
+            }
         }
 
         $dataForAdd['component_mode'] = $this->componentMode;
@@ -153,7 +157,7 @@ class Ess_M2ePro_Model_Listing_Other_Log extends Ess_M2ePro_Model_Log_Abstract
 
     private function makeDataForAdd($listingOtherId,
                                     $creator,
-                                    $initiator = parent::INITIATOR_UNKNOWN,
+                                    $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                     $actionId = NULL,
                                     $action = NULL,
                                     $description = NULL,

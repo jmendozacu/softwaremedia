@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Order_Reserve
@@ -148,7 +148,13 @@ class Ess_M2ePro_Model_Order_Reserve
         $stockItems = array();
 
         foreach ($this->order->getItemsCollection()->getItems() as $item) {
-            $qty = $item->getChildObject()->getQtyPurchased();
+            if ($action == self::ACTION_SUB) {
+                $qty = $item->getChildObject()->getQtyPurchased();
+                $item->setData('qty_reserved', $qty);
+            } else {
+                $qty = $item->getQtyReserved();
+            }
+
             $products = $this->getItemProductsByAction($item, $action);
 
             if (count($products) == 0) {
@@ -274,7 +280,11 @@ class Ess_M2ePro_Model_Order_Reserve
                 $products = $item->getReservedProducts();
                 break;
             case self::ACTION_SUB:
-                $products = $item->getAssociatedProducts();
+                if ($item->getProductId() && $item->getMagentoProduct()->isSimpleType()) {
+                    $products[] = $item->getProductId();
+                } else {
+                    $products = $item->getAssociatedProducts();
+                }
                 break;
         }
 

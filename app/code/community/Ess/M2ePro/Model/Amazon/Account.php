@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
@@ -63,12 +63,18 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
     const MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_NO  = 0;
     const MAGENTO_ORDERS_CUSTOMER_NEW_SUBSCRIPTION_MODE_YES = 1;
 
+    const MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING = 0;
+    const MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING_IF_SAME_CUSTOMER_AND_RECIPIENT = 1;
+
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_DEFAULT = 0;
     const MAGENTO_ORDERS_STATUS_MAPPING_MODE_CUSTOM  = 1;
 
     const MAGENTO_ORDERS_STATUS_MAPPING_NEW        = 'pending';
     const MAGENTO_ORDERS_STATUS_MAPPING_PROCESSING = 'processing';
     const MAGENTO_ORDERS_STATUS_MAPPING_SHIPPED    = 'complete';
+
+    const MAGENTO_ORDERS_FBA_MODE_NO  = 0;
+    const MAGENTO_ORDERS_FBA_MODE_YES = 1;
 
     const MAGENTO_ORDERS_FBA_STOCK_MODE_NO  = 0;
     const MAGENTO_ORDERS_FBA_STOCK_MODE_YES = 1;
@@ -78,6 +84,13 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     const MAGENTO_ORDERS_SHIPMENT_MODE_NO  = 0;
     const MAGENTO_ORDERS_SHIPMENT_MODE_YES = 1;
+
+    // ########################################
+
+    /**
+     * @var Ess_M2ePro_Model_Marketplace
+     */
+    private $marketplaceModel = NULL;
 
     // ########################################
 
@@ -100,9 +113,70 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
             $item->deleteInstance();
         }
 
+        $this->marketplaceModel = NULL;
+
         $this->delete();
 
         return true;
+    }
+
+    // ########################################
+
+    /**
+     * @return Ess_M2ePro_Model_Marketplace
+     */
+    public function getMarketplace()
+    {
+        if (is_null($this->marketplaceModel)) {
+            $this->marketplaceModel = Mage::helper('M2ePro/Component')->getCachedComponentObject(
+                $this->getComponentMode(),'Marketplace',$this->getMarketplaceId()
+            );
+        }
+
+        return $this->marketplaceModel;
+    }
+
+    /**
+     * @param Ess_M2ePro_Model_Marketplace $instance
+     */
+    public function setMarketplace(Ess_M2ePro_Model_Marketplace $instance)
+    {
+         $this->marketplaceModel = $instance;
+    }
+
+    // ########################################
+
+    public function getServerHash()
+    {
+        return $this->getData('server_hash');
+    }
+
+    public function getMarketplaceId()
+    {
+        return (int)$this->getData('marketplace_id');
+    }
+
+    public function getMerchantId()
+    {
+        return $this->getData('merchant_id');
+    }
+
+    public function getRelatedStoreId()
+    {
+        return (int)$this->getData('related_store_id');
+    }
+
+    //------------------------------------------
+
+    public function getInfo()
+    {
+        return $this->getData('info');
+    }
+
+    public function getDecodedInfo()
+    {
+        $tempInfo = $this->getInfo();
+        return is_null($tempInfo) ? NULL : json_decode($tempInfo,true);
     }
 
     // ########################################
@@ -311,169 +385,6 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     // ########################################
 
-    public function getMarketplacesItems()
-    {
-        $marketplacesResults = array();
-
-        $marketplacesCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Marketplace');
-
-        foreach ($marketplacesCollection->getItems() as $marketplaceObj) {
-
-            /** @var $marketplaceObj Ess_M2ePro_Model_Marketplace */
-
-            $tempMarketplaceData = $this->getMarketplaceItem($marketplaceObj->getId());
-
-            if (is_null($tempMarketplaceData)) {
-                continue;
-            }
-
-            $tempMarketplaceData['object'] = $marketplaceObj;
-
-            $marketplacesResults[] = $tempMarketplaceData;
-        }
-
-        return $marketplacesResults;
-    }
-
-    public function isExistMarketplaceItem($marketplaceId)
-    {
-        return !is_null($this->getMarketplaceIdData($marketplaceId));
-    }
-
-    public function getMarketplaceItem($marketplaceId)
-    {
-        return $this->getMarketplaceIdData($marketplaceId);
-    }
-
-    //-----------------------------------------
-
-    public function addMarketplaceItem($marketplaceId,
-                                       $serverHash,
-                                       $accountMerchantId,
-                                       $relatedStoreId = 0,
-                                       array $info = array())
-    {
-        $newData = $this->createMarketplaceData($serverHash, $accountMerchantId, $relatedStoreId, $info);
-        $this->setMarketplaceIdData($marketplaceId,$newData);
-        $this->save();
-    }
-
-    public function updateMarketplaceItem($marketplaceId,
-                                          $relatedStoreId = 0,
-                                          array $info = array())
-    {
-        $data = $this->getMarketplaceIdData($marketplaceId);
-
-        if (is_null($data)) {
-            return;
-        }
-
-        $newData = $this->createMarketplaceData($data['server_hash'], $data['merchant_id'], $relatedStoreId, $info);
-
-        $this->setMarketplaceIdData($marketplaceId,$newData);
-        $this->save();
-    }
-
-    public function deleteMarketplaceItem($marketplaceId)
-    {
-        $this->setMarketplaceIdData($marketplaceId,NULL);
-        $this->save();
-    }
-
-    //-----------------------------------------
-
-    public function getRelatedStoreId($marketplaceId = null)
-    {
-        if (is_null($marketplaceId)) {
-            $marketplacesData = $this->getMarketplacesData();
-            if (!is_array($marketplacesData)) {
-                return Mage_Core_Model_App::ADMIN_STORE_ID;
-            }
-            $marketplaceId = array_shift($marketplacesData);
-        }
-
-        $marketplaceItem = $this->getMarketplaceItem($marketplaceId);
-
-        return !is_null($marketplaceItem)
-            ? (int)$marketplaceItem['related_store_id']
-            : Mage_Core_Model_App::ADMIN_STORE_ID;
-    }
-
-    //-----------------------------------------
-
-    private function getMarketplaceIdData($marketplaceId)
-    {
-        $marketplaceId = (int)$marketplaceId;
-
-        $data = $this->getMarketplacesData();
-
-        if (is_null($data)) {
-            return NULL;
-        }
-
-        if (!isset($data[$marketplaceId])) {
-            return NULL;
-        }
-
-        return $data[$marketplaceId];
-    }
-
-    private function setMarketplaceIdData($marketplaceId, $data = NULL)
-    {
-        $marketplaceId = (int)$marketplaceId;
-
-        $allData = $this->getMarketplacesData();
-        is_null($allData) && $allData = array();
-
-        if (is_null($data)) {
-            unset($allData[$marketplaceId]);
-        } else {
-            $allData[$marketplaceId] = $data;
-        }
-
-        $this->setMarketplacesData($allData);
-
-        return true;
-    }
-
-    private function createMarketplaceData($serverHash, $accountMerchantId, $relatedStoreId = 0, array $info = array())
-    {
-        return array(
-            'server_hash' => (string)$serverHash,
-            'merchant_id' => (string)$accountMerchantId,
-            'related_store_id' => (int)$relatedStoreId,
-            'info' => $info
-        );
-    }
-
-    //-----------------------------------------
-
-    private function getMarketplacesData()
-    {
-        $data = $this->getData('marketplaces_data');
-
-        if (is_null($data) || $data == '') {
-            return NULL;
-        }
-
-        return json_decode($data,true);
-    }
-
-    private function setMarketplacesData($data = NULL)
-    {
-        if (!is_array($data) || count($data) <= 0) {
-            $data = NULL;
-        } else {
-            $data = json_encode($data);
-        }
-
-        $this->setData('marketplaces_data',$data);
-
-        return true;
-    }
-
-    // ########################################
-
     public function getOrdersMode()
     {
         return (int)$this->getData('orders_mode');
@@ -658,6 +569,15 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     //-----------------------------------------
 
+    public function isMagentoOrdersBillingAddressSameAsShipping()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('customer', 'billing_address_mode'));
+
+        return (int)$setting == self::MAGENTO_ORDERS_BILLING_ADDRESS_MODE_SHIPPING;
+    }
+
+    //-----------------------------------------
+
     public function isMagentoOrdersStatusMappingDefault()
     {
         $setting = $this->getSetting('magento_orders_settings', array('status_mapping', 'mode'),
@@ -706,9 +626,17 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     //-----------------------------------------
 
+    public function isMagentoOrdersFbaModeEnabled()
+    {
+        $setting = $this->getSetting('magento_orders_settings', array('fba', 'mode'),
+                                     self::MAGENTO_ORDERS_FBA_MODE_YES);
+
+        return $setting == self::MAGENTO_ORDERS_FBA_MODE_YES;
+    }
+
     public function isMagentoOrdersFbaStockEnabled()
     {
-        $setting = $this->getSetting('magento_orders_settings', 'fba_stock_mode');
+        $setting = $this->getSetting('magento_orders_settings', array('fba', 'stock_mode'));
 
         return $setting == self::MAGENTO_ORDERS_FBA_STOCK_MODE_YES;
     }
@@ -717,13 +645,13 @@ class Ess_M2ePro_Model_Amazon_Account extends Ess_M2ePro_Model_Component_Child_A
 
     public function save()
     {
-        Mage::helper('M2ePro')->removeTagCacheValues('account');
+        Mage::helper('M2ePro/Data_Cache')->removeTagValues('account');
         return parent::save();
     }
 
     public function delete()
     {
-        Mage::helper('M2ePro')->removeTagCacheValues('account');
+        Mage::helper('M2ePro/Data_Cache')->removeTagValues('account');
         return parent::delete();
     }
 

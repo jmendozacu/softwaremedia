@@ -4,25 +4,27 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-Class Ess_M2ePro_Model_Magento_Product_Rule
+Class Ess_M2ePro_Model_Magento_Product_Rule extends Ess_M2ePro_Model_Abstract
 {
-    /**
-     * @var Varien_Data_Form
-     */
+    // ####################################
+
+    protected $_conditions = null;
+
     protected $_form;
-
-    /**
-     * @var Mage_CatalogRule_Model_Rule_Condition_Combine
-     */
-    protected $_conditions;
-
-    protected $_prefix;
 
     protected $_productIds = array();
 
     protected $_collectedAttributes = array();
 
     // ####################################
+
+    public function _construct()
+    {
+        parent::_construct();
+        $this->_init('M2ePro/Magento_Product_Rule');
+    }
+
+    //####################################
 
     /**
      * Create rule instance from serialized array
@@ -89,16 +91,36 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
 
     // ####################################
 
-    public function getPrefix()
+    public function getTitle()
     {
-        return $this->_prefix;
+        return $this->getData('title');
     }
 
-    public function setPrefix($prefix)
+    public function getPrefix()
     {
-        $this->_prefix = $prefix;
-        return $this;
+        return $this->getData('prefix');
     }
+
+    public function getStoreId()
+    {
+        if (is_null($this->getData('store_id'))) {
+            return 0;
+        }
+
+        return $this->getData('store_id');
+    }
+
+    public function getConditionsSerialized()
+    {
+        return $this->getData('conditions_serialized');
+    }
+
+    public function getAttributeSets()
+    {
+        return $this->getData('attribute_sets');
+    }
+
+    // ------------------------------------
 
     public function getCollectedAttributes()
     {
@@ -108,7 +130,10 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
     public function setCollectedAttributes(array $attributes)
     {
         $this->_collectedAttributes = $attributes;
+        return $this;
     }
+
+    // ------------------------------------
 
     public function getForm()
     {
@@ -118,10 +143,12 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
         return $this->_form;
     }
 
+    // ------------------------------------
+
     /**
      * Get condition instance
      *
-     * @return Mage_CatalogRule_Model_Rule_Condition_Combine
+     * @return Ess_M2ePro_Model_Magento_Product_Rule_Condition_Combine
      * @throws Exception
      *
      */
@@ -132,11 +159,17 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
             throw new Exception('Prefix must be specified before.');
         }
 
-        if (is_null($this->_conditions)) {
+        if (!is_null($this->_conditions)) {
+            return $this->_conditions->setJsFormObject($prefix)->setStoreId($this->getStoreId());
+        }
+
+        if (!is_null($this->getConditionsSerialized())) {
+            $this->loadFromSerialized($this->getConditionsSerialized());
+        } else {
             $this->_conditions = $this->getConditionInstance($prefix);
         }
 
-        return $this->_conditions;
+        return $this->_conditions->setJsFormObject($prefix)->setStoreId($this->getStoreId());
     }
 
     // ####################################
@@ -160,6 +193,10 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
      */
     public function setAttributesFilterToCollection(Varien_Data_Collection_Db $collection)
     {
+        if (count($this->getConditions()->getData($this->getPrefix())) <= 0) {
+            return;
+        }
+
         $this->_productIds = array();
         $this->getConditions()->collectValidatedAttributes($collection);
 
@@ -169,10 +206,11 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
             array(
                 'attributes' => $this->getCollectedAttributes(),
                 'product' => Mage::getModel('catalog/product'),
+                'store_id' => $collection->getStoreId()
             )
         );
 
-        $collection->addIdFilter($this->_productIds);
+        $collection->addFieldToFilter('entity_id', array('in' => $this->_productIds));
     }
 
     // ####################################
@@ -180,16 +218,17 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
     public function callbackValidateProduct($args)
     {
         $product = clone $args['product'];
+        $args['row']['store_id'] = $args['store_id'];
         $product->setData($args['row']);
 
-        if ($this->getConditions()->validate($product)) {
+        if ($this->validate($product)) {
             $this->_productIds[] = $product->getId();
         }
     }
 
     protected function getConditionInstance($prefix)
     {
-        $conditionInstance = Mage::getModel('catalogrule/rule_condition_combine')
+        $conditionInstance = Mage::getModel('M2ePro/Magento_Product_Rule_Condition_Combine')
             ->setRule($this)
             ->setPrefix($prefix)
             ->setValue(true)
@@ -221,15 +260,25 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
 
     // ####################################
 
+    protected function _beforeSave()
+    {
+        $serialized = serialize($this->getConditions()->asArray());
+        $this->setData('conditions_serialized', $serialized);
+
+        return parent::_beforeSave();
+    }
+
+    // ####################################
+
     /**
      * Using model from controller
      *
      *      get serialized data for saving to database ($serializedData):
-     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix');
+     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix')->setStoreId(0);
      *          $serializedData = $ruleModel->getSerializedFromPost($post);
      *
      *      set model to block for view rules from database ($serializedData):
-     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix');
+     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix')->setStoreId(0);
      *          $ruleModel->loadFromSerialized($serializedData);
      *
      *          $ruleBlock = $this->getLayout()
@@ -239,24 +288,24 @@ Class Ess_M2ePro_Model_Magento_Product_Rule
      * Using model for check magento product with rule
      *
      *      using serialized data:
-     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix');
+     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix')->setStoreId(0);
      *          $ruleModel->loadFromSerialized($serializedData);
      *          $checkingResult = $ruleModel->validate($magentoProductInstance);
      *
      *      using post array data:
-     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix');
+     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix')->setStoreId(0);
      *          $ruleModel->loadFromPost($post);
      *          $checkingResult = $ruleModel->validate($magentoProductInstance);
      *
      * Using model for filter magento product collection with rule
      *
      *      using serialized data:
-     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix');
+     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix')->setStoreId(0);
      *          $ruleModel->loadFromSerialized($serializedData);
      *          $ruleModel->setAttributesFilterToCollection($magentoProductCollection);
      *
      *      using post array data:
-     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix');
+     *          $ruleModel = Mage::getModel('M2ePro/Magento_Product_Rule')->setPrefix('your_prefix')->setStoreId(0);
      *          $ruleModel->loadFromPost($post);
      *          $ruleModel->setAttributesFilterToCollection($magentoProductCollection);
      *

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
@@ -88,7 +88,8 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
 
         foreach ($collection->getItems() as $processingRequest) {
             /** @var $processingRequest Ess_M2ePro_Model_Processing_Request */
-            $processingRequest->executeAsFailed('Request was deleted during account deleting.');
+            //->__('Request was deleted during object deleting.')
+            $processingRequest->executeAsFailed('Request was deleted during object deleting.');
         }
     }
 
@@ -167,7 +168,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
      * @param bool $asObjects
      * @param array $filters
      * @param array $sort
-     * @return array
+     * @return array|Ess_M2ePro_Model_Abstract[]
      * @throws LogicException
      */
     protected function getRelatedSimpleItems($modelName, $fieldName, $asObjects = false,
@@ -192,7 +193,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
      * @param bool $asObjects
      * @param array $filters
      * @param array $sort
-     * @return array
+     * @return array|Ess_M2ePro_Model_Abstract[]
      * @throws LogicException
      */
     protected function getRelatedItems(Ess_M2ePro_Model_Abstract $model, $fieldName, $asObjects = false,
@@ -207,6 +208,12 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         $tempCollection->addFieldToFilter($fieldName, $this->getId());
 
         foreach ($filters as $field=>$filter) {
+
+            if ($filter instanceof Zend_Db_Expr) {
+                $tempCollection->getSelect()->where((string)$filter);
+                continue;
+            }
+
             $tempCollection->addFieldToFilter('`'.$field.'`', $filter);
         }
 
@@ -336,6 +343,7 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
         }
 
         $settings = $this->getSettings($fieldName, $encodeType);
+        $target = &$settings;
 
         !is_array($settingNamePath) && $settingNamePath = array($settingNamePath);
 
@@ -346,17 +354,33 @@ abstract class Ess_M2ePro_Model_Abstract extends Mage_Core_Model_Abstract
             $currentPathNumber++;
 
             if (!array_key_exists($pathPart, $settings) && $currentPathNumber != $totalPartsNumber) {
-                $settings[$pathPart] = array();
+                $target[$pathPart] = array();
             }
 
-            if ($currentPathNumber == $totalPartsNumber) {
-                $settings[$pathPart] = $settingValue;
+            if ($currentPathNumber != $totalPartsNumber) {
+                $target = &$target[$pathPart];
+                continue;
             }
+
+            $target[$pathPart] = $settingValue;
         }
 
         $this->setSettings($fieldName, $settings, $encodeType);
 
         return $this;
+    }
+
+    // ########################################
+
+    public function getDataSnapshot()
+    {
+        $data = $this->getData();
+
+        foreach ($data as &$value) {
+            !is_null($value) && !is_array($value) && $value = (string)$value;
+        }
+
+        return $data;
     }
 
     // ########################################

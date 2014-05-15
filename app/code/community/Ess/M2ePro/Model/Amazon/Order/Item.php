@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 /**
@@ -15,8 +15,8 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
     // ########################################
 
-    /** @var $amazonItem Ess_M2ePro_Model_Amazon_Item */
-    private $amazonItem = NULL;
+    /** @var $channelItem Ess_M2ePro_Model_Amazon_Item */
+    private $channelItem = NULL;
 
     // ########################################
 
@@ -50,10 +50,10 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
     // ########################################
 
-    public function getAmazonItem()
+    public function getChannelItem()
     {
-        if (is_null($this->amazonItem)) {
-            $this->amazonItem = Mage::getModel('M2ePro/Amazon_Item')->getCollection()
+        if (is_null($this->channelItem)) {
+            $this->channelItem = Mage::getModel('M2ePro/Amazon_Item')->getCollection()
                 ->addFieldToFilter('account_id', $this->getParentObject()->getOrder()->getAccountId())
                 ->addFieldToFilter('marketplace_id', $this->getParentObject()->getOrder()->getMarketplaceId())
                 ->addFieldToFilter('sku', $this->getSku())
@@ -61,7 +61,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
                 ->getFirstItem();
         }
 
-        return !is_null($this->amazonItem->getId()) ? $this->amazonItem : NULL;
+        return !is_null($this->channelItem->getId()) ? $this->channelItem : NULL;
     }
 
     // ########################################
@@ -138,16 +138,27 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
         );
     }
 
+    public function getVariation()
+    {
+        $channelItem = $this->getChannelItem();
+
+        if (is_null($channelItem)) {
+            return array();
+        }
+
+        return $channelItem->getVariationOptions();
+    }
+
     // ########################################
 
     public function getAssociatedStoreId()
     {
         // Item was listed by M2E
         // ----------------
-        if (!is_null($this->getAmazonItem())) {
+        if (!is_null($this->getChannelItem())) {
             return $this->getAmazonAccount()->isMagentoOrdersListingsStoreCustom()
                 ? $this->getAmazonAccount()->getMagentoOrdersListingsStoreId()
-                : $this->getAmazonItem()->getStoreId();
+                : $this->getChannelItem()->getStoreId();
         }
         // ----------------
 
@@ -162,8 +173,8 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
         // Item was listed by M2E
         // ----------------
-        if (!is_null($this->getAmazonItem())) {
-            return $this->getAmazonItem()->getProductId();
+        if (!is_null($this->getChannelItem())) {
+            return $this->getChannelItem()->getProductId();
         }
         // ----------------
 
@@ -204,15 +215,15 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
     private function validate()
     {
-        $amazonItem = $this->getAmazonItem();
+        $channelItem = $this->getChannelItem();
 
-        if (!is_null($amazonItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsModeEnabled()) {
+        if (!is_null($channelItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsModeEnabled()) {
             throw new Exception(
                 'Magento Order creation for items listed by M2E Pro is disabled in Account settings.'
             );
         }
 
-        if (is_null($amazonItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsOtherModeEnabled()) {
+        if (is_null($channelItem) && !$this->getAmazonAccount()->isMagentoOrdersListingsOtherModeEnabled()) {
             throw new Exception(
                 'Magento Order creation for items listed by 3rd party software is disabled in Account settings.'
             );
@@ -227,7 +238,7 @@ class Ess_M2ePro_Model_Amazon_Order_Item extends Ess_M2ePro_Model_Component_Chil
 
         $storeId = $this->getAmazonAccount()->getMagentoOrdersListingsOtherStoreId();
         if ($storeId == 0) {
-            $storeId = Mage::helper('M2ePro/Magento')->getDefaultStoreId();
+            $storeId = Mage::helper('M2ePro/Magento_Store')->getDefaultStoreId();
         }
 
         $sku = $this->getSku();

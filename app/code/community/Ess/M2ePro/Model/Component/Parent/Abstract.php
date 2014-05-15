@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Model_Component_Abstract
@@ -108,6 +108,12 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
     {
         return $this->getComponentMode() == Ess_M2ePro_Helper_Component_Buy::NICK;
     }
+
+    public function isComponentModePlay()
+    {
+        return $this->getComponentMode() == Ess_M2ePro_Helper_Component_Play::NICK;
+    }
+
     //----------------------------------------
 
     public function getComponentTitle()
@@ -122,6 +128,10 @@ abstract class Ess_M2ePro_Model_Component_Parent_Abstract extends Ess_M2ePro_Mod
 
         if ($this->isComponentModeBuy()) {
             return Ess_M2ePro_Helper_Component_Buy::TITLE;
+        }
+
+        if ($this->isComponentModePlay()) {
+            return Ess_M2ePro_Helper_Component_Play::TITLE;
         }
 
         return '';

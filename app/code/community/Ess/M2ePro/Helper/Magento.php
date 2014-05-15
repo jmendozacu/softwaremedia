@@ -1,17 +1,11 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2011 by  ESS-UA.
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
 class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 {
-    private $defaultWebsite = NULL;
-    private $defaultStoreGroup = NULL;
-    private $defaultStore = NULL;
-
-    private $storeIdsByAttributeAndStore = array();
-
     // ########################################
 
     public function getName()
@@ -28,14 +22,6 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
     public function getRevision()
     {
         return 'undefined';
-    }
-
-    //----------------------------------------
-
-    public function getLocale()
-    {
-        $localeComponents = explode('_' , Mage::app()->getLocale()->getLocale());
-        return strtolower($localeComponents[0]);
     }
 
     // ########################################
@@ -78,47 +64,25 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
     public function isProfessionalEdition()
     {
-        if ($this->isGoEdition()) {
-            return false;
-        }
-
-        $modules = $this->getModules();
-        if (in_array('Professional_License',$modules)) {
-            return true;
-        }
-
-        return false;
+        return Mage::getConfig()->getModuleConfig('Enterprise_Enterprise') &&
+               !Mage::getConfig()->getModuleConfig('Enterprise_AdminGws') &&
+               !Mage::getConfig()->getModuleConfig('Enterprise_Checkout') &&
+               !Mage::getConfig()->getModuleConfig('Enterprise_Customer');
     }
 
     public function isEnterpriseEdition()
     {
-        if ($this->isGoEdition()) {
-            return false;
-        }
-
-        $modules = $this->getModules();
-        if (in_array('Enterprise_License',$modules)) {
-            return true;
-        }
-
-        return false;
+        return Mage::getConfig()->getModuleConfig('Enterprise_Enterprise') &&
+               Mage::getConfig()->getModuleConfig('Enterprise_AdminGws') &&
+               Mage::getConfig()->getModuleConfig('Enterprise_Checkout') &&
+               Mage::getConfig()->getModuleConfig('Enterprise_Customer');
     }
 
     public function isCommunityEdition()
     {
-        if ($this->isGoEdition()) {
-            return false;
-        }
-
-        if ($this->isProfessionalEdition()) {
-            return false;
-        }
-
-        if ($this->isEnterpriseEdition()) {
-            return false;
-        }
-
-        return true;
+        return !$this->isGoEdition() &&
+               !$this->isProfessionalEdition() &&
+               !$this->isEnterpriseEdition();
     }
 
     //----------------------------------------
@@ -190,17 +154,53 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return array_keys((array)Mage::getConfig()->getNode('modules')->children());
     }
 
+    public function getConflictedModules()
+    {
+        $modules = Mage::getConfig()->getNode('modules')->asArray();
+
+        $conflictedModules = array(
+            '/TBT_Enhancedgrid/i' => '',
+            '/warp/i' => '',
+            '/Auctionmaid_/i' => '',
+
+            '/Exactor_Tax/i' => '',
+            '/Exactory_Core/i' => '',
+            '/Exactor_ExactorSettings/i' => '',
+            '/Exactor_Sales/i' => '',
+            '/Aoe_AsyncCache/i' => '',
+            '/Idev_OneStepCheckout/i' => '',
+
+            '/Mercent_Sales/i' => '',
+            '/Webtex_Fba/i' => '',
+
+            '/MW_FreeGift/i' => 'last item in combined amazon orders has zero price
+                                 (observing event sales_quote_product_add_after)',
+
+            '/Unirgy_Dropship/i' => 'Rewrites stock item and in some cases return
+                                     always in stock for all products',
+
+            '/Aitoc_/i' => 'Stock management conflicts.'
+        );
+
+        $result = array();
+        foreach($conflictedModules as $expression=>$description) {
+
+            foreach ($modules as $module => $data) {
+                if (preg_match($expression, $module)) {
+                    $result[$module] = array_merge($data, array('description'=>$description));
+                }
+            }
+        }
+
+        return $result;
+    }
+
     public function isTinyMceAvailable()
     {
         if ($this->isCommunityEdition()) {
             return version_compare($this->getVersion(false), '1.4.0.0', '>=');
         }
         return true;
-    }
-
-    public function getUrl($route, array $params = array())
-    {
-        return Mage::helper('M2ePro')->getGlobalValue('base_controller')->getUrl($route,$params);
     }
 
     public function getBaseCurrency()
@@ -225,220 +225,83 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
 
     // ########################################
 
-    public function getDefaultWebsite()
+    public function isDeveloper()
     {
-        if (is_null($this->defaultWebsite)) {
-            $this->defaultWebsite = Mage::getModel('core/website')->load(1,'is_default');
-            if (is_null($this->defaultWebsite->getId())) {
-                $this->defaultWebsite = Mage::getModel('core/website')->load(0);
-                if (is_null($this->defaultWebsite->getId())) {
-                    throw new Exception('Getting default website is failed');
+        return (bool)Mage::getIsDeveloperMode();
+    }
+
+    public function isCronWorking()
+    {
+        $minDateTime = new DateTime(Mage::helper('M2ePro')->getCurrentGmtDate(), new DateTimeZone('UTC'));
+        $minDateTime->modify('-1 day');
+        $minDateTime = Mage::helper('M2ePro')->getDate($minDateTime->format('U'));
+
+        $collection = Mage::getModel('cron/schedule')->getCollection();
+        $collection->addFieldToFilter('executed_at',array('gt'=>$minDateTime));
+
+        return $collection->getSize() > 0;
+    }
+
+    public function getBaseUrl()
+    {
+        return str_replace('index.php/','',Mage::getBaseUrl());
+    }
+
+    public function getLocale()
+    {
+        $localeComponents = explode('_' , Mage::app()->getLocale()->getLocale());
+        return strtolower($localeComponents[0]);
+    }
+
+    public function getTranslatedCountryName($countryId, $localeCode = 'en_US')
+    {
+        /** @var $locale Mage_Core_Model_Locale */
+        $locale = Mage::getSingleton('core/locale');
+        if ($locale->getLocaleCode() != $localeCode) {
+            $locale->setLocaleCode($localeCode);
+        }
+
+        return $locale->getCountryTranslation($countryId);
+    }
+
+    public function getCountries()
+    {
+        $unsortedCountries = Mage::getModel('directory/country_api')->items();
+
+        $unsortedCountriesNames = array();
+        foreach($unsortedCountries as $country) {
+            $unsortedCountriesNames[] = $country['name'];
+        }
+
+        sort($unsortedCountriesNames, SORT_STRING);
+
+        $sortedCountries = array();
+        foreach($unsortedCountriesNames as $name) {
+            foreach($unsortedCountries as $country) {
+                if ($country['name'] == $name) {
+                    $sortedCountries[] = $country;
+                    break;
                 }
             }
         }
-        return $this->defaultWebsite;
+
+        return $sortedCountries;
     }
 
-    public function getDefaultStoreGroup()
+    public function addGlobalNotification($title,
+                                          $description,
+                                          $type = Mage_AdminNotification_Model_Inbox::SEVERITY_CRITICAL,
+                                          $url = NULL)
     {
-        if (is_null($this->defaultStoreGroup)) {
+        $dataForAdd = array(
+            'title' => $title,
+            'description' => $description,
+            'url' => !is_null($url) ? $url : 'http://m2epro.com/?'.sha1($title),
+            'severity' => $type,
+            'date_added' => now()
+        );
 
-            $defaultWebsite = $this->getDefaultWebsite();
-            $defaultStoreGroupId = $defaultWebsite->getDefaultGroupId();
-
-            $this->defaultStoreGroup = Mage::getModel('core/store_group')->load($defaultStoreGroupId);
-            if (is_null($this->defaultStoreGroup->getId())) {
-                $this->defaultStoreGroup = Mage::getModel('core/store_group')->load(0);
-                if (is_null($this->defaultStoreGroup->getId())) {
-                    throw new Exception('Getting default store group is failed');
-                }
-            }
-        }
-        return $this->defaultStoreGroup;
-    }
-
-    public function getDefaultStore()
-    {
-        if (is_null($this->defaultStore)) {
-
-            $defaultStoreGroup = $this->getDefaultStoreGroup();
-            $defaultStoreId = $defaultStoreGroup->getDefaultStoreId();
-
-            $this->defaultStore = Mage::getModel('core/store')->load($defaultStoreId);
-            if (is_null($this->defaultStore->getId())) {
-                $this->defaultStore = Mage::getModel('core/store')->load(0);
-                if (is_null($this->defaultStore->getId())) {
-                    throw new Exception('Getting default store is failed');
-                }
-            }
-        }
-        return $this->defaultStore;
-    }
-
-    //------------------------------------------
-
-    public function getDefaultWebsiteId()
-    {
-        return (int)$this->getDefaultWebsite()->getId();
-    }
-
-    public function getDefaultStoreGroupId()
-    {
-        return (int)$this->getDefaultStoreGroup()->getId();
-    }
-
-    public function getDefaultStoreId()
-    {
-        return (int)$this->getDefaultStore()->getId();
-    }
-
-    //------------------------------------------
-
-    public function isSingleStoreMode()
-    {
-        return Mage::getModel('core/store')->getCollection()->getSize() <= 2;
-    }
-
-    public function isMultiStoreMode()
-    {
-        return !$this->isSingleStoreMode();
-    }
-
-    //------------------------------------------
-
-    public function getStoreIdsByAttributeAndStore($attributeCode, $storeId)
-    {
-        $cacheKey = $attributeCode.'_'.$storeId;
-
-        if (isset($this->storeIdsByAttributeAndStore[$cacheKey])) {
-            return $this->storeIdsByAttributeAndStore[$cacheKey];
-        }
-
-        $attributeInstance = Mage::getModel('eav/config')->getAttribute('catalog_product',$attributeCode);
-
-        if (!($attributeInstance instanceof Mage_Catalog_Model_Resource_Eav_Attribute)) {
-            return $this->storeIdsByAttributeAndStore[$cacheKey] = array();
-        }
-
-        $storeIds = array();
-
-        switch ((int)$attributeInstance->getData('is_global')) {
-
-            case Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL:
-                foreach (Mage::app()->getWebsites() as $website) {
-                    /** @var $website Mage_Core_Model_Website */
-                    $storeIds = array_merge($storeIds,$website->getStoreIds());
-                }
-                break;
-
-            case Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_WEBSITE:
-                $storeIds = Mage::getModel('core/store')->load($storeId)->getWebsite()->getStoreIds();
-                break;
-
-            case Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_STORE:
-                $storeIds = array($storeId);
-                break;
-        }
-
-        $storeIds = array_values(array_unique($storeIds));
-        foreach ($storeIds as &$storeIdTemp) {
-            $storeIdTemp = (int)$storeIdTemp;
-        }
-
-        return $this->storeIdsByAttributeAndStore[$cacheKey] = $storeIds;
-    }
-
-    // ########################################
-
-    public function getAttributeSets()
-    {
-        $temp = Mage::getModel('eav/entity_attribute_set')
-                        ->getCollection()
-                        ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
-                        ->setOrder('attribute_set_name', 'ASC')
-                        ->toArray();
-        return $temp['items'];
-    }
-
-    //-----------------------------------------
-
-    public function getAttributesByAttributeSetId($attributeSetId)
-    {
-        $attributeSetId = (int)$attributeSetId;
-
-        $attributesTemp = Mage::getModel('eav/entity_attribute')->getCollection();
-        $attributesTemp->setEntityTypeFilter(Mage::getModel('eav/entity')->setType('catalog_product')->getTypeId())
-                       ->setAttributeSetFilter($attributeSetId);
-
-        $attributes = array();
-        foreach ($attributesTemp as $attributeTemp) {
-            if ((int)$attributeTemp->getData('is_visible') != 1) {
-                continue;
-            }
-            $attributes[] = array(
-                'label' => $attributeTemp->getData('frontend_label'),
-                'code'  => $attributeTemp->getData('attribute_code')
-            );
-        }
-
-        return $attributes;
-    }
-
-    public function getAttributesByAttributeSets(array $attributeSets = array())
-    {
-        if (count($attributeSets) == 0) {
-            return array();
-        }
-
-        $attributes = array();
-        foreach ($attributeSets as $attributeSetId) {
-
-            $attributesTemp = $this->getAttributesByAttributeSetId($attributeSetId);
-
-            if (count($attributesTemp) == 0) {
-                continue;
-            }
-
-            if (count($attributes) == 0) {
-                $attributes = $attributesTemp;
-                continue;
-            }
-
-            $intersectAttributes = array();
-            foreach ($attributesTemp as $attributeTemp) {
-                $findValue = false;
-                foreach ($attributes as $attribute) {
-                    if ($attributeTemp['label'] == $attribute['label'] &&
-                        $attributeTemp['code'] == $attribute['code']) {
-                        $findValue = true;
-                        break;
-                    }
-                }
-                if ($findValue) {
-                    $intersectAttributes[] = $attributeTemp;
-                }
-            }
-
-            $attributes = $intersectAttributes;
-        }
-
-        sort($attributes);
-
-        return $attributes;
-    }
-
-    public function getAttributesByAllAttributeSets()
-    {
-        $attributeSets = $this->getAttributeSets();
-
-        $attributeSetsIds = array();
-        foreach ($attributeSets as $attributeSet) {
-            $attributeSetsIds[] = $attributeSet['attribute_set_id'];
-        }
-
-        $attributes = $this->getAttributesByAttributeSets($attributeSetsIds);
-
-        return (array)$attributes;
+        Mage::getModel('adminnotification/inbox')->parse(array($dataForAdd));
     }
 
     // ########################################
@@ -474,36 +337,75 @@ class Ess_M2ePro_Helper_Magento extends Mage_Core_Helper_Abstract
         return $rewrites;
     }
 
-    public function addGlobalNotification($title,
-                                          $description,
-                                          $type = Mage_AdminNotification_Model_Inbox::SEVERITY_CRITICAL,
-                                          $url = NULL)
+    //-----------------------------------------
+
+    public function getLocalPoolOverwrites()
     {
-        $dataForAdd = array(
-            'title' => $title,
-            'description' => $description,
-            'url' => !is_null($url) ? $url : 'http://m2epro.com/?'.sha1($title),
-            'severity' => $type,
-            'date_added' => now()
+        $paths = array(
+            'app/code/local/Mage',
+            'app/code/local/Zend',
+            'app/code/local/Ess',
+            'app/code/local/Varien',
         );
 
-        Mage::getModel('adminnotification/inbox')->parse(array($dataForAdd));
-    }
-
-    // ########################################
-
-    public function getTranslatedCountryName($countryId, $localeCode = 'en_US')
-    {
-        /** @var $locale Mage_Core_Model_Locale */
-        $locale = Mage::getSingleton('core/locale');
-        if ($locale->getLocaleCode() != $localeCode) {
-            $locale->setLocaleCode($localeCode);
+        foreach ($paths as &$patch) {
+            $patch = Mage::getBaseDir() . DS . $patch;
         }
 
-        return $locale->getCountryTranslation($countryId);
+        $overwrites = array();
+        foreach ($paths as $path) {
+            $overwrites = array_merge($overwrites,
+                $this->getLocalPoolOverwritesRec($path)
+            );
+        }
+
+        $result = array();
+        foreach ($overwrites as $item) {
+            $this->isOriginalFileExists($item) && $result[] = str_replace(Mage::getBaseDir().DS,'',$item);
+        }
+
+        return $result;
+    }
+
+    private function getLocalPoolOverwritesRec($path)
+    {
+        if (!is_dir($path)) {
+            return array();
+        }
+
+        $overrides = array();
+        foreach (scandir($path) as $folderItem) {
+
+            is_file($path . DS . $folderItem) && $overrides[] = $path . DS . $folderItem;
+
+            if ($folderItem != '.' && $folderItem != '..' && is_dir($path . DS . $folderItem)) {
+                $overrides = array_merge($overrides,
+                    $this->getLocalPoolOverwritesRec($path . DS . $folderItem)
+                );
+            }
+        }
+
+        return $overrides;
+    }
+
+    private function isOriginalFileExists($overwritedFilename)
+    {
+        $isOriginalCoreFileExist = is_file(str_replace('/local/', '/core/', $overwritedFilename));
+        $isOriginalCommunityFileExist = is_file(str_replace('/local/', '/community/', $overwritedFilename));
+        $isOriginalLibFileExist = is_file(str_replace('app/code/local/', 'lib/', $overwritedFilename));
+
+        return $isOriginalCoreFileExist || $isOriginalCommunityFileExist || $isOriginalLibFileExist;
     }
 
     // ########################################
+
+    public function clearMenuCache()
+    {
+        Mage::app()->getCache()->clean(
+            Zend_Cache::CLEANING_MODE_MATCHING_TAG,
+            array(Mage_Adminhtml_Block_Page_Menu::CACHE_TAGS)
+        );
+    }
 
     public function clearCache()
     {
