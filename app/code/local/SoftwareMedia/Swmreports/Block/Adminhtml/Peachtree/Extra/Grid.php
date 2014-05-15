@@ -16,27 +16,46 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Extra_Grid extends Soft
 	public function __construct() {
 		parent::__construct();
 
+		$this->setId('peachtreeExtraGrid');
 		$this->setCustomHeader('Extra Orders');
+	}
+
+	public function getTotals() {
+		$totals = new Varien_Object();
+		$orders = array();
+		$fields = array(
+			'base_grand_total' => 0,
+		);
+
+		foreach ($this->getCollection() as $item) {
+			foreach ($fields as $field => $value) {
+				$fields[$field]+=$item->getData($field);
+			}
+
+			$order_id = $item->getData('increment_id');
+			if (!in_array($order_id, $orders)) {
+				$orders[$order_id] = $order_id;
+			}
+		}
+
+		//First column in the grid
+		$fields['increment_id'] = 'Totals: ' . count($orders);
+		$totals->setData($fields);
+		return $totals;
 	}
 
 	protected function _prepareCollection() {
 
-		$collection = Mage::getModel('sales/order_item')->getCollection()
-			->addAttributeToSelect('qty_invoiced')
-			->addAttributeToSelect('sku')
-			->addAttributeToSelect('base_row_invoiced')
-			->addAttributeToSelect('base_cost')
-			->addAttributeToSelect('created_at')
-			->join('sales/order', 'entity_id=order_id AND status = "complete"', array('increment_id', 'base_grand_total', 'customer_firstname' => 'customer_firstname', 'customer_lastname' => 'customer_lastname', 'customer_email' => 'customer_email'), null, 'left')
-//			->addAttributeToFilter('customer_email', array('nlike' => '%@softwaremedia.com'))
-			->addAttributeToFilter('qty_invoiced', array('gt' => 0))
-			->addAttributeToFilter('base_row_invoiced', array('gt' => 0))
-		;
+		$collection = Mage::getModel('sales/order')->getCollection();
+		$collection->join('sales/order_item', 'order_id=entity_id', null, null, 'left');
+		$collection->getSelect()->group(array('entity_id'));
+		$collection->addAttributeToFilter('status', array('eq' => 'complete'));
 
 		$collection->getSelect()->columns(
 			array(
-				'total_cost' => '(main_table.base_cost * main_table.qty_invoiced)',
-				'profit' => '(main_table.base_row_invoiced - (main_table.base_cost * main_table.qty_invoiced))',
+				'extra_total' => 'main_table.base_grand_total - SUM(`sales/order_item`.base_row_invoiced)', // Tax:  - main_table.tax_invoiced
+				'total_cost' => '0',
+				'profit' => '0',
 				'created_date' => 'main_table.created_at',
 			)
 		);
@@ -61,20 +80,19 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Extra_Grid extends Soft
 			'separator' => ' ',
 		));
 
-		$this->addColumn('Item', array(
-			'header' => Mage::helper('peachtree')->__('Item ID'),
-			'index' => 'sku'
-		));
-
-		$this->addColumn('Qty_Invoiced', array(
-			'header' => Mage::helper('peachtree')->__('Qty Invoiced'),
-			'index' => 'qty_invoiced',
-			'type' => 'number'
-		));
+//		$this->addColumn('Item', array(
+//			'header' => Mage::helper('peachtree')->__('Item ID'),
+//			'index' => 'sku'
+//		));
+//		$this->addColumn('Qty_Invoiced', array(
+//			'header' => Mage::helper('peachtree')->__('Qty Invoiced'),
+//			'index' => 'qty_invoiced',
+//			'type' => 'number'
+//		));
 
 		$this->addColumn('Amount', array(
 			'header' => Mage::helper('peachtree')->__('Amount'),
-			'index' => 'base_grand_total',
+			'index' => 'extra_total',
 			'type' => 'currency',
 			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
 		));
@@ -99,7 +117,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Peachtree_Extra_Grid extends Soft
 			'type' => 'date'
 		));
 
-		parent::_prepareColumns();
+		Mage_Adminhtml_Block_Widget_Grid::_prepareColumns();
 	}
 
 }
