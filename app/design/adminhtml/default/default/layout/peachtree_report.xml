@@ -7,7 +7,7 @@
 			<block type="swmreports/adminhtml_peachtree_bestbuy_grid" name="bestbuy" template="reports/grid.phtml" />
 			<block type="swmreports/adminhtml_peachtree_online_grid" name="online" template="reports/grid.phtml" />
 			<block type="swmreports/adminhtml_peachtree_pending_grid" name="pending" template="reports/grid.phtml" />
-			<block type="swmreports/adminhtml_peachtree_freight_grid" name="freight" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_extra_grid" name="freight" template="reports/grid.phtml" />
 			<block type="swmreports/adminhtml_peachtree_discount_grid" name="discount" template="reports/grid.phtml" />
 			<block type="swmreports/adminhtml_peachtree_closed_grid" name="closed" template="reports/grid.phtml" />
 			<block type="swmreports/adminhtml_peachtree_total_grid" name="total" template="reports/grid.phtml" />
