@@ -84,7 +84,7 @@ class Ess_M2ePro_Model_Magento_Quote {
 	 * Initialize quote objects
 	 */
 	private function initializeQuote() {
-		$this->quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
+		$this->quote = Mage::getModel('adminhtml/session_quote')->getQuote();
 
 		$this->quote->setCheckoutMethod($this->proxyOrder->getCheckoutMethod());
 		$this->quote->setStore($this->proxyOrder->getStore());
