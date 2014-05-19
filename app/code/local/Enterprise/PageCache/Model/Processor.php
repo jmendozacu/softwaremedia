@@ -132,7 +132,7 @@ class Enterprise_PageCache_Model_Processor
                 $uri = $uri.'_'.$_COOKIE['currency'];
             }
             $cookieVal = '';
-			if (isset($_COOKIE['softwaremedia_ovchn']) || $_REQUEST['ovchn'])
+			if (isset($_COOKIE['softwaremedia_ovchn']) || isset($_REQUEST['ovchn']))
 				$uri = $uri.'_'.'1';
 				
             if (isset($_COOKIE[Enterprise_PageCache_Model_Cookie::COOKIE_CUSTOMER_GROUP])) {
