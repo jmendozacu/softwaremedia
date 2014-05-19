@@ -53,30 +53,3 @@ _gaq.push(['_trackEvent', 'Error', '404', document.location.pathname + document.
 
 <!-- END GOOGLE ANALYTICS CODE -->
 <?php endif; ?>
-
-<!-- Bing Tracking Code -->
-<?php
-    //Get Order Number & Order Total
-    $order = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId());
-    $amount = number_format($order->getGrandTotal(),2);
-    $shipping = number_format($order->getShippingAmount(),2);
-    $tax = number_format($order->getTaxAmount(),2);
-?>
-<script type="text/javascript"> if (!window.mstag) mstag = {loadTag : function(){},time : (new Date()).getTime()};</script> <script id="mstag_tops" type="text/javascript" src="//flex.msn.com/mstag/site/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/mstag.js"></script> <script type="text/javascript"> mstag.loadTag("analytics", {dedup:"1",domainId:"17963",type:"1",taxcost:"<?php echo $tax; ?>",shippingcost:"<?php echo $shipping; ?>",revenue:"<?php echo $amount; ?>",actionid:"131473"})</script> <noscript> <iframe src="//flex.msn.com/mstag/tag/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/analytics.html?dedup=1&domainId=17963&type=1&taxcost=<?php echo $tax; ?>&shippingcost=<?php echo $shipping; ?>&revenue=<?php echo $amount; ?>&actionid=131473" frameborder="0" scrolling="no" width="1" height="1" style="visibility:hidden;display:none"> </iframe> </noscript>
-
-<!-- End Bing Tracking Code -->
-
-<!-- Google Code for Purchase/Sale Conversion Page -->
-<script type="text/javascript">
-/* <![CDATA[ */
-var google_conversion_id = 1072660807;
-var google_conversion_language = "en";
-var google_conversion_format = "3";
-var google_conversion_color = "666666";
-var google_conversion_label = "Fr87CL2NPxDHgr7_Aw";
-var google_conversion_value = "<?php echo $amount; ?>";
-var google_remarketing_only = false;
-/* ]]> */
-</script>
-<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
-</script>
