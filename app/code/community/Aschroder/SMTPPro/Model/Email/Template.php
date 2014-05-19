@@ -16,7 +16,7 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			return parent::send($email, $name, $variables);
 		}
 
-		Mage::log('SMTPPro is enabled, sending email in Aschroder_SMTPPro_Model_Email_Template',null,'emailtest.log');
+		Mage::log('SMTPPro is enabled, sending email in Aschroder_SMTPPro_Model_Email_Template', null, 'emailtest.log');
 
 
 		// The remainder of this function closely mirrors the parent
@@ -89,7 +89,7 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			$historyEmail->setCreatedAt(now());
 			$historyEmail->save();
 		}
-		
+
 		$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
 		$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
 
@@ -113,7 +113,7 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		try {
 			$mailObject = serialize($mail);
 
-			Mage::log('About to send email');
+			Mage::log('About to send email through async');
 			Mage::helper('smtppro')->asyncRequest(Mage::getBaseUrl() . 'smtppro/async/mail/', array('mail_object' => $mailObject, 'website_model_id' => $this->getDesignConfig()->getStore()));
 			Mage::log('Finished sending email');
 

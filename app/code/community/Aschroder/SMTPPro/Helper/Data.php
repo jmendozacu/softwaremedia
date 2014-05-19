@@ -177,7 +177,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 			Mage::log('Preparing the SMTP Email transport, details are: \n '
 				. "  username=" . $username . "\n"
-				. "  password='" . $password . "'\n"
+				. "  password='MASKED'\n"
 				. "  host=" . $host . "\n"
 				. "  port=" . $port . "\n"
 				. "  ssl=" . $ssl . "\n"
