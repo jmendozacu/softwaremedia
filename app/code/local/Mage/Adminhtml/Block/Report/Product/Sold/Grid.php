@@ -86,7 +86,7 @@ class Mage_Adminhtml_Block_Report_Product_Sold_Grid extends Mage_Adminhtml_Block
             'align'     =>'right',
             'index'     =>'orders',
             'type'        => 'text',
-            'truncate'      => 100000,
+            'renderer'      => 'OCM_Catalog_Block_Widget_Renderer',
         ));
 
 $this->addColumn('order_count', array(
