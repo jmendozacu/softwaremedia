@@ -303,7 +303,8 @@ class Mage_Reports_Model_Resource_Product_Collection extends Mage_Catalog_Model_
                 array(
                     'ordered_qty' => 'SUM(order_items.qty_ordered)',
                     'order_count' => 'COUNT(DISTINCT order_items.order_id)',
-                    'orders' => 'group_concat(DISTINCT CONCAT(\'<a href="\/admin/sales_order/view/order_id/\',order_items.order_id,\'" >\',order_items.order_id,\'</a>\'))',
+                    'orders' => 'group_concat(DISTINCT CONCAT(\'<a href="\/index.php/admin/sales_order/view/order_id/\',order_items.order_id,\'" >\',order_items.order_id,\'</a>\'))',
+                    'prod_sku' => 'order_items.sku',
                     'order_items_name' => 'order_items.name'
                 ))
             ->joinInner(
