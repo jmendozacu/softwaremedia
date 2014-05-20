@@ -300,15 +300,15 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		try {
 			$client = new SoapClient($wsdl, array('trace' => 1));
 			$response = $client->$method($request);
-			Mage::log($response, NULL, 'response.log');
+			//Mage::log($response, NULL, 'response.log');
 			$this->_logger->debug("\nRequest\n" . $request);
 			$this->_logger->debug("\nResponse\n" . $response);
 
 			return $response;
 		} catch (SoapFault $fault) {
-			var_dump($request);
-			echo "<br /><br />";
-			var_dump($response);
+			//var_dump($request);
+			//echo "<br /><br />";
+			//var_dump($response);
 			$this->_logger->error('In Send Request - Threw a SoapFault\n' . $fault);
 			$this->_logger->error("\nRequest\n" . $request);
 			$this->_logger->error("\nResponse\n" . $response);
