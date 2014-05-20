@@ -20,57 +20,57 @@
 */
 -->
 <config>
-    <modules>
-        <Mmsmods_Serialcodes>
-            <version>1.4.3</version>
-        </Mmsmods_Serialcodes>
-    </modules>
-    <admin>
-        <routers>
-            <serialcodes>
-                <use>admin</use>
-                <args>
-                    <module>Mmsmods_Serialcodes</module>
-                    <frontName>serialcodes</frontName>
-                </args>
-            </serialcodes>
-        </routers>
-    </admin>
-    <adminhtml>
-        <layout>
-            <updates>
-                <serialcodes>
-                    <file>serialcodes.xml</file>
-                </serialcodes>
-            </updates>
-        </layout>
-        <menu>
-            <catalog>
+	<modules>
+		<Mmsmods_Serialcodes>
+			<version>1.4.3.1</version>
+		</Mmsmods_Serialcodes>
+	</modules>
+	<admin>
+		<routers>
+			<serialcodes>
+				<use>admin</use>
+				<args>
+					<module>Mmsmods_Serialcodes</module>
+					<frontName>serialcodes</frontName>
+				</args>
+			</serialcodes>
+		</routers>
+	</admin>
+	<adminhtml>
+		<layout>
+			<updates>
+				<serialcodes>
+					<file>serialcodes.xml</file>
+				</serialcodes>
+			</updates>
+		</layout>
+		<menu>
+			<catalog>
 				<children>
 					<serialcodes module="serialcodes" translate="title">
 						<title>Manage Serial Codes</title>
-						<sort_order>15</sort_order>               
+						<sort_order>15</sort_order>
 						<action>serialcodes/adminhtml_serialcodes</action>
 					</serialcodes>
 				</children>
 			</catalog>
-            <sales>
+			<sales>
 				<children>
 					<serialcodes_items module="serialcodes_items" translate="title">
 						<title>Serial Code Order Items</title>
-						<sort_order>15</sort_order>               
+						<sort_order>15</sort_order>
 						<action>serialcodes/adminhtml_serialcodes_items</action>
 					</serialcodes_items>
 				</children>
 			</sales>
-        </menu>
-        <acl>
-            <resources>
-                <all>
-                    <title>Allow Everything</title>
-                </all>
-                <admin>
-                    <children>
+		</menu>
+		<acl>
+			<resources>
+				<all>
+					<title>Allow Everything</title>
+				</all>
+				<admin>
+					<children>
 						<catalog>
 							<children>
 								<serialcodes translate="title">
@@ -102,9 +102,9 @@
 							</children>
 						</sales>
 					</children>
-                </admin>
-            </resources>   
-        </acl>
+				</admin>
+			</resources>
+		</acl>
 		<events>
 			<catalog_product_new_action>
 				<observers>
@@ -149,73 +149,73 @@
 			</catalog_product_save_after>
 		</events>
 		<translate>
-		   <modules>
+			<modules>
 				<Mmsmods_Serialcodes>
 					<files>
 						<default>Mmsmods_Serialcodes.csv</default>
 					</files>
 				</Mmsmods_Serialcodes>
-		   </modules>
+			</modules>
 		</translate>
-    </adminhtml>
+	</adminhtml>
 	<frontend>
 		<translate>
-		   <modules>
+			<modules>
 				<Mmsmods_Serialcodes>
 					<files>
 						<default>Mmsmods_Serialcodes.csv</default>
 					</files>
 				</Mmsmods_Serialcodes>
-		   </modules>
+			</modules>
 		</translate>
 	</frontend>
-    <global>
-        <models>
-            <serialcodes>
-                <class>Mmsmods_Serialcodes_Model</class>
-                <resourceModel>serialcodes_mysql4</resourceModel>
-            </serialcodes>
-            <serialcodes_mysql4>
-                <class>Mmsmods_Serialcodes_Model_Mysql4</class>
-                <entities>
-                    <serialcodes>
-                        <table>serialcodes</table>
-                    </serialcodes>
-                </entities>
-            </serialcodes_mysql4>
+	<global>
+		<models>
+			<serialcodes>
+				<class>Mmsmods_Serialcodes_Model</class>
+				<resourceModel>serialcodes_mysql4</resourceModel>
+			</serialcodes>
+			<serialcodes_mysql4>
+				<class>Mmsmods_Serialcodes_Model_Mysql4</class>
+				<entities>
+					<serialcodes>
+						<table>serialcodes</table>
+					</serialcodes>
+				</entities>
+			</serialcodes_mysql4>
 			<catalog_resource_eav_mysql4>
-			  <entities>
-				<product_entity_varchar>
-				  <table>catalog_product_entity_varchar</table>
-				</product_entity_varchar>
-			  </entities>
+				<entities>
+					<product_entity_varchar>
+						<table>catalog_product_entity_varchar</table>
+					</product_entity_varchar>
+				</entities>
 			</catalog_resource_eav_mysql4>
-        </models>
-        <resources>
-            <serialcodes_setup>
-                <setup>
-                    <module>Mmsmods_Serialcodes</module>
+		</models>
+		<resources>
+			<serialcodes_setup>
+				<setup>
+					<module>Mmsmods_Serialcodes</module>
 					<class>Mmsmods_Serialcodes_Model_Resource_Eav_Mysql4_Setup</class>
-                </setup>
-                <connection>
-                    <use>core_setup</use>
-                </connection>
-            </serialcodes_setup>
-            <serialcodes_write>
-                <connection>
-                    <use>core_write</use>
-                </connection>
-            </serialcodes_write>
-            <serialcodes_read>
-                <connection>
-                    <use>core_read</use>
-                </connection>
-            </serialcodes_read>
-        </resources>
-        <blocks>
-            <serialcodes>
-                <class>Mmsmods_Serialcodes_Block</class>
-            </serialcodes>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</serialcodes_setup>
+			<serialcodes_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</serialcodes_write>
+			<serialcodes_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</serialcodes_read>
+		</resources>
+		<blocks>
+			<serialcodes>
+				<class>Mmsmods_Serialcodes_Block</class>
+			</serialcodes>
 			<sales>
 				<rewrite>
 					<order_items>Mmsmods_Serialcodes_Block_Sales_Order_Items</order_items>
@@ -226,17 +226,17 @@
 					<sales_order_items_renderer>Mmsmods_Serialcodes_Block_Bundle_Sales_Order_Items_Renderer</sales_order_items_renderer>
 				</rewrite>
 			</bundle>
-        </blocks>
-        <helpers>
-            <serialcodes>
-                <class>Mmsmods_Serialcodes_Helper</class>
-            </serialcodes>
-            <serialcodes_items>
-                <class>Mmsmods_Serialcodes_Helper</class>
-            </serialcodes_items>
-        </helpers>
+		</blocks>
+		<helpers>
+			<serialcodes>
+				<class>Mmsmods_Serialcodes_Helper</class>
+			</serialcodes>
+			<serialcodes_items>
+				<class>Mmsmods_Serialcodes_Helper</class>
+			</serialcodes_items>
+		</helpers>
 		<events>
-			<sales_order_place_after>
+			<!--<sales_order_place_after>
 				<observers>
 					<serialcodes>
 						<type>singleton</type>
@@ -244,7 +244,7 @@
 						<method>addPendingCodesToOrder</method>
 					</serialcodes>
 				</observers>
-			</sales_order_place_after>
+			</sales_order_place_after>-->
 			<sales_order_invoice_save_after>
 				<observers>
 					<serialcodes>
