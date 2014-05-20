@@ -211,6 +211,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
             		continue;
             	if (!$shipTime)
             		$shipTime = date('m/d/Y', strtotime( $item->getData('item_ship_date') ) );
+            		
+				//Update customer id for FBA orders
+            	if (substr($item->getSku(),-3) == 'FBA' && $order->getCustomerId() == 1121) 
+	            	$common_values['customer_id']  = 'AMAZONFBA';
+            	
                 $item_values = array(
                     'ship_date'   => date('m/d/Y', strtotime( $item->getData('item_ship_date') ) ), 
                     'invoice_cm_distributions' => $i++,
