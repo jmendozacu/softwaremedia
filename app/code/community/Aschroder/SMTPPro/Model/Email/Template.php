@@ -16,7 +16,7 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			return parent::send($email, $name, $variables);
 		}
 
-		Mage::log('SMTPPro is enabled, sending email in Aschroder_SMTPPro_Model_Email_Template', null, 'emailtest.log');
+		//Mage::log('SMTPPro is enabled, sending email in Aschroder_SMTPPro_Model_Email_Template', null, 'emailtest.log');
 
 
 		// The remainder of this function closely mirrors the parent
@@ -26,7 +26,7 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		// become redundant sooner or later anyway.
 
 		if (!$this->isValidForSend()) {
-			Mage::log('SMTPPro: Email not valid for sending - check template, and smtp enabled/disabled setting');
+			//Mage::log('SMTPPro: Email not valid for sending - check template, and smtp enabled/disabled setting');
 			Mage::logException(new Exception('This letter cannot be sent.')); // translation is intentionally omitted
 			return false;
 		}

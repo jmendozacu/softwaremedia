@@ -47,23 +47,23 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 		$profiles_enabled = Mage::getStoreConfig('payment/chasePaymentTech/use_profiles', Mage::app()->getStore());
 		$customer_profile = null;
 		
-		Mage::log("Profiles enabled and customer" . $onePage['save_cc'] . "enabled: " . $profiles_enabled . ' customer: ' . $hasCustomer,NULL,'profile.log');
+		//Mage::log("Profiles enabled and customer" . $onePage['save_cc'] . "enabled: " . $profiles_enabled . ' customer: ' . $hasCustomer,NULL,'profile.log');
 
 		if ($profiles_enabled && $customer && $onePage['save_cc']) {
 			$cardNum = substr($payment->getCcNumber(),-4);
-			Mage::log("Profiles enabled and customer" ,NULL,'profile.log');
+			//Mage::log("Profiles enabled and customer" ,NULL,'profile.log');
 			//If profile doesn't exist for card and customer, create it
 			$hasProfile = $helper->hasProfile($customer->getId(),$cardNum);
-			Mage::log("Has Profile: " . $helper->hasProfile($customer->getId(),$cardNum),NULL,'profile.log');
+			//Mage::log("Has Profile: " . $helper->hasProfile($customer->getId(),$cardNum),NULL,'profile.log');
 			if (!$hasProfile) {		
-				Mage::log("In Profile",NULL,'profile.log');
+				//Mage::log("In Profile",NULL,'profile.log');
 				$this->_paymentProcessor->buildProfileAddRequest($payment);
 				$profile = $this->_paymentProcessor->sendRequest(self::PROFILE);
-				Mage::log($profile,NULL,'profile.log');
+				//Mage::log($profile,NULL,'profile.log');
 				
 				// Verify that we were able to create a customer profile
 				if (isset($profile['CustomerRefNum'])) {
-					Mage::log("Saving Profile",NULL,'profile.log');
+					//Mage::log("Saving Profile",NULL,'profile.log');
 					$customer_profile = $profile['CustomerRefNum'];
 					$profile = Mage::getModel('chasePaymentTech/profiles');
 					$profile->setCustomerId($customer->getId());
@@ -75,10 +75,10 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 					$profile->setActive(0);
 					$profile->save();
 
-					Mage::log(get_class($profile),NULL,'profile.log');
+					//Mage::log(get_class($profile),NULL,'profile.log');
 				}
 			} else {
-					Mage::log("Profile Exists",NULL,'profile.log');
+					//Mage::log("Profile Exists",NULL,'profile.log');
 			}
 		}
 
@@ -115,23 +115,23 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 		$profiles_enabled = Mage::getStoreConfig('payment/chasePaymentTech/use_profiles', Mage::app()->getStore());
 		$customer_profile = null;
 		
-		Mage::log("Profiles enabled and customer Capture" . $onePage['save_cc'] . "enabled: " . $profiles_enabled . ' customer: ' . $hasCustomer,NULL,'profile.log');
+		//Mage::log("Profiles enabled and customer Capture" . $onePage['save_cc'] . "enabled: " . $profiles_enabled . ' customer: ' . $hasCustomer,NULL,'profile.log');
 
 		if ($profiles_enabled && $customer && $onePage['save_cc']) {
 			$cardNum = substr($payment->getCcNumber(),-4);
-			Mage::log("Profiles enabled and customer" ,NULL,'profile.log');
+			//Mage::log("Profiles enabled and customer" ,NULL,'profile.log');
 			//If profile doesn't exist for card and customer, create it
 			$hasProfile = $helper->hasProfile($customer->getId(),$cardNum);
-			Mage::log("Has Profile: " . $helper->hasProfile($customer->getId(),$cardNum),NULL,'profile.log');
+			//Mage::log("Has Profile: " . $helper->hasProfile($customer->getId(),$cardNum),NULL,'profile.log');
 			if (!$hasProfile) {		
-				Mage::log("In Profile",NULL,'profile.log');
+				//Mage::log("In Profile",NULL,'profile.log');
 				$this->_paymentProcessor->buildProfileAddRequest($payment);
 				$profile = $this->_paymentProcessor->sendRequest(self::PROFILE);
-				Mage::log($profile,NULL,'profile.log');
+				//Mage::log($profile,NULL,'profile.log');
 				
 				// Verify that we were able to create a customer profile
 				if (isset($profile['CustomerRefNum'])) {
-					Mage::log("Saving Profile",NULL,'profile.log');
+					//Mage::log("Saving Profile",NULL,'profile.log');
 					$customer_profile = $profile['CustomerRefNum'];
 					$profile = Mage::getModel('chasePaymentTech/profiles');
 					$profile->setCustomerId($customer->getId());
@@ -143,10 +143,10 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 					$profile->setActive(0);
 					$profile->save();
 
-					Mage::log(get_class($profile),NULL,'profile.log');
+					//Mage::log(get_class($profile),NULL,'profile.log');
 				}
 			} else {
-					Mage::log("Profile Exists",NULL,'profile.log');
+					//Mage::log("Profile Exists",NULL,'profile.log');
 			}
 		}
 
@@ -191,8 +191,8 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	private function _processResponse($payment, $txResponse, $txClose, $txParentClose) {
-		Mage::log($txResponse,null,"test11.log");
-		Mage::log($txResponse["Response"],null,"test11.log");
+		//Mage::log($txResponse,null,"test11.log");
+		//Mage::log($txResponse["Response"],null,"test11.log");
 		switch ($txResponse["Response"]) {
 			case "Approved":
 				$payment->setTransactionId($txResponse["TransactionId"]);
