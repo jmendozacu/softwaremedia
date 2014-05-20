@@ -170,7 +170,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract
                 'sales_rep_id'    => OCM_Peachtree_Model_Referer::getNameByCode( $invoice->getData('referer_id') ),
                 'account_receivable' => self::ACCOUNT_RECEIVABLE,
                 'sales_tax_id'  => ($has_tax_line) ? self::SALES_TAX_ID : '',
-                'number_of_distributions' => $itemCount . " + " . $has_tax_line  . " + " .  $has_ship_line  . " + " .  $has_promo_line + $has_points_line,
+                'number_of_distributions' => $itemCount + $has_tax_line +  $has_ship_line +  $has_promo_line + $has_points_line,
                 'invoice_cm_distributions' => '', //item, tax, frieght
                 'qty' => 0, //item
                 'item_id' => '',//item 'sku'
