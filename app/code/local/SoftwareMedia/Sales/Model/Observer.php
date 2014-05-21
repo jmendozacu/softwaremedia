@@ -14,7 +14,7 @@ class SoftwareMedia_Sales_Model_Observer {
 			
 			//Check if order is newly completed by looking at last shipment date
 			if ($shipment) {
-				//if (time() - strtotime($shipment->getCreatedAt()) < 2) {
+				if (time() - strtotime($shipment->getCreatedAt()) < 2) {
 					$products = Mage::getResourceModel('sales/order_item_collection')->setOrderFilter($order->getId());
 					foreach($products as $product) {
 						$product = Mage::getModel('catalog/product')->load($product->getProductId());
@@ -24,7 +24,7 @@ class SoftwareMedia_Sales_Model_Observer {
 						}
 					}
 
-				//}
+				}
 			}
 		}
 
