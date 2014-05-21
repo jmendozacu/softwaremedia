@@ -5,7 +5,7 @@ class OCM_Catalog_Model_Container_Category extends Enterprise_PageCache_Model_Co
     protected function _getIdentifier()
     {
     	
-        Mage::log('Inside getIdentifier', null, 'cache.log');
+        //Mage::log('Inside getIdentifier', null, 'cache.log');
         $cacheId = $this->_getCookieValue('softwaremedia_ovchn', '');
         return $cacheId;
     }
@@ -17,7 +17,7 @@ class OCM_Catalog_Model_Container_Category extends Enterprise_PageCache_Model_Co
      */
     protected function _getCacheId()
     {
-        Mage::log('Inside getCacheId', null, 'cache.log');
+        //Mage::log('Inside getCacheId', null, 'cache.log');
         return 'CATEGORY_VIEW_' . md5($this->_placeholder->getAttribute('cache_id') . $this->_getIdentifier());
     }
 

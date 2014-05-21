@@ -6,6 +6,21 @@
 		</SoftwareMedia_Sales>
 	</modules>
 	<global>
+        <events>
+            <sales_order_save_commit_after>
+                <observers>
+                    <softwareMedia_sales_license>
+                        <class>softwareMedia_sales/observer</class>
+                        <method>evaluateLicenseOrder</method>
+                    </softwareMedia_sales_license>
+                </observers>
+            </sales_order_save_commit_after>
+        </events>
+        <models>
+            <softwareMedia_sales>
+                <class>SoftwareMedia_Sales_Model</class>
+            </softwareMedia_sales>
+        </models>
 		<resources>
 			<SoftwareMedia_Sales_setup>
 				<setup>
