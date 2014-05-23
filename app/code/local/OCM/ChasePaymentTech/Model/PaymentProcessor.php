@@ -146,28 +146,20 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		$txRequest->markForCaptureRequest->orbitalConnectionUsername = Mage::getStoreConfig('payment/chasePaymentTech/username', Mage::app()->getStore());
 		$txRequest->markForCaptureRequest->orbitalConnectionPassword = Mage::getStoreConfig('payment/chasePaymentTech/password', Mage::app()->getStore());
 
+		if ($customerRef)
+			$txRequest->markForCaptureRequest->customerRefNum = $customerRef;
 
 		$txRequest->markForCaptureRequest->version = '2.8';
 		$txRequest->markForCaptureRequest->industryType = 'EC';
 		$txRequest->markForCaptureRequest->bin = Mage::getStoreConfig('payment/chasePaymentTech/bin', Mage::app()->getStore());
 		$txRequest->markForCaptureRequest->merchantID = Mage::getStoreConfig('payment/chasePaymentTech/merchant_id', Mage::app()->getStore());
 		$txRequest->markForCaptureRequest->terminalID = Mage::getStoreConfig('payment/chasePaymentTech/terminal_id', Mage::app()->getStore());
-		// Check to see if we are using a profile
-		if (empty($customerRefNum)) {
-			$txRequest->markForCaptureRequest->ccAccountNum = $payment->getCcNumber();
-			$txRequest->markForCaptureRequest->ccExp = $payment->getCcExpYear() . sprintf('%02d', $payment->getCcExpMonth());
-			if ($payment->getCcType() == 'VI' || $payment->getCcType() == 'MC') {
-				$txRequest->markForCaptureRequest->ccCardVerifyPresenceInd = 1;
-			}
-			$txRequest->markForCaptureRequest->ccCardVerifyNum = $payment->getCcCid();
-			$txRequest->markForCaptureRequest->avsZip = $billing->getPostcode();
-			$txRequest->markForCaptureRequest->avsAddress1 = substr(implode(' ', $billing->getStreet()), 0, 30);
-			$txRequest->markForCaptureRequest->avsCity = substr($billing->getCity(), 0, 20);
-		} else {
-			$txRequest->markForCaptureRequest->ccAccountNum = NULL;
-			$txRequest->markForCaptureRequest->customerRefNum = $customerRefNum;
-		}		
-		
+		$txRequest->markForCaptureRequest->ccAccountNum = $payment->getCcNumber();
+		$txRequest->markForCaptureRequest->ccExp = $payment->getCcExpYear() . sprintf('%02d', $payment->getCcExpMonth());
+		$txRequest->markForCaptureRequest->ccCardVerifyNum = $payment->getCcCid();
+		$txRequest->markForCaptureRequest->avsZip = $billing->getPostcode();
+		$txRequest->markForCaptureRequest->avsAddress1 = substr(implode(' ', $billing->getStreet()), 0, 30);
+		$txRequest->markForCaptureRequest->avsCity = substr($billing->getCity(), 0, 20);
 		/* $txRequest->newOrderRequest->avsState = $billing->getRegion(); */
 		$txRequest->markForCaptureRequest->orderID = $order->getIncrementId();
 		$txRequest->markForCaptureRequest->amount = round($amount * 100, 0);

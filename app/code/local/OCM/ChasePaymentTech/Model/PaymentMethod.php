@@ -36,6 +36,8 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 		//Get admin Payment of frontend Payment
 		if (Mage::app()->getRequest()->getControllerName() == 'sales_order_create') 
 			$onePage = Mage::getSingleton('adminhtml/sales_order_create')->getQuote()->getPayment();
+		elseif (Mage::app()->getRequest()->getControllerName() == 'sales_order_edit') 
+			$onePage = Mage::getSingleton('adminhtml/sales_order_create')->getQuote()->getPayment();
 		else
 			$onePage = Mage::getSingleton('checkout/type_onepage')->getQuote()->getPayment();
 			

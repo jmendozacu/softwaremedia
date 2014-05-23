@@ -12,6 +12,7 @@ class OCM_ChasePaymentTech_Adminhtml_Sales_Order_CreateController extends Mage_A
             $paymentData = $this->getRequest()->getPost('payment');
             
             if ($paymentData['cc_saved']) {
+            	Mage::log('CC SAVED' . $paymentData['cc_saved'],null,'profile.log');
 		        $profile = Mage::getModel('chasePaymentTech/profiles')->load($paymentData['cc_saved']);  
 		        $paymentData['cc_type'] = $profile->getCardType();
 		        $paymentData['cc_exp_month'] = $profile->getExpMonth();
