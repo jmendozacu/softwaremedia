@@ -19,6 +19,7 @@ class OCM_Peachtree_Model_Referer extends Mage_Core_Model_Abstract
             'CJ' => 'Commission Junction',
             'NXT' => 'Nextag',
             'GGL' => 'Google Adwords',
+            'CMJ' => 'Commission Junction',
             'Email' => 'Email Blast',
             //‘Wholesale’ if the wholesale checkbox is checked on the order info page (we’ll need an option for this on the order info page in Magento)
             'Direct' => 'Direct',
