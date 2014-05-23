@@ -1,4 +1,47 @@
 <!-- Google Tag Manager -->
+<?php if (strpos($_SERVER['REQUEST_URI'],'checkout/onepage/success')): ?>
+<?php
+    //Get Order Number & Order Total
+    if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
+    $order = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId());
+    $amount = number_format($order->getGrandTotal(),2);
+    $shipping = number_format($order->getShippingAmount(),2);
+    $tax = number_format($order->getTaxAmount(),2);
+?>
+
+<script>
+dataLayer = [{
+    'transactionId': '<?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?>',
+    'transactionAffiliation': 'SoftwareMedia',
+    'transactionTotal': <?php echo $amount; ?>,
+    'transactionTax': <?php echo $tax; ?>,
+    'transactionShipping': <?php echo $shipping; ?>,
+    'transactionProducts': [
+    <?php 
+    $items = $order->getAllItems();
+    $itemcount=count($items);
+    $count = 1;
+    foreach($items as $item): ?>
+    {
+        'sku': '<?php echo $item->getSku(); ?>',
+        'name': '<?php echo $item->getName(); ?>',
+        'price': <?php echo $item->getPrice(); ?>,
+        'quantity': <?php echo $item->getQtyToInvoice(); ?>
+    }
+    <?php
+	    if ($count < $itemcount)
+	    	echo ",";
+	    	
+	    $count++;
+    endforeach;
+    ?>
+    ]
+}];
+
+</script>
+<?php endif; ?>
+<?php endif; ?>
+
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-259L"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
