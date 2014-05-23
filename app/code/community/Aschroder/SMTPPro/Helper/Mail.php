@@ -2,16 +2,18 @@
 
 class Aschroder_SMTPPro_Helper_Mail {
 
-	public function sendMailObject($mailObject, $websiteModelId = 0) {
+	public function sendMailObject($mailObject, $websiteModelId = 0, $transport = null) {
 		$mail = array();
 		try {
-			$transport = Mage::helper('smtppro')->getTransport($websiteModelId);
-			Mage::log(print_r($transport, true));
+			if (empty($transport)) {
+				$transport = Mage::helper('smtppro')->getTransport($websiteModelId);
+			} else {
+				$transport = unserialize($transport);
+			}
 
 			$mail = unserialize($mailObject);
 			$mail->send($transport);
 
-			Mage::log('Returning true');
 			return true;
 		} catch (Exception $e) {
 			try {
@@ -21,9 +23,7 @@ class Aschroder_SMTPPro_Helper_Mail {
 
 				$helper = Mage::helper('smtppro');
 				$transportNoOffice = $helper->getTransportNoOffice($websiteModelId);
-				Mage::log('New Transport: ' . print_r($transportNoOffice, true));
 				$configsNoOffice = $helper->getConfigs();
-				Mage::log('New Configs: ' . print_r($configsNoOffice, true));
 
 				//Clone mail to use default sender if sending w/ user Office 365 fails
 				$cloneMail = clone $mail;

@@ -17,8 +17,6 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		}
 
 		//Mage::log('SMTPPro is enabled, sending email in Aschroder_SMTPPro_Model_Email_Template', null, 'emailtest.log');
-
-
 		// The remainder of this function closely mirrors the parent
 		// method except for providing the SMTP auth details from the
 		// configuration. This is not good OO, but the parent class
@@ -91,8 +89,6 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		}
 
 		$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
-		$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
-
 		// If we are using store emails as reply-to's set the header
 		// Check the header is not already set by the application.
 		// The contact form, for example, set's it to the sender of
@@ -110,11 +106,21 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			Mage::log('ReplyToStoreEmail is enabled, just set Reply-To header: ' . $this->getSenderEmail());
 		}
 
+		$helper = Mage::helper('smtppro');
+		$transport = $helper->getTransport($this->getDesignConfig()->getStore());
+		$configs = $helper->getConfigs();
+		if (!empty($configs) && $this->getSenderEmail() != $configs['username']) {
+			$mail->setFrom($configs['username'], $this->getSenderName());
+		} else {
+			$mail->setFrom($this->getSenderEmail(), $this->getSenderName());
+		}
+
 		try {
 			$mailObject = serialize($mail);
+			$transportObject = serialize($transport);
 
 			Mage::log('About to send email through async');
-			Mage::helper('smtppro')->asyncRequest(Mage::getBaseUrl() . 'smtppro/async/mail/', array('mail_object' => $mailObject, 'website_model_id' => $this->getDesignConfig()->getStore()));
+			Mage::helper('smtppro')->asyncRequest(Mage::getBaseUrl() . 'smtppro/async/mail/', array('mail_object' => $mailObject, 'website_model_id' => $this->getDesignConfig()->getStore(), 'transport' => $transportObject));
 			Mage::log('Finished sending email');
 
 			// Record one email for each receipient
