@@ -115,6 +115,10 @@ class Mestrona_ForwardToConfigurable_Cms_IndexController extends Mage_Core_Contr
 		                //$this->_redirect();
 		                //die($parentProduct->getId());
 		                $url = $parentProduct->getProductUrl() . "?" . $attrList;
+		                
+		                //Add existing query string
+		                if ($_SERVER['QUERY_STRING'])
+							$url = $url . "&" . $_SERVER['QUERY_STRING'];
 		                //die($url . " 1");
 						$this->getResponse()->setHeader('HTTP/1.1, 301 Moved Permanently');
 						$this->getResponse()->setHeader('Location',$url);
