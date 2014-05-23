@@ -309,6 +309,11 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 			//var_dump($request);
 			//echo "<br /><br />";
 			//var_dump($response);
+			
+			//Handle weird soap error
+			if ($fault->getCode() == 841)
+				Mage::throwException("Error validating card number");
+				
 			$this->_logger->error('In Send Request - Threw a SoapFault\n' . $fault);
 			$this->_logger->error("\nRequest\n" . $request);
 			$this->_logger->error("\nResponse\n" . $response);
