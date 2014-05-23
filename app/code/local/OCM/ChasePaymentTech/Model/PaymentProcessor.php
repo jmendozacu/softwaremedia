@@ -315,6 +315,7 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 				Mage::throwException("Error validating card number");
 				
 			$this->_logger->error('In Send Request - Threw a SoapFault\n' . $fault);
+			$this->_logger->error("\Code\n" . $fault->getCode());
 			$this->_logger->error("\nRequest\n" . $request);
 			$this->_logger->error("\nResponse\n" . $response);
 		}
