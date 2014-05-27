@@ -31,38 +31,38 @@
 <div class="checkout-success-block">
     <h2 class="sub-title"><?php echo $this->__('Thank you for your purchase!') ?></h2>
 
-    <?php if ($this->getOrderId()): ?>
-    <?php if ($this->getCanViewOrder()) : ?>
-        <p><?php echo $this->__('Your order # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getViewOrderUrl()), $this->escapeHtml($this->getOrderId()))) ?></p>
-        <?php else : ?>
-        <p><?php echo $this->__('Your order # is: %s.', $this->escapeHtml($this->getOrderId())) ?></p>
-        <?php endif; ?>
-    <p><?php echo $this->__('You will receive an order confirmation email with details of your order and a link to track its progress.') ?></p>
-    <?php if ($this->getCanViewOrder() && $this->getCanPrintOrder()) : ?>
-        <p>
-            <?php echo $this->__('Click <a href="%s" onclick="this.target=\'_blank\'">here to print</a> a copy of your order confirmation.', $this->getPrintUrl()) ?>
-            <?php echo $this->getChildHtml() ?>
-        </p>
-        <?php endif; ?>
-    <?php endif;?>
+	<?php if ($this->getOrderId()): ?>
+		<?php if ($this->getCanViewOrder()) : ?>
+			<p><?php echo $this->__('Your order # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getViewOrderUrl()), $this->escapeHtml($this->getOrderId()))) ?></p>
+		<?php else : ?>
+			<p><?php echo $this->__('Your order # is: %s.', $this->escapeHtml($this->getOrderId())) ?></p>
+		<?php endif; ?>
+		<p><?php echo $this->__('You will receive an order confirmation email with details of your order and a link to track its progress.') ?></p>
+		<?php if ($this->getCanViewOrder() && $this->getCanPrintOrder()) : ?>
+			<p>
+				<?php echo $this->__('Click <a href="%s" onclick="this.target=\'_blank\'">here to print</a> a copy of your order confirmation.', $this->getPrintUrl()) ?>
+				<?php echo $this->getChildHtml() ?>
+			</p>
+		<?php endif; ?>
+	<?php endif; ?>
 
-    <?php if ($this->getAgreementRefId()): ?>
-    <p><?php echo $this->__('Your billing agreement # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getAgreementUrl()), $this->escapeHtml($this->getAgreementRefId())))?></p>
-    <?php endif;?>
+	<?php if ($this->getAgreementRefId()): ?>
+		<p><?php echo $this->__('Your billing agreement # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getAgreementUrl()), $this->escapeHtml($this->getAgreementRefId()))) ?></p>
+	<?php endif; ?>
 
-    <?php if ($profiles = $this->getRecurringProfiles()): ?>
-    <p><?php echo $this->__('Your recurring payment profiles:'); ?></p>
-    <ul class="disc">
-        <?php foreach ($profiles as $profile): ?>
-        <?php $profileIdHtml = ($this->getCanViewProfiles() ? sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getProfileUrl($profile)), $this->escapeHtml($this->getObjectData($profile, 'reference_id'))) : $this->escapeHtml($this->getObjectData($profile, 'reference_id'))); ?>
-        <li><?php echo $this->__('Payment profile # %s: "%s".', $profileIdHtml, $this->escapeHtml($this->getObjectData($profile, 'schedule_description')))?></li>
-        <?php endforeach;?>
-    </ul>
-    <?php endif;?>
+	<?php if ($profiles = $this->getRecurringProfiles()): ?>
+		<p><?php echo $this->__('Your recurring payment profiles:'); ?></p>
+		<ul class="disc">
+			<?php foreach ($profiles as $profile): ?>
+				<?php $profileIdHtml = ($this->getCanViewProfiles() ? sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getProfileUrl($profile)), $this->escapeHtml($this->getObjectData($profile, 'reference_id'))) : $this->escapeHtml($this->getObjectData($profile, 'reference_id'))); ?>
+				<li><?php echo $this->__('Payment profile # %s: "%s".', $profileIdHtml, $this->escapeHtml($this->getObjectData($profile, 'schedule_description'))) ?></li>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
 
     <div class="buttons-set">
         <button type="button" class="button" title="<?php echo $this->__('Continue Shopping') ?>"
-                onclick="window.location='<?php echo $this->getUrl() ?>'">
+                onclick="window.location = '<?php echo $this->getUrl() ?>'">
             <span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
     </div>
 </div>
@@ -70,31 +70,52 @@
 
 <!-- Bing Tracking Code -->
 <?php
-    //Get Order Number & Order Total
-    if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
-    $order = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId());
-    $amount = number_format($order->getGrandTotal(),2);
-    $shipping = number_format($order->getShippingAmount(),2);
-    $tax = number_format($order->getTaxAmount(),2);
-?>
-<script type="text/javascript"> if (!window.mstag) mstag = {loadTag : function(){},time : (new Date()).getTime()};</script> <script id="mstag_tops" type="text/javascript" src="//flex.msn.com/mstag/site/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/mstag.js"></script> <script type="text/javascript"> mstag.loadTag("analytics", {dedup:"1",domainId:"17963",type:"1",taxcost:"<?php echo $tax; ?>",shippingcost:"<?php echo $shipping; ?>",revenue:"<?php echo $amount; ?>",actionid:"131473"})</script> <noscript> <iframe src="//flex.msn.com/mstag/tag/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/analytics.html?dedup=1&domainId=17963&type=1&taxcost=<?php echo $tax; ?>&shippingcost=<?php echo $shipping; ?>&revenue=<?php echo $amount; ?>&actionid=131473" frameborder="0" scrolling="no" width="1" height="1" style="visibility:hidden;display:none"> </iframe> </noscript>
+//Get Order Number & Order Total
+if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
+	$order = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId());
+	$amount = number_format($order->getGrandTotal(), 2);
+	$shipping = number_format($order->getShippingAmount(), 2);
+	$tax = number_format($order->getTaxAmount(), 2);
+	$items = $order->getAllItems();
+	?>
+	<script type="text/javascript"> if (!window.mstag)
+			mstag = {loadTag: function() {
+				}, time: (new Date()).getTime()};</script> <script id="mstag_tops" type="text/javascript" src="//flex.msn.com/mstag/site/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/mstag.js"></script> <script type="text/javascript"> mstag.loadTag("analytics", {dedup: "1", domainId: "17963", type: "1", taxcost: "<?php echo $tax; ?>", shippingcost: "<?php echo $shipping; ?>", revenue: "<?php echo $amount; ?>", actionid: "131473"})</script> <noscript> <iframe src="//flex.msn.com/mstag/tag/2b21f5af-4415-4321-9fb6-1eddbf4d1b04/analytics.html?dedup=1&domainId=17963&type=1&taxcost=<?php echo $tax; ?>&shippingcost=<?php echo $shipping; ?>&revenue=<?php echo $amount; ?>&actionid=131473" frameborder="0" scrolling="no" width="1" height="1" style="visibility:hidden;display:none"> </iframe> </noscript>
 
-<!-- End Bing Tracking Code -->
+	<!-- End Bing Tracking Code -->
 
-<!-- Google Code for Purchase/Sale Conversion Page -->
-<script type="text/javascript">
-/* <![CDATA[ */
-var google_conversion_id = 1072660807;
-var google_conversion_language = "en";
-var google_conversion_format = "3";
-var google_conversion_color = "666666";
-var google_conversion_label = "Fr87CL2NPxDHgr7_Aw";
-var google_conversion_value = "<?php echo $amount; ?>";
-var google_remarketing_only = false;
-/* ]]> */
-</script>
-<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
-</script>
+	<!-- Google Code for Purchase/Sale Conversion Page -->
+	<script type="text/javascript">
+		/* <![CDATA[ */
+		var google_conversion_id = 1072660807;
+		var google_conversion_language = "en";
+		var google_conversion_format = "3";
+		var google_conversion_color = "666666";
+		var google_conversion_label = "Fr87CL2NPxDHgr7_Aw";
+		var google_conversion_value = "<?php echo $amount; ?>";
+		var google_remarketing_only = false;
+		/* ]]> */
+	</script>
+	<script type="text/javascript">
+		dataLayer = [{
+				'transactionId': '<?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?>',
+				'transactionTotal': <?php echo $amount; ?>,
+				'transactionTax': <?php echo $tax; ?>,
+				'transactionShipping': <?php echo $shipping; ?>,
+				'transactionProducts': [
+	<?php foreach ($items as $item) : ?>
+						{
+							'sku': '<?php echo $item->getSku(); ?>',
+							'name': '<?php echo $item->getName(); ?>',
+							'price': <?php echo $item->getPrice(); ?>,
+							'quantity': <?php echo $item->getQtyOrdered(); ?>
+						},
+	<?php endforeach; ?>
+				]
+			}];
+	</script>
+	<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+	</script>
 
 <?php endif; ?>
 
