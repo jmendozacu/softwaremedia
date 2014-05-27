@@ -108,8 +108,10 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$stock_model->setData('backorders',1);
 				$stock_model->setData('use_config_backorders',0);
 			}
+		}elseif ($product->getData('package_id')==1084 && $hasResult) {
+			$qty = 9999;
 		}
-		
+				
 		//Add stock of simple products
 		if ($product->getTypeId() == 'configurable') {
 			//echo "config";
