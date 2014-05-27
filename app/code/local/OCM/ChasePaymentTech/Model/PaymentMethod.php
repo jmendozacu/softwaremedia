@@ -242,7 +242,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 						$out = "Error: " . $txResponse["procStatusMessage"];
 						break;
 					case 'Fix': $code = implode(',', $code);
-						$out = "Contact the Developers - {$code}";
+						$out = "Error processing order, please contact customer service - {$code}";
 						break;
 					case 'None': $out = (!empty($message)) ? $message : "Approved";
 						break;
