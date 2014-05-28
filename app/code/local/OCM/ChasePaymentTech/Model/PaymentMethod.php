@@ -253,7 +253,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 					case 'Wait': $out = "Wait 2-3 days before resending or try to resolve with the customer - {$code}";
 						break;
 					default: $code = implode(',', $code);
-						$out = "Contact the Developers - {$code}";
+						$out = "Error processing order, please contact customer service - {$code}";
 						break;
 				}
 
