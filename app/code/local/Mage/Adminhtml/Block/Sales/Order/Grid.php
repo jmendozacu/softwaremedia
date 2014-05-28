@@ -82,6 +82,17 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 		return $this;
 	}
 
+	protected function _productFilter($collection, $column) {
+		$filter = $column->getFilter()->getValue();
+		if (!$filter) {
+			return $this;
+		} else {
+			$this->getCollection()->getSelect()->where('`sales_flat_order_item`.sku LIKE ?', '%' . $filter . '%');
+		}
+
+		return $this;
+	}
+
 	protected function _prepareColumns() {
 
 		$this->addColumn('real_order_id', array(
@@ -144,7 +155,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'width' => '250px',
 			'index' => 'sku',
 			'type' => 'text',
-			'filter' => false
+			'filter_condition_callback' => array($this, '_productFilter')
 		));
 
 
