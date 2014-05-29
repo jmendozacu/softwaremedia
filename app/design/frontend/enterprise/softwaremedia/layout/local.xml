@@ -101,6 +101,36 @@
     </catalog_category_layered>
     
     
+      <checkout_cart_new>
+        <reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <name>carousel/jquery.carouFredSel-6.2.0-packed.js</name>
+            </action>
+            <action method="addItem">
+                <type>js</type>
+                <name>carousel/jquery.mousewheel.min.js</name>
+            </action>
+            <action method="addItem">
+                <type>js</type>
+                <name>carousel/jquery.touchSwipe.min.js</name>
+            </action>
+            <action method="addItem">
+                <type>js</type>
+                <name>carousel/jquery.transit.min.js</name>
+            </action>
+            <action method="addItem">
+                <type>js</type>
+                <name>carousel/jquery.ba-throttle-debounce.min.js</name>
+            </action>
+        </reference>
+        
+        <reference name="checkout.cart">
+        <block type="checkout/cart_coupon" name="checkout.cart.couponform" as="couponform" template="checkout/cart/coupon.phtml"/>
+        </reference>
+        
+        
+    </checkout_cart_new>  
     
     <checkout_cart_index>
         <reference name="head">

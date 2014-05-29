@@ -154,7 +154,7 @@
         </reference>
     </checkout_cart_index>
 
-<checkout_cart_new>
+	<checkout_cart_new>
         <reference name="checkout.cart.crosssell">
             <action method="addPriceBlockType">
                 <type>giftcard</type>

@@ -254,7 +254,23 @@ Checking avaliability products to the switch between Order/Quote and Quiote/Orde
             </action>
         </reference>	
     </catalog_product_view>
-    
+    <checkout_cart_new>
+        <reference name="head">
+            <action ifconfig="qquoteadv/general/enabled"  method="addItem">
+                <type>skin_js</type><name>js/qquoteadv.js</name>
+            </action>
+            <action ifconfig="qquoteadv/general/enabled" method="addCss">
+                <link>css/qquoteadv_css.css</link>
+            </action>
+            <action ifconfig="qquoteadv/general/enabled" method="addCss">
+                <link>css/qquoteadv.css</link>
+            </action>
+            </reference>
+        <reference name="content">
+            <block before="-" type="qquoteadv/toolbar" name="qquoteadv.toolbar" as="qquoteadv.toolbar" template="qquoteadv/toolbar.phtml"/>
+            <block type="qquoteadv/checkoutquotebtn" name="qquoteadv.checkoutquotebtn" as="qquoteadv.checkoutquotebtn" template="qquoteadv/checkout_quotebtn.phtml"/>
+        </reference>
+    </checkout_cart_new>
     <checkout_cart_index>
         <reference name="head">
             <action ifconfig="qquoteadv/general/enabled"  method="addItem">

@@ -158,6 +158,62 @@
         </reference>
     </checkout_cart_index>
     
+    <checkout_cart_new>
+        <!-- Mage_Checkout -->
+        <reference name="content">
+            <block type="core/template" name="js_points_captions" template="rewards/js/captions.phtml" />
+        </reference> 
+        <reference name="head">
+            <action method="addJs" ifconfig="rewards/general/layoutsactive">        
+                <script>tbt/rewards/util.js</script>                            
+            </action>
+        </reference>
+        <!-- these template rewrites are still required until we don't support 1.4.1 anymore -->
+        <reference name="checkout.cart">
+            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
+                <type>default</type>
+                <block>rewards/checkout_cart_item_renderer</block>
+                <template>rewards/checkout/cart/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
+                <type>simple</type>
+                <block>rewards/checkout_cart_item_renderer</block>
+                <template>rewards/checkout/cart/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
+                <type>grouped</type>
+                <block>rewards/checkout_cart_item_renderer_grouped</block>
+                <template>rewards/checkout/cart/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
+                <type>configurable</type>
+                <block>rewards/checkout_cart_item_renderer_configurable</block>
+                <template>rewards/checkout/cart/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
+                <type>bundle</type>
+                <block>rewards/checkout_cart_item_renderer_bundle</block>
+                <template>rewards/checkout/cart/item/default.phtml</template>
+            </action>
+            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
+                <type>downloadable</type>
+                <block>rewards/checkout_cart_item_renderer_downloadable</block>
+                <template>rewards/checkout/cart/item/downloadable.phtml</template>
+            </action>
+        </reference>
+        <reference name="additional.product.info">
+            <block type="rewards/checkout_cart_item_points" name="checkout_cart_item_points" 
+                    template="rewards/checkout/cart/item/points.phtml" >
+	            <block type="rewards/checkout_cart_item_points_earning" name="checkout_cart_item_points_earning" 
+	                    template="rewards/checkout/cart/item/points/earning.phtml">
+	                <action method="setPriority">
+	                    <value>20</value>
+	                </action>
+                </block>
+            </block>
+        </reference>
+    </checkout_cart_new>
+    
     
     <!-- Displays a warning if the csutomer is using the multishipping interface since multishipping points earning/spending are not currently supported. -->
     <checkout_multishipping>
