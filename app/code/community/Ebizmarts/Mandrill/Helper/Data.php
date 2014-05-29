@@ -6,7 +6,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_Mandrill
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_Mandrill_Helper_Data extends Mage_Core_Helper_Abstract	 {
 
 	private $_configPath = 'mandrill/general/';
@@ -59,7 +61,9 @@ class Ebizmarts_Mandrill_Helper_Data extends Mage_Core_Helper_Abstract	 {
 	 * @return Mage_Core_Model_Log_Adapter
 	 */
 	public function log($data, $filename = 'Ebizmarts_Mandrill.log') {
-		return Mage::getModel('core/log_adapter', $filename)->log($data);
+		if(Mage::getStoreConfig($this->_configPath . "enable_log")) {
+			return Mage::getModel('core/log_adapter', $filename)->log($data);
+		}
 	}
 
 }
