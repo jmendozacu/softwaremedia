@@ -6,7 +6,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_Mandrill
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Mandrill_API {
 
 	/**
@@ -166,9 +168,22 @@ class Mandrill_API {
 		foreach($message['to_email'] as $pos => $email){
 			$to []= array(
 							'email' => $email,
-							'name'  => $message['to_name'][$pos]
+							'name'  => $message['to_name'][$pos],
+                            'type'  => 'to'
 						 );
 		}
+
+		if(isset($message['bcc_address']) && !empty($message['bcc_address'])) {
+			foreach($message['bcc_address'] as $bccmail) {
+				$to []= array(
+					'email' => $bccmail,
+					'type'  => 'bcc'
+				);
+
+			}
+		}
+
+        unset($message['bcc_address']);
         if(count($this->_attachments)) {
             $message['attachments'] = $this->_attachments;
         }
@@ -284,8 +299,8 @@ class Mandrill_API {
 
 		$url = $this->apiUrl . $method . '.' . $this->_output;
 
-		Mage::helper('mandrill')->log($url, 'MageMonkey_ApiCall.log');
-		Mage::helper('mandrill')->log($params, 'MageMonkey_ApiCall.log');
+		Mage::helper('mandrill')->log($url, 'Ebizmarts_Mandrill.log');
+		Mage::helper('mandrill')->log($params, 'Ebizmarts_Mandrill.log');
 
         $curlSession = curl_init();
 
@@ -322,7 +337,7 @@ class Mandrill_API {
 
 		$resultObject = json_decode($result);
 
-		Mage::helper('mandrill')->log($resultObject, 'MageMonkey_ApiCall.log');
+		Mage::helper('mandrill')->log($resultObject, 'Ebizmarts_Mandrill.log');
 
 		//You can consider any non-200 HTTP response code an error
 		//the returned data will contain more detailed information
@@ -354,5 +369,14 @@ class Mandrill_API {
         $att['content'] = base64_encode($body);
         $this->_attachments[] = $att;
         return $att;
+    }
+    public function addAttachment(Zend_Mime_Part $attachment)
+    {
+        $att = array();
+        $att['type'] = $attachment->type;
+        $att['name'] = $attachment->filename;
+        $this->_attachments[] = $att;
+
+        return $this;
     }
 }

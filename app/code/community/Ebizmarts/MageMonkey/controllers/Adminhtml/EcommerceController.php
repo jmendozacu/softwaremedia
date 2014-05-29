@@ -6,7 +6,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_Controller_Action
 {
 
@@ -79,6 +81,32 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
             $this->_getSession()->addSuccess($this->__('%s order(s) have been sent successfully.', $sent));
         }
         $this->_redirect('adminhtml/sales_order/index');
+	}
+
+	/**
+	 * Mass action remove order from ecommerce 360 grid
+	 */
+	public function massDeleteAction()
+	{
+		$orderIds = $this->getRequest()->getParam('orders');
+		if(!is_array($orderIds)) {
+			Mage::getSingleton('adminhtml/session')->addError(Mage::helper('tax')->__('Please select Order(s).'));
+		} else {
+			try {
+				$ecommerce = Mage::getModel('monkey/ecommerce');
+				foreach ($orderIds as $orderId) {
+					$ecommerce->load($orderId)->delete();
+				}
+					Mage::getSingleton('adminhtml/session')->addSuccess(
+					Mage::helper('monkey')->__(
+					'Total of %d record(s) were deleted.', count($orderIds)
+					)
+					);
+				} catch (Exception $e) {
+					Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+				}
+		}
+		$this->_redirect('*/*/index');
 	}
 
 }

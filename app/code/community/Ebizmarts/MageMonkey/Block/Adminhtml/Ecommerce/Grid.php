@@ -6,7 +6,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -76,4 +78,17 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml
     {
         return $this->getUrl('*/*/grid', array('_current' => true));
     }
+
+    protected function _prepareMassaction()
+    {
+	    $this->setMassactionIdField('order_id');
+		$this->getMassactionBlock()->setFormFieldName('orders');
+		$this->getMassactionBlock()->addItem('delete', array(
+		'label'=> Mage::helper('monkey')->__('Delete'),
+		'url'  => $this->getUrl('*/*/massDelete', array('' => '')),
+		'confirm' => Mage::helper('tax')->__('Are you sure?')
+		));
+		return $this;
+    }
+
 }
