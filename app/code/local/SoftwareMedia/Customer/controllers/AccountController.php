@@ -27,8 +27,10 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			$session->renewSession();
 			$url = $this->_welcomeCustomer($customer);
 		}
-		
-		$this->_redirect($url);
+		if ($url == 'new')
+			$this->_redirect($url);
+		else
+			$this->_redirectSuccess($url);
 		return $this;
 	}
 
@@ -67,8 +69,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			$successUrl = $this->_getSession()->getBeforeAuthUrl(true);
 		}
 		$postData = Mage::app()->getRequest()->getPost();
-		echo $postData['success_url'];
-		
+
 		if ($postData['success_url'] == 'new') {
 			$this->processNewPoints($customer);
 			$successUrl = $postData['success_url'];
@@ -128,10 +129,12 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		}
 		
 		$errUrl = $this->_getUrl('*/*/create', array('_secure' => true));
-		if ($postData['error_url']) {
+		if ($postData['error_url'] == 'new') {
 			$errUrl = $postData['error_url'];
+			$this->_redirect($errUrl);
+		} else {
+			$this->_redirectError($errUrl);
 		}
-		$this->_redirect($errUrl);
 	}
 	
 	/**
