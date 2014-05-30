@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <SoftwareMedia_Customer>
+            <version>0.1.0</version>
+        </SoftwareMedia_Customer>
+    </modules>
+    <global>
+        <helpers>
+            <softwaremedia_customer>
+                <class>SoftwareMedia_Customer_Helper</class>
+            </softwaremedia_customer>
+        </helpers>
+        <resources>
+            <softwaremedia_customer_setup>
+                <setup>
+                    <module>SoftwareMedia_Customer</module>
+                </setup>
+            </softwaremedia_customer_setup>
+        </resources>
+    </global>
+    <frontend>
+        <routers>
+            <customer>
+                <use>standard</use>
+                <args>
+                    <modules>
+                        <SoftwareMedia_Customer before="Mage_Customer">SoftwareMedia_Customer</SoftwareMedia_Customer>
+                    </modules>
+                </args>
+            </customer>
+        </routers>
+    </frontend>
+</config>
