@@ -20,6 +20,12 @@ class SoftwareMedia_Ubervisibility_Helper_Api extends Mage_Core_Helper_Abstract 
 		));
 
 		$url = 'http://ubervisibility.com:8080/v1/' . $uri;
+
+		if ($method == Zend_Http_Client::PUT) {
+			$method = Zend_Http_Client::POST;
+			$curl->addOption(CURLOPT_CUSTOMREQUEST, Zend_Http_Client::PUT);
+		}
+
 		$curl->write($method, $url, '1.1', array('Accept: application/json', 'Content-Type: application/json'), json_encode($variables));
 		$data = $curl->read();
 		$curl->close();

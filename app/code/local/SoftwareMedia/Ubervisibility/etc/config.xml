@@ -27,16 +27,16 @@
 			</ubervisibility>
 		</models>
 	</global>
-	<!--crontab>
+	<crontab>
 		<jobs>
 			<SoftwareMedia_Ubervisibility>
 				<schedule>
-					<cron_expr>* * * * *</cron_expr>
+					<cron_expr>*/5 * * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ubervisibility/observer::updateProduct</model>
 				</run>
 			</SoftwareMedia_Ubervisibility>
 		</jobs>
-	</crontab>-->
+	</crontab>
 </config>
