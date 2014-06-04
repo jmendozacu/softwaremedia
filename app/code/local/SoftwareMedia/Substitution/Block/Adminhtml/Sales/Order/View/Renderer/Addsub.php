@@ -17,7 +17,7 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Addsu
         
         //Load product from order item
         //echo get_class($product);
-        echo $product->getProductId();
+
         $product = Mage::getModel('catalog/product')->load($product->getProductId());
         //$product = Mage::getModel('catalog/product')->load($product->getProductId());
         //var_dump($product);
