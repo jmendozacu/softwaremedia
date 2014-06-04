@@ -224,10 +224,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'item_id' => $item->getSku(),
 					'description' => $item->getName(),
 					'gl_account' => self::GL_ACCOUNT_ITEM,
-					'unit_price' => $item->getPrice(),
+					'unit_price' =>number_format($item->getRowTotal() / $item->getQty() * -1,2,'.',''),
 					'tax_type' => self::TAX_TYPE_ITEM,
-					'amount' => ($item->getPrice() * $item->getQty()) * -1,
+					'amount' => $item->getRowTotal() * -1,
 				);
+				echo $item->getRowTotal();
+				//var_dump($item); 
 
 				//Split up grouped products into their associated products
 				if( $item->getProductType() == 'grouped' ) {
@@ -235,10 +237,14 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					$associatedProducts = $product->getTypeInstance(true)->getAssociatedProducts($product);
 					$hasPrice = false;
 					foreach($associatedProducts as $groupSubProd) {
-						$qty = $groupSubProd->getQty() ? 1 : $groupSubProd->getQty();
+						$qty = 1;
+						if ($groupSubProd->getQty() > 0)
+							$qty = $groupSubProd->getQty();
+							
 						$item_values['item_id'] = $groupSubProd->getSku();
 						$item_values['description'] = $groupSubProd->getName();
 						$item_values['qty'] = $qty * $item->getQty();
+						$item_values['unit_price'] = number_format($item_values['amount'] / $item_values['qty'],2,'.','');
 						
 						if ($hasPrice) {
 							$item_values['unit_price'] = 0;
