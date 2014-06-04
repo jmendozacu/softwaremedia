@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <SoftwareMedia_Customer>
+            <active>true</active>
+            <codePool>local</codePool>
+        </SoftwareMedia_Customer>
+    </modules>
+</config>

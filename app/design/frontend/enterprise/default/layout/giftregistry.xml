@@ -35,7 +35,14 @@
             <block type="enterprise_giftregistry/cart_product_mark" name="giftregistry.product.mark" template="giftregistry/cart/product/mark.phtml"/>
         </reference>
     </checkout_cart_index>
-
+	<checkout_cart_new>
+        <reference name="checkout.cart.methods">
+            <block type="enterprise_giftregistry/cart_link" name="giftregistry.cart.link" template="giftregistry/cart/link.phtml"/>
+        </reference>
+        <reference name="additional.product.info">
+            <block type="enterprise_giftregistry/cart_product_mark" name="giftregistry.product.mark" template="giftregistry/cart/product/mark.phtml"/>
+        </reference>
+    </checkout_cart_new>
     <wishlist_index_index>
         <reference name="customer.wishlist.item.info">
             <block type="enterprise_giftregistry/wishlist_item_column_registry" name="customer.wishlist.item.giftregistry" template="giftregistry/wishlist/item/column/registry.phtml"></block>
