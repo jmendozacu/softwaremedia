@@ -228,9 +228,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'tax_type' => self::TAX_TYPE_ITEM,
 					'amount' => $item->getRowTotal() * -1,
 				);
-				echo $item->getRowTotal();
-				//var_dump($item); 
-
+				
 				//Split up grouped products into their associated products
 				if( $item->getProductType() == 'grouped' ) {
 					$product = Mage::getModel('catalog/product')->load($item->getProductId());
