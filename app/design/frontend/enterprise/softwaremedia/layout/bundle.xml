@@ -202,7 +202,6 @@ Additional block for bundle product type
             <action method="addItem"><type>skin_js</type><name>js/bundle.js</name></action>
         </reference>
         <reference name="product.info">
-        	<!--action method="setTemplate"><name>bundle/catalog/product/view.phtml</name></action-->
             <block type="bundle/catalog_product_view_type_bundle" name="product.info.bundle" as="product_type_data" template="bundle/catalog/product/view/type/bundle.phtml">
                 <action method="addPriceBlockType"><type>bundle</type><block>bundle/catalog_product_price</block><template>bundle/catalog/product/price.phtml</template></action>
                 <block type="bundle/catalog_product_price" name="bundle.prices" as="bundle_prices" template="bundle/catalog/product/view/price.phtml">
