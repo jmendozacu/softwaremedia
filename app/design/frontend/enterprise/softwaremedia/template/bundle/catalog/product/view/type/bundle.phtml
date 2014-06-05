@@ -33,10 +33,12 @@
 //<![CDATA[
     Enterprise.Bundle.swapReloadPrice();
     var bundle = new Product.Bundle(<?php echo $this->getJsonConfig() ?>);
+    //bundle.changeSelection(this)
     var taxCalcMethod = "<?php echo Mage::helper('tax')->getConfig()->getAlgorithm($_product->getStore()) ?>";
     var CACL_UNIT_BASE = "<?php echo Mage_Tax_Model_Calculation::CALC_UNIT_BASE ?>";
     var CACL_ROW_BASE = "<?php echo Mage_Tax_Model_Calculation::CALC_ROW_BASE ?>";
     var CACL_TOTAL_BASE = "<?php echo Mage_Tax_Model_Calculation::CALC_TOTAL_BASE ?>";
+    var spConfig = new Product.Bundle(<?php echo $this->getJsonConfig() ?>);
         //]]>
     </script>
 <?php endif; ?>
