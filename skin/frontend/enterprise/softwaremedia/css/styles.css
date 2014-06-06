@@ -205,6 +205,10 @@ p.required { margin:0; padding:5px 0 7px; text-align:right; /* width:620px; */ f
 .v-fix { float:left; }
 .v-fix .validation-advice { display:block; width:12em; margin-right:-12em; position:relative; }
 
+#bundle-product-wrapper div.validation-error, #bundle-product-wrapper div.validation-passed {
+	padding-right: 0;
+}
+
 /* Fieldset */
 .fieldset { font-size:12px; margin:0 0 16px; }
 .fieldset p { margin:0 0 1.5em; }
@@ -1362,7 +1366,10 @@ p.product-image { cursor:default !important; }
 .product-view .product-shop .price-box { padding: 0 0 40px 0;text-align: right ;margin: 0}
 .product-view .product-shop .price-box .price-label { font-size:11px; }
 .product-view .product-shop .price-box .price-as-configured .price-label { font-size:12px; }
-.product-view .product-shop .price-box .price-as-configured .price { color:#e55100; font-size:14px; }
+.product-view .product-shop .price-box .price-as-configured .price { font-size: 56px !important; color:#e55100;line-height: 65px !important;color: #d26734;
+font-family: 'Carrois Gothic', 'Duru Sans',sans-serif;
+font-style: normal;
+font-weight: 700; }
 .product-view .product-shop .price-box .price-including-tax .price,
 .product-view .product-shop .price-box .regular-price .price ,
 .product-view .product-shop .price-box .special-price .price { color:#d26734; font-size:32px;line-height: 40px; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 700;}
@@ -1427,7 +1434,7 @@ p.product-image { cursor:default !important; }
 .price-box {}
 .price-box .price { font-weight:normal;font-size: 13px;color: #000 }
 
-.price-box-bundle {}
+.price-box-bundle { display: none;}
 
 /* Regular price */
 .regular-price {}
@@ -1497,7 +1504,7 @@ a.minimal-price-link:hover { text-decoration:underline; }
 .price-as-configured .price { font-size:14px; color:#e55100; }
 
 /* Price notice next to the options */
-.price-notice { padding-left:10px; }
+/* .price-notice { padding-left:10px; } */
 .price-notice .price { font-weight:bold; }
 /********** Product Prices > */
 
@@ -1550,9 +1557,14 @@ button.btn-cart span {}
 .product-options div.selector span {background-color: #f4f4f4}
 .product-options dt label { font-size:16px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 300;color: #000; }
 .product-options dt .required em {display: none }
-.product-options dd .qty-holder { display:block; padding:10px 0; }
+.product-options dd .qty-holder {
+	clear: both;
+	display: block;
+	padding: 10px 0;
+	text-align: right;
+}
 .product-options dd .qty-holder label { vertical-align:middle; }
-.product-options dd .qty-disabled { background:none; border:0; padding:3px; color:#000; }
+.product-options dd .qty-disabled { background:#f0f0f0; color:#000; }
 .product-options dd {float: right;/* width: 225px; */padding-bottom: 3px}
 .product-options dt {float: left;width: 114px;line-height: 30px;height: auto;min-height: 30px;padding: 0 0 3px 0}
 .product-options dl {float: left;width: 100%}
@@ -1567,7 +1579,7 @@ button.btn-cart span {}
 .product-options .options-list li { vertical-align:middle; margin:0; padding:2px 0; line-height:1.315; }
 .product-options .options-list input.radio { float:left; margin:2px -18px 0 0; }
 .product-options .options-list input.checkbox { float:left; margin:2px -20px 0 0; }
-.product-options .options-list .label { display:block; margin-left:20px; }
+/* .product-options .options-list .label { display:block; margin-left:20px; } */
 .product-options .validation-error .options-list,
 .product-options ul.validation-failed { padding:2px 1px !important; position:relative; z-index:2; top:-3px; left:-2px; margin-right:-2px; }
 .options-container-small .product-options .validation-error .options-list,
