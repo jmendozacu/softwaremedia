@@ -13,7 +13,8 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Actio
         //Base subs off original order item
         $product = Mage::getModel('sales/order_item')->load($product->getOrderItemId());
         //$html = $product->getSku();
-        $product = Mage::getModel('catalog/product')->load($product->getProductId());
+        $product = Mage::getModel('catalog/product')->loadByAttribute('sku',$product->getSku());
+        //$product = Mage::getModel('catalog/product')->load($product->getProductId());
         
         //Load product from order item
         //$product = Mage::getModel('catalog/product')->load($product->getProductId());
