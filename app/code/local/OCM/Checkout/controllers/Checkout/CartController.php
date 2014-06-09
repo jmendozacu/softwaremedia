@@ -130,12 +130,36 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController
                 $this->_goBack();
                 return;
             }
-
-            $cart->addProduct($product, $params);
-            if (!empty($related)) {
-                $cart->addProductsByIds(explode(',', $related));
-            }
-
+            
+            //SPLIT UP BUNDLE PRODUCTS BEFORE ADDING TO CART
+			if (isset($params['bundle_option'])) {
+				$optionCollection = $product->getTypeInstance()->getOptionsCollection();
+				$selectionCollection = $product->getTypeInstance()->getSelectionsCollection($product->getTypeInstance()->getOptionsIds());
+				$options = $optionCollection->appendSelections($selectionCollection);
+				//var_dump($product->getTypeInstance(true)->getOptionsIds($product));
+				foreach( $options as $option )
+				{
+					//var_dump($option);
+					//echo $option->getOptionId();
+				    
+				    if (isset($params['bundle_option'][$option->getOptionId()])) {
+				    	$_selections = $option->getSelections();
+					    foreach( $_selections as $selection )
+					    {
+					        if ($selection->getSelectionId() == $params['bundle_option'][$option->getOptionId()]) {
+						    	$bundleProd = Mage::getModel('catalog/product')->load($selection->getProductId());
+						        $cart->addProduct($bundleProd, array('qty' => $params['bundle_option_qty'][$option->getOptionId()]));
+								//exit;
+					        }
+					    }
+					}
+				} 
+			} else {
+		            $cart->addProduct($product, $params);
+		            if (!empty($related)) {
+		                $cart->addProductsByIds(explode(',', $related));
+		            }
+			}
             $cart->save();
 
             $this->_getSession()->setCartWasUpdated(true);

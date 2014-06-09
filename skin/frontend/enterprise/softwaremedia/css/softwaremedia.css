@@ -471,6 +471,7 @@ div.block-layered-nav dd li.amshopby-cat-level-3 {
 }
 .product-options dt {
 	width: 130px;
+	clear: both;
 }
 .product-options dd {
 	/* width: 200px; */

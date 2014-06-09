@@ -6,6 +6,7 @@
     var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
 </script>
 <div id="messages_product_view"><?php echo $this->getMessagesBlock()->setEscapeMessageFlag(true)->toHtml() ?></div>
+<div id="bundle-product-wrapper">
 <div class="product-view">
     <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
         <div class="no-display">
@@ -248,6 +249,7 @@
         <?php echo $this->getChildHtml('upsell_products') ?>
         <?php //echo $this->getChildHtml('productTagList') ?>
         <?php //echo $this->getChildHtml('product_additional_data') ?>
+</div>
 </div>
 
 <script type="text/javascript">

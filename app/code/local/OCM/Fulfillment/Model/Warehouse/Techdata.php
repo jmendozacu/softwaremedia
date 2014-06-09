@@ -117,9 +117,11 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
         ';  
 
         try {
-            //Mage::log($xml_builder,null,'techdata.log');
+            Mage::log($xml_builder,null,'techdata.log');
             
             $result = $this->_getRequest($xml_builder);
+            
+            Mage::log($result,null,'techdata.log');
             
             //Mage::log($result,null,'techdata.log');
             

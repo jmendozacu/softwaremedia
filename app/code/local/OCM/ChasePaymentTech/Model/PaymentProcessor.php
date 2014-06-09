@@ -36,13 +36,12 @@ class OCM_ChasePaymentTech_Model_PaymentProcessor {
 		$txRequest->profileAddRequest->merchantID = Mage::getStoreConfig('payment/chasePaymentTech/merchant_id', Mage::app()->getStore());
 		$txRequest->profileAddRequest->customerName = $billing->getFirstname() . ' ' . $billing->getLastname();
 		$txRequest->profileAddRequest->customerRefNum = '';
-		$txRequest->profileAddRequest->customerAddress1 = $address[0];
-		$txRequest->profileAddRequest->customerAddress2 = (isset($address[1]) ? $address[1] : '');
+		$txRequest->profileAddRequest->customerAddress1 = substr(implode(' ', $billing->getStreet()), 0, 30);
 		$txRequest->profileAddRequest->customerCity = $billing->getCity();
 		$txRequest->profileAddRequest->customerState = $region->getCode();
 		$txRequest->profileAddRequest->customerZIP = $billing->getPostcode();
 		$txRequest->profileAddRequest->customerEmail = $billing->getEmail();
-		$txRequest->profileAddRequest->customerPhone = $billing->getTelephone();
+		//$txRequest->profileAddRequest->customerPhone = $billing->getTelephone();
 		$txRequest->profileAddRequest->customerCountryCode = $billing->getCountryId();
 
 		// What are we doing: CRUD
