@@ -16,10 +16,13 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Addsu
         
         
         //Load product from order item
-        $product = Mage::getModel('catalog/product')->loadByAttribute('sku',$product->getSku());
+        //echo get_class($product);
+
+        $product = Mage::getModel('catalog/product')->load($product->getProductId());
         //$product = Mage::getModel('catalog/product')->load($product->getProductId());
         //var_dump($product);
         //die();
+
         $subs = $product->getSubstitutionProductIds();
         //var_dump($subs);
         //die();

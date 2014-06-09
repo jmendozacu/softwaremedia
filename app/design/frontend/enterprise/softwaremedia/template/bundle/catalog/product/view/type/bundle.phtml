@@ -33,13 +33,15 @@
 //<![CDATA[
     Enterprise.Bundle.swapReloadPrice();
     var bundle = new Product.Bundle(<?php echo $this->getJsonConfig() ?>);
-//]]>
-</script>
-<?php endif; ?>
-<?php if ($_product->isAvailable()): ?>
-    <p class="availability in-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('In stock') ?></span></p>
-<?php else: ?>
-    <p class="availability out-of-stock"><?php echo $this->helper('catalog')->__('Availability:') ?> <span><?php echo $this->helper('catalog')->__('Out of stock') ?></span></p>
+    var mybundle = new Product.Bundle(<?php echo $this->getJsonConfig() ?>);
+    //bundle.changeSelection(this)
+    var taxCalcMethod = "<?php echo Mage::helper('tax')->getConfig()->getAlgorithm($_product->getStore()) ?>";
+    var CACL_UNIT_BASE = "<?php echo Mage_Tax_Model_Calculation::CALC_UNIT_BASE ?>";
+    var CACL_ROW_BASE = "<?php echo Mage_Tax_Model_Calculation::CALC_ROW_BASE ?>";
+    var CACL_TOTAL_BASE = "<?php echo Mage_Tax_Model_Calculation::CALC_TOTAL_BASE ?>";
+    //var spConfig = new Product.Bundle(<?php echo $this->getJsonConfig() ?>);
+        //]]>
+    </script>
 <?php endif; ?>
 <div class="price-box-bundle">
     <?php echo $this->getPriceHtml($_product) ?>

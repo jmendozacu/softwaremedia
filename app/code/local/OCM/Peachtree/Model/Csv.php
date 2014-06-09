@@ -92,6 +92,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'sales_flat_shipment_item as shipment_item', 'shipment_item.order_item_id = main_table.order_item_id', array('shipment_id' => 'parent_id')
 				)
 				->joinLeft(
+					'catalog_product_entity',
+					'catalog_product_entity.entity_id = main_table.product_id', 
+					array('product_type' => 'type_id')
+				)
+				->joinLeft(
 					'sales_flat_shipment as shipment', 'shipment_item.parent_id = shipment.entity_id', array('item_ship_date' => 'created_at')
 				)->group('main_table.entity_id')
 			;
@@ -132,11 +137,24 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$shipVia = $codeMap[$shipVia];
 
 			$itemCount = 0;
+			$grouped = array();
+			
+			//Skip products with parents (configurbales would be counted twice otherwise)
 			foreach ($items as $item) {
 				$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
 				if ($orderItem->getParentItemId())
 					continue;
-
+					
+				//Count up grouped products
+				if( $item->getProductType() == 'grouped' ) {
+					$product = Mage::getModel('catalog/product')->load($item->getProductId());
+					$associatedProducts = $product->getTypeInstance(true)->getAssociatedProducts($product);
+					foreach($associatedProducts as $groupSubProd) {
+						$itemCount++;
+					}
+					continue;
+				}
+				
 				$itemCount++;
 			}
 			$orderId = $invoice->getData('order_increment_id');
@@ -191,6 +209,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
 				if ($orderItem->getParentItemId())
 					continue;
+				
 				if (!$shipTime)
 					$shipTime = date('m/d/Y', strtotime($item->getData('item_ship_date')));
 
@@ -205,11 +224,38 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'item_id' => $item->getSku(),
 					'description' => $item->getName(),
 					'gl_account' => self::GL_ACCOUNT_ITEM,
-					'unit_price' => $item->getPrice(),
+					'unit_price' =>number_format($item->getRowTotal() / $item->getQty() * -1,2,'.',''),
 					'tax_type' => self::TAX_TYPE_ITEM,
-					'amount' => ($item->getPrice() * $item->getQty()) * -1,
+					'amount' => $item->getRowTotal() * -1,
 				);
-
+				
+				//Split up grouped products into their associated products
+				if( $item->getProductType() == 'grouped' ) {
+					$product = Mage::getModel('catalog/product')->load($item->getProductId());
+					$associatedProducts = $product->getTypeInstance(true)->getAssociatedProducts($product);
+					$hasPrice = false;
+					foreach($associatedProducts as $groupSubProd) {
+						$qty = 1;
+						if ($groupSubProd->getQty() > 0)
+							$qty = $groupSubProd->getQty();
+							
+						$item_values['item_id'] = $groupSubProd->getSku();
+						$item_values['description'] = $groupSubProd->getName();
+						$item_values['qty'] = $qty * $item->getQty();
+						$item_values['unit_price'] = number_format($item_values['amount'] / $item_values['qty'],2,'.','');
+						
+						if ($hasPrice) {
+							$item_values['unit_price'] = 0;
+							$item_values['amount'] = 0;
+						}
+						$line_values = array_merge($common_values, $item_values);
+						$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
+						
+						$hasPrice = true;
+					}
+					continue;
+				}
+				
 				$line_values = array_merge($common_values, $item_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
