@@ -13,10 +13,12 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		Mage::log('Starting ubervis update', null, 'ubervis.log');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
-		$collection->setOrder('ubervis_updated', 'ASC');
 		$collection->addAttributeToSelect('*');
+		$collection->addAttributeToFilter('status', array('eq' => 1));
 		$collection->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.manage_stock=1');
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
+		$collection->getSelect()->where('sku NOT LIKE "%HOME"');
+		$collection->setOrder('ubervis_updated', 'ASC');
 		$collection->setPageSize(100);
 
 		foreach ($collection as $prod) {
