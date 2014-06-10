@@ -38,6 +38,7 @@ if (!Mage::isInstalled()) {
 // Don't remove this
 $_SERVER['SCRIPT_NAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER['SCRIPT_NAME']);
 $_SERVER['SCRIPT_FILENAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER['SCRIPT_FILENAME']);
+date_default_timezone_set('America/Denver');
 
 Mage::app('admin')->setUseSessionInUrl(false);
 
