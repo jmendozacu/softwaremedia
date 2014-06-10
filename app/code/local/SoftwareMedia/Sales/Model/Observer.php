@@ -19,7 +19,11 @@ class SoftwareMedia_Sales_Model_Observer {
 					foreach($products as $product) {
 						$product = Mage::getModel('catalog/product')->load($product->getProductId());
 						if ($product->getLicenseNonlicenseDropdown() == 1210) {
-							$order->addStatusToHistory('ordered_license_1','Order has Licensing items. Setting status to License Ordered.')->save();
+							try {
+								$oldOrder->addStatusToHistory('ordered_license_1','Order has Licensing items. Setting status to License Ordered.')->save();
+							} catch (Exception $e) {
+							    Mage::log($e->getMessage(),NULL,'license.log');
+							}
 							continue;
 						}
 					}
