@@ -31,7 +31,7 @@
 		<jobs>
 			<SoftwareMedia_Ubervisibility>
 				<schedule>
-					<cron_expr>*/5 * * * *</cron_expr>
+					<cron_expr>*/10 * * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ubervisibility/observer::updateProduct</model>
