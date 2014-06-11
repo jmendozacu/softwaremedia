@@ -32,7 +32,11 @@
             <action method="addItem"><type>js</type><name>varien/weee.js</name></action>
         </reference>
     </checkout_cart_index>
-
+	 <checkout_cart_new>
+        <reference name="head">
+            <action method="addItem"><type>js</type><name>varien/weee.js</name></action>
+        </reference>
+    </checkout_cart_new>
     <checkout_onepage_index>
         <reference name="head">
             <action method="addItem"><type>js</type><name>varien/weee.js</name></action>

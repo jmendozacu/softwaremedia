@@ -196,6 +196,7 @@ input.input-text.validation-failed,
 textarea.validation-failed { background:#fff7f5 url(../images/bkg_input-failed.gif) 0 0 repeat-x !important; }
 span.validation-passed,
 div.validation-passed { background:url(../images/icon_ok.gif) 100% 6px no-repeat; padding-right:20px; }
+.shipping-form div.validation-passed { padding-right: 0; }
 span.validation-error,
 div.validation-error { background:url(../images/icon_error.gif) 100% 6px no-repeat; padding-right:20px; }
 .required em { color:#f15c22; margin-right:4px; }
@@ -1989,7 +1990,9 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .cart-table button.btn-continue span { background-position: left top;padding: 4px 0 4px 32px;height: 24px;line-height: 24px}
 .cart-table button.btn-print span { background-position: 1px -32px;padding: 4px 0 4px 33px;height: 24px;line-height: 24px}
 .cart-table button.btn-save span { background-position: left -64px;padding: 4px 0 4px 32px;height: 24px;line-height: 24px}
-.cart-table button.btn-refresh span { background-position: 2px -96px;padding: 4px 0 4px 31px;height: 24px;line-height: 24px}
+.cart-table button.btn-refresh span { background-position: 2px -99px;padding: 4px 0 4px 31px;height: 24px;line-height: 24px}
+.cart-table button.btn-options span { background-position: 5px -131px;padding: 4px 0 4px 31px;height: 24px;line-height: 24px}
+.cart-table button.btn-quote span { background-position: 0px -2px;}
 .cart-table button.button span span {padding: 0 0 0 9px;border-left:1px solid #a1a1a1;height: 24px;line-height: 26px;color: #fff;font-size: 16px ;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400; background: none}
 .cart-table {background-color: #ffffff;}
 .cart-table input.qty {width: 68px !important;border: none;height: 28px;line-height: 28px;text-align: center;padding: 0;font-size: 16px}
