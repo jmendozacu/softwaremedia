@@ -43,6 +43,10 @@
 								<title>PT Compare</title>
 								<action>swmreports/adminhtml_peachtree</action>
 							</swmreports_peachtree>
+							<outofstock>
+								<title>Out of Stock</title>
+								<action>swmreports/adminhtml_outofstock</action>
+							</outofstock>
 						</children>
 					</swmreports>
 				</children>
@@ -68,6 +72,10 @@
 											<title>PT Compare</title>
 											<action>swmreports/adminhtml_peachtree</action>
 										</swmreports_peachtree>
+										<outofstock>
+											<title>Out of Stock</title>
+											<action>swmreports/adminhtml_outofstock</action>
+										</outofstock>
 									</children>
 								</swmreports>
 							</children>
@@ -79,11 +87,14 @@
 		<layout>
 			<updates>
 				<managestock>
-					<file>managestock.xml</file>
+					<file>swmreports/managestock.xml</file>
 				</managestock>
 				<swmreports_peachtree>
-					<file>peachtree_report.xml</file>
+					<file>swmreports/peachtree_report.xml</file>
 				</swmreports_peachtree>
+				<outofstock>
+					<file>swmreports/outofstock.xml</file>
+				</outofstock>
 			</updates>
 		</layout>
 	</adminhtml>
@@ -118,6 +129,9 @@
 			<swmreports_peachtree>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</swmreports_peachtree>
+			<outofstock>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</outofstock>
 		</blocks>
 		<helpers>
 			<swmreports>
@@ -129,6 +143,9 @@
 			<swmreports_peachtree>
 				<class>SoftwareMedia_Swmreports_Helper</class>
 			</swmreports_peachtree>
+			<outofstock>
+				<class>SoftwareMedia_Swmreports_Helper</class>
+			</outofstock>
 		</helpers>
 	</global>
 </config>
