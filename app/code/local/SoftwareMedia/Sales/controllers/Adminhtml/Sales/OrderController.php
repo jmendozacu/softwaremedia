@@ -54,6 +54,7 @@ class SoftwareMedia_Sales_Adminhtml_Sales_OrderController extends Mage_Adminhtml
 
 				$order->cancel()
 					->save();
+				$order->sendOrderUpdateEmail();
 				$this->_getSession()->addSuccess(
 					$this->__('The order has been cancelled.')
 				);
