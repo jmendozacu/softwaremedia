@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<swmreports_adminhtml_coupon_index>
+		<reference name="content">
+			<block type="swmreports/adminhtml_coupon" name="coupon" />
+		</reference>
+	</swmreports_adminhtml_coupon_index>
+</layout>
