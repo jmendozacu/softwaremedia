@@ -1,830 +1,796 @@
 <?php
+
 /**
  * User: Wisepricer
  * Date: 04/12/12
  * Time: 12:52
  * To change this template use File | Settings | File Templates.
  */
-class Autocompleteplus_Autosuggest_ProductsController extends Mage_Core_Controller_Front_Action
-{
+class Autocompleteplus_Autosuggest_ProductsController extends Mage_Core_Controller_Front_Action {
 
-    private $imageField='';
+	private $imageField = '';
+	private $standardImageFields = array();
 
-    private $standardImageFields=array();
+	public function sendAction() {
 
-    public function sendAction(){
+		set_time_limit(1800);
 
-        set_time_limit (1800);
+		$post = $this->getRequest()->getParams();
 
-        $post = $this->getRequest()->getParams();
+		$enabled = Mage::getStoreConfig('autocompleteplus/config/enabled');
+		if ($enabled == '0') {
+			die('The user has disabled autocompleteplus.');
+		}
 
-        $enabled= Mage::getStoreConfig('autocompleteplus/config/enabled');
-        if($enabled=='0'){
-            die('The user has disabled autocompleteplus.');
-        }
+		$imageField = Mage::getStoreConfig('autocompleteplus/config/imagefield');
+		if (!$imageField) {
+			$imageField = 'thumbnail';
+		}
 
-        $imageField=Mage::getStoreConfig('autocompleteplus/config/imagefield');
-        if(!$imageField){
-            $imageField='thumbnail';
-        }
+		$useAttributes = Mage::getStoreConfig('autocompleteplus/config/attributes');
 
-        $useAttributes= Mage::getStoreConfig('autocompleteplus/config/attributes');
+		$currency = Mage::app()->getStore()->getCurrentCurrencyCode();
 
-        $currency=Mage::app()->getStore()->getCurrentCurrencyCode();
+		$standardImageFields = array('image', 'small_image', 'thumbnail');
 
-        $standardImageFields=array('image','small_image','thumbnail');
+		$startInd = $post['offset'];
+		if (!$startInd) {
+			$startInd = 0;
+		}
 
-        $startInd     = $post['offset'];
-        if(!$startInd){
-            $startInd=0;
-        }
+		$count = $post['count'];
 
-        $count        = $post['count'];
+		//maxim products on one page is 200
+		if (!$count || $count > 10000) {
+			$count = 10000;
+		}
+		//retrieving page number
+		$pageNum = floor(($startInd / $count));
 
-        //maxim products on one page is 200
-        if(!$count||$count>10000){
-            $count=10000;
-        }
-        //retrieving page number
-        $pageNum=floor(($startInd/$count));
+		//retrieving products collection to check if the offset is not bigger that the product count
+		$collection = Mage::getModel('catalog/product')->getCollection();
 
-        //retrieving products collection to check if the offset is not bigger that the product count
-        $collection=Mage::getModel('catalog/product')->getCollection();
-        
-        if(isset($post['store'])&&$post['store']!=''){
-            $collection->addStoreFilter($post['store']);
-        }
+		if (isset($post['store']) && $post['store'] != '') {
+			$collection->addStoreFilter($post['store']);
+		}
 
 
-        /* since the retreiving of product count will load the entire collection of products,
-         *  we need to annul it in order to get the specified page only
-         */
-        unset($collection);
+		/* since the retreiving of product count will load the entire collection of products,
+		 *  we need to annul it in order to get the specified page only
+		 */
+		unset($collection);
 
-        $mage=Mage::getVersion();
-        $ext=(string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
+		$mage = Mage::getVersion();
+		$ext = (string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
 
-        $xml='<?xml version="1.0"?>';
-        $xml.='<catalog version="'.$ext.'" magento="'.$mage.'">';
-
-
-        $productScheme = Mage::getModel('catalog/product');
-
-        if($useAttributes!='0'){
-            $attributes = Mage::getResourceModel('eav/entity_attribute_collection')
-                ->setEntityTypeFilter($productScheme->getResource()->getTypeId())
-                ->addFieldToFilter('is_user_defined', '1') // This can be changed to any attribute code
-                ->load(false);
-        }
-
-        $collection=Mage::getModel('catalog/product')->getCollection();
-        if(isset($post['store'])&&$post['store']!=''){
-            $collection->addStoreFilter($post['store']);
-        }
+		$xml = '<?xml version="1.0"?>';
+		$xml.='<catalog version="' . $ext . '" magento="' . $mage . '">';
 
 
-        //setting page+products on the page
-        $collection->getSelect()->limit($count,$startInd);//->limitPage($pageNum, $count);//setPage($pageNum, $count)->load();
+		$productScheme = Mage::getModel('catalog/product');
 
-        $collection->load();
+		if ($useAttributes != '0') {
+			$attributes = Mage::getResourceModel('eav/entity_attribute_collection')
+				->setEntityTypeFilter($productScheme->getResource()->getTypeId())
+				->addFieldToFilter('is_user_defined', '1') // This can be changed to any attribute code
+				->load(false);
+		}
 
-        foreach ($collection as $product) {
-
-            $productCollData=$product->getData();
-            $productModel=Mage::getModel('catalog/product')->load($productCollData['entity_id']);
-
-            $categoriesNames='';
-
-            $categories = $productModel->getCategoryCollection()
-                ->addAttributeToSelect('name');
-
-            foreach($categories as $category) {
-                $categoriesNames.=$category->getName().':'.$category->getId().';';
-            }
-
-            $price       =$this->getPrice($productModel);
-            $sku         =$productModel->getSku();
-
-            $status      =$productModel->isInStock();
-            $stockItem   = $productModel->getStockItem();
-
-            if($stockItem->getIsInStock()&&$status)
-            {
-                $sell=1;
-            }else{
-                $sell=0;
-            }
-
-            $productUrl       =Mage::helper('catalog/product')->getProductUrl($productModel->getId());
-            $prodDesc         =$productModel->getDescription();
-            $prodShortDesc    =$productModel->getShortDescription();
-            $prodName         =$productModel->getName();
-
-            $visibility       =$productModel->getVisibility();
-
-            try{
-
-                if(in_array($imageField,$standardImageFields)){
-                    $prodImage   =Mage::helper('catalog/image')->init($productModel, $imageField);
-                }else{
-                    $function='get'.$imageField;
-                    $prodImage  =$productModel->$function();
-                }
-
-            }catch(Exception $e){
-                $prodImage='';
-            }
+		$collection = Mage::getModel('catalog/product')->getCollection();
+		if (isset($post['store']) && $post['store'] != '') {
+			$collection->addStoreFilter($post['store']);
+		}
 
 
-            $row='<product currency="'.$currency.'" visibility="'.$visibility.'" price="'.$price.'" url="'.$productUrl.'"  thumbs="'.$prodImage.'" selleable="'.$sell.'" action="insert" >';
-            $row.='<description><![CDATA['.$prodDesc.']]></description>';
-            $row.='<short><![CDATA['.$prodShortDesc.']]></short>';
-            $row.='<name><![CDATA['.$prodName.']]></name>';
-            $row.='<sku><![CDATA['.$sku.']]></sku>';
+		//setting page+products on the page
+		$collection->getSelect()->limit($count, $startInd); //->limitPage($pageNum, $count);//setPage($pageNum, $count)->load();
+
+		$collection->load();
+
+		foreach ($collection as $product) {
+
+			$productCollData = $product->getData();
+			$productModel = Mage::getModel('catalog/product')->load($productCollData['entity_id']);
+
+			$categoriesNames = '';
+
+			$categories = $productModel->getCategoryCollection()
+				->addAttributeToSelect('name');
+
+			foreach ($categories as $category) {
+				$categoriesNames.=$category->getName() . ':' . $category->getId() . ';';
+			}
+
+			$price = $this->getPrice($productModel);
+			$sku = $productModel->getSku();
+
+			$status = $productModel->isInStock();
+			$stockItem = $productModel->getStockItem();
+
+			if ($stockItem->getIsInStock() && $status) {
+				$sell = 1;
+			} else {
+				$sell = 0;
+			}
+
+			$productUrl = Mage::helper('catalog/product')->getProductUrl($productModel->getId());
+			$prodDesc = $productModel->getDescription();
+			$prodShortDesc = $productModel->getShortDescription();
+			$prodName = $productModel->getName();
+
+			$visibility = $productModel->getVisibility();
+
+			try {
+
+				if (in_array($imageField, $standardImageFields)) {
+					$prodImage = Mage::helper('catalog/image')->init($productModel, $imageField);
+				} else {
+					$function = 'get' . $imageField;
+					$prodImage = $productModel->$function();
+				}
+			} catch (Exception $e) {
+				$prodImage = '';
+			}
+
+
+			$row = '<product currency="' . $currency . '" visibility="' . $visibility . '" price="' . $price . '" url="' . $productUrl . '"  thumbs="' . $prodImage . '" selleable="' . $sell . '" action="insert" >';
+			$row.='<description><![CDATA[' . $prodDesc . ']]></description>';
+			$row.='<short><![CDATA[' . $prodShortDesc . ']]></short>';
+			$row.='<name><![CDATA[' . $prodName . ']]></name>';
+			$row.='<sku><![CDATA[' . $sku . ']]></sku>';
 //die($useAttributes);
-            if($useAttributes!='0'){
-                foreach($attributes as $attr){
+			if ($useAttributes != '0') {
+				foreach ($attributes as $attr) {
 
-                    $action=$attr->getAttributeCode();
+					$action = $attr->getAttributeCode();
 
-                    if($attr->getfrontend_input()=='select'){
+					if ($attr->getfrontend_input() == 'select') {
 
-                        if($productModel->getData($action)){
-                            $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getAttributeText($action).']]></attribute>';
-                        }
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getAttributeText($action) . ']]></attribute>';
+						}
+					} elseif ($attr->getfrontend_input() == 'textarea') {
 
-                    }elseif($attr->getfrontend_input()=='textarea'){
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+						}
+					} elseif ($attr->getfrontend_input() == 'price') {
 
-                        if($productModel->getData($action)){
-                            $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                        }
-                    }elseif($attr->getfrontend_input()=='price'){
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+						}
+					} elseif ($attr->getfrontend_input() == 'text') {
 
-                        if($productModel->getData($action)){
-                            $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                        }
-                    }elseif($attr->getfrontend_input()=='text'){
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+						}
+					}
+				}
+			}
 
-                        if($productModel->getData($action)){
-                            $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                        }
-                    }
+			$row.='<categories><![CDATA[' . $categoriesNames . ']]></categories>';
 
+			$row.='</product>';
+			$xml.=$row;
+		}
 
-                }
+		$xml.='</catalog>';
+		header('Content-type: text/xml');
+		echo $xml;
+		die;
+	}
 
-            }
+	private function getPrice($product) {
 
-            $row.='<categories><![CDATA['.$categoriesNames.']]></categories>';
+		$helper = Mage::helper('autosuggest');
+		if ($product->getTypeId() == 'grouped') {
 
-            $row.='</product>';
-            $xml.=$row;
-        }
+			$helper->prepareGroupedProductPrice($product);
+			$_minimalPriceValue = $product->getPrice();
 
-        $xml.='</catalog>';
-        header('Content-type: text/xml');
-        echo $xml;
-        die;
+			if ($_minimalPriceValue) {
+				$price = $_minimalPriceValue;
+			}
+		} elseif ($product->getTypeId() == 'bundle') {
 
-    }
+			if (!$product->getFinalPrice()) {
+				$price = $helper->getBundlePrice($product);
+			} else {
+				$price = $product->getFinalPrice();
+			}
+		} else {
+			$price = $product->getFinalPrice();
+		}
 
-    private function getPrice($product){
+		if (!$price) {
+			$price = 0;
+		}
+		return $price;
+	}
 
-        $helper=Mage::helper('autosuggest');
-        if ($product->getTypeId()=='grouped'){
+	public function sendupdatedAction() {
 
-            $helper->prepareGroupedProductPrice($product);
-            $_minimalPriceValue = $product->getPrice();
+//        date_default_timezone_set('Asia/Jerusalem');
 
-            if($_minimalPriceValue){
-                $price=$_minimalPriceValue;
-            }
+		set_time_limit(1800);
 
-        }elseif($product->getTypeId()=='bundle'){
+		$post = $this->getRequest()->getParams();
 
-            if(!$product->getFinalPrice()){
-                $price=$helper->getBundlePrice($product);
-            }else{
-                $price=$product->getFinalPrice();
-            }
+		$enabled = Mage::getStoreConfig('autocompleteplus/config/enabled');
 
-        }else{
-            $price       =$product->getFinalPrice();
-        }
+		if ($enabled == '0') {
+			die('The user has disabled autocompleteplus.');
+		}
 
-        if(!$price){
-            $price=0;
-        }
-        return $price;
-    }
+		$this->imageField = Mage::getStoreConfig('autocompleteplus/config/imagefield');
+		if (!$this->imageField) {
+			$this->imageField = 'thumbnail';
+		}
 
-    public function sendupdatedAction(){
+		$this->standardImageFields = array('image', 'small_image', 'thumbnail');
 
-        date_default_timezone_set('Asia/Jerusalem');
+		$useAttributes = Mage::getStoreConfig('autocompleteplus/config/attributes');
 
-        set_time_limit (1800);
+		$count = $post['count'];
 
-        $post = $this->getRequest()->getParams();
+		$from = $post['from'];
+		if (!isset($post['from'])) {
+			$returnArr = array(
+				'status' => 'failure',
+				'error_code' => '767',
+				'error_details' => 'The "from" parameter is mandatory'
+			);
+			echo json_encode($returnArr);
+			die;
+		}
 
-        $enabled= Mage::getStoreConfig('autocompleteplus/config/enabled');
 
-        if($enabled=='0'){
-            die('The user has disabled autocompleteplus.');
-        }
+		if (isset($post['to'])) {
+			$to = $post['to'];
+		} else {
+			$to = strtotime('now');
+		}
 
-        $this->imageField=Mage::getStoreConfig('autocompleteplus/config/imagefield');
-        if(!$this->imageField){
-            $this->imageField='thumbnail';
-        }
+		//$fromMysqldate = date( 'Y-m-d h:m:s', $from );
+		//$toMysqldate   = date( 'Y-m-d h:m:s', $to );
 
-        $this->standardImageFields=array('image','small_image','thumbnail');
+		$storeQ = '';
 
-        $useAttributes= Mage::getStoreConfig('autocompleteplus/config/attributes');
+		if (isset($post['store_id'])) {
+			$storeQ = 'AND store_id=' . $post['store_id'];
+		}
 
-        $count        = $post['count'];
 
-        $from = $post['from'];
-        if(!isset($post['from'])){
-            $returnArr=array(
-                'status'=>'failure',
-                'error_code'=>'767',
-                'error_details'=>'The "from" parameter is mandatory'
-            );
-            echo json_encode($returnArr);
-            die;
-        }
+		$read = Mage::getSingleton('core/resource')->getConnection('core_read');
 
+		$write = Mage::getSingleton('core/resource')->getConnection('core_write');
 
-        if(isset($post['to'])){
-            $to   = $post['to'];
-        }else{
-            $to   = strtotime('now');
-        }
+		$_tableprefix = (string) Mage::getConfig()->getTablePrefix();
 
-        //$fromMysqldate = date( 'Y-m-d h:m:s', $from );
-        //$toMysqldate   = date( 'Y-m-d h:m:s', $to );
+		$sql = 'SELECT * FROM `' . $_tableprefix . 'autocompleteplus_batches` WHERE update_date BETWEEN ? AND ? ' . $storeQ . ' LIMIT ' . $count;
 
-        $storeQ='';
+		$updates = $read->fetchAll($sql, array($from, $to));
 
-        if(isset($post['store_id'])){
-            $storeQ   = 'AND store_id='.$post['store_id'];
+		$productScheme = Mage::getModel('catalog/product');
 
-        }
+		if ($useAttributes != '0') {
+			$attributes = Mage::getResourceModel('eav/entity_attribute_collection')
+				->setEntityTypeFilter($productScheme->getResource()->getTypeId())
+				->addFieldToFilter('is_user_defined', '1') // This can be changed to any attribute code
+				->load(false);
+		} else {
 
+			$attributes = null;
+		}
 
-        $read = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$mage = Mage::getVersion();
+		$ext = (string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
 
-        $write = Mage::getSingleton('core/resource')->getConnection('core_write');
+		$xml = '<?xml version="1.0"?>';
+		$xml.='<catalog fromdatetime="' . $from . '" version="' . $ext . '" magento="' . $mage . '">';
 
-        $_tableprefix = (string)Mage::getConfig()->getTablePrefix();
 
-        $sql='SELECT * FROM `'.$_tableprefix.'autocompleteplus_batches` WHERE update_date BETWEEN ? AND ? '.$storeQ.' LIMIT '.$count;
+		foreach ($updates as $batch) {
 
-        $updates=$read->fetchAll($sql,array($from,$to));
+			if ($batch['action'] == 'update') {
 
-        $productScheme=Mage::getModel('catalog/product');
+				$xml.=$this->_makeUpdateRow($batch, $attributes);
+			} else {
+				$xml.=$this->_makeRemoveRow($batch);
+			}
+		}
 
-        if($useAttributes!='0'){
-            $attributes = Mage::getResourceModel('eav/entity_attribute_collection')
-                ->setEntityTypeFilter($productScheme->getResource()->getTypeId())
-                ->addFieldToFilter('is_user_defined', '1') // This can be changed to any attribute code
-                ->load(false);
-        }else{
+		$xml.='</catalog>';
+		header('Content-type: text/xml');
+		echo $xml;
+		die;
+	}
 
-            $attributes=null;
-        }
+	private function _makeUpdateRow($batch, $attributes) {
 
-        $mage=Mage::getVersion();
-        $ext=(string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
+		$productId = $batch['product_id'];
+		$sku = $batch['sku'];
+		$storeId = $batch['store_id'];
+		$updatedate = $batch['update_date'];
+		$action = $batch['action'];
 
-        $xml='<?xml version="1.0"?>';
-        $xml.='<catalog fromdatetime="'.$from.'" version="'.$ext.'" magento="'.$mage.'">';
+		$currency = Mage::app()->getStore($storeId)->getCurrentCurrencyCode();
 
+		if ($productId != null) {
 
-        foreach ($updates as $batch) {
+			$productModel = Mage::getModel('catalog/product')
+				->setStoreId($storeId)
+				->load($productId);
+		} else {
 
-          if($batch['action']=='update'){
+			$productModel = Mage::getModel('catalog/product')
+				->setStoreId($storeId)
+				->loadByAttribute('sku', $sku);
+		}
 
-              $xml.=$this->_makeUpdateRow($batch,$attributes);
+		if ($productModel == null) {
+			return '';
+		}
 
-          }else{
-              $xml.=$this->_makeRemoveRow($batch);
-          }
+		$price = $this->getPrice($productModel);
+		$sku = $productModel->getSku();
 
+		$status = $productModel->isInStock();
+		$stockItem = $productModel->getStockItem();
 
-        }
+		$categoriesNames = '';
 
-        $xml.='</catalog>';
-        header('Content-type: text/xml');
-        echo $xml;
-        die;
+		$categories = $productModel->getCategoryCollection()
+			->addAttributeToSelect('name');
 
-    }
+		foreach ($categories as $category) {
+			$categoriesNames.=$category->getName() . ':' . $category->getId() . ';';
+		}
 
-    private function _makeUpdateRow($batch,$attributes){
+		if ($stockItem->getIsInStock() && $status) {
+			$sell = 1;
+		} else {
+			$sell = 0;
+		}
 
-        $productId =         $batch['product_id'];
-        $sku =               $batch['sku'];
-        $storeId =           $batch['store_id'];
-        $updatedate =        $batch['update_date'];
-        $action =            $batch['action'];
+		$productUrl = Mage::helper('catalog/product')->getProductUrl($productModel->getId());
 
-        $currency=Mage::app()->getStore($storeId)->getCurrentCurrencyCode();
+		$prodDesc = $productModel->getDescription();
+		$prodShortDesc = $productModel->getShortDescription();
+		$prodName = $productModel->getName();
 
-        if($productId!=null){
+		$visibility = $productModel->getVisibility();
 
-            $productModel=Mage::getModel('catalog/product')
-                ->setStoreId($storeId)
-                ->load($productId);
+		try {
 
-        }else{
+			if (in_array($this->imageField, $this->standardImageFields)) {
+				$prodImage = Mage::helper('catalog/image')->init($productModel, $this->imageField);
+			} else {
+				$function = 'get' . $this->imageField;
+				$prodImage = $productModel->$function();
+			}
+		} catch (Exception $e) {
+			$prodImage = '';
+		}
 
-            $productModel=Mage::getModel('catalog/product')
-                ->setStoreId($storeId)
-                ->loadByAttribute('sku', $sku);
+		$row = '<product updatedate="' . $updatedate . '" currency="' . $currency . '" storeid="' . $storeId . '" visibility="' . $visibility . '" price="' . $price . '" url="' . $productUrl . '"  thumbs="' . $prodImage . '" selleable="' . $sell . '" action="' . $action . '" >';
+		$row.='<description><![CDATA[' . $prodDesc . ']]></description>';
+		$row.='<short><![CDATA[' . $prodShortDesc . ']]></short>';
+		$row.='<name><![CDATA[' . $prodName . ']]></name>';
+		$row.='<sku><![CDATA[' . $sku . ']]></sku>';
 
-        }
+		if ($attributes != null) {
+			foreach ($attributes as $attr) {
 
-        if($productModel==null){
-            return '';
-        }
-        
-        $price       =$this->getPrice($productModel);
-        $sku         =$productModel->getSku();
+				$action = $attr->getAttributeCode();
 
-        $status      =$productModel->isInStock();
-        $stockItem   = $productModel->getStockItem();
+				if ($attr->getfrontend_input() == 'select') {
 
-        $categoriesNames='';
+					if ($productModel->getData($action)) {
+						$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getAttributeText($action) . ']]></attribute>';
+					}
+				} elseif ($attr->getfrontend_input() == 'textarea') {
 
-        $categories = $productModel->getCategoryCollection()
-            ->addAttributeToSelect('name');
+					if ($productModel->getData($action)) {
+						$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+					}
+				} elseif ($attr->getfrontend_input() == 'price') {
 
-        foreach($categories as $category) {
-            $categoriesNames.=$category->getName().':'.$category->getId().';';
-        }
+					if ($productModel->getData($action)) {
+						$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+					}
+				} elseif ($attr->getfrontend_input() == 'text') {
 
-        if($stockItem->getIsInStock()&&$status)
-        {
-            $sell=1;
-        }else{
-            $sell=0;
-        }
+					if ($productModel->getData($action)) {
+						$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+					}
+				}
+			}
+		}
 
-        $productUrl       =Mage::helper('catalog/product')->getProductUrl($productModel->getId());
+		$row.='<categories><![CDATA[' . $categoriesNames . ']]></categories>';
+		$row.='</product>';
 
-        $prodDesc         =$productModel->getDescription();
-        $prodShortDesc    =$productModel->getShortDescription();
-        $prodName         =$productModel->getName();
+		return $row;
+	}
 
-        $visibility       =$productModel->getVisibility();
+	private function _makeRemoveRow($batch) {
 
-        try{
+		$updatedate = $batch['update_date'];
+		$action = $batch['action'];
+		$sku = $batch['sku'];
 
-            if(in_array($this->imageField,$this->standardImageFields)){
-                $prodImage   =Mage::helper('catalog/image')->init($productModel, $this->imageField);
-            }else{
-                $function='get'.$this->imageField;
-                $prodImage  =$productModel->$function();
-            }
 
-        }catch(Exception $e){
-            $prodImage='';
-        }
 
-        $row='<product updatedate="'.$updatedate.'" currency="'.$currency.'" storeid="'.$storeId.'" visibility="'.$visibility.'" price="'.$price.'" url="'.$productUrl.'"  thumbs="'.$prodImage.'" selleable="'.$sell.'" action="'.$action.'" >';
-        $row.='<description><![CDATA['.$prodDesc.']]></description>';
-        $row.='<short><![CDATA['.$prodShortDesc.']]></short>';
-        $row.='<name><![CDATA['.$prodName.']]></name>';
-        $row.='<sku><![CDATA['.$sku.']]></sku>';
+		$row = '<product updatedate="' . $updatedate . '" action="' . $action . '" >';
+		$row.='<sku><![CDATA[' . $sku . ']]></sku>';
+		$row.='</product>';
 
-        if($attributes!=null){
-            foreach($attributes as $attr){
+		return $row;
+	}
 
-                $action=$attr->getAttributeCode();
+	private function __makeSafeString($str) {
+		$str = strip_tags($str);
+		$str = str_replace('"', '', $str);
+		$str = str_replace("'", '', $str);
+		$str = str_replace('/', '', $str);
+		$str = str_replace('<', '', $str);
+		$str = str_replace('>', '', $str);
+		$str = str_replace('\\', '', $str);
+		return $str;
+	}
 
-                if($attr->getfrontend_input()=='select'){
+	private function __checkAccess() {
 
-                    if($productModel->getData($action)){
-                        $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getAttributeText($action).']]></attribute>';
-                    }
+		$post = $this->getRequest()->getParams();
 
-                }elseif($attr->getfrontend_input()=='textarea'){
+		$key = Mage::getModel('autocompleteplus_autosuggest/observer')->getKey();
 
-                    if($productModel->getData($action)){
-                        $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                    }
-                }elseif($attr->getfrontend_input()=='price'){
+		if (isset($post['key']) && $post['key'] == $key) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-                    if($productModel->getData($action)){
-                        $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                    }
-                }elseif($attr->getfrontend_input()=='text'){
+	public function checkinstallAction() {
 
-                    if($productModel->getData($action)){
-                        $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                    }
-                }
+		$read = Mage::getSingleton('core/resource')->getConnection('core_read');
 
+		$write = Mage::getSingleton('core/resource')->getConnection('core_write');
 
-            }
-        }
+		$_tableprefix = (string) Mage::getConfig()->getTablePrefix();
 
-        $row.='<categories><![CDATA['.$categoriesNames.']]></categories>';
-        $row.='</product>';
+		$sql = 'SELECT * FROM `' . $_tableprefix . 'autocompleteplus_config` WHERE `id` =1';
 
-        return $row;
-    }
+		$licenseData = $read->fetchAll($sql);
 
-    private function _makeRemoveRow($batch){
+		$key = $licenseData[0]['licensekey'];
 
-        $updatedate=        $batch['update_date'];
-        $action=            $batch['action'];
-        $sku=               $batch['sku'];
+		if (strlen($key) > 0 && $key != 'failed') {
+			echo 'the key exists';
+		} else {
+			echo 'no key inside';
+		}
+	}
 
+	public function versAction() {
+		$mage = Mage::getVersion();
+		$ext = (string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
+		$result = array('mage' => $mage, 'ext' => $ext);
+		echo json_encode($result);
+		die;
+	}
 
+	public function getstoresAction() {
 
-        $row='<product updatedate="'.$updatedate.'" action="'.$action.'" >';
-        $row.='<sku><![CDATA['.$sku.']]></sku>';
-        $row.='</product>';
+		$helper = Mage::helper('autosuggest');
 
-        return $row;
-    }
+		echo $helper->getMultiStoreDataJson();
+		die;
+	}
 
-    private function __makeSafeString($str){
-        $str=strip_tags($str);
-        $str=str_replace('"','',$str);
-        $str=str_replace("'",'',$str);
-        $str=str_replace('/','',$str);
-        $str=str_replace('<','',$str);
-        $str=str_replace('>','',$str);
-        $str=str_replace('\\','',$str);
-        return $str;
-    }
+	public function updateemailAction() {
 
-    private function __checkAccess(){
+		$data = $this->getRequest()->getPost();
 
-        $post = $this->getRequest()->getParams();
+		$email = $data['email'];
+		$uuid = $this->_getUUID();
 
-        $key=Mage::getModel('autocompleteplus_autosuggest/observer')->getKey();
+		Mage::getModel('core/config')->saveConfig('autocompleteplus/config/store_email', $email);
 
-        if(isset($post['key'])&&$post['key']==$key){
-            return true;
-        }else{
-            return false;
-        }
+		$params = array(
+			'uuid' => $uuid,
+			'email' => $email
+		);
 
-    }
+		$helper = Mage::helper('autosuggest');
 
-    public function checkinstallAction(){
+		$command = "http://magento.autocompleteplus.com/ext_update_email";
 
-        $read = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$res = $helper->sendPostCurl($command, $params);
 
-        $write = Mage::getSingleton('core/resource')->getConnection('core_write');
+		$result = json_decode($res);
 
-        $_tableprefix = (string)Mage::getConfig()->getTablePrefix();
+		if ($result->status == 'OK') {
+			echo 'Your email address was updated!';
+		}
+	}
 
-        $sql='SELECT * FROM `'.$_tableprefix.'autocompleteplus_config` WHERE `id` =1';
+	public function updatesitemapAction() {
 
-        $licenseData=$read->fetchAll($sql);
+		$helper = Mage::helper('autosuggest');
 
-        $key=$licenseData[0]['licensekey'];
+		$key = $helper->getKey();
 
-        if(strlen($key)>0&&$key!='failed'){
-          echo 'the key exists';
-        }else{
-            echo 'no key inside';
-        }
+		$url = $helper->getConfigDataByFullPath('web/unsecure/base_url');
 
-    }
+		if ($key != 'InstallFailedUUID' && $key != 'failed') {
 
-    public function versAction(){
-        $mage=Mage::getVersion();
-        $ext=(string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
-        $result=array('mage'=>$mage,'ext'=>$ext);
-        echo json_encode($result);die;
-    }
+			$stemapUrl = 'Sitemap:http://magento.instantsearchplus.com/ext_sitemap?u=' . $key . PHP_EOL;
 
-    public function getstoresAction(){
+			$robotsPath = Mage::getBaseDir() . DS . 'robots.txt';
 
-        $helper=Mage::helper('autosuggest');
+			$write = false;
 
-        echo $helper->getMultiStoreDataJson();
-        die;
-    }
+			if (file_exists($robotsPath)) {
+				if (strpos(file_get_contents($robotsPath), $stemapUrl) == false) {
+					$write = true;
+				}
+			} else {
 
-    public function updateemailAction(){
+				if (is_writable(Mage::getBaseDir())) {
 
-        $data = $this->getRequest()->getPost();
+					//create robots sitemap
+					file_put_contents($robotsPath, $stemapUrl);
+				} else {
 
-        $email=$data['email'];
-        $uuid=$this->_getUUID();
-        
-        Mage::getModel('core/config')->saveConfig('autocompleteplus/config/store_email',$email);
+					//write message that directory is not writteble
+					$command = "http://magento.autocompleteplus.com/install_error";
 
-        $params=array(
-            'uuid'=>$uuid,
-            'email'=>$email
-        );
+					$data = array();
+					$data['site'] = $url;
+					$data['msg'] = 'Directory ' . Mage::getBaseDir() . ' is not writable.';
+					$res = $helper->sendPostCurl($command, $data);
+				}
+			}
 
-        $helper=Mage::helper('autosuggest');
+			if ($write) {
+				if (is_writable($robotsPath)) {
 
-        $command="http://magento.autocompleteplus.com/ext_update_email";
+					//append sitemap
+					file_put_contents($robotsPath, $stemapUrl, FILE_APPEND | LOCK_EX);
+				} else {
+					//write message that file is not writteble
+					$command = "http://magento.autocompleteplus.com/install_error";
 
-        $res=$helper->sendPostCurl($command,$params);
+					$data = array();
+					$data['site'] = $url;
+					$data['msg'] = 'File ' . $robotsPath . ' is not writable.';
+					$res = $helper->sendPostCurl($command, $data);
+				}
+			}
+		}
+	}
 
-        $result=json_decode($res);
+	public function updateAction() {
 
-        if($result->status=='OK'){
-            echo 'Your email address was updated!';
-        }
-    }
+		set_time_limit(1800);
 
-    public function updatesitemapAction(){
+		$post = $this->getRequest()->getParams();
 
-        $helper=Mage::helper('autosuggest');
+		$enabled = Mage::getStoreConfig('autocompleteplus/config/enabled');
 
-        $key=$helper->getKey();
+		if ($enabled == '0') {
+			die('The user has disabled autocompleteplus.');
+		}
 
-        $url=$helper->getConfigDataByFullPath('web/unsecure/base_url');
+		$imageField = Mage::getStoreConfig('autocompleteplus/config/imagefield');
+		if (!$imageField) {
+			$imageField = 'thumbnail';
+		}
 
-        if($key!='InstallFailedUUID' && $key!='failed'){
+		$currency = Mage::app()->getStore()->getCurrentCurrencyCode();
 
-            $stemapUrl='Sitemap:http://magento.instantsearchplus.com/ext_sitemap?u='.$key.PHP_EOL;
+		$standardImageFields = array('image', 'small_image', 'thumbnail');
 
-            $robotsPath=Mage::getBaseDir().DS.'robots.txt';
+		$useAttributes = Mage::getStoreConfig('autocompleteplus/config/attributes');
 
-            $write=false;
+		$startInd = $post['offset'];
+		if (!$startInd) {
+			$startInd = 0;
+		}
 
-            if(file_exists($robotsPath)){
-                if( strpos(file_get_contents($robotsPath),$stemapUrl) == false) {
-                    $write=true;
-                }
-            }else{
+		$count = $post['count'];
 
-                if(is_writable(Mage::getBaseDir())){
+		//maxim products on one page is 200
+		if (!$count || $count > 10000) {
+			$count = 10000;
+		}
+		//retrieving page number
+		$pageNum = ($startInd / $count) + 1;
 
-                    //create robots sitemap
-                    file_put_contents($robotsPath,$stemapUrl);
-                }else{
+		$mage = Mage::getVersion();
+		$ext = (string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
 
-                    //write message that directory is not writteble
-                    $command="http://magento.autocompleteplus.com/install_error";
+		$xml = '<?xml version="1.0"?>';
+		$xml.='<catalog version="' . $ext . '" magento="' . $mage . '">';
 
-                    $data=array();
-                    $data['site']=$url;
-                    $data['msg']='Directory '.Mage::getBaseDir().' is not writable.';
-                    $res=$helper->sendPostCurl($command,$data);
-                }
-            }
 
-            if($write){
-                if(is_writable($robotsPath)){
+		$collection = Mage::getModel('catalog/product')->getCollection();
 
-                    //append sitemap
-                    file_put_contents($robotsPath, $stemapUrl, FILE_APPEND | LOCK_EX);
-                }else{
-                    //write message that file is not writteble
-                    $command="http://magento.autocompleteplus.com/install_error";
+		if (isset($post['store']) && $post['store'] != '') {
+			$collection->addStoreFilter($post['store']);
+		}
 
-                    $data=array();
-                    $data['site']=$url;
-                    $data['msg']='File '.$robotsPath.' is not writable.';
-                    $res=$helper->sendPostCurl($command,$data);
-                }
-            }
+		$productScheme = Mage::getModel('catalog/product');
 
-        }
-    }
+		if ($useAttributes != '0') {
 
-    public function updateAction(){
+			$attributes = Mage::getResourceModel('eav/entity_attribute_collection')
+				->setEntityTypeFilter($productScheme->getResource()->getTypeId())
+				->addFieldToFilter('is_user_defined', '1') // This can be changed to any attribute code
+				->load(false);
+		}
 
-        set_time_limit (1800);
+		//setting page+products on the page
+		$collection->getSelect()->limit($count, $startInd); //->limitPage($pageNum, $count);//setPage($pageNum, $count)->load();
 
-        $post = $this->getRequest()->getParams();
+		$collection->load();
 
-        $enabled= Mage::getStoreConfig('autocompleteplus/config/enabled');
+		$xml = '<?xml version="1.0"?>';
+		$xml.='<catalog>';
 
-        if($enabled=='0'){
-            die('The user has disabled autocompleteplus.');
-        }
+		foreach ($collection as $product) {
 
-        $imageField=Mage::getStoreConfig('autocompleteplus/config/imagefield');
-        if(!$imageField){
-            $imageField='thumbnail';
-        }
+			$productCollData = $product->getData();
+			$productModel = Mage::getModel('catalog/product')->load($productCollData['entity_id']);
 
-        $currency=Mage::app()->getStore()->getCurrentCurrencyCode();
+			$categoriesNames = '';
 
-        $standardImageFields=array('image','small_image','thumbnail');
+			$categories = $productModel->getCategoryCollection()
+				->addAttributeToSelect('name');
 
-        $useAttributes= Mage::getStoreConfig('autocompleteplus/config/attributes');
+			foreach ($categories as $category) {
+				$categoriesNames.=$category->getName() . ':' . $category->getId() . ';';
+			}
 
-        $startInd     = $post['offset'];
-        if(!$startInd){
-            $startInd=0;
-        }
+			$price = $this->getPrice($productModel);
+			$sku = $productModel->getSku();
 
-        $count        = $post['count'];
+			$status = $productModel->isInStock();
+			$stockItem = $productModel->getStockItem();
 
-        //maxim products on one page is 200
-        if(!$count||$count>10000){
-            $count=10000;
-        }
-        //retrieving page number
-        $pageNum=($startInd/$count)+1;
+			if ($stockItem->getIsInStock() && $status) {
+				$sell = 1;
+			} else {
+				$sell = 0;
+			}
 
-        $mage=Mage::getVersion();
-        $ext=(string) Mage::getConfig()->getNode()->modules->Autocompleteplus_Autosuggest->version;
+			$productUrl = Mage::helper('catalog/product')->getProductUrl($productModel->getId());
 
-        $xml='<?xml version="1.0"?>';
-        $xml.='<catalog version="'.$ext.'" magento="'.$mage.'">';
+			$prodDesc = $productModel->getDescription();
+			$prodShortDesc = $productModel->getShortDescription();
+			$prodName = $productModel->getName();
 
+			$visibility = $productModel->getVisibility();
 
-        $collection=Mage::getModel('catalog/product')->getCollection();
+			try {
 
-        if(isset($post['store'])&&$post['store']!=''){
-            $collection->addStoreFilter($post['store']);
-        }
+				if (in_array($imageField, $standardImageFields)) {
+					$prodImage = Mage::helper('catalog/image')->init($productModel, $imageField);
+				} else {
+					$function = 'get' . $imageField;
+					$prodImage = $productModel->$function();
+				}
+			} catch (Exception $e) {
+				$prodImage = '';
+			}
 
-        $productScheme=Mage::getModel('catalog/product');
+			$row = '<product currency="' . $currency . '" visibility="' . $visibility . '" price="' . $price . '" url="' . $productUrl . '"  thumbs="' . $prodImage . '" selleable="' . $sell . '" action="update" >';
+			$row.='<description><![CDATA[' . $prodDesc . ']]></description>';
+			$row.='<short><![CDATA[' . $prodShortDesc . ']]></short>';
+			$row.='<name><![CDATA[' . $prodName . ']]></name>';
+			$row.='<sku><![CDATA[' . $sku . ']]></sku>';
 
-        if($useAttributes!='0'){
+			if ($useAttributes != '0') {
 
-            $attributes = Mage::getResourceModel('eav/entity_attribute_collection')
-                ->setEntityTypeFilter($productScheme->getResource()->getTypeId())
-                ->addFieldToFilter('is_user_defined', '1') // This can be changed to any attribute code
-                ->load(false);
+				foreach ($attributes as $attr) {
 
-        }
+					$action = $attr->getAttributeCode();
 
-        //setting page+products on the page
-        $collection->getSelect()->limit($count,$startInd);//->limitPage($pageNum, $count);//setPage($pageNum, $count)->load();
+					if ($attr->getfrontend_input() == 'select') {
 
-        $collection->load();
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getAttributeText($action) . ']]></attribute>';
+						}
+					} elseif ($attr->getfrontend_input() == 'textarea') {
 
-        $xml='<?xml version="1.0"?>';
-        $xml.='<catalog>';
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+						}
+					} elseif ($attr->getfrontend_input() == 'price') {
 
-        foreach ($collection as $product) {
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+						}
+					} elseif ($attr->getfrontend_input() == 'text') {
 
-            $productCollData=$product->getData();
-            $productModel=Mage::getModel('catalog/product')->load($productCollData['entity_id']);
+						if ($productModel->getData($action)) {
+							$row.='<attribute name="' . $attr->getAttributeCode() . '"><![CDATA[' . $productModel->getData($action) . ']]></attribute>';
+						}
+					}
+				}
+			}
+			$row.='<categories><![CDATA[' . $categoriesNames . ']]></categories>';
 
-            $categoriesNames='';
+			$row.='</product>';
+			$xml.=$row;
+		}
 
-            $categories = $productModel->getCategoryCollection()
-                ->addAttributeToSelect('name');
+		$xml.='</catalog>';
+		header('Content-type: text/xml');
+		echo $xml;
+		die;
+	}
 
-            foreach($categories as $category) {
-                $categoriesNames.=$category->getName().':'.$category->getId().';';
-            }
+	protected function _getUUID() {
 
-            $price       =$this->getPrice($productModel);
-            $sku         =$productModel->getSku();
+		$read = Mage::getSingleton('core/resource')->getConnection('core_read');
 
-            $status      =$productModel->isInStock();
-            $stockItem   = $productModel->getStockItem();
+		$write = Mage::getSingleton('core/resource')->getConnection('core_write');
 
-            if($stockItem->getIsInStock()&&$status)
-            {
-                $sell=1;
-            }else{
-                $sell=0;
-            }
+		$_tableprefix = (string) Mage::getConfig()->getTablePrefix();
 
-            $productUrl       =Mage::helper('catalog/product')->getProductUrl($productModel->getId());
+		$tblExist = $write->showTableStatus($_tableprefix . 'autocompleteplus_config');
 
-            $prodDesc         =$productModel->getDescription();
-            $prodShortDesc    =$productModel->getShortDescription();
-            $prodName         =$productModel->getName();
+		if (!$tblExist) {
+			return '';
+		}
 
-            $visibility       =$productModel->getVisibility();
+		$sql = 'SELECT * FROM `' . $_tableprefix . 'autocompleteplus_config` WHERE `id` =1';
 
-            try{
+		$licenseData = $read->fetchAll($sql);
 
-                if(in_array($imageField,$standardImageFields)){
-                    $prodImage   =Mage::helper('catalog/image')->init($productModel, $imageField);
-                }else{
-                    $function='get'.$imageField;
-                    $prodImage  =$productModel->$function();
-                }
+		$key = $licenseData[0]['licensekey'];
 
-            }catch(Exception $e){
-                $prodImage='';
-            }
+		return $key;
+	}
 
-            $row='<product currency="'.$currency.'" visibility="'.$visibility.'" price="'.$price.'" url="'.$productUrl.'"  thumbs="'.$prodImage.'" selleable="'.$sell.'" action="update" >';
-            $row.='<description><![CDATA['.$prodDesc.']]></description>';
-            $row.='<short><![CDATA['.$prodShortDesc.']]></short>';
-            $row.='<name><![CDATA['.$prodName.']]></name>';
-            $row.='<sku><![CDATA['.$sku.']]></sku>';
+	protected function _setUUID($key) {
 
-            if($useAttributes!='0'){
+		try {
 
-                foreach($attributes as $attr){
+			$_tableprefix = (string) Mage::getConfig()->getTablePrefix();
 
-                    $action=$attr->getAttributeCode();
+			$read = Mage::getSingleton('core/resource')->getConnection('core_read');
 
-                      if($attr->getfrontend_input()=='select'){
+			$write = Mage::getSingleton('core/resource')->getConnection('core_write');
 
-                            if($productModel->getData($action)){
-                                $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getAttributeText($action).']]></attribute>';
-                            }
+			$tblExist = $write->showTableStatus($_tableprefix . 'autocompleteplus_config');
 
-                        }elseif($attr->getfrontend_input()=='textarea'){
+			if (!$tblExist) {
+				return;
+			}
 
-                            if($productModel->getData($action)){
-                                $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                            }
-                        }elseif($attr->getfrontend_input()=='price'){
+			$sqlFetch = 'SELECT * FROM ' . $_tableprefix . 'autocompleteplus_config WHERE id = 1';
 
-                            if($productModel->getData($action)){
-                                $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                            }
-                        }elseif($attr->getfrontend_input()=='text'){
+			$updates = $write->fetchAll($sqlFetch);
 
-                            if($productModel->getData($action)){
-                                $row.='<attribute name="'.$attr->getAttributeCode().'"><![CDATA['.$productModel->getData($action).']]></attribute>';
-                            }
-                        }
+			if ($updates && count($updates) != 0) {
 
+				$sql = 'UPDATE ' . $_tableprefix . 'autocompleteplus_config  SET licensekey=? WHERE id = 1';
 
-                }
+				$write->query($sql, array($key));
+			} else {
 
-            }
-            $row.='<categories><![CDATA['.$categoriesNames.']]></categories>';
+				$sql = 'INSERT INTO ' . $_tableprefix . 'autocompleteplus_config  (licensekey) VALUES (?)';
 
-            $row.='</product>';
-            $xml.=$row;
-        }
+				$write->query($sql, array($key));
+			}
+		} catch (Exception $e) {
+			Mage::log($e->getMessage(), null, 'autocompleteplus.log');
+		}
+	}
 
-        $xml.='</catalog>';
-        header('Content-type: text/xml');
-        echo $xml;
-        die;
-
-    }
-
-
-    protected function _getUUID(){
-
-        $read = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        $write = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-        $_tableprefix = (string)Mage::getConfig()->getTablePrefix();
-
-        $tblExist=$write->showTableStatus($_tableprefix.'autocompleteplus_config');
-
-        if(!$tblExist){return '';}
-
-        $sql='SELECT * FROM `'.$_tableprefix.'autocompleteplus_config` WHERE `id` =1';
-
-        $licenseData=$read->fetchAll($sql);
-
-        $key=$licenseData[0]['licensekey'];
-
-        return $key;
-
-    }
-
-    protected function _setUUID($key){
-
-        try{
-
-            $_tableprefix = (string)Mage::getConfig()->getTablePrefix();
-
-            $read = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-            $write = Mage::getSingleton('core/resource')->getConnection('core_write');
-
-            $tblExist=$write->showTableStatus($_tableprefix.'autocompleteplus_config');
-
-            if(!$tblExist){return;}
-
-            $sqlFetch    ='SELECT * FROM '. $_tableprefix.'autocompleteplus_config WHERE id = 1';
-
-            $updates=$write->fetchAll($sqlFetch);
-
-            if($updates&&count($updates)!=0){
-
-                $sql='UPDATE '. $_tableprefix.'autocompleteplus_config  SET licensekey=? WHERE id = 1';
-
-                $write->query($sql, array($key));
-
-            }else{
-
-                $sql='INSERT INTO '. $_tableprefix.'autocompleteplus_config  (licensekey) VALUES (?)';
-
-                $write->query($sql, array($key));
-
-            }
-
-
-        }catch(Exception $e){
-            Mage::log($e->getMessage(),null,'autocompleteplus.log');
-        }
-
-    }
 }

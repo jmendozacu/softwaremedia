@@ -17,7 +17,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->addAttributeToFilter('status', array('eq' => 1));
 		$collection->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.manage_stock=1');
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
-		$collection->getSelect()->where('sku NOT LIKE "%HOME"');
+		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
 		$collection->setOrder('ubervis_updated', 'ASC');
 		$collection->setPageSize(100);
 
