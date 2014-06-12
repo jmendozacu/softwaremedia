@@ -47,6 +47,10 @@
 								<title>Out of Stock</title>
 								<action>swmreports/adminhtml_outofstock</action>
 							</outofstock>
+							<coupon>
+								<title>Coupon</title>
+								<action>swmreports/adminhtml_coupon</action>
+							</coupon>
 						</children>
 					</swmreports>
 				</children>
@@ -76,6 +80,10 @@
 											<title>Out of Stock</title>
 											<action>swmreports/adminhtml_outofstock</action>
 										</outofstock>
+										<coupon>
+											<title>Coupon</title>
+											<action>swmreports/adminhtml_coupon</action>
+										</coupon>
 									</children>
 								</swmreports>
 							</children>
@@ -95,6 +103,9 @@
 				<outofstock>
 					<file>swmreports/outofstock.xml</file>
 				</outofstock>
+				<coupon>
+					<file>swmreports/coupon.xml</file>
+				</coupon>
 			</updates>
 		</layout>
 	</adminhtml>
@@ -132,6 +143,9 @@
 			<outofstock>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</outofstock>
+			<coupon>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</coupon>
 		</blocks>
 		<helpers>
 			<swmreports>
@@ -146,6 +160,9 @@
 			<outofstock>
 				<class>SoftwareMedia_Swmreports_Helper</class>
 			</outofstock>
+			<coupon>
+				<class>SoftwareMedia_Swmreports_Helper</class>
+			</coupon>
 		</helpers>
 	</global>
 </config>
