@@ -541,7 +541,9 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			$row['availability'] = 'In Stock';
 			$row['description_stripped'] = strip_tags(preg_replace("/\s\s+/", " ", $row['description']));
 			
-			
+			if (!$row['cpc_price'])
+				$row['cpc_price'] = $row['price'];
+				
 			if ($row['visibility'] == 'Not Visible Individually' && !$parentIds) {
 				$parentIds = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
 				if (!$parentIds)
