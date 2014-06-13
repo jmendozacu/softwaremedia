@@ -151,7 +151,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		if (! $transfer->setStatus ( null, TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED )) {
 			throw new Exception ( $this->__ ( "Could not approve points." ) );
 		}
-		$this->_getSession()->addSuccess('You receive a bonus 1000 points!');
+		//$this->_getSession()->addSuccess('You receive a bonus 1000 points!');
 		$transfer->save ();
 	}
 	
