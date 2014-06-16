@@ -32,7 +32,7 @@
  */
 ?>
 <style>
-.new_cart .deals .discount { display: block !important; min-height: 0 !important; }
+	.new_cart .deals .discount { display: block !important; min-height: 0 !important; }
 </style>
 <div class="cart">
     <div class="page-title title-buttons">
@@ -96,14 +96,15 @@
 
                         <td colspan="7" class="cart_subtotal a-right">
 							<div class="f-left">
-							<button onclick="jQuery('.cart_total_code').slideToggle(); return false;" name="more_options_button" value="update_qty" title="More Options" class="button btn-options" id="more_options_button"><span><span><?php echo $this->__('More Options'); ?></span></span></button>
+								<button onclick="jQuery('.cart_total_code').slideToggle();
+										return false;" name="more_options_button" value="update_qty" title="More Options" class="button btn-options" id="more_options_button"><span><span><?php echo $this->__('More Options'); ?></span></span></button>
 
 
                                 <button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
-                                
+
                                 <button id="c2qBtn" onclick="setLocation('http://softwaremedia.local/qquoteadv/index/switch2Qquote/');" class="button btn-quote" style="margin-left:3px;" type="button"><span><span>Get Quote</span></span></button>
-                                
-                                                            </div>
+
+							</div>
                             <label><?php echo $this->__('Subtotal: '); ?></label>
                             <span>
 								<?php
@@ -162,14 +163,15 @@
 			<?php //echo $this->getChildHtml('giftcards') ?>
         </div>
 
-		<?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping');
+		<?php
+		if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping');
 		endif;
 		?>
 
         <div class="totals">
 			<div class="block-cart-total">
 				<h2>order summary</h2>
-<?php echo $this->getChildHtml('totals'); ?>
+				<?php echo $this->getChildHtml('totals'); ?>
 			</div>
         </div>
         <div class="clearer"></div>
@@ -177,17 +179,18 @@
 
     <!-- START mobile-checkout-step -->
     <div class="mobile-checkout-step show-mobile">
-			<?php if (!$this->hasError()): ?>
+		<?php if (!$this->hasError()): ?>
 			<ul class="checkout-types">
-				<?php $licount = 0;
+				<?php
+				$licount = 0;
 				foreach ($this->getMethods('methods') as $method):
 					?>
 					<?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
 						<li class="item-<?php echo $licount; ?>"><?php echo $methodHtml; ?></li>
-				<?php endif; ?>
-			<?php endforeach; ?>
+					<?php endif; ?>
+				<?php endforeach; ?>
 			</ul>
-<?php endif; ?>
+		<?php endif; ?>
     </div>
     <!-- END mobile-checkout-step -->
 
@@ -197,22 +200,23 @@
     <div class="mobile-checkout-help show-mobile">
 		<div class="help-title">Need Help With Your Order?</div>
 		<div class="help-content">
-<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml(); ?>
+			<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml(); ?>
 		</div>
     </div>
     <!-- END mobile-checkout-help -->
 
     <div class="title-orange cart-checkout-bottom hide-mobile">
         <h3><?php echo $this->__('Need Help With Your Order?'); ?> </h3>
-			<?php if (!$this->hasError()): ?>
+		<?php if (!$this->hasError()): ?>
 			<ul class="checkout-types">
-				<?php $licount = 0;
+				<?php
+				$licount = 0;
 				foreach ($this->getMethods('methods') as $method):
 					?>
 					<?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
 						<li class="item-<?php echo $licount; ?>"><?php echo $methodHtml; ?></li>
-				<?php endif; ?>
-	<?php endforeach; ?>
+					<?php endif; ?>
+				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>
     </div>
@@ -224,17 +228,17 @@
 		<?php echo $this->getChildHtml('crosssell') ?>
     </div>
     <div class="f-fix line-10">
-<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('shop_with_confidence')->toHtml(); ?>
+		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('shop_with_confidence')->toHtml(); ?>
     </div>
 
     <script type="text/javascript">
 		jQuery(document).ready(function() {
 			jQuery('.satisfaction').remove();
-			
-			jQuery('.cart_total_code').css('display','none');
+
+			jQuery('.cart_total_code').css('display', 'none');
 			jQuery('.cart_total_code').width('auto');
 			jQuery('.cart_total_code').height('auto');
 		});
-		
+
 	</script>
 </div>
