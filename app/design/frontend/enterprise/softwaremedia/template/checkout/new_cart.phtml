@@ -235,7 +235,9 @@
 		jQuery(document).ready(function() {
 			jQuery('.satisfaction').remove();
 
-			jQuery('.cart_total_code').css('display', 'none');
+<?php if (!strlen($this->getQuote()->getCouponCode())): ?>
+				jQuery('.cart_total_code').css('display', 'none');
+<?php endif; ?>
 			jQuery('.cart_total_code').width('auto');
 			jQuery('.cart_total_code').height('auto');
 		});
