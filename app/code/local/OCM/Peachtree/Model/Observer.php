@@ -23,20 +23,15 @@ class OCM_Peachtree_Model_Observer {
 
 		$cookie_value = Mage::getModel('core/cookie')->get(self::COOKIE_NAME);
 		$order_id = $observer->getOrder()->getId();
-		$amazon_order = Mage::helper('M2ePro/Component_Amazon')
-			->getCollection('Order')
-			->addFieldToFilter('order_id', $order_id)
-			->getItems();
-		$buy_order = Mage::helper('M2ePro/Component_Amazon')
-			->getCollection('Order')
-			->addFieldToFilter('order_id', $order_id)
-			->getItems();
+		$email = $observer->getOrder()->getCustomerEmail();
 
 		if (!$cookie_value) {
-			if (count($amazon_order) > 0) {
+			if (strcasecmp('amazon@softwaremedia.com', $email) == 0) {
 				$cookie_value = 'AMZ';
-			} else if (count($buy_order) > 0) {
+			} else if (strcasecmp('buy@softwaremedia.com', $email) == 0) {
 				$cookie_value = 'BUYM';
+			} else if (strcasecmp('bestbuy@softwaremedia.com', $email) == 0) {
+				$cookie_value = 'BEST';
 			} else {
 				$cookie_value = 'Direct';
 			}
