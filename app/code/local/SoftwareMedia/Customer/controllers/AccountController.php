@@ -1,7 +1,8 @@
 <?php
+
 require_once('Mage/Customer/controllers/AccountController.php');
-class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountController
-{
+
+class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountController {
 
 	/**
 	 * Success Registration
@@ -76,7 +77,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		}
 		return $successUrl;
 	}
-	
+
 	/**
 	 * Create customer account action
 	 */
@@ -93,15 +94,15 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			$this->_redirectError($errUrl);
 			return;
 		}
-		
+
 		$postData = Mage::app()->getRequest()->getPost();
-		
+
 		$customer = $this->_getCustomer();
 
 		if (isset($postData['new_website_brochure'])) {
-			$customer->setData('new_website_brochure',1);
+			$customer->setData('new_website_brochure', 1);
 		}
-		
+
 		try {
 			$errors = $this->_getCustomerErrors($customer);
 
@@ -127,7 +128,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			$session->setCustomerFormData($this->getRequest()->getPost())
 				->addException($e, $this->__('Cannot save the customer.'));
 		}
-		
+
 		$errUrl = $this->_getUrl('*/*/create', array('_secure' => true));
 		if ($postData['error_url'] == 'new') {
 			$errUrl = $postData['error_url'];
@@ -136,7 +137,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			$this->_redirectError($errUrl);
 		}
 	}
-	
+
 	/**
 	 * Add points and customer group for brochure sign up page
 	 *
@@ -144,15 +145,69 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 	 * @return Mage_Customer_AccountController
 	 */
 	protected function processNewPoints(Mage_Customer_Model_Customer $customer) {
-		$transfer = Mage::getModel ( 'rewards/transfer' )->setReasonId ( TBT_Rewards_Model_Transfer_Reason::REASON_ADMIN_ADJUSTMENT )->setComments ( 'New Brochure Landing Page Points' )->setCurrencyId ( 1 )->setQuantity ( 1000 );
-		$transfer->setId ( null )->setCustomerId ( $customer->getId() );
-		
+		$transfer = Mage::getModel('rewards/transfer')->setReasonId(TBT_Rewards_Model_Transfer_Reason::REASON_ADMIN_ADJUSTMENT)->setComments('New Brochure Landing Page Points')->setCurrencyId(1)->setQuantity(1000);
+		$transfer->setId(null)->setCustomerId($customer->getId());
+
 		// get the default starting status - usually Pending
-		if (! $transfer->setStatus ( null, TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED )) {
-			throw new Exception ( $this->__ ( "Could not approve points." ) );
+		if (!$transfer->setStatus(null, TBT_Rewards_Model_Transfer_Status::STATUS_APPROVED)) {
+			throw new Exception($this->__("Could not approve points."));
 		}
 		//$this->_getSession()->addSuccess('You receive a bonus 1000 points!');
-		$transfer->save ();
+		$transfer->save();
 	}
-	
+
+	/**
+	 * Define target URL and redirect customer after logging in
+	 */
+	protected function _loginPostRedirect() {
+		$session = $this->_getSession();
+
+		if (!$session->getBeforeAuthUrl() || $session->getBeforeAuthUrl() == Mage::getBaseUrl()) {
+			// Set default URL to redirect customer to
+			$session->setBeforeAuthUrl($this->_getHelper('customer')->getAccountUrl());
+			// Redirect customer to the last page visited after logging in
+			if ($session->isLoggedIn()) {
+				if (!Mage::getStoreConfigFlag(
+						Mage_Customer_Helper_Data::XML_PATH_CUSTOMER_STARTUP_REDIRECT_TO_DASHBOARD
+					)) {
+					$referer = $this->getRequest()->getParam(Mage_Customer_Helper_Data::REFERER_QUERY_PARAM_NAME);
+					if ($referer) {
+						// Rebuild referer URL to handle the case when SID was changed
+						$referer = $this->_getModel('core/url')
+							->getRebuiltUrl($this->_getHelper('core')->urlDecode($referer));
+						if ($this->_isUrlInternal($referer)) {
+							$session->setBeforeAuthUrl($referer);
+						}
+					}
+				} else if ($session->getAfterAuthUrl()) {
+					$session->setBeforeAuthUrl($session->getAfterAuthUrl(true));
+				}
+			} else {
+				$session->setBeforeAuthUrl($this->_getHelper('customer')->getLoginUrl());
+			}
+		} else if ($session->getBeforeAuthUrl() == $this->_getHelper('customer')->getLogoutUrl()) {
+			$session->setBeforeAuthUrl($this->_getHelper('customer')->getDashboardUrl());
+		} else if (strpos($_SESSION['core']['last_url'], Mage::getUrl('checkout/cart')) !== false) {
+			if (!$session->getAfterAuthUrl()) {
+				$session->setAfterAuthUrl($session->getBeforeAuthUrl());
+			}
+			if ($session->isLoggedIn()) {
+				if (Mage::getUrl('checkout/cart/new') == false) {
+					$session->setBeforeAuthUrl(Mage::getUrl('checkout/cart'));
+				} else {
+					$session->setBeforeAuthUrl(Mage::getUrl('checkout/cart/new'));
+				}
+			}
+		} else {
+			if (!$session->getAfterAuthUrl()) {
+				$session->setAfterAuthUrl($session->getBeforeAuthUrl());
+			}
+			if ($session->isLoggedIn()) {
+				$session->setBeforeAuthUrl($session->getAfterAuthUrl(true));
+			}
+		}
+
+		$this->_redirectUrl($session->getBeforeAuthUrl(true));
+	}
+
 }

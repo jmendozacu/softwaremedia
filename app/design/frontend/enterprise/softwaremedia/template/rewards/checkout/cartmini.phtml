@@ -57,6 +57,7 @@ $cant_use_points = (($this->getMinSpendablePoints() == $this->getMaxSpendablePoi
 								<div class="col1-set">
 									<div class="col-1 registered-users">
 										<div class="buttons-set">
+											<input type="text" class="hidden" name="referer" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
 											<button type="submit" class="button" title="<?php echo $this->__('Login') ?>" name="send" id="send2"><span><span><?php echo $this->__('Login') ?></span></span></button>
 										</div>
 									</div>
