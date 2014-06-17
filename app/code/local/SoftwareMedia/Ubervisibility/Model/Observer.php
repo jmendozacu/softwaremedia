@@ -15,9 +15,10 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
 		$collection->addAttributeToSelect('*');
 		$collection->addAttributeToFilter('status', array('eq' => 1));
-		$collection->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.manage_stock=1');
+		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock', 'min_sale_qty'));
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
+//		$collection->getSelect()->where('sku = "MC-SPYYFMAAFA"');
 		$collection->setOrder('ubervis_updated', 'ASC');
 		$collection->setPageSize(100);
 
@@ -60,6 +61,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['cost'] = $updated_data['cost'];
 			$data['price'] = $updated_data['price'];
 			$data['msrp'] = $updated_data['msrp'];
+			$data['minimumSalesQuantity'] = intval($updated_data['min_sale_qty']);
 
 			$cats = $prod->getCategoryIds();
 			foreach ($cats as $category_id) {
@@ -130,6 +132,9 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			if (strcasecmp($data['shippingGroup'], 'ALWAYS_PHYSICAL') == 0) {
 				$data['shippingGroup'] = 'PHYSICAL';
 			}
+			if (empty($data['minimumSalesQuantity'])) {
+				$data['minimumSalesQty'] = 0;
+			}
 
 			if (empty($ubervis_prod)) {
 				Mage::log('Product is being created', null, 'ubervis.log');
@@ -148,7 +153,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			}
 
 			$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
-			$prod->save();
+//			$prod->save();
 		}
 
 
