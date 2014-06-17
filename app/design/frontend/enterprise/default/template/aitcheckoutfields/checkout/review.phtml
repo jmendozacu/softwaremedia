@@ -1,283 +1,339 @@
 <form id="co-customreview-form" action="">
 
-   <!--     START AITOC CHECKOUT ATTRIBUTES     -->
-    <?php if ($aFieldList = $this->getCustomFieldList(1)): ?>
-    <fieldset class="buttons-set" style="text-align:left; border-bottom: none;">
-        <ul class="form-list">
-        <?php foreach ($aFieldList as $aField): ?>
-            <?php echo $this->getFieldHtml($aField); ?>
-        <?php endforeach; ?>
-        </ul>
-    </fieldset>
-    <?php endif; ?>
-<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
+	<!--     START AITOC CHECKOUT ATTRIBUTES     -->
+	<?php if ($aFieldList = $this->getCustomFieldList(1)): ?>
+		<fieldset class="buttons-set" style="text-align:left; border-bottom: none;">
+			<ul class="form-list">
+				<?php foreach ($aFieldList as $aField): ?>
+					<?php echo $this->getFieldHtml($aField); ?>
+				<?php endforeach; ?>
+			</ul>
+		</fieldset>
+	<?php endif; ?>
+	<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
 
- <?php echo $this->getChildHtml('items_before'); ?>
- <div id="checkout-review-table-wrapper">
-    <table class="data-table" id="checkout-review-table">
-        <?php if ($this->helper('tax')->displayCartBothPrices()): $colspan = $rowspan = 2; else: $colspan = $rowspan = 1; endif; ?>
-        <col />
-        <col width="1" />
-        <col width="1" />
-        <col width="1" />
-        <col width="1" />
-        <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
-        <col width="1" />
-        <col width="1" />
-        <col width="1" />
-        <?php endif; ?>
-        <thead>
-            <tr>
-            	<th width="100">&nbsp;</th>
-                <th rowspan="<?php echo $rowspan ?>"><?php echo $this->__('Product Name') ?></th>
-                <th colspan="<?php echo $colspan ?>" class="a-center"><?php echo $this->__('Price') ?></th>
-                <th rowspan="<?php echo $rowspan ?>" class="a-center"><?php echo $this->__('Qty') ?></th>
-                <th colspan="<?php echo $colspan ?>" class="a-center"><?php echo $this->__('Subtotal') ?></th>
-            </tr>
-            <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
-                <tr>
-                    <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
-                    <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
-                    <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
-                    <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
-                </tr>
-            <?php endif; ?>
-        </thead>
-        <?php echo $this->getChildHtml('totals'); ?>
-        <tbody>
-        <?php foreach($this->getItems() as $_item): ?>
-            <?php echo $this->getItemHtml($_item)?>
-        <?php endforeach ?>
-        </tbody>
-    </table>
- </div>
-
-<!--     START AITOC CHECKOUT ATTRIBUTES     -->
-<?php 
-$billingAddress = Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getData();
-$shippingAddress = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getData();
-$items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems(); 
-////die(var_dump($items)); 
-       $hasCapture = false; 
-       foreach($items as $item) {
-                $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                if ($product->getCaptureEndUserData())
-                    $hasCapture = true;   
-       }
-?>
-
-<?php if ($hasCapture): ?>
-
-<div id="end_user_info" style="margin:40px;">
-    <div id="end_user_form_header">
-        <table style="border: 1px solid;">
-        <p id ="form_header" style="text-align:center; font-size: 22px; font-weight:bold;">End User Information</p>
-        <p id = "form_header_content" style="">There are products on your order that require End User Information. Providing this information now can help expedite your order. The information you provide below will indicate who the following licenses will be registered to. <p/>
-        </table>
-    </div>   
-</div>
-<div class="address_select">
-    <form name="address_select">
-    <input type="radio" id="as_billing_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Billing Address">Same As Billing Address
-    <input type="radio" id="as_shipping_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Shipping Address">Same As Shipping Address
-</div>
-
-<?php //var_dump($billingAddress);?>
-
-<div class="end_user_fields">
-    <?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
-    <fieldset class="buttons-set" style="text-align:left; border-bottom: none;">
-        <ul class="form-list">
-        <?php foreach ($aFieldList as $aField): ?>
-			<?php if ($aField['attribute_code'] == 'comment') {
-				$commentField = $aField;
-				continue;
-			} 
+	<?php echo $this->getChildHtml('items_before'); ?>
+	<div id="checkout-review-table-wrapper">
+		<table class="data-table" id="checkout-review-table">
+			<?php
+			if ($this->helper('tax')->displayCartBothPrices()): $colspan = $rowspan = 2;
+			else: $colspan = $rowspan = 1;
+			endif;
 			?>
-            <?php echo $this->getFieldHtml($aField); ?>
-        <?php endforeach; ?>
-        </ul>
-    </fieldset>
-    <?php endif; ?>
-    </div>    
-    
-<?php else : ?>
-<?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
-<?php foreach ($aFieldList as $aField): ?>
-			<?php if ($aField['attribute_code'] == 'comment') {
-				$commentField = $aField;
-				continue;
-			} 
-			?>
-<?php endforeach; ?>
-<?php endif; ?>
-<?php endif; ?>
-<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
+			<col />
+			<col width="1" />
+			<col width="1" />
+			<col width="1" />
+			<col width="1" />
+			<?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+				<col width="1" />
+				<col width="1" />
+				<col width="1" />
+			<?php endif; ?>
+			<thead>
+				<tr>
+					<th width="100">&nbsp;</th>
+					<th rowspan="<?php echo $rowspan ?>"><?php echo $this->__('Product Name') ?></th>
+					<th colspan="<?php echo $colspan ?>" class="a-center"><?php echo $this->__('Price') ?></th>
+					<th rowspan="<?php echo $rowspan ?>" class="a-center"><?php echo $this->__('Qty') ?></th>
+					<th colspan="<?php echo $colspan ?>" class="a-center"><?php echo $this->__('Subtotal') ?></th>
+				</tr>
+				<?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+					<tr>
+						<th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+						<th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+						<th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+						<th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+					</tr>
+				<?php endif; ?>
+			</thead>
+			<?php echo $this->getChildHtml('totals'); ?>
+			<tbody>
+				<?php foreach ($this->getItems() as $_item): ?>
+					<?php echo $this->getItemHtml($_item) ?>
+				<?php endforeach ?>
+			</tbody>
+		</table>
+	</div>
 
-</form>
-
- <?php echo $this->getChildHtml('items_after'); ?>
-<?php
-	$lists =  false;
-	$check = 1;
-	$auto  = true;
-?>
-<script type="text/javascript">
-addSubscribeToPost = function (element){
-
-	if( $('magemonkey-subscribe') ){
-		$('magemonkey-subscribe').remove();
+	<!--     START AITOC CHECKOUT ATTRIBUTES     -->
+	<?php
+	$billingAddress = Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getData();
+	$shippingAddress = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getData();
+	$items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
+////die(var_dump($items));
+	$hasCapture = false;
+	foreach ($items as $item) {
+		$product = Mage::getModel('catalog/product')->load($item->getProductId());
+		if ($product->getCaptureEndUserData())
+			$hasCapture = true;
 	}
+	?>
 
-	if(element.checked){
-        var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
-        try{
-            Element.insert(Form.findFirstElement(payment.form), inputer);
-        }catch(notelem){
-            $("co-payment-form").insert(inputer);
-        }
-	}
+	<?php if ($hasCapture): ?>
 
-}
-addElementToPost = function (element){
+		<div id="end_user_info" style="margin:40px;">
+			<div id="end_user_form_header">
+				<table style="border: 1px solid;">
+					<p id ="form_header" style="text-align:center; font-size: 22px; font-weight:bold;">End User Information</p>
+					<p id = "form_header_content" style="">There are products on your order that require End User Information. Providing this information now can help expedite your order. The information you provide below will indicate who the following licenses will be registered to. <p/>
+				</table>
+			</div>
+		</div>
+		<div class="address_select">
+			<form name="address_select">
+				<input type="radio" id="as_billing_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Billing Address">Same As Billing Address
+				<input type="radio" id="as_shipping_address" name="end_user_address" onchange = "fillAddress(this);" value="Same As Shipping Address">Same As Shipping Address
+				</div>
 
-	var formInputId = element.readAttribute('id') + '-serialize';
+				<?php //var_dump($billingAddress);  ?>
 
-	if($(formInputId)){
-	 $(formInputId).remove();
-	}
+				<div class="end_user_fields">
+					<?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
+						<fieldset class="buttons-set" style="text-align:left; border-bottom: none;">
+							<ul class="form-list">
+								<?php foreach ($aFieldList as $aField): ?>
+									<?php
+									if ($aField['attribute_code'] == 'comment') {
+										$commentField = $aField;
+										continue;
+									}
+									?>
+									<?php echo $this->getFieldHtml($aField); ?>
+								<?php endforeach; ?>
+							</ul>
+						</fieldset>
+					<?php endif; ?>
+				</div>
 
-	var inp = new Element('input', { name: element.readAttribute('name'), id: formInputId, value: element.getValue(), type: "hidden" });
+			<?php else : ?>
+				<?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
+					<?php foreach ($aFieldList as $aField): ?>
+						<?php
+						if ($aField['attribute_code'] == 'comment') {
+							$commentField = $aField;
+							continue;
+						}
+						?>
+					<?php endforeach; ?>
+				<?php endif; ?>
+			<?php endif; ?>
+			<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->
 
-	Element.insert( Form.findFirstElement(payment.form), inp);
+		</form>
 
-}
-</script>
-<div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?> style="padding: 15px 0 0 22px; text-align: left;">
-	<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
-	<label for="magemonkey-trigger"><?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?></label>
-</div>
-<?php
+		<?php echo $this->getChildHtml('items_after'); ?>
+		<?php
+		$lists = $this->getLists();
+		$check = 1;
+		$myLists = $this->getSubscribedLists();
+		$generalList = array('name' => 'Sign up for newsletter', 'id' => 'd78fb65fce');
+		$auto = (($check === 1) OR ($check === 3));
+		?>
+		<script type="text/javascript">
+			//<![CDATA[
+			addSubscribeToPost = function(element) {
 
-?>
+				if ($('magemonkey-subscribe')) {
+					$('magemonkey-subscribe').remove();
+				}
 
-<script type="text/javascript">
-	addSubscribeToPost($('magemonkey-trigger'));
+				if (element.checked) {
+					var inputer = new Element('input', {name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden"});
+					var listValue = new Element('input', {name: element.readAttribute('name'), id: "subscribe", value: element.getValue(), type: "hidden"});
+					try {
+						Element.insert(Form.findFirstElement(payment.form), inputer);
+						Element.insert(Form.findFirstElement(payment.form), listValue);
+					} catch (notelem) {
+						$("co-payment-form").insert(inputer);
+						$("co-payment-form").insert(listValue);
+					}
+				}
 
-	if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
+			}
+			addGroupToPost = function(element) {
+				if (element.checked) {
+					try {
+						var group = new Element('input', {name: element.readAttribute('name'), id: element.readAttribute('id'), value: element.getValue(), checked: true, type: "checkbox"});
+						Element.insert(Form.findFirstElement(payment.form), group);
+					} catch (notelem) {
+						$("co-payment-form").insert(group);
+					}
+				}
+			}
+			addElementToPost = function(element) {
 
-	  var event = 'change';
+				var formInputId = element.readAttribute('id') + '-serialize';
 
-	  //Radio||Checkbox
-	  $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
+				if ($(formInputId)) {
+					$(formInputId).remove();
+				}
 
-		  if(input.readAttribute('type') == 'radio'){
-			  event = 'click';
-		  }
+				var inp = new Element('input', {name: element.readAttribute('name'), id: formInputId, value: element.getValue(), type: "hidden"});
 
-		  input.observe(event, function(){
-			  addElementToPost(this);
-		  });
-	  });
+				Element.insert(Form.findFirstElement(payment.form), inp);
 
-	  $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
-		  ddl.observe(event, function(){
-			  addElementToPost(this);
-		  });
-	  });
+			}
+			//]]>
+		</script>
+		<div class="buttons-set" style="padding: 15px 0 0 22px; text-align: left;">
+			<input<?php if ($auto): ?> checked="checked"<?php endif; ?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
+			<label for="magemonkey-trigger"><?php echo $generalList['name']; ?></label>
+		</div>
 
-	}
-</script>
+		<script type="text/javascript">
+			//<![CDATA[
+			//Handle newsletter subscribe/unsubscribe checkbox events
+			$$('input.monkey-list-subscriber').each(function(chk) {
 
- <script type="text/javascript">
- //<![CDATA[
-    decorateTable('checkout-review-table');
-    truncateOptions();
-//]]>
-</script>
-<div id="checkout-review-submit">
-    <?php echo $this->getChildHtml('agreements') ?>
-    
-  <?php if ($commentField): ?>
-<form action="" id="checkout-agreements" onsubmit="return false;">
-<ol class="checkout-agreements">
-    <li>
-    	<label style="text-align:left; width:100%;" for="customreview:aitoc_checkout_<?php echo $commentField['attribute_id']; ?>">Order Comments: </label>
-    	<div class="input-box">
-    	<textarea name="customreview[aitoc_checkout_<?php echo $commentField['attribute_id']; ?>]" id="customreview:aitoc_checkout_<?php echo $commentField['attribute_id']; ?>" class=" input-text" title="Order Comments" style="height:50px;" rows="24" cols="80"></textarea>
-    	</div>
-	</li>
-</ol>
-</form>
-<?php endif; ?>
-    <div class="buttons-set" id="review-buttons-container">
-        <p class="f-left"><?php echo $this->__('Forgot an Item?') ?> <a href="<?php echo $this->getUrl('checkout/cart') ?>"><?php echo $this->__('Edit Your Cart') ?></a></p>
-<button type="submit" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" onclick="if (customreview.save()) review.save();"><span><span><?php echo $this->__('Place Order') ?></span></span></button>
-        <span class="please-wait" id="review-please-wait" style="display:none;">
-            <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Submitting order information...') ?>" title="<?php echo $this->__('Submitting order information...') ?>" class="v-middle" /> <?php echo $this->__('Submitting order information...') ?>
-        </span>
-    </div>
-    <script type="text/javascript">
-    //<![CDATA[
-        review = new Review('<?php echo $this->getUrl('checkout/onepage/saveOrder', array('form_key' => Mage::getSingleton('core/session')->getFormKey())) ?>', '<?php echo $this->getUrl('checkout/onepage/success') ?>', $('checkout-agreements'));
-        
+				if (!chk.checked) {
+					var groupings = $('interest_groupings_' + chk.value);
+					if (groupings) {
+						groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
+					}
+				}
 
-//    START AITOC CHECKOUT ATTRIBUTES
+				chk.observe('change', function() {
 
-var Customreview = Class.create();
-Customreview.prototype = {
-    initialize: function(form){
-        this.form = form;
-        this.validator = new Validation(this.form);
-    },
+					var groupings = $('interest_groupings_' + this.value);
+					if (groupings) {
+						var elements = groupings.select('select', 'input');
+						if (this.checked) {
+							elements.invoke('removeAttribute', 'disabled');
+						} else {
+							elements.invoke('writeAttribute', 'disabled', 'disabled');
+						}
+					}
 
-    save: function(){
-        if (checkout.loadWaiting!=false) return;
+				});
+			});
 
-        var validator = new Validation(this.form);
-        if (validator.validate()) {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    },
+			addSubscribeToPost($('magemonkey-trigger'));
 
-    resetLoadWaiting: function(transport){
-        checkout.setLoadWaiting(false);
-    }
+			if ($$('div#checkout-step-review div.monkey-multisubscribe').length) {
 
-}
+				var event = 'change';
 
-    customreview = new Customreview('co-customreview-form');
+				//Radio||Checkbox
+				$$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input) {
 
-    // override parent class function to add our data to request
+					if (input.readAttribute('type') == 'radio') {
+						event = 'click';
+					}
 
-    review.save = function(){
-        if (checkout.loadWaiting!=false) return;
-        checkout.setLoadWaiting('review');
-        var params = Form.serialize(payment.form);
-        if (this.agreementsForm) {
-            params += '&'+Form.serialize(this.agreementsForm);
-        }
+					input.observe(event, function() {
+						addElementToPost(this);
+					});
+				});
 
-        params += '&'+Form.serialize($('co-customreview-form'));
+				$$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl) {
+					ddl.observe(event, function() {
+						addElementToPost(this);
+					});
+				});
 
-        params.save = true;
-        var request = new Ajax.Request(
-            this.saveUrl,
-            {
-                method:'post',
-                parameters:params,
-                onComplete: this.onComplete,
-                onSuccess: this.onSave,
-                onFailure: checkout.ajaxFailure.bind(checkout)
-            }
-        );
-    }
-//    FINISH AITOC CHECKOUT ATTRIBUTES
+			}
+			//Handle newsletter subscribe/unsubscribe checkbox events
+			$$('.interest-groupings input').each(function(group) {
+				group.observe('change', function() {
+					if (group.checked) {
+						addGroupToPost(group);
+					}
+				});
+			});
+			//]]>
+		</script>
 
-    //]]>
-    </script>
-</div>
+		<script type="text/javascript">
+			//<![CDATA[
+			decorateTable('checkout-review-table');
+			truncateOptions();
+			//]]>
+		</script>
+		<div id="checkout-review-submit">
+			<?php echo $this->getChildHtml('agreements') ?>
+
+			<?php if ($commentField): ?>
+				<form action="" id="checkout-agreements" onsubmit="return false;">
+					<ol class="checkout-agreements">
+						<li>
+							<label style="text-align:left; width:100%;" for="customreview:aitoc_checkout_<?php echo $commentField['attribute_id']; ?>">Order Comments: </label>
+							<div class="input-box">
+								<textarea name="customreview[aitoc_checkout_<?php echo $commentField['attribute_id']; ?>]" id="customreview:aitoc_checkout_<?php echo $commentField['attribute_id']; ?>" class=" input-text" title="Order Comments" style="height:50px;" rows="24" cols="80"></textarea>
+							</div>
+						</li>
+					</ol>
+				</form>
+			<?php endif; ?>
+			<div class="buttons-set" id="review-buttons-container">
+				<p class="f-left"><?php echo $this->__('Forgot an Item?') ?> <a href="<?php echo $this->getUrl('checkout/cart') ?>"><?php echo $this->__('Edit Your Cart') ?></a></p>
+				<button type="submit" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" onclick="if (customreview.save())
+							review.save();"><span><span><?php echo $this->__('Place Order') ?></span></span></button>
+				<span class="please-wait" id="review-please-wait" style="display:none;">
+					<img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Submitting order information...') ?>" title="<?php echo $this->__('Submitting order information...') ?>" class="v-middle" /> <?php echo $this->__('Submitting order information...') ?>
+				</span>
+			</div>
+			<script type="text/javascript">
+				//<![CDATA[
+				review = new Review('<?php echo $this->getUrl('checkout/onepage/saveOrder', array('form_key' => Mage::getSingleton('core/session')->getFormKey())) ?>', '<?php echo $this->getUrl('checkout/onepage/success') ?>', $('checkout-agreements'));
+
+
+				//    START AITOC CHECKOUT ATTRIBUTES
+
+				var Customreview = Class.create();
+				Customreview.prototype = {
+					initialize: function(form) {
+						this.form = form;
+						this.validator = new Validation(this.form);
+					},
+					save: function() {
+						if (checkout.loadWaiting != false)
+							return;
+
+						var validator = new Validation(this.form);
+						if (validator.validate()) {
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					},
+					resetLoadWaiting: function(transport) {
+						checkout.setLoadWaiting(false);
+					}
+
+				}
+
+				customreview = new Customreview('co-customreview-form');
+
+				// override parent class function to add our data to request
+
+				review.save = function() {
+					if (checkout.loadWaiting != false)
+						return;
+					checkout.setLoadWaiting('review');
+					var params = Form.serialize(payment.form);
+					if (this.agreementsForm) {
+						params += '&' + Form.serialize(this.agreementsForm);
+					}
+
+					params += '&' + Form.serialize($('co-customreview-form'));
+
+					params.save = true;
+					var request = new Ajax.Request(
+							this.saveUrl,
+							{
+								method: 'post',
+								parameters: params,
+								onComplete: this.onComplete,
+								onSuccess: this.onSave,
+								onFailure: checkout.ajaxFailure.bind(checkout)
+							}
+					);
+				}
+				//    FINISH AITOC CHECKOUT ATTRIBUTES
+
+				//]]>
+			</script>
+		</div>
