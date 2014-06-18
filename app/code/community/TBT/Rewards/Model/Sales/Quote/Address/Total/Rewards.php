@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WDCA - Sweet Tooth
  *
@@ -42,227 +43,221 @@
  * @package    TBT_Rewards
  * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
  */
-class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Model_Quote_Address_Total_Abstract
-{
-    protected $discount_amt = 0;
+class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Model_Quote_Address_Total_Abstract {
 
-    public function __construct()
-    {
-        $this->setCode ( 'rewards' );
-    }
+	protected $discount_amt = 0;
 
-    /**
-     * Triggers AFTER collection methods, only when Magento is trying to show the total amount.
-     * @see Mage_Sales_Model_Quote_Address_Total_Abstract::fetch()
-     */
-    public function fetch(Mage_Sales_Model_Quote_Address $address)
-    {
-        if ( $address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING ) {
-            return $this;
-        }
+	public function __construct() {
+		$this->setCode('rewards');
+	}
 
-        if ( $this->discount_amt != 0 ) {
-            $address->addTotal( array(
-                'code' => $this->getCode(),
-                'title' => Mage::helper( 'sales' )->__( 'Item Discounts' ),
-                'value' => $this->discount_amt
-            ) );
-        }
+	/**
+	 * Triggers AFTER collection methods, only when Magento is trying to show the total amount.
+	 * @see Mage_Sales_Model_Quote_Address_Total_Abstract::fetch()
+	 */
+	public function fetch(Mage_Sales_Model_Quote_Address $address) {
+		if ($address->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING) {
+			return $this;
+		}
 
-        return $this;
-    }
+		if ($this->discount_amt != 0) {
+			$address->addTotal(array(
+				'code' => $this->getCode(),
+				'title' => Mage::helper('sales')->__('Item Discounts'),
+				'value' => $this->discount_amt
+			));
+		}
 
-    /**
-     * This triggers right after the subtotal is calculated
-     * @see Mage_Sales_Model_Quote_Address_Total_Abstract::collect()
-     */
-    public function collect(Mage_Sales_Model_Quote_Address $address)
-    {
-        // No support for multi-shipping
-        if (Mage::helper ( 'rewards' )->isMultishipMode ( $address )) {
-            return $this;
-        }
+		return $this;
+	}
 
-        parent::collect($address);
+	/**
+	 * This triggers right after the subtotal is calculated
+	 * @see Mage_Sales_Model_Quote_Address_Total_Abstract::collect()
+	 */
+	public function collect(Mage_Sales_Model_Quote_Address $address) {
+		// No support for multi-shipping
+		if (Mage::helper('rewards')->isMultishipMode($address)) {
+			return $this;
+		}
 
-		
-        $this->_clearRoundingDeltas ( $address );
+		parent::collect($address);
 
-        //Update the subtotals using the points discount
-        $final_price = $this->getFinalPrice ( $address );
-        $base_final_price = Mage::helper ( 'rewards/price' )->getReversedCurrencyPrice ( $final_price );
 
-        if (!Mage::helper('rewards/version')->isBaseMageVersionAtLeast('1.4.2.0')) {
-            $address->setSubtotal( $address->getSubtotal() + $final_price );
-            $address->setBaseSubtotal( $address->getBaseSubtotal() + $base_final_price );
-            // Then update the grandtotals
-            $address->setGrandTotal ( $address->getSubtotal () );
-            $address->setBaseGrandTotal ( $address->getBaseSubtotal () );
-        } else {
-            //replacing above commented lines and using Magento's API to do same thing
-            $this->_addAmount($final_price);
-            $this->_addBaseAmount($base_final_price);
-        }
-		
-        return $this;
-    }
+		$this->_clearRoundingDeltas($address);
 
-    /**
-     * Loops through each item within the cart and gets the amount of money discounted by points
-     * <font color="red"><b>Also updates the row total</b></font>
-     *
-     * @param Mage_Sales_Model_Quote_Address $address
-     * @return float amount of money discounted by points
-     */
-    public function getFinalPrice(Mage_Sales_Model_Quote_Address $address)
-    {
-        $acc_diff = 0;
-        $items = $address->getAllItems ();
+		//Update the subtotals using the points discount
+		$final_price = $this->getFinalPrice($address);
+		$base_final_price = Mage::helper('rewards/price')->getReversedCurrencyPrice($final_price);
 
-        if (! is_array ( $items )) {
-            $items = array ($items );
-        }
-        //@nelkaake -a 17/02/11:
-        foreach ( $items as &$item ) {
-            if (! $item->getQuoteId () || ! $item->getId ()) {
-                continue;
-            }
-            
-            //This is ghetto but if they are in the quotes module don't do any of this stuff
-            //Rewards are not utilized in the backend anyways and this is breaking stuff
-            $url = Mage::helper('core/url')->getCurrentUrl();
-			if (strpos($url,'qquoteadv'))
+		if (!Mage::helper('rewards/version')->isBaseMageVersionAtLeast('1.4.2.0')) {
+			$address->setSubtotal($address->getSubtotal() + $final_price);
+			$address->setBaseSubtotal($address->getBaseSubtotal() + $base_final_price);
+			// Then update the grandtotals
+			$address->setGrandTotal($address->getSubtotal());
+			$address->setBaseGrandTotal($address->getBaseSubtotal());
+		} else {
+			//replacing above commented lines and using Magento's API to do same thing
+			$this->_addAmount($final_price);
+			$this->_addBaseAmount($base_final_price);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Loops through each item within the cart and gets the amount of money discounted by points
+	 * <font color="red"><b>Also updates the row total</b></font>
+	 *
+	 * @param Mage_Sales_Model_Quote_Address $address
+	 * @return float amount of money discounted by points
+	 */
+	public function getFinalPrice(Mage_Sales_Model_Quote_Address $address) {
+		$acc_diff = 0;
+		$items = $address->getAllItems();
+
+		if (!is_array($items)) {
+			$items = array($items);
+		}
+		//@nelkaake -a 17/02/11:
+		foreach ($items as &$item) {
+			if (!$item->getQuoteId() || !$item->getId()) {
 				continue;
-				
-            if (Mage::helper ( 'rewards' )->isBaseMageVersionAtLeast ( '1.4.0.0' ) && $item->getRowTotalBeforeRedemptions () != null) {
-                $item->setRowTotal ( $item->getRowTotalBeforeRedemptions () );
-                $item->setRowTotalInclTax ( $item->getRowTotalBeforeRedemptionsInclTax () );
-            }
+			}
 
-            if ($item->getRowTotalBeforeRedemptions () == null && $item->getRewardsCatalogDiscount () == null) {
-                $this->_getRedeemer ()->resetItemDiscounts ( $item );
-            }
+			//This is ghetto but if they are in the quotes module don't do any of this stuff
+			//Rewards are not utilized in the backend anyways and this is breaking stuff
+			$url = Mage::helper('core/url')->getCurrentUrl();
+			$save = Mage::getSingleton('core/session')->getSavePoints();
+			if (strpos($url, 'qquoteadv') || (!empty($save) && !$save))
+				continue;
 
-            // TODO: should be able to remove this, since we don't support anything under 1.4.0.0
-            if (!Mage::helper ( 'rewards' )->isBaseMageVersionAtLeast ( '1.4.0.0' )) {
-                $item->setRowTotalBeforeRedemptions ($item->getRowTotal ());
-                $item->setRowTotalBeforeRedemptionsInclTax ($item->getRowTotalInclTax ());
-            }
+			if (Mage::helper('rewards')->isBaseMageVersionAtLeast('1.4.0.0') && $item->getRowTotalBeforeRedemptions() != null) {
+				$item->setRowTotal($item->getRowTotalBeforeRedemptions());
+				$item->setRowTotalInclTax($item->getRowTotalBeforeRedemptionsInclTax());
+			}
 
-            $catalog_discount = $this->_getRedeemer ()->getTotalCatalogDiscount ( $item );
+			if ($item->getRowTotalBeforeRedemptions() == null && $item->getRewardsCatalogDiscount() == null) {
+				$this->_getRedeemer()->resetItemDiscounts($item);
+			}
 
-            $catalog_discount_rounded = $address->getQuote ()->getStore ()->roundPrice ( $catalog_discount );
+			// TODO: should be able to remove this, since we don't support anything under 1.4.0.0
+			if (!Mage::helper('rewards')->isBaseMageVersionAtLeast('1.4.0.0')) {
+				$item->setRowTotalBeforeRedemptions($item->getRowTotal());
+				$item->setRowTotalBeforeRedemptionsInclTax($item->getRowTotalInclTax());
+			}
 
-            $this->_addRoundingDelta ( $item, $catalog_discount, $catalog_discount_rounded );
+			$catalog_discount = $this->_getRedeemer()->getTotalCatalogDiscount($item);
 
-            //@nelkaake -a 17/02/11: TODO implement this field for items in the DB so it can be saved
-            $item->setRewardsCatalogDiscount ( $catalog_discount );
+			$catalog_discount_rounded = $address->getQuote()->getStore()->roundPrice($catalog_discount);
 
-            $row_total_after_redeem = $this->_getRedeemer ()->getRowTotalAfterRedemptions($item);
-            $item->setRowTotalAfterRedemptions($row_total_after_redeem);
+			$this->_addRoundingDelta($item, $catalog_discount, $catalog_discount_rounded);
 
-            $row_total_after_redeem_incl_tax = $this->_getRedeemer ()->getRowTotalAfterRedemptionsInclTax($item);
-            $item->setRowTotalAfterRedemptionsInclTax($row_total_after_redeem_incl_tax);
+			//@nelkaake -a 17/02/11: TODO implement this field for items in the DB so it can be saved
+			$item->setRewardsCatalogDiscount($catalog_discount);
 
-            if (Mage::helper('rewards/version')->isBaseMageVersionAtLeast('1.4.2.0')) {
-                // update item discount calculation price and subtract ST catalog discount (ST-2257)
-                $base_catalog_discount =  Mage::helper('rewards/price')->getReversedCurrencyPrice($catalog_discount);
-                Mage::helper('salesrule')->addItemDiscountPrices($item, $base_catalog_discount, $catalog_discount);
-            }
+			$row_total_after_redeem = $this->_getRedeemer()->getRowTotalAfterRedemptions($item);
+			$item->setRowTotalAfterRedemptions($row_total_after_redeem);
 
-            $acc_diff += $catalog_discount;
+			$row_total_after_redeem_incl_tax = $this->_getRedeemer()->getRowTotalAfterRedemptionsInclTax($item);
+			$item->setRowTotalAfterRedemptionsInclTax($row_total_after_redeem_incl_tax);
 
-            $new_redeemed_points = $this->_getRedeemer ()->getUpdatedRedemptionsHash ( $item );
-            
-            $item->setRedeemedPointsHash ( $new_redeemed_points )->save ();
-        }
+			if (Mage::helper('rewards/version')->isBaseMageVersionAtLeast('1.4.2.0')) {
+				// update item discount calculation price and subtract ST catalog discount (ST-2257)
+				$base_catalog_discount = Mage::helper('rewards/price')->getReversedCurrencyPrice($catalog_discount);
+				Mage::helper('salesrule')->addItemDiscountPrices($item, $base_catalog_discount, $catalog_discount);
+			}
 
-        // Failsafe to make sure discounts never go positive (and add to the total)
-        $acc_diff = ($acc_diff > 0) ? 0 : $acc_diff;
+			$acc_diff += $catalog_discount;
 
-        $acc_diff_rounded = $address->getQuote ()->getStore ()->roundPrice ( $acc_diff );
-        if ($acc_diff_rounded == - 0)
-            $acc_diff_rounded = 0;
-        $this->discount_amt = $acc_diff_rounded;
+			$new_redeemed_points = $this->_getRedeemer()->getUpdatedRedemptionsHash($item);
 
-        $currency_rate = Mage::helper ( 'rewards/price' )->getCurrencyRate ( $address->getQuote () );
-        $acc_diff_base = Mage::helper ( 'rewards/price' )->getReversedCurrencyPrice ( $acc_diff, $currency_rate );
+			$item->setRedeemedPointsHash($new_redeemed_points)->save();
+		}
 
-        //@nelkaake -a 17/02/11: Save the rewards catalog discount amount into the quote
-        // so that it can be coppied to the order later.
-        $address->getQuote ()->setRewardsDiscountAmount ( - $acc_diff );
-        $address->getQuote ()->setRewardsBaseDiscountAmount ( - $acc_diff_base );
+		// Failsafe to make sure discounts never go positive (and add to the total)
+		$acc_diff = ($acc_diff > 0) ? 0 : $acc_diff;
 
-        $this->_addRoundingDelta ( $address, $acc_diff, $acc_diff_rounded );
+		$acc_diff_rounded = $address->getQuote()->getStore()->roundPrice($acc_diff);
+		if ($acc_diff_rounded == - 0)
+			$acc_diff_rounded = 0;
+		$this->discount_amt = $acc_diff_rounded;
 
-        return $acc_diff;
-    }
+		$currency_rate = Mage::helper('rewards/price')->getCurrencyRate($address->getQuote());
+		$acc_diff_base = Mage::helper('rewards/price')->getReversedCurrencyPrice($acc_diff, $currency_rate);
 
-    /**
-     * Remembers the rounding decimal delta.  This is later referenced so that we can adjust for
-     * rounding errors when tax is included in the product price.
-     * @param Mage_Sales_Model_Quote_Address $address
-     * @param decimal $raw_amount
-     * @param decimal $rounded_amount
-     */
-    protected function _addRoundingDelta($address, $raw_amount, $rounded_amount)
-    {
-        $delta = $raw_amount - $rounded_amount;
-        $address->setRewardsRoundingDelta ( $address->getRewardsRoundingDelta () ? $address->getRewardsRoundingDelta () : 0 );
-        $address->setRewardsRoundingDelta ( $delta + $address->getRewardsRoundingDelta () );
+		//@nelkaake -a 17/02/11: Save the rewards catalog discount amount into the quote
+		// so that it can be coppied to the order later.
+		$address->getQuote()->setRewardsDiscountAmount(- $acc_diff);
+		$address->getQuote()->setRewardsBaseDiscountAmount(- $acc_diff_base);
 
-        return $this;
-    }
-    /**
-     * Forgets previously calculated rounding decimal deltas.  This is later referenced so that we can adjust for
-     * rounding errors when tax is included in the product price.
-     */
-    protected function _clearRoundingDeltas($address)
-    {
-        $address->setRewardsRoundingDelta ( 0 );
-        $items = $address->getAllItems ();
+		$this->_addRoundingDelta($address, $acc_diff, $acc_diff_rounded);
 
-        if (! is_array ( $items )) {
-            $items = array ($items );
-        }
+		return $acc_diff;
+	}
 
-        foreach ( $items as $item ) {
-            $item->setRewardsRoundingDelta ( 0 );
-        }
+	/**
+	 * Remembers the rounding decimal delta.  This is later referenced so that we can adjust for
+	 * rounding errors when tax is included in the product price.
+	 * @param Mage_Sales_Model_Quote_Address $address
+	 * @param decimal $raw_amount
+	 * @param decimal $rounded_amount
+	 */
+	protected function _addRoundingDelta($address, $raw_amount, $rounded_amount) {
+		$delta = $raw_amount - $rounded_amount;
+		$address->setRewardsRoundingDelta($address->getRewardsRoundingDelta() ? $address->getRewardsRoundingDelta() : 0 );
+		$address->setRewardsRoundingDelta($delta + $address->getRewardsRoundingDelta());
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Process model configuration array.
-     * This method can be used for changing models apply sort order
-     *
-     * @param   array $config
-     * @param   store $store
-     * @return  array
-     */
-    public function processConfigArray($config, $store)
-    {
-        return $config;
-    }
+	/**
+	 * Forgets previously calculated rounding decimal deltas.  This is later referenced so that we can adjust for
+	 * rounding errors when tax is included in the product price.
+	 */
+	protected function _clearRoundingDeltas($address) {
+		$address->setRewardsRoundingDelta(0);
+		$items = $address->getAllItems();
 
-    /**
-     * Fetches the redemption calculator model
-     *
-     * @return TBT_Rewards_Model_Redeem
-     */
-    private function _getRedeemer()
-    {
-        return Mage::getSingleton ( 'rewards/redeem' );
-    }
+		if (!is_array($items)) {
+			$items = array($items);
+		}
 
-    /**
-     * Fetches the rewards session.
-     *
-     * @return TBT_Rewards_Model_Session
-     */
-    private function _getRewardsSess()
-    {
-        return Mage::getSingleton ( 'rewards/session' );
-    }
+		foreach ($items as $item) {
+			$item->setRewardsRoundingDelta(0);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Process model configuration array.
+	 * This method can be used for changing models apply sort order
+	 *
+	 * @param   array $config
+	 * @param   store $store
+	 * @return  array
+	 */
+	public function processConfigArray($config, $store) {
+		return $config;
+	}
+
+	/**
+	 * Fetches the redemption calculator model
+	 *
+	 * @return TBT_Rewards_Model_Redeem
+	 */
+	private function _getRedeemer() {
+		return Mage::getSingleton('rewards/redeem');
+	}
+
+	/**
+	 * Fetches the rewards session.
+	 *
+	 * @return TBT_Rewards_Model_Session
+	 */
+	private function _getRewardsSess() {
+		return Mage::getSingleton('rewards/session');
+	}
+
 }
