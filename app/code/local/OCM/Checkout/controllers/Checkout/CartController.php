@@ -106,6 +106,17 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController 
 	 * @throws Exception
 	 */
 	public function addAction() {
+		$cookie = Mage::getSingleton('core/cookie');
+		$val = rand(0, 1);
+
+		if (empty($cookie->get('ab'))) {
+			$cookie->set('ab', $val, time() + 86400, '/');
+		}
+
+		if ($cookie->get('ab') || (empty($cookie->get('ab')) && $val == 1)) {
+			$this->getRequest()->setParam('return_url', Mage::getUrl('checkout/cart/new'));
+		}
+
 		$cart = $this->_getCart();
 		$params = $this->getRequest()->getParams();
 		try {
