@@ -2,7 +2,7 @@
 
 <layout version="0.1.0">
     <default>
-    	<reference name="after_body_start">
+    	<reference name="before_body_end">
     		<block type="core/template" name="google" template="page/html/google.phtml"/>
     	</reference>
         <reference name="head">
@@ -18,7 +18,7 @@
                 <type>skin_css</type>
                 <name>css/uniform.default.css</name>
             </action>
-            
+
             <action method="addItem">
                 <type>skin_css</type>
                 <name>css/softwaremedia.css</name>
@@ -27,7 +27,7 @@
             	<type>skin_js</type>
             	<name>js/jquery.carouFredSel-6.2.1.js</name>
             </action>
-            
+
             <action method="addItem">
                 <type>skin_js</type>
                 <name>js/placeholder.js</name>
@@ -62,12 +62,12 @@
                 <type>skin_css</type>
                 <name>css/mobile.css</name>
             </action>
-            
+
         </reference>
         <reference name="header">
             <remove name="store_language"/>
         </reference>
-         
+
     </default>
     <catalog_category_layered>
         <reference name="root">
@@ -99,8 +99,8 @@
         </reference>
 		-->
     </catalog_category_layered>
-    
-    
+
+
       <checkout_cart_new>
         <reference name="head">
             <action method="addItem">
@@ -124,14 +124,14 @@
                 <name>carousel/jquery.ba-throttle-debounce.min.js</name>
             </action>
         </reference>
-        
+
         <reference name="checkout.cart">
         <block type="checkout/cart_coupon" name="checkout.cart.couponform" as="couponform" template="checkout/cart/coupon.phtml"/>
         </reference>
-        
-        
-    </checkout_cart_new>  
-    
+
+
+    </checkout_cart_new>
+
     <checkout_cart_index>
         <reference name="head">
             <action method="addItem">
@@ -155,17 +155,17 @@
                 <name>carousel/jquery.ba-throttle-debounce.min.js</name>
             </action>
         </reference>
-        
+
         <reference name="checkout.cart">
         <block type="checkout/cart_coupon" name="checkout.cart.couponform" as="couponform" template="checkout/cart/coupon.phtml"/>
         </reference>
-        
-        
+
+
     </checkout_cart_index>
-    
-    
-    
-    
+
+
+
+
     <catalog_category_layered>
         <reference name="head">
             <action method="addItem">
@@ -234,7 +234,7 @@
             <block type="catalog/product_view" name="tool-resource" template="catalog/product/view/tool-resource.phtml"/>
             <block type="reports/product_viewed" name="right.reports.product.viewed" as="recently_viewed" template="reports/product_viewed.phtml" />
             <!-- <block type="catalog/product_view" name="product-viewed" as="product-viewed" template="catalog/product/view/viewed.phtml"/> -->
-           
+
             <block type="catalog/product_view" name="product.features" as="product.features" after="product.description" template="catalog/product/view/features.phtml">
                 <action method="addToParentGroup"><group>detailed_info</group></action>
                 <action method="setTitle" translate="value"><value>Features</value></action>
@@ -254,7 +254,7 @@
             <remove name="product.clone_prices"/>
         </reference>
     </catalog_product_view>
-    
+
     <!--Layout for Sweettooth-->
     <default>
         <reference name="header">
@@ -264,19 +264,19 @@
             <remove name="rewards.top.links.points_balance" />
         </reference>
     </default>
-    
+
     <catalog_category_default>
         <reference name="content">
             <remove name="rewards.top.links.points_balance" />
 		</reference>
     </catalog_category_default>
-    
+
     <catalog_category_layered>
         <reference name="content">
             <remove name="rewardssocial.widgets" />
         </reference>
     </catalog_category_layered>
-    
+
     <catalog_product_view>
         <reference name="content">
             <remove name="rewardssocial.widgets" />
@@ -288,40 +288,40 @@
                 <block type="rewardssocial/facebook_like_button" name="facebook.like" template="rewardssocial/facebook/like/button.phtml">
                     <action method="setHidden" ifconfig="evlike/evlike_visibility/ev_like_visibility_product_default"><value>1</value></action>
                 </block>
-                
+
                 <block type="rewardssocial/twitter_tweet_tweetbutton" name="twitter.tweet" template="rewardssocial/twitter/tweet/tweetbutton.phtml" />
 
                 <block type="rewardssocial/pinterest_pin_button" name="pinterest.pin" template="rewardssocial/pinterest/pin/button.phtml" />
-                
+
                 <block type="rewardssocial/google_plusOne_button" name="google.plusone" template="rewardssocial/google/plusone/button.phtml" />
 
-            </block>
--->
-        </reference>
-    </catalog_product_view>
-    
-    <cms_page>
-        <reference name="content">
-            <remove name="rewardssocial.widgets" />
-        </reference>
-    </cms_page>
-    
-    <cms_index_defaultindex>
-        <reference name="content">
-            <remove name="rewardssocial.widgets" />
-        </reference>
-    </cms_index_defaultindex>
-    <!--End. Layout for Sweettooth-->
-    <!-- advanced static left nav -->
-    <default>
-        <reference name="left">
-            <block type="advancedstaticleftnav/tree" name="advancedleft" after="amshopby.navleft" template="advancedstaticleftnav/tree.phtml"></block>
-        </reference>
-    </default>    
+						</block>
+			-->
+		</reference>
+	</catalog_product_view>
+
+	<cms_page>
+		<reference name="content">
+			<remove name="rewardssocial.widgets" />
+		</reference>
+	</cms_page>
+
+	<cms_index_defaultindex>
+		<reference name="content">
+			<remove name="rewardssocial.widgets" />
+		</reference>
+	</cms_index_defaultindex>
+	<!--End. Layout for Sweettooth-->
+	<!-- advanced static left nav -->
+	<default>
+		<reference name="left">
+			<block type="advancedstaticleftnav/tree" name="advancedleft" after="amshopby.navleft" template="advancedstaticleftnav/tree.phtml"></block>
+		</reference>
+	</default>
 
 
 	<checkout_onepage_review>
-			<remove name="magemonkey.subscribe"/>
+		<remove name="magemonkey.subscribe"/>
 	</checkout_onepage_review>
 
 </layout>

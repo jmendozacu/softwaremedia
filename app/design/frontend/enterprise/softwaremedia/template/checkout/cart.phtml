@@ -166,7 +166,8 @@
 			<?php //echo $this->getChildHtml('giftcards') ?>
         </div>
 
-		<?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping');
+		<?php
+		if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping');
 		endif;
 		?>
 
@@ -182,7 +183,8 @@
     <div class="mobile-checkout-step show-mobile">
 			<?php if (!$this->hasError()): ?>
 			<ul class="checkout-types">
-				<?php $licount = 0;
+				<?php
+				$licount = 0;
 				foreach ($this->getMethods('methods') as $method):
 					?>
 					<?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
@@ -209,7 +211,8 @@
         <h3><?php echo $this->__('Need Help With Your Order?'); ?> </h3>
 			<?php if (!$this->hasError()): ?>
 			<ul class="checkout-types">
-				<?php $licount = 0;
+				<?php
+				$licount = 0;
 				foreach ($this->getMethods('methods') as $method):
 					?>
 					<?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
@@ -234,5 +237,10 @@
 		jQuery(document).ready(function() {
 			jQuery('.satisfaction').remove();
 		});
+
+		cxApi.setChosenVariation(
+				0, // The index of the variation shown to the visitor
+				'dWO3izw5QNiVsNa0KSB00Q'  // The id of the experiment the user has been exposed to
+				);
 	</script>
 </div>
