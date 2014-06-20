@@ -606,6 +606,7 @@ class Mage_Checkout_Model_Type_Onepage
      */
     public function savePayment($data)
     {
+    	Mage::log('savePayment 2: ',NULL,'cc.log');
         if (empty($data)) {
             return array('error' => -1, 'message' => Mage::helper('checkout')->__('Invalid data.'));
         }

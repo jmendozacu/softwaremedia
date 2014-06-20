@@ -157,6 +157,7 @@ class OCM_Checkout_Model_Checkout_Type_Onepage extends Mage_Checkout_Model_Type_
      */
     public function savePayment($data)
     {
+    	Mage::log('savePayment 1: ',NULL,'cc.log');
         if (empty($data)) {
             return array('error' => -1, 'message' => Mage::helper('checkout')->__('Invalid data.'));
         }
@@ -171,7 +172,7 @@ class OCM_Checkout_Model_Checkout_Type_Onepage extends Mage_Checkout_Model_Type_
         if (!$quote->isVirtual() && $quote->getShippingAddress()) {
             $quote->getShippingAddress()->setCollectShippingRates(true);
         }
-
+		
 			Mage::log('SAVED: ' . $data['cc_saved'],NULL,'cc.log');
 			
 			if ($data['cc_saved']) {
