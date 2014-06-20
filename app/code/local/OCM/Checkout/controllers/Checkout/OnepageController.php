@@ -16,12 +16,20 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
 
 			$data = $this->getRequest()->getPost('payment', array());
 
+			Mage::log('SAVED: ' . $data['cc_saved'],NULL,'cc.log');
+			
 			if ($data['cc_saved']) {
 				$profile = Mage::getModel('chasePaymentTech/profiles')->load($data['cc_saved']);
 				$data['cc_type'] = $profile->getCardType();
 				$data['cc_exp_month'] = $profile->getExpMonth();
 				$data['cc_exp_year'] = $profile->getExpYear();
 				$data['cc_last4'] = $profile->getCardNum();
+				
+				
+				Mage::log('cc_type: ' . $data['cc_type'],NULL,'cc.log');
+				Mage::log('SAVED: ' . $data['cc_exp_month'],NULL,'cc.log');
+				Mage::log('SAVED: ' . $data['cc_exp_year'],NULL,'cc.log');
+			
 			} else {
 				$data['cc_last4'] = substr($data['cc_number'], -4);
 			}
