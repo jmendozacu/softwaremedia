@@ -12,6 +12,9 @@ class OCM_Fulfillment_Model_Observer {
 	const TAG_CS = 4;
 	const TAG_SUB = 29;
 
+	public function emptyTask() {
+		
+	}
 	public function evaluateOrdersDaily() {
 		$orders = Mage::getModel('sales/order')->getCollection();
 		$orders->addFieldToFilter('status', 'processing');

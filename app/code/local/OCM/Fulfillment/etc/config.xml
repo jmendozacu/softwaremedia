@@ -73,6 +73,224 @@
 					<model>ocm_fulfillment/observer::evaluateOrdersDaily</model>
 				</run>
 			</evaluate_orders_daily>
+			
+			<task_1am>
+				<schedule>
+					<cron_expr>*/10 1 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_1am>
+			
+			<task_2am>
+				<schedule>
+					<cron_expr>*/10 2 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_2am>
+			
+			<task_3am>
+				<schedule>
+					<cron_expr>*/10 2 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_3am>
+			
+			<task_4am>
+				<schedule>
+					<cron_expr>*/10 4 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_4am>
+			
+			<task_5am>
+				<schedule>
+					<cron_expr>*/10 5 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_5am>
+			
+			<task_6am>
+				<schedule>
+					<cron_expr>*/10 6 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_6am>
+			
+			<task_7am>
+				<schedule>
+					<cron_expr>*/10 7 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_7am>
+			
+			<task_8am>
+				<schedule>
+					<cron_expr>*/10 8 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_8am>
+			
+			<task_9am>
+				<schedule>
+					<cron_expr>*/10 9 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_9am>
+			
+			<task_10am>
+				<schedule>
+					<cron_expr>*/10 10 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_10am>
+			
+			<task_11am>
+				<schedule>
+					<cron_expr>*/10 11 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_11am>
+			
+			<task_12am>
+				<schedule>
+					<cron_expr>*/10 0 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_12am>
+			
+			<task_1pm>
+				<schedule>
+					<cron_expr>*/10 13 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_1pm>
+			
+			<task_2pm>
+				<schedule>
+					<cron_expr>*/10 14 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_2pm>
+			
+			<task_3pm>
+				<schedule>
+					<cron_expr>*/10 15 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_3pm>
+			
+			<task_4pm>
+				<schedule>
+					<cron_expr>*/10 16 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_4pm>
+			
+			<task_5pm>
+				<schedule>
+					<cron_expr>*/10 17 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_5pm>
+			
+			<task_6pm>
+				<schedule>
+					<cron_expr>*/10 18 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_6pm>
+			
+			<task_7pm>
+				<schedule>
+					<cron_expr>*/10 19 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_7pm>
+			
+			<task_8pm>
+				<schedule>
+					<cron_expr>*/10 20 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_8pm>
+			
+			<task_9pm>
+				<schedule>
+					<cron_expr>*/10 21 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_9pm>
+			
+			<task_10pm>
+				<schedule>
+					<cron_expr>*/10 22 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_10pm>
+			
+			<task_11pm>
+				<schedule>
+					<cron_expr>*/10 23 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_11pm>
+			
+			<task_12pm>
+				<schedule>
+					<cron_expr>*/10 12 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_fulfillment/observer::emptyTask</model>
+				</run>
+			</task_12pm>
+			
+			
 			<update_prices_qty>
 				<schedule>
 					<cron_expr>30 2 * * *</cron_expr>
