@@ -18,7 +18,7 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
 
 			$data = $this->getRequest()->getPost('payment', array());
 
-			Mage::log('SAVED: ' . $data['cc_saved'],NULL,'cc.log');
+			Mage::log('SAVED 2: ' . $data['cc_saved'],NULL,'cc.log');
 			
 			if ($data['cc_saved']) {
 				$profile = Mage::getModel('chasePaymentTech/profiles')->load($data['cc_saved']);

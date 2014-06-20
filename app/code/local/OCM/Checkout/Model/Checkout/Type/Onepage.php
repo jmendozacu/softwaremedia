@@ -173,7 +173,7 @@ class OCM_Checkout_Model_Checkout_Type_Onepage extends Mage_Checkout_Model_Type_
             $quote->getShippingAddress()->setCollectShippingRates(true);
         }
 		
-			Mage::log('SAVED: ' . $data['cc_saved'],NULL,'cc.log');
+			Mage::log('SAVED 3: ' . $data['cc_saved'],NULL,'cc.log');
 			
 			if ($data['cc_saved']) {
 				$profile = Mage::getModel('chasePaymentTech/profiles')->load($data['cc_saved']);
