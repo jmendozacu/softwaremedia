@@ -25,10 +25,10 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
 				$data['cc_exp_year'] = $profile->getExpYear();
 				$data['cc_last4'] = $profile->getCardNum();
 				
-				
-				Mage::log('cc_type: ' . $data['cc_type'],NULL,'cc.log');
-				Mage::log('SAVED: ' . $data['cc_exp_month'],NULL,'cc.log');
-				Mage::log('SAVED: ' . $data['cc_exp_year'],NULL,'cc.log');
+				Mage::log('TYPE: ' . $data['cc_type'],NULL,'cc.log');
+				Mage::log('PROFILE: ' . $profile->getId(),NULL,'cc.log');
+				Mage::log('MONTH: ' . $data['cc_exp_month'],NULL,'cc.log');
+				Mage::log('YEAR: ' . $data['cc_exp_year'],NULL,'cc.log');
 			
 			} else {
 				$data['cc_last4'] = substr($data['cc_number'], -4);
