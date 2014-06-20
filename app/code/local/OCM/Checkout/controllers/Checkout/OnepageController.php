@@ -37,12 +37,13 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
 			}
 
 			$this->getRequest()->setPost('payment', $data);
-
+			$this->getOnepage()->getQuote()->getPayment()->addData($data);
+			
 			$result = $this->getOnepage()->savePayment($data);
 
 			// get section and redirect data
 			$redirectUrl = $this->getOnepage()->getQuote()->getPayment()->getCheckoutRedirectUrl();
-			$this->getOnepage()->getQuote()->getPayment()->addData($data);
+			
 			
 			if (empty($result['error']) && !$redirectUrl) {
 				$this->loadLayout('checkout_onepage_review');
