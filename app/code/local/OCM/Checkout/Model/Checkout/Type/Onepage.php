@@ -172,6 +172,16 @@ class OCM_Checkout_Model_Checkout_Type_Onepage extends Mage_Checkout_Model_Type_
             $quote->getShippingAddress()->setCollectShippingRates(true);
         }
 
+			if ($data['cc_saved']) {
+				$profile = Mage::getModel('chasePaymentTech/profiles')->load($data['cc_saved']);
+				$data['cc_type'] = $profile->getCardType();
+				$data['cc_exp_month'] = $profile->getExpMonth();
+				$data['cc_exp_year'] = $profile->getExpYear();
+				$data['cc_last4'] = $profile->getCardNum();
+			} else {
+				$data['cc_last4'] = substr($data['cc_number'], -4);
+			}
+			
         $data['checks'] = Mage_Payment_Model_Method_Abstract::CHECK_USE_CHECKOUT
             | Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_COUNTRY
             | Mage_Payment_Model_Method_Abstract::CHECK_USE_FOR_CURRENCY
