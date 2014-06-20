@@ -575,8 +575,6 @@ class Mage_Checkout_OnepageController extends Mage_Checkout_Controller_Action
                     | Mage_Payment_Model_Method_Abstract::CHECK_ZERO_TOTAL;
                 $this->getOnepage()->getQuote()->getPayment()->importData($data);
                 $pay = $this->getOnepage()->getQuote()->getPayment();
-                Mage::log("pay: " . $pay['cc_saved'],null,'temp.log');
-                Mage::log("data: " . $data['cc_saved'],null,'temp.log');
             }
 
             $this->getOnepage()->saveOrder();
