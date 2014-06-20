@@ -48,6 +48,7 @@
 	<?php echo $this->getChildHtml('form_before') ?>
     <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
 		<?php echo $this->getBlockHtml('formkey'); ?>
+		<input type="hidden" name="return_url" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
         <fieldset>
             <table id="shopping-cart-table" class="data-table cart-table" style="margin-bottom: 25px !important;">
                 <col width="1" />
@@ -236,7 +237,7 @@
 			jQuery('.satisfaction').remove();
 <?php if (!strlen($this->getQuote()->getCouponCode()) && empty(Mage::getSingleton('checkout/session')->getKeepOpen())): ?>
 				jQuery('.cart_total_code').css('display', 'none');
-<?php
+	<?php
 endif;
 Mage::getSingleton('checkout/session')->unsKeepOpen();
 ?>
@@ -244,5 +245,9 @@ Mage::getSingleton('checkout/session')->unsKeepOpen();
 			jQuery('.cart_total_code').height('auto');
 		});
 
+		cxApi.setChosenVariation(
+				1, // The index of the variation shown to the visitor
+				'dWO3izw5QNiVsNa0KSB00Q'  // The id of the experiment the user has been exposed to
+				);
 	</script>
 </div>

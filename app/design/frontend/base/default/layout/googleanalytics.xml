@@ -28,14 +28,14 @@
 -->
 <layout version="0.1.0">
 
-<!--
-Default layout, loads most of the pages
--->
+	<!--
+	Default layout, loads most of the pages
+	-->
 
-    <default>
-        <!-- Mage_GoogleAnalytics -->
-        <reference name="head" before="-">
-            <block type="googleanalytics/ga" name="google_analytics" as="google_analytics" template="googleanalytics/ga.phtml" />
-        </reference>
-    </default>
+	<default>
+		<!-- Mage_GoogleAnalytics -->
+		<reference name="before_body_end" before="-">
+			<block type="googleanalytics/ga" name="google_analytics" as="google_analytics" template="googleanalytics/ga.phtml" />
+		</reference>
+	</default>
 </layout>
