@@ -144,12 +144,11 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				// create product
 				$ubervis_prod = $api->callApi(Zend_Http_Client::POST, 'product/', $data);
 
-				var_dump($ubervis_prod);
 
 				$prod_id = $ubervis_prod->id;
 
 				//Add MPN
-				var_dump($api->callApi(Zend_Http_Client::POST, 'product/mpn/', array('productsId' => $prod_id, 'mpn' => $mpn)));
+				$api->callApi(Zend_Http_Client::POST, 'product/mpn/', array('productsId' => $prod_id, 'mpn' => $mpn));
 			} else {
 				Mage::log('Product is being updated', null, 'ubervis.log');
 				$prod_id = $ubervis_prod->id;
