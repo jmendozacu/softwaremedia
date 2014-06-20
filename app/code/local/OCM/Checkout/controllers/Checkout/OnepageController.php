@@ -5,6 +5,8 @@ require_once('Mage/Checkout/controllers/OnepageController.php');
 class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageController {
 
 	public function savePaymentAction() {
+		Mage::log('PAYMENT',NULL,'cc.log');
+		//die();
 		if ($this->_expireAjax()) {
 			return;
 		}
