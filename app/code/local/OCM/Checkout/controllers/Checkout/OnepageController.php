@@ -35,7 +35,6 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
             $data = $this->getRequest()->getPost('payment', array());
             if ($data) {
             
-            	Mage::log('SAVED 4: ' . $data['cc_saved'],NULL,'cc.log');
 			
 				if ($data['cc_saved']) {
 					$profile = Mage::getModel('chasePaymentTech/profiles')->load($data['cc_saved']);
@@ -43,11 +42,6 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
 					$data['cc_exp_month'] = $profile->getExpMonth();
 					$data['cc_exp_year'] = $profile->getExpYear();
 					$data['cc_last4'] = $profile->getCardNum();
-					
-					Mage::log('TYPE 1: ' . $data['cc_type'],NULL,'cc.log');
-					Mage::log('PROFILE: ' . $profile->getId(),NULL,'cc.log');
-					Mage::log('MONTH: ' . $data['cc_exp_month'],NULL,'cc.log');
-					Mage::log('YEAR: ' . $data['cc_exp_year'],NULL,'cc.log');
 				
 				} else {
 					$data['cc_last4'] = substr($data['cc_number'], -4);
@@ -60,8 +54,6 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
                     | Mage_Payment_Model_Method_Abstract::CHECK_ZERO_TOTAL;
                 $this->getOnepage()->getQuote()->getPayment()->importData($data);
                 $pay = $this->getOnepage()->getQuote()->getPayment();
-                Mage::log("pay: " . $pay['cc_saved'],null,'temp.log');
-                Mage::log("data: " . $data['cc_saved'],null,'temp.log');
             }
 
             $this->getOnepage()->saveOrder();
