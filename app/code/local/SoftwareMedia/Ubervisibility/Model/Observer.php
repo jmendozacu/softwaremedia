@@ -62,6 +62,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['price'] = $updated_data['price'];
 			$data['msrp'] = $updated_data['msrp'];
 			$data['minimumSalesQuantity'] = intval($updated_data['min_sale_qty']);
+			$data['manageStock'] = ($updated_data['manage_stock'] > 0);
 
 			$cats = $prod->getCategoryIds();
 			foreach ($cats as $category_id) {
