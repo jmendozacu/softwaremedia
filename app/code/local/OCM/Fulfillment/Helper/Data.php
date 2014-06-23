@@ -104,7 +104,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$qty = 9999;
 			
 			//If physical set backorder status
-			if ($product->getData('package_id')==1085) {
+			if ($product->getData('package_id')==1085 || $product->getData('package_id')==1216) {
 				$stock_model->setData('backorders',1);
 				$stock_model->setData('use_config_backorders',0);
 			}
