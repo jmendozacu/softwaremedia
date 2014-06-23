@@ -164,4 +164,44 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		Mage::log('Finished Updating Ubervis', null, 'ubervis.log');
 	}
 
+	public function retrieveProducts() {
+		$collection = Mage::getModel('catalog/product')->getCollection();
+		$collection->addAttributeToSelect('ubervis_updated', 'left');
+		$collection->addAttributeToSelect('*');
+		$collection->addAttributeToFilter('status', array('eq' => 1));
+		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock'));
+		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
+		$collection->getSelect()->where('manage_stock = 0');
+//		$collection->getSelect()->where('sku = "MC-SPYYFMAAFA"');
+
+		foreach ($collection as $prod) {
+			var_dump($prod->getData());
+			Mage::log('Retrieving ' . $prod->getName(), null, 'ubervis.log');
+			Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
+
+			$api = new SoftwareMedia_Ubervisibility_Helper_Api();
+			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
+			$data = array();
+
+			if (is_array($ubervis_prod)) {
+				$ubervis_prod = $ubervis_prod[0];
+				$data = (array) $ubervis_prod;
+			}
+
+			if ($ubervis_prod != null) {
+
+				if (!empty($ubervis_prod->price)) {
+					$prod->setPrice($ubervis_prod->price);
+				}
+
+				if (!empty($ubervis_prod->cpcPrice)) {
+					$prod->setCpcPrice($ubervis_prod->cpcPrice);
+				}
+
+				$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
+				$prod->save();
+			}
+		}
+	}
+
 }
