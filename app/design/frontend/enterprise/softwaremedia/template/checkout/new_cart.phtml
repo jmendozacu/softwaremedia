@@ -232,22 +232,23 @@
 		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('shop_with_confidence')->toHtml(); ?>
     </div>
 
+	<script src="//www.google-analytics.com/cx/api.js"></script>
     <script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery('.satisfaction').remove();
+				jQuery(document).ready(function() {
+					jQuery('.satisfaction').remove();
 <?php if (!strlen($this->getQuote()->getCouponCode()) && empty(Mage::getSingleton('checkout/session')->getKeepOpen())): ?>
-				jQuery('.cart_total_code').css('display', 'none');
+						jQuery('.cart_total_code').css('display', 'none');
 	<?php
 endif;
 Mage::getSingleton('checkout/session')->unsKeepOpen();
 ?>
-			jQuery('.cart_total_code').width('auto');
-			jQuery('.cart_total_code').height('auto');
-		});
+					jQuery('.cart_total_code').width('auto');
+					jQuery('.cart_total_code').height('auto');
+				});
 
-		cxApi.setChosenVariation(
-				1, // The index of the variation shown to the visitor
-				'dWO3izw5QNiVsNa0KSB00Q'  // The id of the experiment the user has been exposed to
-				);
+				cxApi.setChosenVariation(
+						1, // The index of the variation shown to the visitor
+						'dWO3izw5QNiVsNa0KSB00Q'  // The id of the experiment the user has been exposed to
+						);
 	</script>
 </div>
