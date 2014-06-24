@@ -174,14 +174,14 @@
         <div class="totals">
 			<div class="block-cart-total">
 				<h2>order summary</h2>
-<?php echo $this->getChildHtml('totals'); ?>
+				<?php echo $this->getChildHtml('totals'); ?>
 			</div>
         </div>
     </div>
 
     <!-- START mobile-checkout-step -->
     <div class="mobile-checkout-step show-mobile">
-			<?php if (!$this->hasError()): ?>
+		<?php if (!$this->hasError()): ?>
 			<ul class="checkout-types">
 				<?php
 				$licount = 0;
@@ -189,10 +189,10 @@
 					?>
 					<?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
 						<li class="item-<?php echo $licount; ?>"><?php echo $methodHtml; ?></li>
-				<?php endif; ?>
-			<?php endforeach; ?>
+					<?php endif; ?>
+				<?php endforeach; ?>
 			</ul>
-<?php endif; ?>
+		<?php endif; ?>
     </div>
     <!-- END mobile-checkout-step -->
 
@@ -202,14 +202,14 @@
     <div class="mobile-checkout-help show-mobile">
 		<div class="help-title">Need Help With Your Order?</div>
 		<div class="help-content">
-<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml(); ?>
+			<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml(); ?>
 		</div>
     </div>
     <!-- END mobile-checkout-help -->
 
     <div class="title-orange cart-checkout-bottom hide-mobile">
         <h3><?php echo $this->__('Need Help With Your Order?'); ?> </h3>
-			<?php if (!$this->hasError()): ?>
+		<?php if (!$this->hasError()): ?>
 			<ul class="checkout-types">
 				<?php
 				$licount = 0;
@@ -217,8 +217,8 @@
 					?>
 					<?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
 						<li class="item-<?php echo $licount; ?>"><?php echo $methodHtml; ?></li>
-				<?php endif; ?>
-	<?php endforeach; ?>
+					<?php endif; ?>
+				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>
     </div>
@@ -230,17 +230,18 @@
 		<?php echo $this->getChildHtml('crosssell') ?>
     </div>
     <div class="f-fix line-10">
-<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('shop_with_confidence')->toHtml(); ?>
+		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('shop_with_confidence')->toHtml(); ?>
     </div>
 
+	<script src="//www.google-analytics.com/cx/api.js"></script>
     <script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery('.satisfaction').remove();
-		});
+				jQuery(document).ready(function() {
+					jQuery('.satisfaction').remove();
+				});
 
-		cxApi.setChosenVariation(
-				0, // The index of the variation shown to the visitor
-				'dWO3izw5QNiVsNa0KSB00Q'  // The id of the experiment the user has been exposed to
-				);
+				cxApi.setChosenVariation(
+						0, // The index of the variation shown to the visitor
+						'dWO3izw5QNiVsNa0KSB00Q'  // The id of the experiment the user has been exposed to
+						);
 	</script>
 </div>
