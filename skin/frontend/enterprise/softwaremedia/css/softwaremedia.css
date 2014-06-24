@@ -565,7 +565,7 @@ div.block-layered-nav dd li.amshopby-cat-level-3 {
 	font-size: 36px;
 	line-height: 36px;
 }
-.products-list .product-shop .list-right .regular-price span {
+.products-list .product-shop .list-right .regular-price span, .products-list .product-shop .list-right .price-from .price {
 	color: #CE6633;
 	font-size: 36px;
 	line-height: 36px;
@@ -1009,6 +1009,10 @@ div.block-layered-nav dd li.amshopby-cat-level-3 {
 }
 .cart-table tbody td {
 	text-align: left !important;
+}
+.cart-table tbody td img {
+	margin: 0 auto;
+	display: block;
 }
 .data-table .item-options dd, .data-table .item-options dt {
 	display: inline;

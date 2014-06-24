@@ -1127,6 +1127,12 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .products-list .price-box .price-to,
 .products-list .price-box .special-price,
 .products-list .price-box .old-price {display: inline-block;padding: 0 15px 0 0;vertical-align: bottom;width: auto;}
+.products-list .price-box .price-from {
+	padding-right: 0;
+}
+.products-list .price-box .price-to {
+	display: none;
+}
 .products-list .btn-cart ,
 .products-list .btn-cart span,
 .products-list .btn-cart span span ,
