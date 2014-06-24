@@ -89,7 +89,8 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 		//Get profile information
 		if ($onePage['cc_saved']) {
 			$profile = Mage::getModel('chasePaymentTech/profiles')->load($onePage['cc_saved']);
-			$refNum = $profile->getCustomerReferenceNumber();
+			if ($profile->getCustomerId() == $customer->getId())
+				$refNum = $profile->getCustomerReferenceNumber();
 		}
 
 		$this->_paymentProcessor->buildRequest($payment, $amount, $refNum);
@@ -157,7 +158,8 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 		//Get profile information
 		if ($onePage['cc_saved']) {
 			$profile = Mage::getModel('chasePaymentTech/profiles')->load($onePage['cc_saved']);
-			$refNum = $profile->getCustomerReferenceNumber();
+			if ($profile->getCustomerId() == $customer->getId())
+				$refNum = $profile->getCustomerReferenceNumber();
 		}
 
 		if ($payment->getParentTransactionId()) {
