@@ -107,6 +107,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			if ($product->getData('package_id')==1085 || $product->getData('package_id')==1216) {
 				$stock_model->setData('backorders',1);
 				$stock_model->setData('use_config_backorders',0);
+				$qty = 0;
 			}
 		}elseif ($product->getData('package_id')==1084 && $hasResult) {
 			$qty = 9999;
@@ -124,7 +125,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			}
 		}
 
-		if($qty) {
+		if($qty || $stock_model->getData('backorders') == 1) {
 			$stock_model->setData('is_in_stock',1);
 			//Mage::log('IN STOCK: ' . $qty,null,'stock.log');
 		} else {
