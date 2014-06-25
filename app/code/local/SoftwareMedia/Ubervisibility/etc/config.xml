@@ -37,14 +37,14 @@
 					<model>ubervisibility/observer::updateProduct</model>
 				</run>
 			</SoftwareMedia_Ubervisibility>
-			<SoftwareMedia_Ubervisibility_Retrieve>
+			<!--SoftwareMedia_Ubervisibility_Retrieve>
 				<schedule>
 					<cron_expr>0 0 * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ubervisibility/observer::retrieveProducts</model>
 				</run>
-			</SoftwareMedia_Ubervisibility_Retrieve>
+			</SoftwareMedia_Ubervisibility_Retrieve-->
 		</jobs>
 	</crontab>
 </config>
