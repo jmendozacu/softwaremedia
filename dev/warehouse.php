@@ -56,20 +56,6 @@ $api = new SoftwareMedia_Ubervisibility_Helper_Api();
 //var_dump($ubervis_prod);
 //die();
 
-
-for ($i=0;$i<100;$i++)
-	$profile = Mage::getModel('ubervisibility/observer')->updateProduct();
-
-die();
-echo get_class($profile);
-								$profile->setCustomerId('asd');
-				$profile->setCustomerReferenceNumber('sadas');
-				$profile->setCardType('21');
-				$profile->setExpMonth('12');
-				$profile->setExpYear('122');
-				$profile->setCardNum('1231');
-				$profile->setActive(0);
-				$profile->save();
 				
 //Mage::getModel('ubervisibility/observer')->updateProduct();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
@@ -82,6 +68,11 @@ echo get_class($profile);
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
+$collection =Mage::getModel('catalog/product')->getCollection()
+->addAttributeToFilter('name', array('like' => '%Host Intrusion%'))
+->setPageSize(50)
+->addAttributeToSelect('*');
 
-//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
+
+Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(NULL,$collection);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();

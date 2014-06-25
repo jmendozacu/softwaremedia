@@ -117,11 +117,11 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
         ';  
 
         try {
-            Mage::log($xml_builder,null,'techdata.log');
+            Mage::log($xml_builder,null,'techdata_builder.log');
             
             $result = $this->_getRequest($xml_builder);
             
-            Mage::log($result,null,'techdata.log');
+            Mage::log($result,null,'techdata_response.log');
             
             //Mage::log($result,null,'techdata.log');
             
@@ -143,8 +143,14 @@ class OCM_Fulfillment_Model_Warehouse_Techdata extends OCM_Fulfillment_Model_War
             }
             
         } catch (Exception $e) {
-            
-            Mage::log($e->getMessage(),null,'techdata.log');
+        	//Set each value to an empty array so it will error out
+            foreach($cloned_collection  as $product) {
+            	if($tech_sku = $product->getData(self::TECH_DATA_SKU_ATTR)) {
+	            	$this->_collection[$tech_sku] = array();
+	            }
+            }
+            //$this->_collection = $cloned_collection;
+            Mage::log($e->getMessage(),null,'techdata_error.log');
             
         }
         

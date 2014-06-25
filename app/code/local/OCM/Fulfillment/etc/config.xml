@@ -74,7 +74,7 @@
 				</run>
 			</evaluate_orders_daily>
 			
-			<task_1am>
+			<!--task_1am>
 				<schedule>
 					<cron_expr>*/10 1 * * *</cron_expr>
 				</schedule>
@@ -288,7 +288,7 @@
 				<run>
 					<model>ocm_fulfillment/observer::emptyTask</model>
 				</run>
-			</task_12pm>
+			</task_12pm-->
 			<evaluate_orders_daily>
 				<schedule>
 					<cron_expr>*/10 * * * *</cron_expr>
@@ -307,7 +307,7 @@
 			</update_prices_qty>
 			<update_product_warehouse_data>
 				<schedule>
-					<cron_expr>*/15 0,1,23,22,21,20,19,18,17,16,15,14,13,12 * * *</cron_expr>
+					<cron_expr>*/10 0,1,23,22,21,20,19,18,17,16,15,14,13,12 * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ocm_fulfillment/observer::updateProductWarehouseData</model>
@@ -315,7 +315,7 @@
 			</update_product_warehouse_data>
 			<update_peachtree_warehouse_data>
 				<schedule>
-					<cron_expr>*/15 0,1,2,3,23,22,21,20,19,18,17,16,15,14,13 * * *</cron_expr>
+					<cron_expr>*/10 0,1,23,22,21,20,19,18,17,16,15,14,13,12 * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ocm_fulfillment/warehouse_peachtree::updatePriceQtyFrom</model>
