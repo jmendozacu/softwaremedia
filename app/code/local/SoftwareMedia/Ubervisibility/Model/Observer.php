@@ -16,9 +16,9 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->addAttributeToSelect('*');
 		$collection->addAttributeToFilter('status', array('eq' => 1));
 		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock', 'min_sale_qty'));
-		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
+//		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
-//		$collection->getSelect()->where('sku = "MC-SPYYFMAAFA"');
+		$collection->getSelect()->where('sku = "MC-SPYYFMAAFA"');
 		$collection->setOrder('ubervis_updated', 'ASC');
 		$collection->setPageSize(100);
 
@@ -31,6 +31,11 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$api = new SoftwareMedia_Ubervisibility_Helper_Api();
 			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
 			$data = array();
+
+			if (!empty($ubervis_prod->errorMessage)) {
+				Mage::log('Error: ' . $ubervis_prod->errorMessage, null, 'ubervis.log');
+				continue;
+			}
 
 			if (is_array($ubervis_prod)) {
 				$ubervis_prod = $ubervis_prod[0];
@@ -145,6 +150,10 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				// create product
 				$ubervis_prod = $api->callApi(Zend_Http_Client::POST, 'product/', $data);
 
+				if (!empty($ubervis_prod->errorMessage)) {
+					Mage::log('Error: ' . $ubervis_prod->errorMessage, null, 'ubervis.log');
+					continue;
+				}
 
 				$prod_id = $ubervis_prod->id;
 
@@ -155,6 +164,11 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$prod_id = $ubervis_prod->id;
 
 				$ubervis_prod = $api->callApi(Zend_Http_Client::PUT, 'product/' . $prod_id, $data);
+
+				if (!empty($ubervis_prod->errorMessage)) {
+					Mage::log('Error: ' . $ubervis_prod->errorMessage, null, 'ubervis.log');
+					continue;
+				}
 			}
 
 			$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
