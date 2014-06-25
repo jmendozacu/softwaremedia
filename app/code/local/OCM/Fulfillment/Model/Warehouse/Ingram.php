@@ -140,7 +140,7 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         
         $product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
 		$product = Mage::getModel('catalog/product')->load($product_id);
-		$stock = $product->toArray($product);
+
 
 		return (int)$product->getIngramQty();
     }
@@ -149,7 +149,6 @@ class OCM_Fulfillment_Model_Warehouse_Ingram extends OCM_Fulfillment_Model_Wareh
         
         $product_id=Mage::getModel('catalog/product')->getIdBySku($sku);
 		$product = Mage::getModel('catalog/product')->load($product_id);
-		$stock = $product->toArray($product);
 
 		return (int)$product->getIngramPrice();
     }

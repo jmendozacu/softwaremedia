@@ -370,7 +370,7 @@ class OCM_Fulfillment_Model_Observer {
 
 			$price_array = array();
 			$qty = 0;
-
+			
 			// Ingram MUST be the end of the array for this to work
 			foreach (array('techdata', 'synnex', 'ingram') as $warehouse_name) {
 
@@ -388,8 +388,11 @@ class OCM_Fulfillment_Model_Observer {
 					} else {
 						$sku = $product->getData(${$warehouse_name . '_sku_attr'});
 						if (isset($sku)) {
-							$product->setData('warehouse_errors', 'No Warehouse Match for SKU ' . $sku . " -> " . $warehouse_name);
-							Mage::log('No Warehouse Match for SKU ' . $product->getSku() . " -> " . $sku . " -> " . $warehouse_name, null, 'fulfillment.log');
+							$error = "";
+							if ($product->getData('warehouse_errors'))
+								$error = $product->getData('warehouse_errors') . " | ";
+							$product->setData('warehouse_errors', $error . 'Error getting warehouse data for SKU ' . $sku . " -> " . $warehouse_name);
+							Mage::log('Error getting warehouse data for SKU ' . $product->getSku() . " -> " . $sku . " -> " . $warehouse_name, null, 'fulfillment.log');
 						}
 					}
 				} else {
@@ -397,7 +400,10 @@ class OCM_Fulfillment_Model_Observer {
 					$product->setData($warehouse_name . '_price', null);
 					$sku = $product->getData(${$warehouse_name . '_sku_attr'});
 					if (isset($sku)) {
-						$product->setData('warehouse_errors', 'No Warehouse Match for SKU ' . $sku . " -> " . $warehouse_name);
+						$error = "";
+						if ($product->getData('warehouse_errors'))
+							$error = $product->getData('warehouse_errors') . " | ";
+						$product->setData('warehouse_errors', $error . 'No Warehouse Match for SKU ' . $sku . " -> " . $warehouse_name);
 						Mage::log('No Warehouse Match for SKU ' . $product->getSku() . " -> " . $sku . " -> " . $warehouse_name, null, 'fulfillment.log');
 					}
 					//echo $sku . " SKU";
