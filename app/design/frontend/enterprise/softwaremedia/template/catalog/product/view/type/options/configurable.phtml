@@ -50,8 +50,10 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
         function updateUniform(){
             setTimeout("jQuery.uniform.update();",500);
         }
-        var spConfig = new Product.Config(<?php echo $this->getJsonConfig() ?>);
         var extra_config = <?php echo $this->getExtraJson() ?>;
+        
+        var spConfig = new Product.Config(<?php echo $this->getJsonConfig() ?>);
+        
     </script>
 <?php endif;?>
 
