@@ -38,9 +38,26 @@
         </resources>
     </global>
     <frontend>
-	<secure_url>
-		<checkout_cart>/checkout/cart</checkout_cart>
-	</secure_url>
+        <events>
+            <sales_order_save_after>
+                <observers>
+                    <notifystock>
+                        <type>disabled</type>
+                    </notifystock>
+                </observers>
+            </sales_order_save_after>
+            <sales_order_save_after>
+                <observers>
+                    <ordernew>
+                        <type>disabled</type>
+                    </ordernew>
+                </observers>
+            </sales_order_save_after>
+        </events>
+        
+		<secure_url>
+			<checkout_cart>/checkout/cart</checkout_cart>
+		</secure_url>
         <routers>
             <checkout>
                 <use>standard</use>
