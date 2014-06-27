@@ -142,7 +142,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$data['shippingGroup'] = 'PHYSICAL';
 			}
 			if (empty($data['minimumSalesQuantity'])) {
-				$data['minimumSalesQty'] = 0;
+				$data['minimumSalesQuantity'] = 0;
 			}
 
 			if (empty($ubervis_prod)) {
