@@ -132,6 +132,9 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			if (empty($data['siteFloor'])) {
 				$data['siteFloor'] = 0;
 			}
+			if (empty($data['weight'])) {
+				$data['weight'] = 0;
+			}
 			if (empty($data['productCondition'])) {
 				$data['productCondition'] = 'NEW';
 			}
