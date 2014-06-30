@@ -276,7 +276,7 @@ a.see-all:hover {
 #bundle-product-wrapper {
 	margin: 0;
 	border: none;
-	width: 1150px;
+	width: 100%;
 }
 #bundleProduct {
 	background: none;
