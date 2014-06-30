@@ -1,0 +1,6 @@
+<?php
+	$id = $this->getProductId();
+	$product = Mage::getModel('catalog/product')->load($id);
+	echo $product->getFinalPrice();
+?>
+
