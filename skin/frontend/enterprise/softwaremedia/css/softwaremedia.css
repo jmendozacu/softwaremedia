@@ -1363,3 +1363,19 @@ div.country.validation-passed, div.country.validation-error {
 .cart .deals input.align-right { float: right; }
 
 .product-msrp {text-align: right;font-weight: bold;}
+
+/* Account */
+.page-title h3 {
+	font-family: 'Carrois Gothic', 'Duru Sans',sans-serif;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 30px;
+	line-height: 40px;
+	color: #333;
+	display: inline-block;
+	vertical-align: middle;
+	padding: 0 5px;
+	background-color: #fff;
+	margin: 0px 0px 0px 45px;
+	text-transform: capitalize;
+}
