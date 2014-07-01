@@ -227,6 +227,19 @@
                             <value>1</value>
                         </action>
                     </block>
+            <block type="core/template" name="SoftwareMedia.Captcha" template="catalog/product/captcha.phtml">
+                <block type="SoftwareMedia_Captcha/captcha" name="captcha">
+                    <action method="setFormId">
+                        <id>form-validate-captcha</id>
+                    </action>
+                    <action method="setImgWidth">
+                        <width>300</width>
+                    </action>
+                    <action method="setImgHeight">
+                        <height>40</height>
+                    </action>
+                </block>
+            </block>
                 </block>
             </block>
             <block type="core/template" name="social-links" template="catalog/product/view/social-links.phtml"/>
