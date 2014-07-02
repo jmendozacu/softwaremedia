@@ -48,6 +48,7 @@ $attributeOptions = $_attribute->getSource()->getAllOptions(false);
 $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getStore()->getRootCategoryId());
 ?>
 
+
 <div class="nav-container">
     <ul id="nav">
         <?php foreach (explode(',', $categoryIds) as $sub_catId): ?>
@@ -197,7 +198,7 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
                                         &nbsp;
                                     <?php endif; ?>
                                 </dd>
-
+								<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('download-info')->toHtml(); ?> 
                                 <?php endif; ?>
                             </dl>
                             <!-- End.Categories-->

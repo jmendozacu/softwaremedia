@@ -2,6 +2,10 @@
 
 <layout version="0.1.0">
     <default>
+    
+        <reference name="top.menu">
+
+        </reference>
     	<reference name="before_body_end">
     		<block type="core/template" name="google" template="page/html/google.phtml"/>
     	</reference>
