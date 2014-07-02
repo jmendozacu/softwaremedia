@@ -49,8 +49,8 @@
                     <input name="telephone" id="telephone" title="<?php echo Mage::helper('contacts')->__('Phone Number') ?>" value="" class="input-text required-entry" type="text" />
                 </div>
             </li>
-           
-            
+
+
             <li class="wide">
                 <label for="comment"><?php echo Mage::helper('contacts')->__('Question/Comment:') ?></label>
                 <div class="input-box">
@@ -60,7 +60,7 @@
             <li class="wide">
                 <label for="inquiry" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Are you inquiring about:') ?></label>
                 <div class="input-box">
-                	<input type="checkbox" name="Retail" id="Retail" value="Retail">Retail<br />
+					<input type="checkbox" name="Retail" id="Retail" value="Retail">Retail<br />
 					<input type="checkbox" name="Licensing" id="Licensing" value="Licensing">Licensing<br />
 					<input type="checkbox" name="Unsure/Other" id="Unsure/Other" value="Unsure/Other">Unsure/Other
                 </div>
@@ -68,14 +68,14 @@
             <li class="wide">
                 <label for="offers"><?php echo Mage::helper('contacts')->__('I would like to receive special offers from SoftwareMedia.com') ?></label>
                 <div class="input-box">
-                	<input type="checkbox" name="offers" id="offers" value="offers" checked>
+					<input type="checkbox" name="offers" id="offers" value="offers" checked>
                 </div>
             </li>
 
             <li>
                 <label for="captcha" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Please answer the following:') ?></label>
                 <div class="input-box">
-                    <label>Two + Two =</label><input name="captcha" id="captcha" title="<?php echo Mage::helper('contacts')->__('Please answer the following') ?>" value="" class="input-text required-entry" type="text" />
+                    <label>Three + Nineteen =</label><input name="captcha" id="captcha" title="<?php echo Mage::helper('contacts')->__('Please answer the following') ?>" value="" class="input-text required-entry" type="text" />
                 </div>
             </li>
         </ul>
@@ -88,6 +88,6 @@
 </form>
 <script type="text/javascript">
 //<![CDATA[
-    var contactForm = new VarienForm('contactForm', true);
+	var contactForm = new VarienForm('contactForm', true);
 //]]>
 </script>

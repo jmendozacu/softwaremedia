@@ -125,7 +125,7 @@ class Mage_Review_Model_Review extends Mage_Core_Model_Abstract {
 			$errors[] = Mage::helper('review')->__('Captcha can\'t be empty');
 		}
 
-		if (strtolower($this->getCaptcha()) != 'four' && $this->getCaptcha() != 4) {
+		if (strtolower($this->getCaptcha()) != 'twenty-two' && strtolower($this->getCaptcha()) != 'twentytwo' && strtolower($this->getCaptcha()) != 'twenty two' && $this->getCaptcha() != 22) {
 			$errors[] = Mage::helper('review')->__('Captcha was incorrect');
 		}
 

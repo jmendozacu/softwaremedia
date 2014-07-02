@@ -36,7 +36,8 @@
 		<?php echo $this->getChildHtml('checkoutProgress') ?>
     </div>
     <ol class="opc" id="checkoutSteps">
-		<?php $i = 0;
+		<?php
+		$i = 0;
 		foreach ($this->getSteps() as $_stepId => $_stepInfo):
 			?>
 			<?php
@@ -51,10 +52,10 @@
 					<!--<a href="#"><?php echo $this->__('Edit') ?></a>-->
 				</div>
 				<div id="checkout-step-<?php echo $_stepId ?>" class="step a-item" style="display:none;">
-			<?php echo $this->getChildHtml($_stepId) ?>
+					<?php echo $this->getChildHtml($_stepId) ?>
 				</div>
 			</li>
-<?php endforeach ?>
+		<?php endforeach ?>
     </ol>
 
     <script type="text/javascript">
@@ -94,6 +95,14 @@
 <?php endif; ?>
 				$('customreview:aitoc_checkout_1399').value = $('billing:firstname').value + " " + $('billing:lastname').value;
 				$('customreview:aitoc_checkout_1400').value = $('billing:telephone').value;
+
+				var country = $('billing:country_id').value;
+
+				if (country == 'US') {
+					$('customreview:aitoc_checkout_1536').value = 1358;
+				} else if (country == 'CA') {
+					$('customreview:aitoc_checkout_1536').value = 1357;
+				}
 			}
 			else
 			{
@@ -117,6 +126,14 @@
 <?php endif; ?>
 				$('customreview:aitoc_checkout_1399').value = $('shipping:firstname').value + " " + $('shipping:lastname').value;
 				$('customreview:aitoc_checkout_1400').value = $('shipping:telephone').value;
+
+				var country = $('shipping:country_id').value;
+
+				if (country == 'US') {
+					$('customreview:aitoc_checkout_1536').value = 1358;
+				} else if (country == 'CA') {
+					$('customreview:aitoc_checkout_1536').value = 1357;
+				}
 			}
 		}
     </script>
@@ -129,6 +146,6 @@
     <div class="title-orange">
         <h3><?php echo $this->__('Need Help With Your Order?') ?></h3>
     </div>
-<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml(); ?>
+	<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contact-info')->toHtml(); ?>
 </div>
 <?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('shop_with_confidence')->toHtml(); ?>
