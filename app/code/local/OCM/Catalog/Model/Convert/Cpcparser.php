@@ -544,7 +544,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			if (!$row['cpc_price'])
 				$row['cpc_price'] = $row['price'];
 				
-			if ($row['visibility'] == 'Not Visible Individually' && !$parentIds) {
+			if ($row['visibility'] == 'Not Visible Individually') {
 				$parentIds = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
 				if (!$parentIds)
 					continue;
