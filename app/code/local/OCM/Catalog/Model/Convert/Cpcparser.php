@@ -470,6 +470,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
                 } elseif (is_array($value)) {
                     continue;
                 }
+              
 				switch($field) {
 					case 'url_path':
 						//$row[$field] = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . trim($value,'/');
