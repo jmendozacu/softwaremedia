@@ -476,7 +476,10 @@ class OCM_Catalog_Model_Convert_Cpcparser
 						$row[$field] = $value;
 						break;
 					case 'image':
-						$row[$field] = 'http://www.softwaremedia.com/media/catalog/product/' . trim($value,'/');
+						if ($value == 'no_selection')
+							$row['image'] = 'http://www.softwaremedia.com/media/catalog/product/c/o/comingsoon_1_52_13.jpg';
+						else
+							$row[$field] = 'http://www.softwaremedia.com/media/catalog/product/' . trim($value,'/');
 						break;
 					default:
 						$row[$field] = $value;
@@ -544,10 +547,49 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			if (!$row['cpc_price'])
 				$row['cpc_price'] = $row['price'];
 				
+			$row['url_config'] = $product->setStoreId(1)->getProductUrl();
+			
+			if (!$row['image']) {
+				
+			}
 			if ($row['visibility'] == 'Not Visible Individually') {
 				$parentIds = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
 				if (!$parentIds)
 					continue;
+	
+				$foundParent = false;
+		        while (count($parentIds) > 0) {
+		        	$parentId = array_shift($parentIds);
+		        	$parentProduct = Mage::getModel('catalog/product')->setStoreId(1)->load($parentId);
+		        	
+		        	//Skip if parent not visible
+		        	if (!$parentProduct->isVisibleInCatalog())
+		        		continue;
+		        	
+		        	$foundParent = true;
+		        	//This returns the IDs of the attributes that were used to make the configurable product. E.g. array( 0=>513 )
+			        $attributesId = $parentProduct->getTypeInstance()->getUsedProductAttributeIds();
+			        
+			        //An empty array to fill.
+			        $attributes = array();
+			        
+			        //For as long as $i is less than the amount of value in $attributesID
+			        for ($i = 0; $i < count($attributesId); $i++) {
+			        	$attribute = Mage::getModel('catalog/resource_eav_attribute')->load($attributesId[$i]);
+			            //Add an array to the $attributes array that contains the attribute ID at the current index and the attribute value at the current index
+			            $attributes[$i] =  $attributesId[$i] . "=" . $product->getData($attribute->getName());
+			        }
+					$attrList = implode('&',$attributes);
+					
+					$url = $parentProduct->getProductUrl() . "?" . $attrList;
+					$row['url_config'] = $url;
+					//$row['condition'] = $url;
+					//Mage::log($url);
+		        }
+		        
+		        //Don't add row to feed if no visible parent
+		        if (!$foundParent)
+		        	continue;
 			}
 				
             $batchExport = $this->getBatchExportModel()
