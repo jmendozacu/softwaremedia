@@ -39,4 +39,16 @@
         </catalog_product_save_before>
     </events>
     </global>
+    <crontab>
+    	<jobs>
+			<update_cpc_price>
+				<schedule>
+					<cron_expr>* * * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ocm_catalog/observer::updateNewCPCPrice</model>
+				</run>
+			</update_cpc_price-->
+		</jobs>
+	</crontab>
 </config>

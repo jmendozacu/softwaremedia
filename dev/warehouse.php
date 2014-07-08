@@ -47,9 +47,9 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
 
-$helper = Mage::helper('chasePaymentTech');
+//$helper = Mage::helper('chasePaymentTech');
 
-$api = new SoftwareMedia_Ubervisibility_Helper_Api();
+//$api = new SoftwareMedia_Ubervisibility_Helper_Api();
 //$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/mpn/VMPXRBENS14/100/0');
 //var_dump($ubervis_prod);
 //$marketers = $api->callApi(Zend_Http_Client::GET, 'marketer/comparison/1');
@@ -68,11 +68,19 @@ $api = new SoftwareMedia_Ubervisibility_Helper_Api();
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
-$collection =Mage::getModel('catalog/product')->getCollection()
-->addAttributeToFilter('name', array('like' => '%Host Intrusion%'))
-->setPageSize(50)
-->addAttributeToSelect('*');
+$collection = Mage::getModel('catalog/product')->getCollection()
+			->addAttributeToSelect('*')
+			->addAttributeToSelect('new_cpc_price')
+			->addattributeToFilter('new_cpc_price', array(array('gt' => '0')))
+			->setPageSize(100);
+			
+echo "<h1>COUNT: " . count($collection) . "<h1>";
+foreach($collection as $product) {
+	$cpc = $product->getData('new_cpc_price');
+	$product->setData('cpc_price',$cpc);
+	$product->setData('new_cpc_price',NULL);
+	$product->save();
+}
 
-
-Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(NULL,$collection);
+//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(NULL,$collection);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
