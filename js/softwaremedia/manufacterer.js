@@ -511,6 +511,7 @@ var manufacturerList = {
 };
 
 document.observe("dom:loaded", function() {
+	$('cpc_price').disable();
 	$('brand').observe('change', updateSKU);
 	$('manufacturer_pn_2').observe('change', updateSKU);
 	$('manufacturer_pn_2').observe('keyup', updateSKU);

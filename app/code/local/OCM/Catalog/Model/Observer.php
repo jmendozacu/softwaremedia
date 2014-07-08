@@ -15,4 +15,9 @@ class OCM_Catalog_Model_Observer
         
         return $this;
     }
+    
+    public function updateNewCPCPrice($observer) {
+	    
+	    return $this;
+    }
  }
