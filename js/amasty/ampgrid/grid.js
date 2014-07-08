@@ -62,9 +62,11 @@ amPgrid.prototype = {
                 this.productIds[td.identify()] = productId;
                 if (field = this.properties[this.colnames[i]])
                 {
-                    td.observe('click', this.cellClick.bindAsEventListener(this, field, td)); // attaching onClick event to each TD, need to pass current field and td into the listener scope
-                    td.observe('mouseover', this.cellMouseOver.bindAsEventListener(this, td)); // will change cursor
-                    td.observe('mouseout', this.cellMouseOut.bindAsEventListener(this, td)); // will change cursor
+                	if (this.colnames[i] != 'cpc_price') {
+	                    td.observe('click', this.cellClick.bindAsEventListener(this, field, td)); // attaching onClick event to each TD, need to pass current field and td into the listener scope
+	                    td.observe('mouseover', this.cellMouseOver.bindAsEventListener(this, td)); // will change cursor
+	                    td.observe('mouseout', this.cellMouseOut.bindAsEventListener(this, td)); // will change cursor
+                    }
                 }
             }.bind(this));
         }.bind(this));
