@@ -68,19 +68,6 @@ error_reporting(-1);
             //->addAttributeToSelect('price')
             //->addAttributeToSelect('qty')
 */
-$collection = Mage::getModel('catalog/product')->getCollection()
-			->addAttributeToSelect('*')
-			->addAttributeToSelect('new_cpc_price')
-			->addattributeToFilter('new_cpc_price', array(array('gt' => '0')))
-			->setPageSize(100);
-			
-echo "<h1>COUNT: " . count($collection) . "<h1>";
-foreach($collection as $product) {
-	$cpc = $product->getData('new_cpc_price');
-	$product->setData('cpc_price',$cpc);
-	$product->setData('new_cpc_price',NULL);
-	$product->save();
-}
 
-//Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData(NULL,$collection);
+Mage::getModel('ocm_catalog/observer')->updateNewCPCPrice(NULL);
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
