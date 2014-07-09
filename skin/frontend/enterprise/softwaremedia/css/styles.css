@@ -1613,6 +1613,9 @@ button.btn-cart span {}
     text-align: center;
     text-transform: capitalize;
 }
+.product-view .product-options-bottom .add-to-cart button.button {
+    width: 268px;
+}
 .product-view .product-options-bottom .price-box { margin:0 !important; float:right; }
 .product-view .product-options-bottom p.required {display: none}
 .product-view .product-options-bottom .availability {float: right;width: 265px;text-align: center;color: #000 !important; font-weight: normal;font-size: 18px;font-style: italic}
