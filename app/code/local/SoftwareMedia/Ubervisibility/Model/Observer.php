@@ -183,42 +183,74 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 	}
 
 	public function retrieveProducts() {
-		$collection = Mage::getModel('catalog/product')->getCollection();
-		$collection->addAttributeToSelect('ubervis_updated', 'left');
-		$collection->addAttributeToSelect('*');
-		$collection->addAttributeToFilter('status', array('eq' => 1));
-		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock'));
-		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
-		$collection->getSelect()->where('manage_stock = 0');
-//		$collection->getSelect()->where('sku = "MC-SPYYFMAAFA"');
-//		foreach ($collection as $prod) {
-//			var_dump($prod->getData());
-//			Mage::log('Retrieving ' . $prod->getName(), null, 'ubervis.log');
-//			Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
+		$api = new SoftwareMedia_Ubervisibility_Helper_Api();
+
+		$ubervis_updated_site_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/site');
+		$ubervis_updated_cpc_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/cpc');
+
+		$sku_list = array();
+
+		if (!empty($ubervis_updated_site_prods)) {
+			foreach ($ubervis_updated_site_prods as $prod) {
+				$prod_arr = (array) $prod;
+				$sku_list[$prod_arr['sku']] = $prod_arr['sku'];
+			}
+		}
+
+		if (!empty($ubervis_updated_cpc_prods)) {
+			foreach ($ubervis_updated_cpc_prods as $prod) {
+				$prod_arr = (array) $prod;
+				$sku_list[$prod_arr['sku']] = $prod_arr['sku'];
+			}
+		}
+
+		Mage::log('# of updated: ' . count($sku_list), null, 'ubervis.log');
+
+		if (!empty($sku_list)) {
+			$collection = Mage::getModel('catalog/product')->getCollection();
+			$collection->addAttributeToSelect('ubervis_updated', 'left');
+			$collection->addAttributeToSelect('*');
+			$collection->addAttributeToFilter('status', array('eq' => 1));
+			$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock'));
+			$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
+			$collection->getSelect()->where('manage_stock = 0');
+			$collection->getSelect()->where('sku IN (?)', $sku_list);
+
+			Mage::log('# of Magento to update: ' . count($collection), null, 'ubervis.log');
+
+//			foreach ($collection as $prod) {
+//				Mage::log('Retrieving ' . $prod->getName(), null, 'ubervis.log');
+//				Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
 //
-//			$api = new SoftwareMedia_Ubervisibility_Helper_Api();
-//			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
-//			$data = array();
+//				$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
+//				$data = array();
 //
-//			if (is_array($ubervis_prod)) {
-//				$ubervis_prod = $ubervis_prod[0];
-//				$data = (array) $ubervis_prod;
-//			}
-//
-//			if ($ubervis_prod != null) {
-//
-//				if (!empty($ubervis_prod->price)) {
-//					$prod->setPrice($ubervis_prod->price);
+//				if (is_array($ubervis_prod)) {
+//					$ubervis_prod = $ubervis_prod[0];
+//					$data = (array) $ubervis_prod;
 //				}
 //
-//				if (!empty($ubervis_prod->cpcPrice)) {
-//					$prod->setCpcPrice($ubervis_prod->cpcPrice);
-//				}
+//				if ($ubervis_prod != null) {
 //
-//				$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
-//				$prod->save();
+//					Mage::log('Before Price: ' . $prod->getPrice(), null, 'ubervis.log');
+//					Mage::log('Before CPC Price: ' . $prod->getCpcPrice(), null, 'ubervis.log');
+//
+//					if (!empty($ubervis_prod->price)) {
+//						$prod->setPrice($ubervis_prod->price);
+//					}
+//
+//					if (!empty($ubervis_prod->cpcPrice)) {
+//						$prod->setCpcPrice($ubervis_prod->cpcPrice);
+//					}
+//
+//					Mage::log('Price: ' . $prod->getPrice(), null, 'ubervis.log');
+//					Mage::log('CPC Price: ' . $prod->getCpcPrice(), null, 'ubervis.log');
+//
+//					$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
+//					$prod->save();
+//				}
 //			}
-//		}
+		}
 	}
 
 }
