@@ -1266,7 +1266,7 @@ ul.disc li { padding-left:10px; background:url(../images/bkg_bulletsm.gif) no-re
 .product-view .next-carousel {z-index: 99;}
 .customer-review-product {padding-bottom: 20px}
 .product-view .box-up-sell .title-orange {width: 1150px;margin: 0 0 0 25px;display: inline}
-.product-view .customer-review-product .title-orange {width: 1175px;float: right}
+.product-view .customer-review-product .title-orange {float: left}
 
 .list_ymal {float: left;width: 100%;height: auto;position: relative;overflow: hidden;padding-bottom: 35px;height: auto;min-height: 230px}
 .list_ymal.responsive {width: auto;margin-left: 0;}
