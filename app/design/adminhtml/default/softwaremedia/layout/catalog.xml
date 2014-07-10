@@ -270,6 +270,12 @@ Layout handle for configurable products
     </adminhtml_catalog_product_configurable>
 
     <adminhtml_catalog_product_action_attribute_edit>
+    	<reference name="head">
+            <action method="addItem">
+                <type>js</type>
+                <name>softwaremedia/cpc-bulk.js</name>
+            </action>
+        </reference>
         <reference name="left">
             <block type="adminhtml/store_switcher" name="store_switcher" template="store/switcher.phtml" />
             <block type="adminhtml/catalog_product_edit_action_attribute_tabs" name="attributes_tabs">
