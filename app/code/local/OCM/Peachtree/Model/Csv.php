@@ -144,6 +144,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
 				if ($orderItem->getParentItemId())
 					continue;
+				
+				if ($orderItem->getQtyRefunded() == $orderItem->getQtyOrdered())
+					continue;
 					
 				//Count up grouped products
 				if( $item->getProductType() == 'grouped' ) {
@@ -210,9 +213,20 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				if ($orderItem->getParentItemId())
 					continue;
 				
+				if ($orderItem->getQtyRefunded() == $orderItem->getQtyOrdered())
+					continue;
+					
+				$itemQty = $orderItem->getQtyOrdered() - $orderItem->getQtyRefunded();
+				
 				if (!$shipTime)
 					$shipTime = date('m/d/Y', strtotime($item->getData('item_ship_date')));
-
+				
+				$rowTotal = $item->getRowTotal();
+				
+				//Subtract any refunded items from row total
+				if ($orderItem->getQtyRefunded())
+					$rowTotal -= $item->getPrice() * $orderItem->getQtyRefunded();
+				
 				//Update customer id for FBA orders
 				if (substr($item->getSku(), -3) == 'FBA' && $order->getCustomerId() == 1121)
 					$common_values['customer_id'] = 'AMAZONFBA';
@@ -220,13 +234,13 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$item_values = array(
 					'ship_date' => date('m/d/Y', strtotime($item->getData('item_ship_date'))),
 					'invoice_cm_distributions' => $i++,
-					'qty' => $item->getQty(),
+					'qty' => $itemQty,
 					'item_id' => $item->getSku(),
 					'description' => $item->getName(),
 					'gl_account' => self::GL_ACCOUNT_ITEM,
 					'unit_price' =>number_format($item->getRowTotal() / $item->getQty() * -1,2,'.',''),
 					'tax_type' => self::TAX_TYPE_ITEM,
-					'amount' => $item->getRowTotal() * -1,
+					'amount' => $rowTotal * -1,
 				);
 				
 				//Split up grouped products into their associated products
