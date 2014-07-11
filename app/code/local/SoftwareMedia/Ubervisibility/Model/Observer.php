@@ -207,7 +207,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 
 		Mage::log('# of updated: ' . count($sku_list), null, 'ubervis.log');
 
-
 		if (!empty($sku_list)) {
 			$collection = Mage::getModel('catalog/product')->getCollection();
 			$collection->addAttributeToSelect('ubervis_updated', 'left');
@@ -215,12 +214,13 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$collection->addAttributeToFilter('status', array('eq' => 1));
 			$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock'));
 			$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
-			$collection->getSelect()->where('manage_stock = 0');
+			$collection->getSelect()->where('manage_stock = 1');
 			$collection->getSelect()->where('sku IN (?)', $sku_list);
 
 			Mage::log('# of Magento to update: ' . count($collection), null, 'ubervis.log');
 			$csv_content[] = array('Magento Updated:', count($collection));
 			$csv_content[] = array('SKU', 'Title', 'Old CPC', 'New CPC', 'Old Site', 'New Site');
+
 
 			/*
 			  foreach ($collection as $prod) {
@@ -264,7 +264,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			  $csv_row[5] = $prod->getPrice();
 
 			  $csv_content[] = $csv_row;
-			  break;
 			  }
 			  }
 
@@ -277,7 +276,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			  $mailTemplate->setTemplateSubject('Ubervis To Magento Updates!');
 			  $mailTemplate->getMail()->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'Uber_To_Magento_Update.csv');
 
-			  $mailTemplate->send('lstrauss@softwaremedia.com');
+			  $mailTemplate->send('david@landesapps.com');
 			  }
 			 */
 		}
