@@ -502,6 +502,13 @@ var manufacturerList = {
 	
 	}
 	],
+	"Red Hat"		:	[
+	{
+		"ManufacturerID" 	: "101164",
+		"ManufacturerCode"	: "RH"
+	
+	}
+	],
 	"SoftwareMedia"		:	[
 	{
 		"ManufacturerID" 	: "",

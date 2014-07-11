@@ -72,6 +72,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 		"ProgeSOFT"=>"",
 		"Quark"=>"10189",
 		"Roxio"=>"1020273",
+		"Red Hat"=>"101164",
 		"Sage"=>"1021820",
 		"SAP"=>"1024365",
 		"Serif"=>"1021820",
