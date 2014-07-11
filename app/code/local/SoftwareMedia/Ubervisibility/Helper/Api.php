@@ -13,10 +13,10 @@
  */
 class SoftwareMedia_Ubervisibility_Helper_Api extends Mage_Core_Helper_Abstract {
 
-	public function callApi($method, $uri, array $variables = array()) {
+	public function callApi($method, $uri, array $variables = array(), $timeout = 15) {
 		$curl = new Varien_Http_Adapter_Curl();
 		$curl->setConfig(array(
-			'timeout' => 15 //Timeout in no of seconds
+			'timeout' => $timeout //Timeout in no of seconds
 		));
 
 		$url = 'http://ubervisibility.com:8080/v1/' . $uri;
