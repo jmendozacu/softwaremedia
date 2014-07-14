@@ -406,6 +406,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
      */
     public function unparse()
     {
+    	Mage::app()->setCurrentStore(1);
         $entityIds = $this->getData();
 
         foreach ($entityIds as $i => $entityId) {
@@ -548,7 +549,9 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			if (!$row['cpc_price'])
 				$row['cpc_price'] = $row['price'];
 				
-			$row['url_config'] = $product->setStoreId(1)->getProductUrl();
+			$params = array('_ignore_category'=>true);
+
+			$row['url_config'] = $product->getUrlModel()->getUrl($product, $params);
 			
 			if (!$row['image']) {
 				
@@ -582,7 +585,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			        }
 					$attrList = implode('&',$attributes);
 					
-					$url = $parentProduct->getProductUrl() . "?" . $attrList;
+					$url = $parentProduct->getUrlModel()->getUrl($parentProduct, $params) . "?" . $attrList;
 					$row['url_config'] = $url;
 					//$row['condition'] = $url;
 					//Mage::log($url);
