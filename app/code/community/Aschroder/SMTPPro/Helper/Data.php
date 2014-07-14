@@ -251,12 +251,12 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	public function log($to, $template, $subject, $email, $isHtml) {
 
-		$log = Mage::getModel('smtppro/email_log')
-			->setTo($to)
-			->setTemplate($template)
-			->setSubject($subject)
-			->setEmailBody($isHtml ? $email : nl2br($email))
-			->save();
+//		$log = Mage::getModel('smtppro/email_log')
+//			->setTo($to)
+//			->setTemplate($template)
+//			->setSubject($subject)
+//			->setEmailBody($isHtml ? $email : nl2br($email))
+//			->save();
 		return $this;
 	}
 
@@ -266,6 +266,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 		if ($queueItemId) {
 			$post_string = '&queue_item_id=' . $queueItemId;
 
+			$url = str_replace('ubervis.php', 'index.php', $url);
 			$parts = parse_url($url);
 
 			$fp = fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80, $errno, $errstr, 30);
