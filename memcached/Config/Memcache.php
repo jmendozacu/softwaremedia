@@ -14,13 +14,13 @@ return array (
   'hit_rate_alert' => '90',
   'eviction_alert' => '0',
   'file_path' => 'Temp/',
-  'servers' =>
+  'servers' => 
   array (
-    'Default' =>
+    'Default' => 
     array (
-      '127.0.0.1:11211' =>
+      '23.253.226.243:11211' => 
       array (
-        'hostname' => '127.0.0.1',
+        'hostname' => '23.253.226.243',
         'port' => '11211',
       ),
     ),
