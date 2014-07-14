@@ -1389,3 +1389,7 @@ div.country.validation-passed, div.country.validation-error {
 .pad-left-15 {
     padding-left: 15px;
 }
+
+.font-13 {
+	font-size: 13px;
+}
