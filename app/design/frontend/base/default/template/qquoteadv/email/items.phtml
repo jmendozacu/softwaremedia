@@ -16,15 +16,20 @@
         </tr>
     </thead>
 	<?php $i = 0;
-	foreach ($this->getAllItems() as $_item): ?>
-			<?php if ($_item->getParentItem()) continue;
-			else $i++; ?>
-	    <tbody<?php echo $i % 2 ? ' bgcolor="#F6F6F6"' : '' ?>>
+	foreach ($this->getAllItems() as $_item):
+		?>
+		<?php if ($_item->getParentItem())
+			continue;
+		else
+			$i++;
+		?>
+		<tbody<?php echo $i % 2 ? ' bgcolor="#F6F6F6"' : '' ?>>
 		<?php echo $this->getLayout()->getBlock('qquoteadv_item')->setItem($_item)->toHtml(); ?>
-	    </tbody>
+		</tbody>
 	<?php endforeach; ?>
 
-<?php if ($this->isSetAutoProposal()):
+<?php
+if ($this->isSetAutoProposal()):
 	$colspan = 4;
 	?>
 		<tbody>
@@ -45,11 +50,11 @@
 		</tbody>
 		<tbody>
 			<tr>
-	            <td colspan="<?php echo ($colspan + 1) ?>" style="padding:20px 6px 7px;  height: 44px;" align="right">
-	<?php $style = "background:url(" . $this->getSkinUrl('images/qquoteadv/checkout-btn.png') . ") no-repeat #ffa400; width: 151px; height: 21px; display:block; color: white; font-size: 15px; font-weight:bold; font-family: Arial, Helvetica, sans-serif; font-size: 15px; text-decoration:none; padding: 12px 24px 11px 24px;"; ?>
-	                <a href="<?php echo Mage::helper('qquoteadv')->getAutoLoginUrl($_quote); ?>" style="<?php echo $style ?>">
+				<td colspan="<?php echo ($colspan + 1) ?>" style="padding:20px 6px 7px;  height: 44px;" align="right">
+	<?php $style = "background:url(" . $this->getSkinUrl('images/qquoteadv/checkout-btn.png') . ") no-repeat #ffa400; width: 151px; height: 21px; display:block; color: white; font-size: 15px; font-weight:bold; font-family: Arial, Helvetica, sans-serif; font-size: 15px; text-decoration:none; padding: 12px 24px 11px 24px; text-align: center;"; ?>
+					<a href="<?php echo Mage::helper('qquoteadv')->getAutoLoginUrl($_quote); ?>" style="<?php echo $style ?>">
 	<?php echo $this->__('Order Now'); ?>
-	                </a>
+					</a>
 				</td>
 			</tr>
 			<tr>

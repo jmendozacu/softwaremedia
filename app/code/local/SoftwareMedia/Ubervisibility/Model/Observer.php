@@ -183,42 +183,120 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 	}
 
 	public function retrieveProducts() {
-		$collection = Mage::getModel('catalog/product')->getCollection();
-		$collection->addAttributeToSelect('ubervis_updated', 'left');
-		$collection->addAttributeToSelect('*');
-		$collection->addAttributeToFilter('status', array('eq' => 1));
-		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock'));
-		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
-		$collection->getSelect()->where('manage_stock = 0');
-//		$collection->getSelect()->where('sku = "MC-SPYYFMAAFA"');
-//		foreach ($collection as $prod) {
-//			var_dump($prod->getData());
-//			Mage::log('Retrieving ' . $prod->getName(), null, 'ubervis.log');
-//			Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
-//
-//			$api = new SoftwareMedia_Ubervisibility_Helper_Api();
-//			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
-//			$data = array();
-//
-//			if (is_array($ubervis_prod)) {
-//				$ubervis_prod = $ubervis_prod[0];
-//				$data = (array) $ubervis_prod;
-//			}
-//
-//			if ($ubervis_prod != null) {
-//
-//				if (!empty($ubervis_prod->price)) {
-//					$prod->setPrice($ubervis_prod->price);
-//				}
-//
-//				if (!empty($ubervis_prod->cpcPrice)) {
-//					$prod->setCpcPrice($ubervis_prod->cpcPrice);
-//				}
-//
-//				$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
-//				$prod->save();
-//			}
-//		}
+		$api = new SoftwareMedia_Ubervisibility_Helper_Api();
+		$csv_content = array();
+
+		$ubervis_updated_site_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/site', array(), 999);
+		$ubervis_updated_cpc_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/cpc', array(), 999);
+
+		$sku_list = array();
+
+		if (!empty($ubervis_updated_site_prods)) {
+			foreach ($ubervis_updated_site_prods as $prod) {
+				$prod_arr = (array) $prod;
+				$sku_list[$prod_arr['sku']] = $prod_arr['sku'];
+			}
+		}
+
+		if (!empty($ubervis_updated_cpc_prods)) {
+			foreach ($ubervis_updated_cpc_prods as $prod) {
+				$prod_arr = (array) $prod;
+				$sku_list[$prod_arr['sku']] = $prod_arr['sku'];
+			}
+		}
+
+		Mage::log('# of updated: ' . count($sku_list), null, 'ubervis.log');
+
+		if (!empty($sku_list)) {
+			$collection = Mage::getModel('catalog/product')->getCollection();
+			$collection->addAttributeToSelect('ubervis_updated', 'left');
+			$collection->addAttributeToSelect('*');
+			$collection->addAttributeToFilter('status', array('eq' => 1));
+			$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock'));
+			$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
+			$collection->getSelect()->where('manage_stock = 1');
+			$collection->getSelect()->where('sku IN (?)', $sku_list);
+
+			Mage::log('# of Magento to update: ' . count($collection), null, 'ubervis.log');
+			$csv_content[] = array('Magento Updated:', count($collection));
+			$csv_content[] = array('SKU', 'Title', 'Old CPC', 'New CPC', 'Old Site', 'New Site');
+
+
+			/*
+			  foreach ($collection as $prod) {
+			  Mage::log('Retrieving ' . $prod->getName(), null, 'ubervis.log');
+			  Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
+
+			  $ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
+			  $data = array();
+
+			  if (is_array($ubervis_prod)) {
+			  $ubervis_prod = $ubervis_prod[0];
+			  $data = (array) $ubervis_prod;
+			  }
+
+			  if ($ubervis_prod != null) {
+			  $csv_row = array();
+			  $old_cpc = $prod->getCpcPrice();
+			  $old_site = $prod->getPrice();
+			  Mage::log('Before Price: ' . $prod->getPrice(), null, 'ubervis.log');
+			  Mage::log('Before CPC Price: ' . $prod->getCpcPrice(), null, 'ubervis.log');
+
+			  if (!empty($ubervis_prod->price)) {
+			  $prod->setPrice($ubervis_prod->price);
+			  }
+
+			  if (!empty($ubervis_prod->cpcPrice)) {
+			  $prod->setNewCpcPrice($ubervis_prod->cpcPrice);
+			  }
+
+			  Mage::log('Price: ' . $prod->getPrice(), null, 'ubervis.log');
+			  Mage::log('CPC Price: ' . $prod->getNewCpcPrice(), null, 'ubervis.log');
+
+			  $prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
+			  $prod->save();
+
+			  $csv_row[0] = $prod->getSku();
+			  $csv_row[1] = $prod->getName();
+			  $csv_row[2] = $old_cpc;
+			  $csv_row[3] = $prod->getNewCpcPrice();
+			  $csv_row[4] = $old_site;
+			  $csv_row[5] = $prod->getPrice();
+
+			  $csv_content[] = $csv_row;
+			  }
+			  }
+
+			  $results = $this->generateCsv($csv_content);
+
+			  if (!empty($results)) {
+			  $mailTemplate = Mage::getModel('core/email_template')->loadDefault('Uberviz Update');
+			  $mailTemplate->setSenderName('Uberviz');
+			  $mailTemplate->setSenderEmail('customerservice@softwaremedia.com');
+			  $mailTemplate->setTemplateSubject('Ubervis To Magento Updates!');
+			  $mailTemplate->getMail()->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'Uber_To_Magento_Update.csv');
+
+			  $mailTemplate->send('david@landesapps.com');
+			  }
+			 */
+		}
+	}
+
+	private function generateCsv($data, $delimiter = ',', $enclosure = '"') {
+		$csv = new Varien_Io_File();
+		$path = Mage::getBaseDir('var') . DS . 'export' . DS;
+		$file = $path . 'uber_to_magento_update.csv';
+
+		$csv->setAllowCreateFolders(true);
+		$csv->open(array('path' => $path));
+		$csv->streamOpen($file, 'w+');
+		$csv->streamLock(true);
+
+		foreach ($data as $row) {
+			$csv->streamWriteCsv($row);
+		}
+
+		return array('type' => 'filename', 'value' => $file);
 	}
 
 }

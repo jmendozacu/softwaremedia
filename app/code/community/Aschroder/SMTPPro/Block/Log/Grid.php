@@ -15,7 +15,7 @@ class Aschroder_SMTPPro_Block_Log_Grid extends Mage_Adminhtml_Block_Widget_Grid 
 	}
 
 	protected function _prepareCollection() {
-		$collection = Mage::getModel('smtppro/email_log')->getCollection();
+		$collection = Mage::getModel('emailhistory/email')->getCollection();
 		$this->setCollection($collection);
 
 		return parent::_prepareCollection();
@@ -27,12 +27,12 @@ class Aschroder_SMTPPro_Block_Log_Grid extends Mage_Adminhtml_Block_Widget_Grid 
 		$this->addColumn('email_id', array(
 			'header' => Mage::helper('adminhtml')->__('Id'),
 			'width' => '30px',
-			'index' => 'email_id',
+			'index' => 'id',
 		));
 		$this->addColumn('sent', array(
 			'header' => Mage::helper('adminhtml')->__('Sent'),
 			'width' => '60px',
-			'index' => 'log_at',
+			'index' => 'created_at',
 		));
 		$this->addColumn('subject', array(
 			'header' => Mage::helper('adminhtml')->__('Subject'),
@@ -42,12 +42,12 @@ class Aschroder_SMTPPro_Block_Log_Grid extends Mage_Adminhtml_Block_Widget_Grid 
 		$this->addColumn('to', array(
 			'header' => Mage::helper('adminhtml')->__('To'),
 			'width' => '160px',
-			'index' => 'to',
+			'index' => 'email',
 		));
 		$this->addColumn('email_body', array(
 			'header' => Mage::helper('adminhtml')->__('Message'),
 			'width' => '160px',
-			'index' => 'email_body',
+			'index' => 'text',
 			'type' => 'text',
 			'truncate' => 1,
 			'escape' => true,
