@@ -1376,3 +1376,16 @@ div.country.validation-passed, div.country.validation-error {
 	margin: 0px 0px 0px 45px;
 	text-transform: capitalize;
 }
+
+/* General */
+.bold-text {
+    font-weight: bold;
+}
+
+.display-bullets {
+    list-style: initial;
+}
+
+.pad-left-15 {
+    padding-left: 15px;
+}
