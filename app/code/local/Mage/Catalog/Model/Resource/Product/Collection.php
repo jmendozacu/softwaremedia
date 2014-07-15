@@ -1986,6 +1986,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
 			$this->getSelect()->joinLeft(
 				array('bestseller' => 'sales_bestsellers_aggregated_monthly'), 'e.entity_id = bestseller.product_id AND bestseller.store_id = 1 AND bestseller.period = "' . date('Y-m-01', strtotime('first day of previous month')) . '"'
 			);
+
 			$this->getSelect()->order('bestseller.qty_ordered ' . $dir);
 		} else {
 			parent::setOrder($attribute, $dir);
