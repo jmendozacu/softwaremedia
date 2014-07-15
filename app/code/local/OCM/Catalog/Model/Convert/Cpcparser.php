@@ -551,15 +551,17 @@ class OCM_Catalog_Model_Convert_Cpcparser
 				
 			$params = array('_ignore_category'=>true);
 
-			$row['url_config'] = $product->getUrlModel()->getUrl($product, $params);
 			
+			$row['url_config'] = $product->getUrlModel()->getUrl($product, $params);
 			if (!$row['image']) {
 				
 			}
 			if ($row['visibility'] == 'Not Visible Individually') {
 				$parentIds = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
-				if (!$parentIds)
+				if (!$parentIds) {
+					$product->reset();
 					continue;
+				}
 	
 				$foundParent = false;
 		        while (count($parentIds) > 0) {
@@ -592,8 +594,10 @@ class OCM_Catalog_Model_Convert_Cpcparser
 		        }
 		        
 		        //Don't add row to feed if no visible parent
-		        if (!$foundParent)
+		        if (!$foundParent) {
 		        	continue;
+					$product->reset();
+		        }
 			}
 				
             $batchExport = $this->getBatchExportModel()
