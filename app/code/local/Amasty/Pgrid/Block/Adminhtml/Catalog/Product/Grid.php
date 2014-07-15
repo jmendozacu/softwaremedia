@@ -369,4 +369,8 @@ class Amasty_Pgrid_Block_Adminhtml_Catalog_Product_Grid extends Mage_Adminhtml_B
 		$adapter->streamWriteCsv($row);
 	}
 
+	public function getRowUrl($row) {
+		return null;
+	}
+
 }
