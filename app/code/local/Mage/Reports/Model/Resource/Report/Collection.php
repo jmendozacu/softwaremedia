@@ -183,11 +183,12 @@ class Mage_Reports_Model_Resource_Report_Collection {
 
 						$lastInterval = ($dateStart->getYear() == $dateEnd->getYear());
 
-						$t['end'] = ($lastInterval) ? $dateStart->setMonth($dateEnd->getMonth())
-								->setDay($dateEnd->getDay())->toString('yyyy-MM-dd 23:59:59') : $dateStart->toString('yyyy-12-31 23:59:59');
+						$t['end'] = ($lastInterval) ? $dateStart->setMonth($dateEnd->get(Zend_Date::MONTH))
+								->setDay($dateEnd->get(Zend_Date::DAY))->toString('yyyy-MM-dd 23:59:59') : $dateStart->toString('yyyy-12-31 23:59:59');
+
 						$dateStart->addYear(1);
 
-						if ($dateStart->compareYear($dateEnd->getYear()) == 0) {
+						if ($dateStart->getYear() == $dateEnd->getYear()) {
 							$dateStart->setMonth(1)->setDay(1);
 						}
 
