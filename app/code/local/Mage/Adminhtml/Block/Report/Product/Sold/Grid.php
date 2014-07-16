@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Magento Enterprise Edition
  *
@@ -24,7 +25,6 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-
 /**
  * Report Sold Products Grid Block
  *
@@ -32,84 +32,101 @@
  * @package    Mage_Adminhtml
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Adminhtml_Block_Report_Product_Sold_Grid extends Mage_Adminhtml_Block_Report_Grid
-{
-    /**
-     * Sub report size
-     *
-     * @var int
-     */
-    protected $_subReportSize = 0;
+class Mage_Adminhtml_Block_Report_Product_Sold_Grid extends Mage_Adminhtml_Block_Report_Grid {
 
-    /**
-     * Initialize Grid settings
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->setId('gridProductsSold');
-    }
+	/**
+	 * Sub report size
+	 *
+	 * @var int
+	 */
+	protected $_subReportSize = 0;
 
-    /**
-     * Prepare collection object for grid
-     *
-     * @return Mage_Adminhtml_Block_Report_Product_Sold_Grid
-     */
-    protected function _prepareCollection()
-    {
-        parent::_prepareCollection();
-        $this->getCollection()
-            ->initReport('reports/product_sold_collection');
-        return $this;
-    }
+	/**
+	 * Initialize Grid settings
+	 *
+	 */
+	public function __construct() {
+		parent::__construct();
+		$this->setId('gridProductsSold');
+	}
 
-    /**
-     * Prepare Grid columns
-     *
-     * @return Mage_Adminhtml_Block_Report_Product_Sold_Grid
-     */
-    protected function _prepareColumns()
-    {
-        $this->addColumn('name', array(
-            'header'    =>Mage::helper('reports')->__('Product'),
-            'index'     =>'order_items_name'
-        ));
-        
+	/**
+	 * Prepare collection object for grid
+	 *
+	 * @return Mage_Adminhtml_Block_Report_Product_Sold_Grid
+	 */
+	protected function _prepareCollection() {
+		parent::_prepareCollection();
+		$this->getCollection()
+			->initReport('reports/product_sold_collection');
+		return $this;
+	}
+
+	/**
+	 * Prepare Grid columns
+	 *
+	 * @return Mage_Adminhtml_Block_Report_Product_Sold_Grid
+	 */
+	protected function _prepareColumns() {
+		$this->addColumn('name', array(
+			'header' => Mage::helper('reports')->__('Product'),
+			'index' => 'order_items_name'
+		));
+
 		$this->addColumn('prod_sku', array(
-            'header'    =>Mage::helper('reports')->__('SKU'),
-            'index'     =>'prod_sku'
-        ));
-        
+			'header' => Mage::helper('reports')->__('SKU'),
+			'index' => 'prod_sku'
+		));
+
 		$this->addColumn('orders', array(
-            'header'    =>Mage::helper('reports')->__('Orders'),
-            'align'     =>'right',
-            'index'     =>'orders',
-            'type'        => 'text',
-            'renderer'      => 'OCM_Catalog_Block_Widget_Renderer',
-        ));
+			'header' => Mage::helper('reports')->__('Orders'),
+			'align' => 'right',
+			'index' => 'orders',
+			'type' => 'text',
+			'renderer' => 'OCM_Catalog_Block_Widget_Renderer',
+		));
 
-$this->addColumn('order_count', array(
-            'header'    =>Mage::helper('reports')->__('Order Count'),
-            'width'     =>'120px',
-            'align'     =>'right',
-            'index'     =>'order_count',
-            'total'     =>'sum',
-            'type'      =>'number'
-        ));
+		$this->addColumn('order_count', array(
+			'header' => Mage::helper('reports')->__('Order Count'),
+			'width' => '120px',
+			'align' => 'right',
+			'index' => 'order_count',
+			'total' => 'sum',
+			'type' => 'number'
+		));
 
-        $this->addColumn('ordered_qty', array(
-            'header'    =>Mage::helper('reports')->__('Quantity Ordered'),
-            'width'     =>'120px',
-            'align'     =>'right',
-            'index'     =>'ordered_qty',
-            'total'     =>'sum',
-            'type'      =>'number'
-        ));
+		$this->addColumn('ordered_qty', array(
+			'header' => Mage::helper('reports')->__('Quantity Ordered'),
+			'width' => '120px',
+			'align' => 'right',
+			'index' => 'ordered_qty',
+			'total' => 'sum',
+			'type' => 'number'
+		));
 
-        $this->addExportType('*/*/exportSoldCsv', Mage::helper('reports')->__('CSV'));
-        $this->addExportType('*/*/exportSoldExcel', Mage::helper('reports')->__('Excel XML'));
+		// TODO: Finish getting this info
+		$this->addColumn('item_total', array(
+			'header' => Mage::helper('reports')->__('Item Total'),
+			'align' => 'right',
+			'index' => 'item_total',
+			'total' => 'sum',
+			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
+			'type' => 'currency'
+		));
 
-        return parent::_prepareColumns();
-    }
+		$this->addColumn('order_total', array(
+			'header' => Mage::helper('reports')->__('Order Total'),
+			'align' => 'right',
+			'index' => 'order_total',
+			'total' => 'sum',
+			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
+			'type' => 'currency'
+		));
+
+		$this->addExportType('*/*/exportSoldCsv', Mage::helper('reports')->__('CSV'));
+		$this->addExportType('*/*/exportSoldExcel', Mage::helper('reports')->__('Excel XML'));
+
+		return parent::_prepareColumns();
+	}
+
 }
