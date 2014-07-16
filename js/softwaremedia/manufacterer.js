@@ -539,6 +539,7 @@ document.observe("dom:loaded", function() {
 	if ($('cpc_price') != undefined) {
 		$('cpc_price').disable();
 		$('brand').observe('change', updateSKU);
+		$('brand').observe('change', updateAttributes);
 		$('manufacturer_pn_2').observe('change', updateSKU);
 		$('manufacturer_pn_2').observe('keyup', updateSKU);
 	}
@@ -549,6 +550,10 @@ document.observe("dom:loaded", function() {
 		$('product_group').insert(new Element('option', {value: ''}).update('All'));
 		Object.keys(manufacturerList).forEach(function (key) {
 			var count = 0;
+			$$('.form-list .value input').each(function(e){
+				e.checked = false;
+			});
+			
 			$$('.form-list .label label').each(function(e){
 				if (e.innerHTML.substr(0,2) != manufacturerList[key][0].ManufacturerCode) {
 					if (manufacturerList[key][0].Attributes) {
@@ -563,10 +568,36 @@ document.observe("dom:loaded", function() {
 				$('product_group').insert(new Element('option', {value: key}).update(key));
 		});
 	}
+	$$('#group_fields207 .form-list tbody').first().insert({top: "<tr><td class=\"label\"><button id=\"hidden_button\"><span>Show All Hidden</span></button></td></tr>"});
 	
-
+	$('hidden_button').observe('click', function(event) { 
+		$$('#group_fields207 .label label').each(function(e){
+			e.up().up().show();
+		});
+	});
+	updateAttributes();
    // do something with obj[key]
 });
+function updateAttributes() {
+	var group = $('brand')[$('brand').selectedIndex].text;
+
+	$$('#group_fields207 .label label').each(function(e){
+		e.up().up().show();
+		if (group == "All") 
+			return;
+			
+		if (e.innerHTML.substr(0,2) != manufacturerList[group][0].ManufacturerCode) {
+			if (manufacturerList[group][0].Attributes) {
+				if (manufacturerList[group][0].Attributes.indexOf(e.innerHTML) < 0)
+					e.up().up().hide();
+			} else {
+				e.up().up().hide();
+			}
+				
+			//e.update(e.innerHTML.substr(0,2) + ' ' + manufacturerList[group][0].ManufacturerCode);
+		}
+	})
+}
 function updateGroup() {
 	var group = $('product_group')[$('product_group').selectedIndex].text;
 
