@@ -65,14 +65,16 @@ var manufacturerList = {
 	"BitDefender"		:	[
 	{
 		"ManufacturerID" 	: "1027317",
-		"ManufacturerCode"	: "BD"
+		"ManufacturerCode"	: "BD",
+		"Attributes"		: ["License Term","License Qty"]
 	
 	}
 	],
 	"BlackBerry"		:	[
 	{
 		"ManufacturerID" 	: "1020260",
-		"ManufacturerCode"	: "BB"
+		"ManufacturerCode"	: "BB",
+		"Attributes"		: ["License Qty"]
 	
 	}
 	],
@@ -93,7 +95,8 @@ var manufacturerList = {
 	"CA"		:	[
 	{
 		"ManufacturerID" 	: "10344",
-		"ManufacturerCode"	: "CA"
+		"ManufacturerCode"	: "CA",
+		"Attributes"		: ["Support Term"]
 	
 	}
 	],
@@ -128,7 +131,8 @@ var manufacturerList = {
 	"Corel"		:	[
 	{
 		"ManufacturerID" 	: "1016",
-		"ManufacturerCode"	: "CO"
+		"ManufacturerCode"	: "CO",
+		"Attributes"		: ["Support Term"]
 	
 	}
 	],
@@ -260,21 +264,24 @@ var manufacturerList = {
 	"Kaspersky"		:	[
 	{
 		"ManufacturerID" 	: "1020989",
-		"ManufacturerCode"	: "KA"
+		"ManufacturerCode"	: "KA",
+		"Attributes"		: ["License Term","License Qty"]
 	
 	}
 	],
 	"McAfee"		:	[
 	{
 		"ManufacturerID" 	: "101150",
-		"ManufacturerCode"	: "MC"
+		"ManufacturerCode"	: "MC",
+		"Attributes"		: ["Support Term"]
 	
 	}
 	],
 	"Microsoft"		:	[
 	{
 		"ManufacturerID" 	: "10291",
-		"ManufacturerCode"	: "MS"
+		"ManufacturerCode"	: "MS",
+		"Attributes"		: ["Media Type"]
 	
 	}
 	],
@@ -330,7 +337,8 @@ var manufacturerList = {
 	"Paragon"		:	[
 	{
 		"ManufacturerID" 	: "1023486",
-		"ManufacturerCode"	: "PG"
+		"ManufacturerCode"	: "PG",
+		"Attributes"		: ["License Term"]
 	
 	}
 	],
@@ -366,6 +374,14 @@ var manufacturerList = {
 	{
 		"ManufacturerID" 	: "10189",
 		"ManufacturerCode"	: "QU"
+	
+	}
+	],
+	"Retail"		:	[
+	{
+		"ManufacturerID" 	: "",
+		"ManufacturerCode"	: "RT",
+		"Attributes"		: ["License Term","License Qty","Media Type","Support Term"]
 	
 	}
 	],
@@ -491,7 +507,8 @@ var manufacturerList = {
 	"Vmware"		:	[
 	{
 		"ManufacturerID" 	: "1020252",
-		"ManufacturerCode"	: "VM"
+		"ManufacturerCode"	: "VM",
+		"Attributes"		: ["Support Term"]
 	
 	}
 	],
@@ -518,12 +535,89 @@ var manufacturerList = {
 };
 
 document.observe("dom:loaded", function() {
-	$('cpc_price').disable();
-	$('brand').observe('change', updateSKU);
-	$('manufacturer_pn_2').observe('change', updateSKU);
-	$('manufacturer_pn_2').observe('keyup', updateSKU);
+	//If on edit page, add observer to brand and part number
+	if ($('cpc_price') != undefined) {
+		$('cpc_price').disable();
+		$('brand').observe('change', updateSKU);
+		$('brand').observe('change', updateAttributes);
+		$('manufacturer_pn_2').observe('change', updateSKU);
+		$('manufacturer_pn_2').observe('keyup', updateSKU);
+	}
+	
+	//If on create page, populate dropdown with brands
+	if ($('product_group') != undefined) {
+		$('product_group').observe('change', updateGroup);
+		$('product_group').insert(new Element('option', {value: ''}).update('All'));
+		Object.keys(manufacturerList).forEach(function (key) {
+			var count = 0;
+			$$('.form-list .value input').each(function(e){
+				e.checked = false;
+			});
+			
+			$$('.form-list .label label').each(function(e){
+				if (e.innerHTML.substr(0,2) != manufacturerList[key][0].ManufacturerCode) {
+					if (manufacturerList[key][0].Attributes) {
+						if (manufacturerList[key][0].Attributes.indexOf(e.innerHTML) >= 0)
+							count++
+					}
+				} else {
+					count++;
+				}		
+			});
+			if (count >0)
+				$('product_group').insert(new Element('option', {value: key}).update(key));
+		});
+	}
+	$$('#group_fields207 .form-list tbody').first().insert({top: "<tr><td class=\"label\"><button id=\"hidden_button\"><span>Show All Hidden</span></button></td></tr>"});
+	
+	$('hidden_button').observe('click', function(event) { 
+		$$('#group_fields207 .label label').each(function(e){
+			e.up().up().show();
+		});
+	});
+	updateAttributes();
+   // do something with obj[key]
 });
+function updateAttributes() {
+	var group = $('brand')[$('brand').selectedIndex].text;
 
+	$$('#group_fields207 .label label').each(function(e){
+		e.up().up().show();
+		if (group == "All") 
+			return;
+			
+		if (e.innerHTML.substr(0,2) != manufacturerList[group][0].ManufacturerCode) {
+			if (manufacturerList[group][0].Attributes) {
+				if (manufacturerList[group][0].Attributes.indexOf(e.innerHTML) < 0)
+					e.up().up().hide();
+			} else {
+				e.up().up().hide();
+			}
+				
+			//e.update(e.innerHTML.substr(0,2) + ' ' + manufacturerList[group][0].ManufacturerCode);
+		}
+	})
+}
+function updateGroup() {
+	var group = $('product_group')[$('product_group').selectedIndex].text;
+
+	$$('.form-list .label label').each(function(e){
+		e.up().up().show();
+		if (group == "All") 
+			return;
+			
+		if (e.innerHTML.substr(0,2) != manufacturerList[group][0].ManufacturerCode) {
+			if (manufacturerList[group][0].Attributes) {
+				if (manufacturerList[group][0].Attributes.indexOf(e.innerHTML) < 0)
+					e.up().up().hide();
+			} else {
+				e.up().up().hide();
+			}
+				
+			//e.update(e.innerHTML.substr(0,2) + ' ' + manufacturerList[group][0].ManufacturerCode);
+		}
+	})
+}
 function updateSKU() {
 	var brand = $('brand')[$('brand').selectedIndex].text;
 	var manufacturerNum = $('manufacturer_pn_2').value.replace(/[^a-zA-Z0-9]/g,'');
