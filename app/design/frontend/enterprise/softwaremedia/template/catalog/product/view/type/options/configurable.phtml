@@ -32,7 +32,7 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
 <?php if ($_product->isSaleable() && count($_attributes)):?>
     <?php foreach($_attributes as $_attribute): ?>
     <dl>
-        <dt><label class="required"><em>*</em><?php echo $_attribute->getLabel(); if ($_attribute->getLabel() == 'Media Type'): ?>
+        <dt><label class="required"><em>*</em><?php echo $_attribute->getLabel(); if ($_attribute->getLabel() == 'Media Type' || $_attribute->getLabel() == 'Delivery Option'): ?>
         	<a href="/download-faq" target="_blank"><img src="/media/wysiwyg/q-mark.png" width="24" height="24" style="position: relative; top: 3px; left: -3px;" /></a>
 	        <?php endif; ?>
         </label></dt>
