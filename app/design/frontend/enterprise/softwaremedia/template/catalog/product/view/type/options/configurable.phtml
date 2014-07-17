@@ -33,7 +33,7 @@ $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
     <?php foreach($_attributes as $_attribute): ?>
     <dl>
         <dt><label class="required" style="position: relative;"><em>*</em><?php echo $_attribute->getLabel(); if ($_attribute->getLabel() == 'Media Type' || $_attribute->getLabel() == 'Delivery Option'): ?>
-        	<a href="/download-faq" style="position: absolute; top: -2px; " target="_blank"><img src="/media/wysiwyg/q-mark.png" width="24" height="24" /></a>
+        	<a href="/download-faq" title="Click for details" style="position: absolute; top: -2px; " target="_blank"><img alt="Click for details" src="/media/wysiwyg/q-mark.png" width="24" height="24" /></a>
 	        <?php endif; ?>
         </label></dt>
         <dd<?php if ($_attribute->decoratedIsLast){?> class="last"<?php }?>>
