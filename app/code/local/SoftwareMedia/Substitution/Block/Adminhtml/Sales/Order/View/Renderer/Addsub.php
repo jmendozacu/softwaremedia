@@ -23,6 +23,9 @@ class SoftwareMedia_Substitution_Block_Adminhtml_Sales_Order_View_Renderer_Addsu
         //var_dump($product);
         //die();
 
+		if (!$product)
+			return;
+			
         $subs = $product->getSubstitutionProductIds();
         //var_dump($subs);
         //die();
