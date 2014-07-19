@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Magento Enterprise Edition
  *
@@ -23,334 +24,314 @@
  * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
+class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config {
 
+	const XML_PATH_LIST_DEFAULT_SORT_BY = 'catalog/frontend/default_sort_by';
 
-class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
-{
-    const XML_PATH_LIST_DEFAULT_SORT_BY     = 'catalog/frontend/default_sort_by';
+	protected $_attributeSetsById;
+	protected $_attributeSetsByName;
+	protected $_attributeGroupsById;
+	protected $_attributeGroupsByName;
+	protected $_productTypesById;
 
-    protected $_attributeSetsById;
-    protected $_attributeSetsByName;
+	/**
+	 * Array of attributes codes needed for product load
+	 *
+	 * @var array
+	 */
+	protected $_productAttributes;
 
-    protected $_attributeGroupsById;
-    protected $_attributeGroupsByName;
+	/**
+	 * Product Attributes used in product listing
+	 *
+	 * @var array
+	 */
+	protected $_usedInProductListing;
 
-    protected $_productTypesById;
+	/**
+	 * Product Attributes For Sort By
+	 *
+	 * @var array
+	 */
+	protected $_usedForSortBy;
+	protected $_storeId = null;
 
-    /**
-     * Array of attributes codes needed for product load
-     *
-     * @var array
-     */
-    protected $_productAttributes;
+	const XML_PATH_PRODUCT_COLLECTION_ATTRIBUTES = 'frontend/product/collection/attributes';
 
-    /**
-     * Product Attributes used in product listing
-     *
-     * @var array
-     */
-    protected $_usedInProductListing;
+	/**
+	 * Initialize resource model
+	 *
+	 */
+	protected function _construct() {
+		$this->_init('catalog/config');
+	}
 
-    /**
-     * Product Attributes For Sort By
-     *
-     * @var array
-     */
-    protected $_usedForSortBy;
+	/**
+	 * Set store id
+	 *
+	 * @param integer $storeId
+	 * @return Mage_Catalog_Model_Config
+	 */
+	public function setStoreId($storeId) {
+		$this->_storeId = $storeId;
+		return $this;
+	}
 
-    protected $_storeId = null;
+	/**
+	 * Return store id, if is not set return current app store
+	 *
+	 * @return integer
+	 */
+	public function getStoreId() {
+		if ($this->_storeId === null) {
+			return Mage::app()->getStore()->getId();
+		}
+		return $this->_storeId;
+	}
 
-    const XML_PATH_PRODUCT_COLLECTION_ATTRIBUTES = 'frontend/product/collection/attributes';
+	public function loadAttributeSets() {
+		if ($this->_attributeSetsById) {
+			return $this;
+		}
 
-    /**
-     * Initialize resource model
-     *
-     */
-    protected function _construct()
-    {
-        $this->_init('catalog/config');
-    }
+		$attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_set_collection')
+			->load();
 
-    /**
-     * Set store id
-     *
-     * @param integer $storeId
-     * @return Mage_Catalog_Model_Config
-     */
-    public function setStoreId($storeId)
-    {
-        $this->_storeId = $storeId;
-        return $this;
-    }
+		$this->_attributeSetsById = array();
+		$this->_attributeSetsByName = array();
+		foreach ($attributeSetCollection as $id => $attributeSet) {
+			$entityTypeId = $attributeSet->getEntityTypeId();
+			$name = $attributeSet->getAttributeSetName();
+			$this->_attributeSetsById[$entityTypeId][$id] = $name;
+			$this->_attributeSetsByName[$entityTypeId][strtolower($name)] = $id;
+		}
+		return $this;
+	}
 
-    /**
-     * Return store id, if is not set return current app store
-     *
-     * @return integer
-     */
-    public function getStoreId()
-    {
-        if ($this->_storeId === null) {
-            return Mage::app()->getStore()->getId();
-        }
-        return $this->_storeId;
-    }
+	public function getAttributeSetName($entityTypeId, $id) {
+		if (!is_numeric($id)) {
+			return $id;
+		}
+		$this->loadAttributeSets();
 
-    public function loadAttributeSets()
-    {
-        if ($this->_attributeSetsById) {
-            return $this;
-        }
+		if (!is_numeric($entityTypeId)) {
+			$entityTypeId = $this->getEntityType($entityTypeId)->getId();
+		}
+		return isset($this->_attributeSetsById[$entityTypeId][$id]) ? $this->_attributeSetsById[$entityTypeId][$id] : false;
+	}
 
-        $attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_set_collection')
-            ->load();
+	public function getAttributeSetId($entityTypeId, $name) {
+		if (is_numeric($name)) {
+			return $name;
+		}
+		$this->loadAttributeSets();
 
-        $this->_attributeSetsById = array();
-        $this->_attributeSetsByName = array();
-        foreach ($attributeSetCollection as $id=>$attributeSet) {
-            $entityTypeId = $attributeSet->getEntityTypeId();
-            $name = $attributeSet->getAttributeSetName();
-            $this->_attributeSetsById[$entityTypeId][$id] = $name;
-            $this->_attributeSetsByName[$entityTypeId][strtolower($name)] = $id;
-        }
-        return $this;
-    }
+		if (!is_numeric($entityTypeId)) {
+			$entityTypeId = $this->getEntityType($entityTypeId)->getId();
+		}
+		$name = strtolower($name);
+		return isset($this->_attributeSetsByName[$entityTypeId][$name]) ? $this->_attributeSetsByName[$entityTypeId][$name] : false;
+	}
 
-    public function getAttributeSetName($entityTypeId, $id)
-    {
-        if (!is_numeric($id)) {
-            return $id;
-        }
-        $this->loadAttributeSets();
+	public function loadAttributeGroups() {
+		if ($this->_attributeGroupsById) {
+			return $this;
+		}
 
-        if (!is_numeric($entityTypeId)) {
-            $entityTypeId = $this->getEntityType($entityTypeId)->getId();
-        }
-        return isset($this->_attributeSetsById[$entityTypeId][$id]) ? $this->_attributeSetsById[$entityTypeId][$id] : false;
-    }
+		$attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_group_collection')
+			->load();
 
-    public function getAttributeSetId($entityTypeId, $name)
-    {
-        if (is_numeric($name)) {
-            return $name;
-        }
-        $this->loadAttributeSets();
+		$this->_attributeGroupsById = array();
+		$this->_attributeGroupsByName = array();
+		foreach ($attributeSetCollection as $id => $attributeGroup) {
+			$attributeSetId = $attributeGroup->getAttributeSetId();
+			$name = $attributeGroup->getAttributeGroupName();
+			$this->_attributeGroupsById[$attributeSetId][$id] = $name;
+			$this->_attributeGroupsByName[$attributeSetId][strtolower($name)] = $id;
+		}
+		return $this;
+	}
 
-        if (!is_numeric($entityTypeId)) {
-            $entityTypeId = $this->getEntityType($entityTypeId)->getId();
-        }
-        $name = strtolower($name);
-        return isset($this->_attributeSetsByName[$entityTypeId][$name]) ? $this->_attributeSetsByName[$entityTypeId][$name] : false;
-    }
+	public function getAttributeGroupName($attributeSetId, $id) {
+		if (!is_numeric($id)) {
+			return $id;
+		}
 
-    public function loadAttributeGroups()
-    {
-        if ($this->_attributeGroupsById) {
-            return $this;
-        }
+		$this->loadAttributeGroups();
 
-        $attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_group_collection')
-            ->load();
+		if (!is_numeric($attributeSetId)) {
+			$attributeSetId = $this->getAttributeSetId($attributeSetId);
+		}
+		return isset($this->_attributeGroupsById[$attributeSetId][$id]) ? $this->_attributeGroupsById[$attributeSetId][$id] : false;
+	}
 
-        $this->_attributeGroupsById = array();
-        $this->_attributeGroupsByName = array();
-        foreach ($attributeSetCollection as $id=>$attributeGroup) {
-            $attributeSetId = $attributeGroup->getAttributeSetId();
-            $name = $attributeGroup->getAttributeGroupName();
-            $this->_attributeGroupsById[$attributeSetId][$id] = $name;
-            $this->_attributeGroupsByName[$attributeSetId][strtolower($name)] = $id;
-        }
-        return $this;
-    }
+	public function getAttributeGroupId($attributeSetId, $name) {
+		if (is_numeric($name)) {
+			return $name;
+		}
 
-    public function getAttributeGroupName($attributeSetId, $id)
-    {
-        if (!is_numeric($id)) {
-            return $id;
-        }
+		$this->loadAttributeGroups();
 
-        $this->loadAttributeGroups();
+		if (!is_numeric($attributeSetId)) {
+			$attributeSetId = $this->getAttributeSetId($attributeSetId);
+		}
+		$name = strtolower($name);
+		return isset($this->_attributeGroupsByName[$attributeSetId][$name]) ? $this->_attributeGroupsByName[$attributeSetId][$name] : false;
+	}
 
-        if (!is_numeric($attributeSetId)) {
-            $attributeSetId = $this->getAttributeSetId($attributeSetId);
-        }
-        return isset($this->_attributeGroupsById[$attributeSetId][$id]) ? $this->_attributeGroupsById[$attributeSetId][$id] : false;
-    }
+	public function loadProductTypes() {
+		if ($this->_productTypesById) {
+			return $this;
+		}
 
-    public function getAttributeGroupId($attributeSetId, $name)
-    {
-        if (is_numeric($name)) {
-            return $name;
-        }
+		/*
+		  $productTypeCollection = Mage::getResourceModel('catalog/product_type_collection')
+		  ->load();
+		 */
+		$productTypeCollection = Mage::getModel('catalog/product_type')
+			->getOptionArray();
 
-        $this->loadAttributeGroups();
+		$this->_productTypesById = array();
+		$this->_productTypesByName = array();
+		foreach ($productTypeCollection as $id => $type) {
+			//$name = $type->getCode();
+			$name = $type;
+			$this->_productTypesById[$id] = $name;
+			$this->_productTypesByName[strtolower($name)] = $id;
+		}
+		return $this;
+	}
 
-        if (!is_numeric($attributeSetId)) {
-            $attributeSetId = $this->getAttributeSetId($attributeSetId);
-        }
-        $name = strtolower($name);
-        return isset($this->_attributeGroupsByName[$attributeSetId][$name]) ? $this->_attributeGroupsByName[$attributeSetId][$name] : false;
-    }
+	public function getProductTypeId($name) {
+		if (is_numeric($name)) {
+			return $name;
+		}
 
-    public function loadProductTypes()
-    {
-        if ($this->_productTypesById) {
-            return $this;
-        }
+		$this->loadProductTypes();
 
-        /*
-        $productTypeCollection = Mage::getResourceModel('catalog/product_type_collection')
-            ->load();
-        */
-        $productTypeCollection = Mage::getModel('catalog/product_type')
-            ->getOptionArray();
+		$name = strtolower($name);
+		return isset($this->_productTypesByName[$name]) ? $this->_productTypesByName[$name] : false;
+	}
 
-        $this->_productTypesById = array();
-        $this->_productTypesByName = array();
-        foreach ($productTypeCollection as $id=>$type) {
-            //$name = $type->getCode();
-            $name = $type;
-            $this->_productTypesById[$id] = $name;
-            $this->_productTypesByName[strtolower($name)] = $id;
-        }
-        return $this;
-    }
+	public function getProductTypeName($id) {
+		if (!is_numeric($id)) {
+			return $id;
+		}
 
-    public function getProductTypeId($name)
-    {
-        if (is_numeric($name)) {
-            return $name;
-        }
+		$this->loadProductTypes();
 
-        $this->loadProductTypes();
+		return isset($this->_productTypesById[$id]) ? $this->_productTypesById[$id] : false;
+	}
 
-        $name = strtolower($name);
-        return isset($this->_productTypesByName[$name]) ? $this->_productTypesByName[$name] : false;
-    }
+	public function getSourceOptionId($source, $value) {
+		foreach ($source->getAllOptions() as $option) {
+			if (strcasecmp($option['label'], $value) == 0 || $option['value'] == $value) {
+				return $option['value'];
+			}
+		}
+		return null;
+	}
 
-    public function getProductTypeName($id)
-    {
-        if (!is_numeric($id)) {
-            return $id;
-        }
+	/**
+	 * Load Product attributes
+	 *
+	 * @return array
+	 */
+	public function getProductAttributes() {
+		if (is_null($this->_productAttributes)) {
+			$this->_productAttributes = array_keys($this->getAttributesUsedInProductListing());
+		}
+		return $this->_productAttributes;
+	}
 
-        $this->loadProductTypes();
+	/**
+	 * Retrieve Product Collection Attributes from XML config file
+	 * Used only for install/upgrade
+	 *
+	 * @return array
+	 */
+	public function getProductCollectionAttributes() {
+		$attributes = Mage::getConfig()
+			->getNode(self::XML_PATH_PRODUCT_COLLECTION_ATTRIBUTES)
+			->asArray();
+		return array_keys($attributes);
+		;
+	}
 
-        return isset($this->_productTypesById[$id]) ? $this->_productTypesById[$id] : false;
-    }
+	/**
+	 * Retrieve resource model
+	 *
+	 * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Config
+	 */
+	protected function _getResource() {
+		return Mage::getResourceModel('catalog/config');
+	}
 
-    public function getSourceOptionId($source, $value)
-    {
-        foreach ($source->getAllOptions() as $option) {
-            if (strcasecmp($option['label'], $value)==0 || $option['value'] == $value) {
-                return $option['value'];
-            }
-        }
-        return null;
-    }
+	/**
+	 * Retrieve Attributes used in product listing
+	 *
+	 * @return array
+	 */
+	public function getAttributesUsedInProductListing() {
+		if (is_null($this->_usedInProductListing)) {
+			$this->_usedInProductListing = array();
+			$entityType = Mage_Catalog_Model_Product::ENTITY;
+			$attributesData = $this->_getResource()
+				->setStoreId($this->getStoreId())
+				->getAttributesUsedInListing();
+			Mage::getSingleton('eav/config')
+				->importAttributesData($entityType, $attributesData);
+			foreach ($attributesData as $attributeData) {
+				$attributeCode = $attributeData['attribute_code'];
+				$this->_usedInProductListing[$attributeCode] = Mage::getSingleton('eav/config')
+					->getAttribute($entityType, $attributeCode);
+			}
+		}
+		return $this->_usedInProductListing;
+	}
 
-    /**
-     * Load Product attributes
-     *
-     * @return array
-     */
-    public function getProductAttributes()
-    {
-        if (is_null($this->_productAttributes)) {
-            $this->_productAttributes = array_keys($this->getAttributesUsedInProductListing());
-        }
-        return $this->_productAttributes;
-    }
+	/**
+	 * Retrieve Attributes array used for sort by
+	 *
+	 * @return array
+	 */
+	public function getAttributesUsedForSortBy() {
+		if (is_null($this->_usedForSortBy)) {
+			$this->_usedForSortBy = array();
+			$entityType = Mage_Catalog_Model_Product::ENTITY;
+			$attributesData = $this->_getResource()
+				->getAttributesUsedForSortBy();
+			Mage::getSingleton('eav/config')
+				->importAttributesData($entityType, $attributesData);
+			foreach ($attributesData as $attributeData) {
+				$attributeCode = $attributeData['attribute_code'];
+				$this->_usedForSortBy[$attributeCode] = Mage::getSingleton('eav/config')
+					->getAttribute($entityType, $attributeCode);
+			}
+		}
+		return $this->_usedForSortBy;
+	}
 
-    /**
-     * Retrieve Product Collection Attributes from XML config file
-     * Used only for install/upgrade
-     *
-     * @return array
-     */
-    public function getProductCollectionAttributes() {
-        $attributes = Mage::getConfig()
-            ->getNode(self::XML_PATH_PRODUCT_COLLECTION_ATTRIBUTES)
-            ->asArray();
-        return array_keys($attributes);;
-    }
+	/**
+	 * Retrieve Attributes Used for Sort by as array
+	 * key = code, value = name
+	 *
+	 * @return array
+	 */
+	public function getAttributeUsedForSortByArray() {
+		$options = array(
+			'position' => Mage::helper('catalog')->__('Position'),
+			'created_at' => Mage::helper('catalog')->__('Date'),
+			'popularity' => Mage::helper('catalog')->__('Popularity'),
+		);
+		foreach ($this->getAttributesUsedForSortBy() as $attribute) {
+			/* @var $attribute Mage_Eav_Model_Entity_Attribute_Abstract */
+			$options[$attribute->getAttributeCode()] = $attribute->getStoreLabel();
+		}
 
-    /**
-     * Retrieve resource model
-     *
-     * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Config
-     */
-    protected function _getResource()
-    {
-        return Mage::getResourceModel('catalog/config');
-    }
+		return $options;
+	}
 
-    /**
-     * Retrieve Attributes used in product listing
-     *
-     * @return array
-     */
-    public function getAttributesUsedInProductListing() {
-        if (is_null($this->_usedInProductListing)) {
-            $this->_usedInProductListing = array();
-            $entityType = Mage_Catalog_Model_Product::ENTITY;
-            $attributesData = $this->_getResource()
-                ->setStoreId($this->getStoreId())
-                ->getAttributesUsedInListing();
-            Mage::getSingleton('eav/config')
-                ->importAttributesData($entityType, $attributesData);
-            foreach ($attributesData as $attributeData) {
-                $attributeCode = $attributeData['attribute_code'];
-                $this->_usedInProductListing[$attributeCode] = Mage::getSingleton('eav/config')
-                    ->getAttribute($entityType, $attributeCode);
-            }
-        }
-        return $this->_usedInProductListing;
-    }
-
-    /**
-     * Retrieve Attributes array used for sort by
-     *
-     * @return array
-     */
-    public function getAttributesUsedForSortBy() {
-        if (is_null($this->_usedForSortBy)) {
-            $this->_usedForSortBy = array();
-            $entityType     = Mage_Catalog_Model_Product::ENTITY;
-            $attributesData = $this->_getResource()
-                ->getAttributesUsedForSortBy();
-            Mage::getSingleton('eav/config')
-                ->importAttributesData($entityType, $attributesData);
-            foreach ($attributesData as $attributeData) {
-                $attributeCode = $attributeData['attribute_code'];
-                $this->_usedForSortBy[$attributeCode] = Mage::getSingleton('eav/config')
-                    ->getAttribute($entityType, $attributeCode);
-            }
-        }
-        return $this->_usedForSortBy;
-    }
-
-    /**
-     * Retrieve Attributes Used for Sort by as array
-     * key = code, value = name
-     *
-     * @return array
-     */
-
-    public function getAttributeUsedForSortByArray()
-    {
-    $options = array(
-        'position'  => Mage::helper('catalog')->__('Position'),
-
-        'created_at' => Mage::helper('catalog')->__('Date')
-    );
-    foreach ($this->getAttributesUsedForSortBy() as $attribute) {
-        /* @var $attribute Mage_Eav_Model_Entity_Attribute_Abstract */
-        $options[$attribute->getAttributeCode()] = $attribute->getStoreLabel();
-    }
-
-    return $options;
-    }
 //    $options = parent::getAttributeUsedForSortByArray();
 //        if (!isset($options['created_at'])) {
 //            $options['created_at'] = Mage::helper('catalog')->__('Date');
@@ -358,14 +339,14 @@ class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
 //        return $options;
 //    }
 
+	/**
+	 * Retrieve Product List Default Sort By
+	 *
+	 * @param mixed $store
+	 * @return string
+	 */
+	public function getProductListDefaultSortBy($store = null) {
+		return Mage::getStoreConfig(self::XML_PATH_LIST_DEFAULT_SORT_BY, $store);
+	}
 
-    /**
-     * Retrieve Product List Default Sort By
-     *
-     * @param mixed $store
-     * @return string
-     */
-    public function getProductListDefaultSortBy($store = null) {
-        return Mage::getStoreConfig(self::XML_PATH_LIST_DEFAULT_SORT_BY, $store);
-    }
 }
