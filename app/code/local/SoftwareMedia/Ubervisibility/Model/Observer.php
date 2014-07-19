@@ -14,7 +14,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
 		$collection->addAttributeToSelect('*');
-		$collection->addAttributeToFilter('status', array('eq' => 1));
+//		$collection->addAttributeToFilter('status', array('eq' => 1));
 		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock', 'min_sale_qty'));
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
@@ -65,6 +65,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['weight'] = $updated_data['weight'];
 			$data['cost'] = $updated_data['cost'];
 			$data['price'] = $updated_data['price'];
+			$data['cpcPrice'] = $updated_data['cpc_price'];
 			$data['msrp'] = $updated_data['msrp'];
 			$data['minimumSalesQuantity'] = intval($updated_data['min_sale_qty']);
 			$data['manageStock'] = ($updated_data['manage_stock'] > 0);
@@ -276,7 +277,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			  $mailTemplate->setTemplateSubject('Ubervis To Magento Updates!');
 			  $mailTemplate->getMail()->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'Uber_To_Magento_Update.csv');
 
-			  $mailTemplate->send('david@landesapps.com');
+			  $mailTemplate->send('lstrauss@softwaremedia.com');
 			  }
 			 */
 		}
