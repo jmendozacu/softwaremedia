@@ -41,7 +41,7 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		$variables['email'] = reset($emails);
 		$variables['name'] = reset($names);
 
-		$mail = $this->getMail();
+		$mail = Mage_Core_Model_Email_Template::getMail();
 
 		$dev = Mage::helper('smtppro')->getDevelopmentMode();
 
