@@ -437,7 +437,8 @@ var manufacturerList = {
 	"Symantec"		:	[
 	{
 		"ManufacturerID" 	: "10219",
-		"ManufacturerCode"	: "SY"
+		"ManufacturerCode"	: "SY",
+		"Attributes"		: ["Support Term"]
 	
 	}
 	],
