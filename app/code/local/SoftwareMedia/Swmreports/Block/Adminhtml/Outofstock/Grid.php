@@ -28,11 +28,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Outofstock_Grid extends Mage_Admi
 		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('name')
 			->addAttributeToSelect('brand')
-			->addAttributeToSelect('attribute_set_id')
 			->addAttributeToSelect('package_id')
 			->addAttributeToFilter('status', array('eq' => '1'))
 			->addAttributeToFilter('sku', array('nlike' => '%HOME'))
 			->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.manage_stock=1 AND {{table}}.use_config_manage_stock=0 AND {{table}}.is_in_stock = 0')
+			->joinField('licensing', 'catalog_product_entity_int', 'value', 'entity_id=entity_id', '{{table}}.attribute_id=1455')
 		;
 
 		$this->setCollection($collection);
@@ -50,17 +50,24 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Outofstock_Grid extends Mage_Admi
 			'index' => 'sku'
 		));
 
-		$sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
-			->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
-			->load()
-			->toOptionHash();
+		$valuesCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
+			->setAttributeFilter(1455)
+			->setStoreFilter(0)
+			->load();
+
+		$propOptions = array();
+		if ($valuesCollection->getSize() > 0) {
+			foreach ($valuesCollection as $item) {
+				$propOptions[$item->getId()] = $item->getValue();
+			}
+		}
 
 		$this->addColumn('set_name', array(
-			'header' => Mage::helper('catalog')->__('Attrib. Set Name'),
+			'header' => Mage::helper('catalog')->__('Licensing'),
 			'width' => '100px',
-			'index' => 'attribute_set_id',
+			'index' => 'licensing',
 			'type' => 'options',
-			'options' => $sets,
+			'options' => $propOptions,
 		));
 
 		$valuesCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')
