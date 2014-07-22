@@ -145,7 +145,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				if ($orderItem->getParentItemId())
 					continue;
 				
-				if ($orderItem->getQtyRefunded() == $orderItem->getQtyOrdered())
+				if ($orderItem->getQtyRefunded() == $orderItem->getQtyInvoiced())
 					continue;
 					
 				//Count up grouped products
@@ -213,10 +213,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				if ($orderItem->getParentItemId())
 					continue;
 				
-				if ($orderItem->getQtyRefunded() == $orderItem->getQtyOrdered())
+				if ($orderItem->getQtyRefunded() == $orderItem->getQtyInvoiced())
 					continue;
 					
-				$itemQty = $orderItem->getQtyOrdered() - $orderItem->getQtyRefunded();
+				$itemQty = $orderItem->getQtyInvoiced() - $orderItem->getQtyRefunded();
 				
 				if (!$shipTime)
 					$shipTime = date('m/d/Y', strtotime($item->getData('item_ship_date')));
