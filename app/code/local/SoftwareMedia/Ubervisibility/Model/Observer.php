@@ -14,7 +14,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
 		$collection->addAttributeToSelect('*');
-//		$collection->addAttributeToFilter('status', array('eq' => 1));
 		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock', 'min_sale_qty'));
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
@@ -125,7 +124,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$data['cpcFloor'] = 0;
 			}
 			if (empty($data['cpcPrice'])) {
-				$data['cpcPrice'] = 0;
+				$data['cpcPrice'] = $data['price'];
 			}
 			if (empty($data['ceiling'])) {
 				$data['ceiling'] = 0;
