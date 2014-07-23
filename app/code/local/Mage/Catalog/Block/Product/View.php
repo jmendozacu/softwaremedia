@@ -57,21 +57,21 @@ class Mage_Catalog_Block_Product_View extends Mage_Catalog_Block_Product_Abstrac
 			if ($title) {
 				$headBlock->setTitle($title);
 			} else {
-				$headBlock->setTitle($product->getBrandName() . ' ' . $product->getName() . ' | ' . $product->getManufacturerPn_2());
+				$headBlock->setTitle($product->getName() . ' | ' . $product->getManufacturerPn_2());
 			}
 
 			$keyword = $product->getMetaKeyword();
 			if ($keyword) {
 				$headBlock->setKeywords($keyword);
 			} else {
-				$headBlock->setKeywords($product->getManufacturerPn_2() . ', ' . $product->getBrandName() . ' ' . $product->getName() . ', ' . $product->getUpc());
+				$headBlock->setKeywords($product->getManufacturerPn_2() . ', ' . $product->getName() . ', ' . $product->getUpc());
 			}
 
 			$description = $product->getMetaDescription();
 			if ($description) {
 				$headBlock->setDescription(($description));
 			} else {
-				$headBlock->setDescription(Mage::helper('core/string')->substr('Buy ' . $product->getBrandName() . ' ' . $product->getName() . ' ' . $product->getManufacturerPn_2() . ' for only ' . money_format('%i', $product->getPrice()) . ' - in stock and ships fast and free! Certified reseller with ' . $product->getBrandName(), 0, 255));
+				$headBlock->setDescription(Mage::helper('core/string')->substr('Buy ' . $product->getName() . ' ' . $product->getManufacturerPn_2() . ' for only ' . money_format('%i', $product->getPrice()) . ' - in stock and ships fast and free! Certified reseller', 0, 255));
 			}
 			if ($this->helper('catalog/product')->canUseCanonicalTag()) {
 				$params = array('_ignore_category' => true);
