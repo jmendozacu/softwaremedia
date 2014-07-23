@@ -52,7 +52,7 @@ class Mage_Catalog_Block_Category_View extends Mage_Core_Block_Template {
 			if ($description = $category->getMetaDescription()) {
 				$headBlock->setDescription($description);
 			} else {
-				$headBlock->setDescription('Buy ' . $name . ' at discounted prices. SoftwareMedia is a certified reseller on ' . $name . ' products - huge selection and ships fast and free. Buy ' . $name . ' software today!');
+				$headBlock->setDescription('Buy ' . $name . ' at discounted prices. SoftwareMedia is a certified reseller on ' . $name . ' products - huge selection and ships fast and free! Buy ' . $name . ' software today!');
 			}
 
 			if ($keywords = $category->getMetaKeywords()) {
