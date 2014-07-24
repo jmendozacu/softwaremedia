@@ -264,7 +264,7 @@ class Aitoc_Aitcheckoutfields_Helper_Data extends Mage_Core_Helper_Abstract {
 
 			if (!empty($items)) {
 				foreach ($items as $item) {
-					$license_option = Mage::getResourceModel('catalog/product')->getAttributeRawValue($item->getProductId(), 'license_nonlicense_dropdown', 1);
+					$license_option = Mage::getResourceModel('catalog/product')->getAttributeRawValue($item->getProductId(), 'license_nonlicense_dropdown', Mage::app()->getStore()->getStoreId());
 
 					if ($license_option == 1210) {
 						$display_all = true;
