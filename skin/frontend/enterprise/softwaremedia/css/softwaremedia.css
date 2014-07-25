@@ -1393,3 +1393,18 @@ div.country.validation-passed, div.country.validation-error {
 .font-13 {
 	font-size: 13px;
 }
+
+.home-social-icon {
+	color: #FFF;
+}
+
+.home-social-icon img {
+	width: 60px;
+	margin: 15px;
+}
+
+.home-social-text {
+	font-size: 15px;
+	margin-top: 15px;
+	margin-left: 15px;
+}
