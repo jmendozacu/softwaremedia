@@ -2,309 +2,330 @@
 
 <?php $_helper = $this->helper('catalog/output'); ?>
 <?php $_product = $this->getProduct(); ?>
-<script type="text/javascript">
-    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
+<script type="text/javascript" data-unique="true">
+	var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
 </script>
 <div id="messages_product_view"><?php echo $this->getMessagesBlock()->setEscapeMessageFlag(true)->toHtml() ?></div>
 <div id="bundle-product-wrapper">
-<div class="product-view">
-    <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
-        <div class="no-display">
-            <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
-            <input type="hidden" name="related_product" id="related-products-field" value="" />
-        </div>
-        <div class="product-essential">
+	<div class="product-view">
+		<form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if ($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+			<div class="no-display">
+				<input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+				<input type="hidden" name="related_product" id="related-products-field" value="" />
+			</div>
+			<div class="product-essential">
                 <div class="page-title">
                     <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
-                    <?php if($_product->getData('brand')): ?>
-                        <?php 
-                            echo Mage::helper('ocm_mods')->getCategoryThumbnail($_product->getAttributeText('brand'));
-                        ?>
-                    <?php endif; ?>
+					<?php if ($_product->getData('brand')): ?>
+						<?php
+						echo Mage::helper('ocm_mods')->getCategoryThumbnail($_product->getAttributeText('brand'));
+						?>
+					<?php endif; ?>
                 </div>
                 <div class="review-product-top f-fix">
-                <?php echo $this->getReviewsSummaryHtml($_product, false, true)?>
-                    <?php 
-/*
-                    	 $storeId    = Mage::app()->getStore()->getId();
-					     $summaryData = Mage::getModel('review/review_summary')
-					       ->setStoreId($storeId)
-					       ->load($_product->getId());
-					       if($summaryData->getRatingSummary()){
-					       ?>
-					       <div class="rating-box" style="float:left;">
-					            <div class="rating" style="width: <?php echo $summaryData->getRatingSummary().'%'; ?>"></div>
-					       </div>
-					       <?php 
-					       }
-*/
+					<?php echo $this->getReviewsSummaryHtml($_product, false, true) ?>
+					<?php
+					/*
+					  $storeId    = Mage::app()->getStore()->getId();
+					  $summaryData = Mage::getModel('review/review_summary')
+					  ->setStoreId($storeId)
+					  ->load($_product->getId());
+					  if($summaryData->getRatingSummary()){
+					  ?>
+					  <div class="rating-box" style="float:left;">
+					  <div class="rating" style="width: <?php echo $summaryData->getRatingSummary().'%'; ?>"></div>
+					  </div>
+					  <?php
+					  }
+					 */
 					?>
-                    <?php echo $this->getChildHtml('alert_urls') ?>
+					<?php echo $this->getChildHtml('alert_urls') ?>
                 </div>
                 <div class="product-img-and-share">
 
                     <div class="product-img-box">
-                        <?php echo $this->getChildHtml('media') ?>
+						<?php echo $this->getChildHtml('media') ?>
                     </div>
 
                     <div class="box-add-to-social">
-                        <?php $_wishlistSubmitUrl = $this->helper('wishlist')->getAddUrl($_product); ?>
+						<?php $_wishlistSubmitUrl = $this->helper('wishlist')->getAddUrl($_product); ?>
 
                         <ul class="add-to-links">
-                           <li class="social">
-                           
+							<li class="social">
+
                                 <div id="fb-root"></div>
                                 <script>(function(d, s, id) {
-                                  var js, fjs = d.getElementsByTagName(s)[0];
-                                  if (d.getElementById(id)) return;
-                                  js = d.createElement(s); js.id = id;
-                                  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=399489626766851";
-                                  fjs.parentNode.insertBefore(js, fjs);
-                                }(document, 'script', 'facebook-jssdk'));</script>
-                                
-                                <div class="fb-like" data-href="<?php echo $this->helper('core/url')->getCurrentUrl(); ?>" data-width="200" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>                           
-                                
-                                
+										var js, fjs = d.getElementsByTagName(s)[0];
+										if (d.getElementById(id))
+											return;
+										js = d.createElement(s);
+										js.id = id;
+										js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=399489626766851";
+										fjs.parentNode.insertBefore(js, fjs);
+									}(document, 'script', 'facebook-jssdk'));</script>
+
+                                <div class="fb-like" data-href="<?php echo $this->helper('core/url')->getCurrentUrl(); ?>" data-width="200" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
+
+
                                 <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en">Tweet</a>
-                                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-                                
-                                
+                                <script>!function(d, s, id) {
+										var js, fjs = d.getElementsByTagName(s)[0];
+										if (!d.getElementById(id)) {
+											js = d.createElement(s);
+											js.id = id;
+											js.src = "https://platform.twitter.com/widgets.js";
+											fjs.parentNode.insertBefore(js, fjs);
+										}
+									}(document, "script", "twitter-wjs");</script>
+
+
                                 <!-- Place this tag where you want the +1 button to render. -->
                                 <div class="g-plusone"></div>
-                                
+
                                 <!-- Place this tag after the last +1 button tag. -->
                                 <script type="text/javascript">
-                                  (function() {
-                                    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                                    po.src = 'https://apis.google.com/js/plusone.js';
-                                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-                                  })();
+									(function() {
+										var po = document.createElement('script');
+										po.type = 'text/javascript';
+										po.async = true;
+										po.src = 'https://apis.google.com/js/plusone.js';
+										var s = document.getElementsByTagName('script')[0];
+										s.parentNode.insertBefore(po, s);
+									})();
                                 </script>
-                                
+
                                 <style>
-                                #twitter-widget-0{ width: 80px !important}
-                                #___plusone_0 { width: 65px !important}
+									#twitter-widget-0{ width: 80px !important}
+									#___plusone_0 { width: 65px !important}
                                 </style>
-                           
-                           </li>
-                           
-                           
-                           
-                            <?php if ($this->helper('wishlist')->isAllow()) : ?>
-                            <li><a href="<?php echo $_wishlistSubmitUrl ?>" onclick="productAddToCartForm.submitLight(this, this.href); return false;" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
-                            <?php endif; ?>
-                            <?php /*
-                            $_compareUrl = $this->helper('catalog/product_compare')->getAddUrl($_product);
-                             if($_compareUrl) : ?>
-                            <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
-                            <?php endif; */?>
-                            <?php if ($this->canEmailToFriend()): ?>
-                            <li class="emailto-link">
-                            <a href="<?php echo $this->helper('catalog/product')
-                                ->getEmailToFriendUrl($_product) ?>"><?php echo $this->__('Email to a Friend') ?></a></li>
-                            <?php endif; ?>
-                             <li><?php echo $this->getChildHtml('pro.rewardssocial.widgets') ?></li>
+
+							</li>
+
+
+
+							<?php if ($this->helper('wishlist')->isAllow()) : ?>
+								<li><a href="<?php echo $_wishlistSubmitUrl ?>" onclick="productAddToCartForm.submitLight(this, this.href);
+											return false;" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+								   <?php endif; ?>
+								   <?php /*
+									 $_compareUrl = $this->helper('catalog/product_compare')->getAddUrl($_product);
+									 if($_compareUrl) : ?>
+									 <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+									 <?php endif; */ ?>
+								   <?php if ($this->canEmailToFriend()): ?>
+								<li class="emailto-link">
+									<a href="<?php
+									echo $this->helper('catalog/product')
+										->getEmailToFriendUrl($_product)
+									?>"><?php echo $this->__('Email to a Friend') ?></a></li>
+<?php endif; ?>
+							<li><?php echo $this->getChildHtml('pro.rewardssocial.widgets') ?></li>
                         </ul>
                     </div>
 
                 </div>
                 <div class="product-shop">
                     <div class="product-main-info">
-						
+
                         <p class="product-ids"><?php echo $this->__('SKU# %s', $this->escapeHtml($_product->getSku())); ?></p>
-                        
 
-                        <?php echo $this->getChildHtml('product_type_data') ?>
+
+					<?php echo $this->getChildHtml('product_type_data') ?>
                     </div>
-                    <?php echo $this->getChildHtml('tierprices') ?>
-                    <?php echo $this->getChildHtml('extrahint') ?>
-                    
-                    
-                    <?php if($_product->getData('manufacturer_pn_2')):?>
-                    <div class="product-style">
-                    	<?php if($_product->isConfigurable()): ?>
-						<div id="sku-container"></div>
-						<?php else: ?>  
-                        <span><?php echo $_product->getData('manufacturer_pn_2') ?></span>
-                        <label><?php echo $this->__('Part #: ') ?></label>
-                        <?php endif; ?>
-                    </div>
-                    <?php endif;?>
-                    
-                    <?php if (!$this->hasOptions()):?>
-                        <div class="add-to-box">
-                            <?php  if($_product->isSaleable()): ?>
-                                <?php echo $this->getChildHtml('addtocart') ?>
-                            <?php endif; ?>
-                        </div>
-                    <?php else:?>
-                        <?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container1') ):?>
-                            <div class="options-container-small">
-                                <?php echo $this->getChildChildHtml('container1', '', true, true) ?>
-                            </div>
-                        <?php endif;?>
-                    <?php endif; ?>
-                    
-                    
+					<?php echo $this->getChildHtml('tierprices') ?>
+<?php echo $this->getChildHtml('extrahint') ?>
 
-                    <?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container2') ):?>
-                    <div class="options-container-big">
-                        <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
-                    </div>
-                    <?php endif;?>
 
-                    <?php /* if ($_product->getShortDescription()):?>
-                        <div class="short-description std">
-                            <h2><?php echo $this->__('Quick Overview') ?></h2>
-                            <?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?>
-                        </div>
-                    <?php endif; */?>
+						<?php if ($_product->getData('manufacturer_pn_2')): ?>
+						<div class="product-style">
+							<?php if ($_product->isConfigurable()): ?>
+								<div id="sku-container"></div>
+	<?php else: ?>
+								<span><?php echo $_product->getData('manufacturer_pn_2') ?></span>
+								<label><?php echo $this->__('Part #: ') ?></label>
+						<?php endif; ?>
+						</div>
+					<?php endif; ?>
 
-                    <?php echo $this->getChildHtml('other');?>
-                    <?php $stock_message = $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message'); ?>
-                    <?php if($_product->isSaleable()): ?>
-                    <?php if ($stock_message): ?>
-                    	<?php $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product);
-							if ($inventory->getBackorders()): ?>
-	                    <p class="availability in-stock" id="availability_message">
-	                    	Backordered. Product may take 1-2 weeks for delivery.
-	                    </p>
-	                    <?php else: ?>
-	                    <p class="availability in-stock" id="availability_message">
-	                    	<?php 
-	                    	if ($stock_message == 'In Stock. Ships Free Today' && date('N') <5 && date('G') >= 16) {
-	                    		//echo "In Stock. Ships Free Tomorrow";
-	                    		echo "In Stock. Ships Free Today (during business hours)";
-	                    	} elseif ($stock_message == 'In Stock. Ships Free Today ' && (date('N') > 5 || (date('N') == 5 && date('G') >= 16))) {
-	                    		echo "In Stock. Ships Free Monday";
-							} else {
-	                    		if($stock_message == 'In Stock. Ships Free Today') {
-		                    		echo "In Stock. Ships Free Today (during business hours)";
-								} else { 
-									echo $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message');				}
-	                    	}
-	                    	?>
-	                    	
-	                    </p>
-	                    <?php endif; ?>
-	                 <?php endif; ?>
-	                 <?php else: ?>
-	                 <p class="availability out-of-stock" style="text-align: right">
-	                 	Out of Stock
-	                 </p>
-                    <?php endif; ?>
+						<?php if (!$this->hasOptions()): ?>
+						<div class="add-to-box">
+							<?php if ($_product->isSaleable()): ?>
+								<?php echo $this->getChildHtml('addtocart') ?>
+						<?php endif; ?>
+						</div>
+					<?php else: ?>
+							<?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container1')): ?>
+							<div class="options-container-small">
+							<?php echo $this->getChildChildHtml('container1', '', true, true) ?>
+							</div>
+						<?php endif; ?>
+<?php endif; ?>
+
+
+
+						<?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container2')): ?>
+						<div class="options-container-big">
+						<?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+						</div>
+					<?php endif; ?>
+
+					<?php /* if ($_product->getShortDescription()):?>
+					  <div class="short-description std">
+					  <h2><?php echo $this->__('Quick Overview') ?></h2>
+					  <?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?>
+					  </div>
+					  <?php endif; */ ?>
+
+					<?php echo $this->getChildHtml('other'); ?>
+					<?php $stock_message = $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message'); ?>
+					<?php if ($_product->isSaleable()): ?>
+						<?php if ($stock_message): ?>
+							<?php
+							$inventory = Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product);
+							if ($inventory->getBackorders()):
+								?>
+								<p class="availability in-stock" id="availability_message">
+									Backordered. Product may take 1-2 weeks for delivery.
+								</p>
+								<?php else: ?>
+								<p class="availability in-stock" id="availability_message">
+									<?php
+									if ($stock_message == 'In Stock. Ships Free Today' && date('N') < 5 && date('G') >= 16) {
+										//echo "In Stock. Ships Free Tomorrow";
+										echo "In Stock. Ships Free Today (during business hours)";
+									} elseif ($stock_message == 'In Stock. Ships Free Today ' && (date('N') > 5 || (date('N') == 5 && date('G') >= 16))) {
+										echo "In Stock. Ships Free Monday";
+									} else {
+										if ($stock_message == 'In Stock. Ships Free Today') {
+											echo "In Stock. Ships Free Today (during business hours)";
+										} else {
+											echo $_helper->productAttribute($_product, $_product->getStockMessage(), 'stock_message');
+										}
+									}
+									?>
+
+								</p>
+							<?php endif; ?>
+	<?php endif; ?>
+<?php else: ?>
+						<p class="availability out-of-stock" style="text-align: right">
+							Out of Stock
+						</p>
+<?php endif; ?>
                 </div>
 
-        </div>
-    </form>
-    <div class="title-orange">
-        <h3><?php echo $this->__('Product Information') ?></h3>
-    </div>
-    <div class="detail-infor">
-        <div class="product-collateral">
-            <?php if ($detailedInfoGroup = $this->getChildGroup('detailed_info', 'getChildHtml')):?>
-            <dl id="collateral-tabs" class="collateral-tabs">
-                <?php foreach ($detailedInfoGroup as $alias => $html):?>
-                <dt class="tab"><span><?php echo $this->escapeHtml($this->getChildData($alias, 'title')) ?></span></dt>
-                <dd class="tab-container">
-                    <div class="tab-content"><?php echo $html ?></div>
-                </dd>
-                <?php endforeach;?>
-            </dl>
-            <script type="text/javascript">
-                //<![CDATA[
-                var collateralTabs = new Enterprise.Tabs('collateral-tabs');
-                Event.observe(window, 'load', function() {
-                    collateralTabs.select();
-                });
-                //]]>
-            </script>
-            <?php endif; ?>
-        </div>
-        <div class="right-infor">
-            <div class="info-first"><?php //echo $this->getChildHtml('related-category') ?></div>
-            <?php echo $this->getChildHtml('tool-resource') ?>
-            <?php echo $this->getChildHtml('recently_viewed') ?>
-        </div>
-    </div>
-    <div class="customer-review-product" id="customer-review-wrap">
-        <div class="title-orange">
-            <h3><?php echo $this->__('Customer Reviews') ?></h3>
-            <a name="customer-review"></a>
-        </div>
-        <div class="avg-review">
-        	<?php echo $this->getReviewsSummaryHtml($_product, false, true)?>
-            <?php /*
-                echo $this->getLayout()->createBlock('review/helper')->setTemplate('review/helper/summary.phtml')->setIsProductView(1)->setProduct($_product)->toHtml();
-            */ ?>
-            <a href="#addReview" onclick="javascript:showFormAddReview();"><?php echo
-                $this->__('Write a Review');?></a>
-        </div>
-        <div class="review-detail">
-            <?php echo $this->getChildHtml('product_additional_data')?>
-        </div>
-    </div>
-    <!-- end: .detail-infor -->
-        <?php echo $this->getChildHtml('relatedProducts') ?>
-        <?php echo $this->getChildHtml('upsell_products') ?>
-        <?php //echo $this->getChildHtml('productTagList') ?>
-        <?php //echo $this->getChildHtml('product_additional_data') ?>
-</div>
+			</div>
+		</form>
+		<div class="title-orange">
+			<h3><?php echo $this->__('Product Information') ?></h3>
+		</div>
+		<div class="detail-infor">
+			<div class="product-collateral">
+					<?php if ($detailedInfoGroup = $this->getChildGroup('detailed_info', 'getChildHtml')): ?>
+					<dl id="collateral-tabs" class="collateral-tabs">
+	<?php foreach ($detailedInfoGroup as $alias => $html): ?>
+							<dt class="tab"><span><?php echo $this->escapeHtml($this->getChildData($alias, 'title')) ?></span></dt>
+							<dd class="tab-container">
+								<div class="tab-content"><?php echo $html ?></div>
+							</dd>
+	<?php endforeach; ?>
+					</dl>
+					<script type="text/javascript">
+						//<![CDATA[
+						var collateralTabs = new Enterprise.Tabs('collateral-tabs');
+						Event.observe(window, 'load', function() {
+							collateralTabs.select();
+						});
+						//]]>
+					</script>
+<?php endif; ?>
+			</div>
+			<div class="right-infor">
+				<div class="info-first"><?php //echo $this->getChildHtml('related-category')  ?></div>
+<?php echo $this->getChildHtml('tool-resource') ?>
+<?php echo $this->getChildHtml('recently_viewed') ?>
+			</div>
+		</div>
+		<div class="customer-review-product" id="customer-review-wrap">
+			<div class="title-orange">
+				<h3><?php echo $this->__('Customer Reviews') ?></h3>
+				<a name="customer-review"></a>
+			</div>
+			<div class="avg-review">
+				<?php echo $this->getReviewsSummaryHtml($_product, false, true) ?>
+				<?php /*
+				  echo $this->getLayout()->createBlock('review/helper')->setTemplate('review/helper/summary.phtml')->setIsProductView(1)->setProduct($_product)->toHtml();
+				 */ ?>
+				<a href="#addReview" onclick="javascript:showFormAddReview();"><?php
+					echo
+					$this->__('Write a Review');
+				?></a>
+			</div>
+			<div class="review-detail">
+		<?php echo $this->getChildHtml('product_additional_data') ?>
+			</div>
+		</div>
+		<!-- end: .detail-infor -->
+		<?php echo $this->getChildHtml('relatedProducts') ?>
+<?php echo $this->getChildHtml('upsell_products') ?>
+<?php //echo $this->getChildHtml('productTagList')   ?>
+<?php //echo $this->getChildHtml('product_additional_data')   ?>
+	</div>
 </div>
 
 <script type="text/javascript">
 //<![CDATA[
-    var productAddToCartForm = new VarienForm('product_addtocart_form');
-    productAddToCartForm.submit = function(button, url) {
-        if (this.validator.validate()) {
-            var form = this.form;
-            var oldUrl = form.action;
+	var productAddToCartForm = new VarienForm('product_addtocart_form');
+	productAddToCartForm.submit = function(button, url) {
+		if (this.validator.validate()) {
+			var form = this.form;
+			var oldUrl = form.action;
 
-            if (url) {
-               form.action = url;
-            }
-            var e = null;
-            try {
-                this.form.submit();
-            } catch (e) {
-            }
-            this.form.action = oldUrl;
-            if (e) {
-                throw e;
-            }
+			if (url) {
+				form.action = url;
+			}
+			var e = null;
+			try {
+				this.form.submit();
+			} catch (e) {
+			}
+			this.form.action = oldUrl;
+			if (e) {
+				throw e;
+			}
 
-            if (button && button != 'undefined') {
-                button.disabled = true;
-            }
-        }
-    }.bind(productAddToCartForm);
+			if (button && button != 'undefined') {
+				button.disabled = true;
+			}
+		}
+	}.bind(productAddToCartForm);
 
-    productAddToCartForm.submitLight = function(button, url){
-        if(this.validator) {
-            var nv = Validation.methods;
-            delete Validation.methods['required-entry'];
-            delete Validation.methods['validate-one-required'];
-            delete Validation.methods['validate-one-required-by-name'];
-            // Remove custom datetime validators
-            for (var methodName in Validation.methods) {
-                if (methodName.match(/^validate-datetime-.*/i)) {
-                    delete Validation.methods[methodName];
-                }
-            }
+	productAddToCartForm.submitLight = function(button, url) {
+		if (this.validator) {
+			var nv = Validation.methods;
+			delete Validation.methods['required-entry'];
+			delete Validation.methods['validate-one-required'];
+			delete Validation.methods['validate-one-required-by-name'];
+			// Remove custom datetime validators
+			for (var methodName in Validation.methods) {
+				if (methodName.match(/^validate-datetime-.*/i)) {
+					delete Validation.methods[methodName];
+				}
+			}
 
-            if (this.validator.validate()) {
-                if (url) {
-                    this.form.action = url;
-                }
-                this.form.submit();
-            }
-            Object.extend(Validation.methods, nv);
-        }
-    }.bind(productAddToCartForm);
+			if (this.validator.validate()) {
+				if (url) {
+					this.form.action = url;
+				}
+				this.form.submit();
+			}
+			Object.extend(Validation.methods, nv);
+		}
+	}.bind(productAddToCartForm);
 //]]>
 
-    function showFormAddReview(){
-        jQuery('.block-send-review').show();
-        return false;
-    }
+	function showFormAddReview() {
+		jQuery('.block-send-review').show();
+		return false;
+	}
 </script>

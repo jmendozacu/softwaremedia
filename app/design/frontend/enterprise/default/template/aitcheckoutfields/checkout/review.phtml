@@ -65,8 +65,9 @@
 	$hasCapture = false;
 	foreach ($items as $item) {
 		$product = Mage::getModel('catalog/product')->load($item->getProductId());
-		if ($product->getLicenseNonlicenseDropdown() == 1210)
+		if ($product->getLicenseNonlicenseDropdown() == 1210) {
 			$hasCapture = true;
+		}
 	}
 	?>
 
