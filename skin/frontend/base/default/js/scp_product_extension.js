@@ -130,16 +130,21 @@ Number.prototype.formatMoney = function(c, d, t){
 
 Product.OptionsPrice.prototype.updateSpecialPriceDisplay = function(price, finalPrice, id) {
     var prodForm = $('product_addtocart_form');
-    var msrp = extra_config[id]['msrp'];
-    var pn = extra_config[id]['pn'];
-
+    if (extra_config[id]) {
+    	var msrp = extra_config[id]['msrp'];
+		var pn = extra_config[id]['pn'];
+	} else {
+		
+	}
     var specialPriceBox = prodForm.select('p.special-price');
     var msrpBox = prodForm.select('.msrp-field');
     var saveBox = prodForm.select('.saved-field');
     var oldPricePriceBox = prodForm.select('p.old-price, p.was-old-price');
     var magentopriceLabel = prodForm.select('span.price');
 
-    $("sku-container").update("<strong>Part Number: </strong>" + pn); 
+    if (pn)
+    	$("sku-container").update("<strong>Part Number: </strong>" + pn); 
+    	
     magentopriceLabel.each(function(x) {x.innerHTML = '$' + parseFloat(price).formatMoney();});
 
     if(msrp) {
