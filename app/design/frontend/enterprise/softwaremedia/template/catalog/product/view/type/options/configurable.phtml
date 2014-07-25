@@ -99,23 +99,31 @@ jQuery(document).ready(function(){
     if(location.search) {
         var attr = location.search.substring(1)//window.location.hash.substring(1)
         attr = attr.split('&');
+        var vals = new Array();
+        
         for (var i=0; i<attr.length; i++) {
             values = attr[i].split('=');
-            //console.log(values);
-            a = 'attribute'+values[0];
+            console.log(values);
+            vals[values[0]] = values[1];
+            
+        }
+        
+        Object.keys(vals).forEach(function (b) {
+            a = 'attribute'+b;
             o = $$('#'+a+' option');
-            //console.log(o);
+            console.log(o);
             for (var si = 0; si < o.length; si++) {
-                //console.log(o[si].value+' '+values[1]);
-                if(o[si].value == values[1] ) {
-                    //console.log(a+' '+si);
+               //console.log(o[si].value+' '+values[1]);
+                if(o[si].value == vals[b] ) {
+                    console.log(a+' '+si);
                     $(a).selectedIndex = si;
-                   spConfig.configureElement($(a));
                    jQuery('#uniform-'+a+' span').text(o[si].text);
+                   jQuery('#uniform-'+a).removeClass('disabled');
+                   spConfig.configureElement($(a));
                    changeSku(values[0],$('attribute' + values[0]));
                 }
             }
-        }
+        });
     } else {
     
             <?php //default to downlowdable if possible ?>
