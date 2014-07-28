@@ -1417,7 +1417,7 @@ font-weight: 700; }
 
 /* Availability */
 .availability { font-weight:bold; }
-.availability.in-stock { color:#1b6800; }
+.availability.in-stock { color:#000; }
 .availability.out-of-stock { color:#cf3a00; }
 
 .availability-only { margin:10px 0 7px; line-height:16px; background:url(../images/i_availability_only.gif) 0 50% no-repeat; padding-left:15px; }
