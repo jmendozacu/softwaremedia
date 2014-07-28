@@ -226,7 +226,14 @@
 	<?php foreach ($detailedInfoGroup as $alias => $html): ?>
 							<dt class="tab"><span><?php echo $this->escapeHtml($this->getChildData($alias, 'title')) ?></span></dt>
 							<dd class="tab-container">
-								<div class="tab-content"><?php echo $html ?></div>
+								<div class="tab-content">
+								<?php if ($this->escapeHtml($this->getChildData($alias, 'title')) == 'Description') {
+									echo "<p style=\"display: none; margin-bottom: 20px;\" id=\"download-text\">" . $this->getLayout()->createBlock('cms/block')->setBlockId('download-text')->toHtml() . "</p>";
+									
+								}
+								
+								?>
+								<?php echo $html ?></div>
 							</dd>
 	<?php endforeach; ?>
 					</dl>

@@ -81,6 +81,14 @@ document.observe("dom:loaded", function() {
 });
 
 function changeSku(confAttributeId, sel) {
+	var selectedAttributeId = sel.options[sel.selectedIndex].value;
+	if (confAttributeId == 1055) {
+		if (selectedAttributeId == 420) {
+			jQuery('#download-text').slideDown();
+		} else {
+			jQuery('#download-text').slideUp();
+		}
+	}
    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
