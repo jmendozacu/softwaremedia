@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<SoftwareMedia_EmailRead>
+			<version>0.1.11</version>
+		</SoftwareMedia_EmailRead>
+	</modules>
+	<global>
+		<resources>
+			<emailread_setup>
+				<setup>
+					<module>SoftwareMedia_EmailRead</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</emailread_setup>
+		</resources>
+	</global>
+</config>
