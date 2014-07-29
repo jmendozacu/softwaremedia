@@ -95,7 +95,6 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	public function updateSpex() {
 		Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
 		
-		
 		//Mage::log("\n\n************************ Etilize Updated Start at ".date("l, F d, Y h:i" ,time())." ************************", null, 'OCM_Spex.log');
 		
 		if ($this->_deleteAllEtilizeAttributes)
@@ -108,9 +107,9 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
     	->addAttributeToSelect('brand')
     	->addAttributeToSelect('manufacturer_pn_2')
     	->addAttributeToSelect('etilize_manufactureid')
-    	->addAttributeToFilter('etilize_updated',"No")
+    	->addAttributeToFilter('etilize_updated',1351)
     	->setPageSize(100);
-
+    	
     	//Cycle through the collection of products
 		foreach ($collection as $product) {
 			//Setup Time System
@@ -129,13 +128,13 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 			//This is where the attributes will be processed.
 			$attributes = $etilizeResult->getAttributes();
 			//Mage::log($attributes,null,'SPEX.log');
-            $this->buildAttributes($attributes, $product);
+            //$this->buildAttributes($attributes, $product);
 			
-			$skus = $etilizeResult->getSkus();
-            $this->buildSkuAttributes($skus, $product);
+			//$skus = $etilizeResult->getSkus();
+            //$this->buildSkuAttributes($skus, $product);
 
 			
-
+			continue;
 			
 			if (!$this->getError())
 			{
@@ -158,7 +157,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	   			$logMessage .= "\n----------------------------------------------------------------";
 	   			$logMessage .= "\nUpdating this product took : ".$elapsed_time." seconds";
 	   			$logMessage .= "\n----------------------------------------------------------------";
-	   			//Mage::log($logMessage, null, 'OCM_Spex.log');
+	   			Mage::log($logMessage, null, 'OCM_Spex.log');
    			
    				$etilizeResult = array(
    					"etilize_result" => "Product last updated at ".date("l, F d, Y h:i" ,time()).$logMessage,
@@ -169,7 +168,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
    				}
 				catch (Exception $e)
 				{
-						//Mage::log($e, null, 'OCM_Spex.log');
+						Mage::log($e, null, 'OCM_Spex.log');
 				}
 				
    			}elseif ($this->getError())
@@ -183,12 +182,11 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
    				}
 				catch (Exception $e)
 				{
-						//Mage::log($e, null, 'OCM_Spex.log');
+						Mage::log($e, null, 'OCM_Spex.log');
 				}
 				
    			}
-		}//end of product collection
-		//Mage::log("\n\n************************ Etilize Updated Ended at ".date("l, F d, Y h:i" ,time())." ************************", null, 'OCM_Spex.log');
+		}
 	}
 	
 	private function buildAttributes($attributes, $product)
