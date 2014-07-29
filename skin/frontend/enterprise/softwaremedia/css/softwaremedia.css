@@ -1408,3 +1408,29 @@ div.country.validation-passed, div.country.validation-error {
 	margin-top: 15px;
 	margin-left: 15px;
 }
+
+.end_user_fields .fields1393, .end_user_fields .fields1394, .end_user_fields .fields1396, .end_user_fields .fields1399 {
+	float: left;
+}
+.end_user_fields .fields1395, .end_user_fields .fields1398, .end_user_fields .fields1400, .end_user_fields .fields1404, .end_user_fields .fields1536, .end_user_fields .fields1401 {
+	float:right;
+}
+.end_user_fields .fields1396 select {
+	width: 200px;
+	height: 28px;
+}
+.end_user_fields .form-list li.fields1397 {
+	float: left;
+	margin-left: 17px;
+}
+.end_user_fields .fields1397 .value input {
+	width: 72px;
+}
+.end_user_fields .fields1402 {
+	clear: both;
+	float: left;
+}
+.end_user_fields .fields1536 select {
+	width: 317px;
+	height: 28px;
+}

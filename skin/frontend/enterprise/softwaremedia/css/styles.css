@@ -1374,9 +1374,9 @@ p.product-image { cursor:default !important; }
 .product-view .product-shop .price-box .price-label { font-size:11px; }
 .product-view .product-shop .price-box .price-as-configured .price-label { font-size:12px; }
 .product-view .product-shop .price-box .price-as-configured .price { font-size: 56px !important; color:#e55100;line-height: 65px !important;color: #d26734;
-font-family: 'Carrois Gothic', 'Duru Sans',sans-serif;
-font-style: normal;
-font-weight: 700; }
+																	 font-family: 'Carrois Gothic', 'Duru Sans',sans-serif;
+																	 font-style: normal;
+																	 font-weight: 700; }
 .product-view .product-shop .price-box .price-including-tax .price,
 .product-view .product-shop .price-box .regular-price .price ,
 .product-view .product-shop .price-box .special-price .price { color:#d26734; font-size:32px;line-height: 40px; font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 700;}
@@ -3280,18 +3280,3 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 
 
 .my-account .page-title { float: none }
-
-.end_user_fields .fields1393 { float:left; width:790px;}
-.end_user_fields .fields1394 { float:left; width:790px;}
-.end_user_fields .fields1394 .required-entry input-text {width:600px;}
-.end_user_fields .fields1395 { float:left; width:300px;}
-.end_user_fields .fields1395 .required-entry input-text {width:300px;}
-.end_user_fields .fields1396 { float:right; position:absolute; left:375px; top:118px}
-.end_user_fields .fields1396 select {background-position: center -80px; background-repeat: repeat-x ;width:200px;line-height: 28px;height: 28px; }
-.end_user_fields .fields1397 { float:right; position:absolute; left:600px; top:118px;height:28px;}
-.end_user_fields .fields1397 .value input {width:72px;}
-.end_user_fields .fields1398 {}
-.end_user_fields .fields1399 {float:right; position:absolute; left:375px; top:168px}
-/*.end_user_fields .fields1384 .value input {width:168px;}*/
-.end_user_fields .fields1402 {float:right; position:absolute; left:375px; top:270px}
-.end_user_fields .fields1404 {float:right; position:absolute; left:305px; top:18px}
