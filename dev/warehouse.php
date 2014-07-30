@@ -69,5 +69,5 @@ error_reporting(-1);
             //->addAttributeToSelect('qty')
 */
 
-Mage::getModel('ocm_catalog/observer')->updateNewCPCPrice(NULL);
+Mage::getModel('etilize/etilize')->updateSpex();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();

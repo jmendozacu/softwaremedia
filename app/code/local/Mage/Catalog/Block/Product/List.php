@@ -140,6 +140,9 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
 		if ($orders = $this->getAvailableOrders()) {
 			$toolbar->setAvailableOrders($orders);
 			$toolbar->addOrderToAvailableOrders('popularity', 'Popularity');
+			$toolbar->removeOrderFromAvailableOrders('created_at');
+			$toolbar->removeOrderFromAvailableOrders('news_from_date');
+			$toolbar->addOrderToAvailableOrders('created_at', 'Newest Release');
 		}
 		if ($sort = $this->getSortBy()) {
 			$toolbar->setDefaultOrder($sort);
