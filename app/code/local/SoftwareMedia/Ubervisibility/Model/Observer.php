@@ -17,7 +17,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock', 'min_sale_qty'));
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
-//		$collection->getSelect()->where('sku = "MC-SPYYFMAAFA"');
+		$collection->getSelect()->where('type_id != "bundle"');
+//		$collection->getSelect()->where('sku = "TEST12345BUNDLE"');
 		$collection->setOrder('ubervis_updated', 'ASC');
 		$collection->setPageSize(100);
 
@@ -219,66 +220,64 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 
 			Mage::log('# of Magento to update: ' . count($collection), null, 'ubervis.log');
 			$csv_content[] = array('Magento Updated:', count($collection));
-			$csv_content[] = array('SKU', 'Title', 'Old CPC', 'New CPC', 'Old Site', 'New Site');
+			$csv_content[] = array('ID', 'SKU', 'Title', 'Old CPC', 'New CPC', 'Old Site', 'New Site');
 
+			foreach ($collection as $prod) {
+				Mage::log('Retrieving ' . $prod->getName(), null, 'ubervis.log');
+				Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
 
-			/*
-			  foreach ($collection as $prod) {
-			  Mage::log('Retrieving ' . $prod->getName(), null, 'ubervis.log');
-			  Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
+				$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
+				$data = array();
 
-			  $ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
-			  $data = array();
+				if (is_array($ubervis_prod)) {
+					$ubervis_prod = $ubervis_prod[0];
+					$data = (array) $ubervis_prod;
+				}
 
-			  if (is_array($ubervis_prod)) {
-			  $ubervis_prod = $ubervis_prod[0];
-			  $data = (array) $ubervis_prod;
-			  }
+				if ($ubervis_prod != null) {
+					$csv_row = array();
+					$old_cpc = $prod->getCpcPrice();
+					$old_site = $prod->getPrice();
+					Mage::log('Before Price: ' . $prod->getPrice(), null, 'ubervis.log');
+					Mage::log('Before CPC Price: ' . $prod->getCpcPrice(), null, 'ubervis.log');
 
-			  if ($ubervis_prod != null) {
-			  $csv_row = array();
-			  $old_cpc = $prod->getCpcPrice();
-			  $old_site = $prod->getPrice();
-			  Mage::log('Before Price: ' . $prod->getPrice(), null, 'ubervis.log');
-			  Mage::log('Before CPC Price: ' . $prod->getCpcPrice(), null, 'ubervis.log');
+					if (!empty($ubervis_prod->price)) {
+						$prod->setPrice($ubervis_prod->price);
+					}
 
-			  if (!empty($ubervis_prod->price)) {
-			  $prod->setPrice($ubervis_prod->price);
-			  }
+					if (!empty($ubervis_prod->cpcPrice)) {
+						$prod->setNewCpcPrice($ubervis_prod->cpcPrice);
+					}
 
-			  if (!empty($ubervis_prod->cpcPrice)) {
-			  $prod->setNewCpcPrice($ubervis_prod->cpcPrice);
-			  }
+					Mage::log('Price: ' . $prod->getPrice(), null, 'ubervis.log');
+					Mage::log('CPC Price: ' . $prod->getNewCpcPrice(), null, 'ubervis.log');
 
-			  Mage::log('Price: ' . $prod->getPrice(), null, 'ubervis.log');
-			  Mage::log('CPC Price: ' . $prod->getNewCpcPrice(), null, 'ubervis.log');
+					$prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
+					$prod->save();
 
-			  $prod->setUbervisUpdated(date('Y-m-d H:i:s', strtotime('+1 hour')));
-			  $prod->save();
+					$csv_row[0] = $ubervis_prod->id;
+					$csv_row[1] = $prod->getSku();
+					$csv_row[2] = $prod->getName();
+					$csv_row[3] = $old_cpc;
+					$csv_row[4] = $prod->getNewCpcPrice();
+					$csv_row[5] = $old_site;
+					$csv_row[6] = $prod->getPrice();
 
-			  $csv_row[0] = $prod->getSku();
-			  $csv_row[1] = $prod->getName();
-			  $csv_row[2] = $old_cpc;
-			  $csv_row[3] = $prod->getNewCpcPrice();
-			  $csv_row[4] = $old_site;
-			  $csv_row[5] = $prod->getPrice();
+					$csv_content[] = $csv_row;
+				}
+			}
 
-			  $csv_content[] = $csv_row;
-			  }
-			  }
+			$results = $this->generateCsv($csv_content);
 
-			  $results = $this->generateCsv($csv_content);
+			if (!empty($results)) {
+				$mailTemplate = Mage::getModel('core/email_template')->loadDefault('Uberviz Update');
+				$mailTemplate->setSenderName('Uberviz');
+				$mailTemplate->setSenderEmail('customerservice@softwaremedia.com');
+				$mailTemplate->setTemplateSubject('Ubervis To Magento Updates!');
+				$mailTemplate->getMail()->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'Uber_To_Magento_Update.csv');
 
-			  if (!empty($results)) {
-			  $mailTemplate = Mage::getModel('core/email_template')->loadDefault('Uberviz Update');
-			  $mailTemplate->setSenderName('Uberviz');
-			  $mailTemplate->setSenderEmail('customerservice@softwaremedia.com');
-			  $mailTemplate->setTemplateSubject('Ubervis To Magento Updates!');
-			  $mailTemplate->getMail()->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'Uber_To_Magento_Update.csv');
-
-			  $mailTemplate->send('lstrauss@softwaremedia.com');
-			  }
-			 */
+				$mailTemplate->send('lstrauss@softwaremedia.com');
+			}
 		}
 	}
 
