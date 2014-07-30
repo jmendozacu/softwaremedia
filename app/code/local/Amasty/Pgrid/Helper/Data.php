@@ -106,7 +106,15 @@ class Amasty_Pgrid_Helper_Data extends Mage_Core_Helper_Abstract
                 'col'       => 'special_to_date',
             );
         }
-        
+        if (Mage::getStoreConfig('ampgrid/additional/created_at')) {
+        	/*
+        	$prop['created_at'] = array(
+                'type'      => 'date',
+                'col'       => 'created_at',
+            );
+            */
+        }
+            
         if (Mage::getStoreConfig('ampgrid/additional/cost'))
         {
             $prop['cost'] = array(
