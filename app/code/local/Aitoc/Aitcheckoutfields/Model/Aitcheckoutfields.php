@@ -130,7 +130,7 @@ class Aitoc_Aitcheckoutfields_Model_Aitcheckoutfields extends Mage_Eav_Model_Ent
 
 		$sLiClass = 'fields' . $iItemId;
 
-		$sHtml = '<li class="' . $sLiClass . '" style="clear:both;"><div class="field' . $iItemId . '" style="padding: 5px' . (($aField['frontend_input'] === 'static') ? ';width:auto' : '') . '">';
+		$sHtml = '<li class="' . $sLiClass . '" ><div class="field' . $iItemId . '" style="padding: 5px' . (($aField['frontend_input'] === 'static') ? ';width:auto' : '') . '">';
 
 		$sHtml .= '<label ' . ($bLeft ? 'style="text-align:left; width:100%;"' : '') . ' for="' . $sFieldId . '"';
 
