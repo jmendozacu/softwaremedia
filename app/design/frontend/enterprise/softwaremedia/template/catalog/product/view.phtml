@@ -53,51 +53,7 @@
                         <ul class="add-to-links">
 							<li class="social">
 
-                                <div id="fb-root"></div>
-                                <script>(function(d, s, id) {
-										var js, fjs = d.getElementsByTagName(s)[0];
-										if (d.getElementById(id))
-											return;
-										js = d.createElement(s);
-										js.id = id;
-										js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=399489626766851";
-										fjs.parentNode.insertBefore(js, fjs);
-									}(document, 'script', 'facebook-jssdk'));</script>
-
-                                <div class="fb-like" data-href="<?php echo $this->helper('core/url')->getCurrentUrl(); ?>" data-width="200" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
-
-
-                                <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en">Tweet</a>
-                                <script>!function(d, s, id) {
-										var js, fjs = d.getElementsByTagName(s)[0];
-										if (!d.getElementById(id)) {
-											js = d.createElement(s);
-											js.id = id;
-											js.src = "https://platform.twitter.com/widgets.js";
-											fjs.parentNode.insertBefore(js, fjs);
-										}
-									}(document, "script", "twitter-wjs");</script>
-
-
-                                <!-- Place this tag where you want the +1 button to render. -->
-                                <div class="g-plusone"></div>
-
-                                <!-- Place this tag after the last +1 button tag. -->
-                                <script type="text/javascript">
-									(function() {
-										var po = document.createElement('script');
-										po.type = 'text/javascript';
-										po.async = true;
-										po.src = 'https://apis.google.com/js/plusone.js';
-										var s = document.getElementsByTagName('script')[0];
-										s.parentNode.insertBefore(po, s);
-									})();
-                                </script>
-
-                                <style>
-									#twitter-widget-0{ width: 80px !important}
-									#___plusone_0 { width: 65px !important}
-                                </style>
+								<?php echo $this->getChildHtml('product.info.rewardssocial.widgets'); ?>
 
 							</li>
 
@@ -118,7 +74,7 @@
 									echo $this->helper('catalog/product')
 										->getEmailToFriendUrl($_product)
 									?>"><?php echo $this->__('Email to a Friend') ?></a></li>
-<?php endif; ?>
+								<?php endif; ?>
 							<li><?php echo $this->getChildHtml('pro.rewardssocial.widgets') ?></li>
                         </ul>
                     </div>
@@ -130,42 +86,42 @@
                         <p class="product-ids"><?php echo $this->__('SKU# %s', $this->escapeHtml($_product->getSku())); ?></p>
 
 
-					<?php echo $this->getChildHtml('product_type_data') ?>
+						<?php echo $this->getChildHtml('product_type_data') ?>
                     </div>
 					<?php echo $this->getChildHtml('tierprices') ?>
-<?php echo $this->getChildHtml('extrahint') ?>
+					<?php echo $this->getChildHtml('extrahint') ?>
 
 
-						<?php if ($_product->getData('manufacturer_pn_2')): ?>
+					<?php if ($_product->getData('manufacturer_pn_2')): ?>
 						<div class="product-style">
 							<?php if ($_product->isConfigurable()): ?>
 								<div id="sku-container"></div>
-	<?php else: ?>
+							<?php else: ?>
 								<span><?php echo $_product->getData('manufacturer_pn_2') ?></span>
 								<label><?php echo $this->__('Part #: ') ?></label>
-						<?php endif; ?>
+							<?php endif; ?>
 						</div>
 					<?php endif; ?>
 
-						<?php if (!$this->hasOptions()): ?>
+					<?php if (!$this->hasOptions()): ?>
 						<div class="add-to-box">
 							<?php if ($_product->isSaleable()): ?>
 								<?php echo $this->getChildHtml('addtocart') ?>
-						<?php endif; ?>
+							<?php endif; ?>
 						</div>
 					<?php else: ?>
-							<?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container1')): ?>
+						<?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container1')): ?>
 							<div class="options-container-small">
-							<?php echo $this->getChildChildHtml('container1', '', true, true) ?>
+								<?php echo $this->getChildChildHtml('container1', '', true, true) ?>
 							</div>
 						<?php endif; ?>
-<?php endif; ?>
+					<?php endif; ?>
 
 
 
-						<?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container2')): ?>
+					<?php if ($_product->isSaleable() && $this->hasOptions() && $this->getChildChildHtml('container2')): ?>
 						<div class="options-container-big">
-						<?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+							<?php echo $this->getChildChildHtml('container2', '', true, true) ?>
 						</div>
 					<?php endif; ?>
 
@@ -187,7 +143,7 @@
 								<p class="availability in-stock" id="availability_message">
 									Backordered. Product may take 1-2 weeks for delivery.
 								</p>
-								<?php else: ?>
+							<?php else: ?>
 								<p class="availability in-stock" id="availability_message">
 									<?php
 									if ($stock_message == 'In Stock. Ships Free Today' && date('N') < 5 && date('G') >= 16) {
@@ -206,12 +162,12 @@
 
 								</p>
 							<?php endif; ?>
-	<?php endif; ?>
-<?php else: ?>
+						<?php endif; ?>
+					<?php else: ?>
 						<p class="availability out-of-stock" style="text-align: right">
 							Out of Stock
 						</p>
-<?php endif; ?>
+					<?php endif; ?>
                 </div>
 
 			</div>
@@ -221,9 +177,9 @@
 		</div>
 		<div class="detail-infor">
 			<div class="product-collateral">
-					<?php if ($detailedInfoGroup = $this->getChildGroup('detailed_info', 'getChildHtml')): ?>
+				<?php if ($detailedInfoGroup = $this->getChildGroup('detailed_info', 'getChildHtml')): ?>
 					<dl id="collateral-tabs" class="collateral-tabs">
-	<?php foreach ($detailedInfoGroup as $alias => $html): ?>
+						<?php foreach ($detailedInfoGroup as $alias => $html): ?>
 							<dt class="tab"><span><?php echo $this->escapeHtml($this->getChildData($alias, 'title')) ?></span></dt>
 							<dd class="tab-container">
 								<div class="tab-content">
@@ -235,7 +191,7 @@
 								?>
 								<?php echo $html ?></div>
 							</dd>
-	<?php endforeach; ?>
+						<?php endforeach; ?>
 					</dl>
 					<script type="text/javascript">
 						//<![CDATA[
@@ -245,12 +201,12 @@
 						});
 						//]]>
 					</script>
-<?php endif; ?>
+				<?php endif; ?>
 			</div>
 			<div class="right-infor">
-				<div class="info-first"><?php //echo $this->getChildHtml('related-category')  ?></div>
-<?php echo $this->getChildHtml('tool-resource') ?>
-<?php echo $this->getChildHtml('recently_viewed') ?>
+				<div class="info-first"><?php //echo $this->getChildHtml('related-category')          ?></div>
+				<?php echo $this->getChildHtml('tool-resource') ?>
+				<?php echo $this->getChildHtml('recently_viewed') ?>
 			</div>
 		</div>
 		<div class="customer-review-product" id="customer-review-wrap">
@@ -266,17 +222,17 @@
 				<a href="#addReview" onclick="javascript:showFormAddReview();"><?php
 					echo
 					$this->__('Write a Review');
-				?></a>
+					?></a>
 			</div>
 			<div class="review-detail">
-		<?php echo $this->getChildHtml('product_additional_data') ?>
+				<?php echo $this->getChildHtml('product_additional_data') ?>
 			</div>
 		</div>
 		<!-- end: .detail-infor -->
 		<?php echo $this->getChildHtml('relatedProducts') ?>
-<?php echo $this->getChildHtml('upsell_products') ?>
-<?php //echo $this->getChildHtml('productTagList')   ?>
-<?php //echo $this->getChildHtml('product_additional_data')   ?>
+		<?php echo $this->getChildHtml('upsell_products') ?>
+		<?php //echo $this->getChildHtml('productTagList')   ?>
+		<?php //echo $this->getChildHtml('product_additional_data')   ?>
 	</div>
 </div>
 

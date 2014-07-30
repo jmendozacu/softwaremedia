@@ -398,6 +398,33 @@ Supported layout update handles (special):
 						<block>product.info.options.wrapper.bottom</block>
 					</action>
 				</block>
+
+				<block type="core/template" name="product.info.rewardssocial.widgets" template="rewardssocial/widgets.phtml" before="product.info">
+					<!-- like button -->
+					<block type="rewardssocial/facebook_like_button" name="facebook.like" template="rewardssocial/facebook/like/button.phtml">
+						<action method="setHidden" ifconfig="evlike/evlike_visibility/ev_like_visibility_product_default">
+							<value>1</value>
+						</action>
+					</block>
+
+					<!-- facebook share button -->
+					<block type="rewardssocial/facebook_share_button" name="facebook.share" template="rewardssocial/facebook/share/button.phtml" />
+
+					<!-- pinterest button -->
+					<block type="rewardssocial/pinterest_pin_button" name="pinterest.pin" template="rewardssocial/pinterest/pin/button.phtml" />
+
+					<!-- google+ button -->
+					<block type="rewardssocial/google_plusOne_button" name="google.plusone" template="rewardssocial/google/plusone/button.phtml" />
+
+					<!-- tweet button -->
+					<block type="rewardssocial/twitter_tweet_button" name="twitter.tweet" template="rewardssocial/twitter/tweet/tweetbutton.phtml" />
+
+					<!-- referral link share button -->
+					<block type="rewardssocial/referral_share_button" name="referral.share" template="rewardssocial/referral/share/button.phtml" />
+
+					<!-- follow button -->
+					<block type="rewardssocial/twitter_follow_button" name="twitter.follow" template="rewardssocial/twitter/follow/button.phtml" />
+				</block>
 				<action method="unsetCallChild">
 					<child>container1</child>
 					<call>ifEquals</call>
@@ -413,6 +440,11 @@ Supported layout update handles (special):
 					<key>options_container</key>
 				</action>
 			</block>
+			<reference name="likebutton">
+				<action method="setHidden">
+					<value>1</value>
+				</action>
+			</reference>
 		</reference>
 	</catalog_product_view>
 
