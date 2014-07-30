@@ -59,7 +59,7 @@
             <li>
                 <label for="country" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Country:') ?></label>
                 <div class="input-box">
-                    <?php echo Mage::getBlockSingleton('directory/data')->getCountryHtmlSelect($this->getEstimateCountryId()) ?>
+					<?php echo Mage::getBlockSingleton('directory/data')->getCountryHtmlSelect($this->getEstimateCountryId()) ?>
                 </div>
             </li>
             <li class="wide">
@@ -77,7 +77,7 @@
             <li>
                 <label for="captcha" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Please answer the following:') ?></label>
                 <div class="input-box">
-                    <label>Two + Two =</label><input name="captcha" id="captcha" title="<?php echo Mage::helper('contacts')->__('Please answer the following') ?>" value="" class="input-text required-entry" type="text" />
+                    <label>Three + Nineteen =</label><input name="captcha" id="captcha" title="<?php echo Mage::helper('contacts')->__('Please answer the following') ?>" value="" class="input-text required-entry" type="text" />
                 </div>
             </li>
         </ul>
@@ -90,6 +90,6 @@
 </form>
 <script type="text/javascript">
 //<![CDATA[
-    var contactForm = new VarienForm('contactForm', true);
+	var contactForm = new VarienForm('contactForm', true);
 //]]>
 </script>
