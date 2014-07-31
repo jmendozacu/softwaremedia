@@ -1415,6 +1415,9 @@ div.country.validation-passed, div.country.validation-error {
 .end_user_fields .fields1395, .end_user_fields .fields1398, .end_user_fields .fields1400, .end_user_fields .fields1404, .end_user_fields .fields1536, .end_user_fields .fields1401 {
 	float:right;
 }
+.end_user_fields .fields1399 {
+	clear: both;
+}
 .end_user_fields .fields1396 select {
 	width: 200px;
 	height: 28px;
