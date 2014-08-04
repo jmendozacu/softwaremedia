@@ -74,10 +74,6 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			$comment .= $text;
 			$comment .= "</div>";
 
-			if (!$this->isPlain()) {
-				$text .= '<img src="' . Mage::helper('core/url')->getHomeUrl() . '/emailread/index/index/image/' . $order->getId() . '.gif" />';
-			}
-
 			$historyEmail = Mage::getModel('emailhistory/email');
 			$historyEmail->setOrderId($order->getId());
 			$historyEmail->setText($text);
@@ -87,6 +83,10 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			$historyEmail->setCreatedAt(now());
 			$historyEmail->setIsRead(0);
 			$historyEmail->save();
+
+			if (!$this->isPlain()) {
+				$text .= '<img src="' . Mage::helper('core/url')->getHomeUrl() . '/emailread/index/index/image/' . $historyEmail->getId() . '.gif" />';
+			}
 		}
 
 		if ($this->isPlain()) {
