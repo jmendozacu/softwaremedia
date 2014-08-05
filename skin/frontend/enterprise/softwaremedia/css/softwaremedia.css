@@ -1437,3 +1437,26 @@ div.country.validation-passed, div.country.validation-error {
 	width: 317px;
 	height: 28px;
 }
+
+
+/*
+	Fonts
+*/
+@font-face {
+	font-family: 'Carrois Gothic';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Carrois Gothic'), local('CarroisGothic-Regular'), url(/media/font/carrois_gothic.woff2) format('woff2'), url(/media/font/carrois_gothic.woff) format('woff');
+}
+@font-face {
+	font-family: 'Duru Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Duru Sans'), local('DuruSans-Regular'), url(/media/font/duru_sans.woff2) format('woff2'), url(/media/font/duru_sans.woff) format('woff');
+}
+@font-face {
+	font-family: 'Armata';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Armata'), local('Armata-Regular'), url(/media/font/armata.woff2) format('woff2'), url(/media/font/armata.woff) format('woff');
+}
