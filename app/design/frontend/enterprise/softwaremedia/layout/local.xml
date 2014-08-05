@@ -73,6 +73,45 @@
         </reference>
 
     </default>
+        <catalog_category_default>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/2columns-left.phtml</template>
+            </action>
+        </reference>
+        <reference name="product_list">
+            <action method="setColumnCount">
+                <count>4</count>
+            </action>
+        </reference>
+        <!--
+			<reference name="product_list_toolbar">
+            <action method="setDefaultListPerPage">
+                <limit>20</limit>
+            </action>
+            <action method="setDefaultGridPerPage">
+                <limit>20</limit>
+            </action>
+            <action method="addPagerLimit">
+                <mode>list</mode>
+                <limit>20</limit>
+            </action>
+            <action method="addPagerLimit">
+                <mode>grid</mode>
+                <limit>20</limit>
+            </action>
+        </reference>
+		-->
+		        <remove name="catalog.leftnav" />
+        <remove name="enterprisecatalog.leftnav"/> 
+        <reference name="left">
+           <block type="amshopby/catalog_layer_view" name="amshopby.navleft" after="currency" template="catalog/layer/view.phtml"/> 
+        </reference>
+        <reference name="content">
+                <block type="amshopby/catalog_layer_view_top" name="amshopby.navtop" before="-" template="amshopby/view_top.phtml"/>
+                <block type="amshopby/top" name="amshopby.top" before="category.products" template="amshopby/top.phtml"/>
+        </reference>
+    </catalog_category_default>
     <catalog_category_layered>
         <reference name="root">
             <action method="setTemplate">

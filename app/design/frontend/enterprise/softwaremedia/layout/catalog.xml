@@ -118,7 +118,7 @@ Supported layout update handles (special):
 						<count>4</count>
 					</action>
 					<action method="addColumnCountLayoutDepend">
-						<layout>three_columns</layout>
+						<layout>two_columns_left</layout>
 						<count>3</count>
 					</action>
 					<action method="setToolbarBlockName">
@@ -187,7 +187,7 @@ Supported layout update handles (special):
 						<count>4</count>
 					</action>
 					<action method="addColumnCountLayoutDepend">
-						<layout>three_columns</layout>
+						<layout>two_columns_left</layout>
 						<count>3</count>
 					</action>
 					<action method="setToolbarBlockName">
