@@ -48,12 +48,20 @@
 	</div>
 	<p class="note-msg font-13">
 		<?php echo ($this->getNoResultText()) ? $this->getNoResultText() : $this->__('Your search returns no results.') ?>
-	<div class="font-13">
-		<span class='bold-text'>Some Tips on Searching</span>
-		<div class='pad-left-15'>
-			<ul class='display-bullets'>
+	</p>
+	<p class="note-msg font-15">
+		<?php echo $this->__('Can\'t find what you\'re look for?'); ?>
+		<span class="bold-text">
+			<?php echo $this->__('Call Us: 1-800-474-1045 or '); ?>
+			<a class="link-blue" href="mailto:customerservice@softwaremedia.com"><?php echo $this->__('email us'); ?></a>
+		</span>
+	</p>
+	<div class = "font-13">
+		<span class = 'bold-text'>Some Tips on Searching</span>
+		<div class = 'pad-left-15'>
+			<ul class = 'display-bullets'>
 				<li>
-					<span class='bold-text'>Check your spelling</span>: Always do this first when you don't get any matches
+					<span class = 'bold-text'>Check your spelling</span>: Always do this first when you don't get any matches
 				</li>
 				<li>
 					<span class='bold-text'>Use an alternative spelling</span>: For example, instead of antivirus, try anti virus
@@ -76,5 +84,4 @@
 			<br /><?php echo $message ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
-	</p>
 <?php endif; ?>
