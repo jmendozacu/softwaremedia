@@ -156,7 +156,7 @@ class Mage_Reports_Model_Resource_Report_Collection {
 				switch ($this->_period) {
 					case 'day':
 						$t['title'] = $dateStart->toString(Mage::app()->getLocale()->getDateFormat());
-						$t['start'] = $dateStart->toString('yyyy-MM-dd HH:mm:ss');
+						$t['start'] = $dateStart->toString('yyyy-MM-dd 00:00:00');
 						$t['end'] = $dateStart->toString('yyyy-MM-dd 23:59:59');
 						$dateStart->addDay(1);
 						break;
