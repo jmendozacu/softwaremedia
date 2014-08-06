@@ -72,9 +72,15 @@ class Enterprise_PageCache_Model_Processor_Product extends Enterprise_PageCache_
 	 */
 	public function getPageIdWithoutApp(Enterprise_PageCache_Model_Processor $processor) {
 		$queryParams = $_GET;
-		if (isset($queryParams['gclid'])) {
-			unset($queryParams['gclid']);
+
+		if ($queryParams) {
+			foreach ($queryParams as $key => $param) {
+				if (!is_numeric($key)) {
+					unset($queryParams[$key]);
+				}
+			}
 		}
+
 		ksort($queryParams);
 		$queryParamsHash = md5(serialize($queryParams));
 		return $processor->getRequestId() . '_' . $queryParamsHash;
