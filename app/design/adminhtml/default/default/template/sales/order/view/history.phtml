@@ -1,27 +1,16 @@
 <?php
 /**
- * Magento Enterprise Edition
+ * Abcnet_CommentBox
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Magento Enterprise Edition License
- * that is bundled with this package in the file LICENSE_EE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * http://opensource.org/licenses/osl-3.0.php
  *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    design
- * @package     default_default
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
+ * @category   Abcnet
+ * @package    Abcnet_CommentBox
+ * @copyright  Copyright (c) 2011 Mogos Radu, radu.mogos@pixelplant.ro, radu.mogos@abcnet.ch
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 ?>
 <div id="order_history_block">
@@ -29,6 +18,35 @@
     <div id="history_form" class="order-history-form">
         <div><?php echo Mage::helper('sales')->__('Add Order Comments') ?></div>
         <span class="field-row">
+            <div style="float:right">
+            <script type="text/javascript">
+
+            function getCommentMessage()
+            {
+                var url = '<?php echo Mage::helper("adminhtml")->getUrl("commentboxadmin/adminhtml_list/message") ?>';
+                var pars = 'mid='+$('history_commentbox').getValue();
+                new Ajax.Request(url,
+                {
+                    method: 'get',
+                    parameters: pars,
+                    onComplete: showMessage
+                });
+            }
+            
+            function showMessage(request)
+            {
+                $('history_comment').setValue(request.responseText);
+                tinyMCE.get('history_comment').setContent(request.responseText);
+            }
+            </script>
+            <label class="normal" for="history_commentbox"><?php echo Mage::helper('commentbox')->__('Use predefined message') ?></label><br/>
+            <select name="history[commentbox]" class="select" id="history_commentbox" onchange="getCommentMessage()">
+                <option value="0"><?php echo Mage::helper('commentbox')->__('-- None --') ?></option>
+                <?php foreach ($this->getCommentMessages() as $message): ?>
+                <option value="<?php echo $message->getId(); ?>"><?php echo $message->getTitle();?></option>
+                <?php endforeach; ?>
+            </select>
+            </div>
             <label class="normal" for="history_status"><?php echo Mage::helper('sales')->__('Status') ?></label><br/>
             <select name="history[status]" class="select" id="history_status">
             <?php foreach ($this->getStatuses() as $_code=>$_label): ?>
@@ -38,7 +56,7 @@
         </span>
         <span class="field-row">
             <label class="normal" for="history_comment"><?php echo Mage::helper('sales')->__('Comment') ?></label>
-            <textarea name="history[comment]" rows="3" cols="5" style="height:6em; width:99%;" id="history_comment"></textarea>
+            <textarea name="history[comment]" rows="3" cols="5" style="height:12em; width:450px;" id="history_comment"></textarea>
         </span>
         <div class="f-left">
             <?php if ($this->canSendCommentEmail()): ?>
@@ -69,7 +87,10 @@
                 <?php endif; ?>
             </strong></small>
             <?php if ($_item->getComment()): ?>
-                <br/><?php echo $this->escapeHtml($_item->getComment(), array('b','br','strong','i','u')) ?>
+                <br/><?php 
+                //echo $this->escapeHtml($_item->getComment(), array('h1','h2','h3','h4','p','div','b','br','strong','i','u', 'em'));
+                echo $_item->getComment();
+                ?>
             <?php endif; ?>
         </li>
     <?php endforeach; ?>
@@ -78,3 +99,33 @@
     if($('order_status'))$('order_status').update('<?php echo $this->getOrder()->getStatusLabel() ?>');
     </script>
 </div>
+
+<script type="text/javascript">
+window.onload=function()
+{
+   tinyMCE.init({
+    mode : "exact",
+    elements: "history_comment",
+    theme : "advanced",
+    plugins : "inlinepopups,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
+    theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
+    theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redor",
+    theme_advanced_toolbar_location : "top",
+    theme_advanced_toolbar_align : "left",
+    theme_advanced_path_location : "bottom",
+    extended_valid_elements : "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
+    theme_advanced_resize_horizontal : 'true',
+    theme_advanced_resizing : 'true',
+    apply_source_formatting : 'true',
+    convert_urls : 'false',
+    force_br_newlines : 'true',
+    doctype : '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+    setup : function(ed) {
+      ed.onKeyUp.add(function(ed, evt) {
+          $('history_comment').value = tinyMCE.get('history_comment').getContent();
+      });
+   }
+
+  });
+};
+</script>
