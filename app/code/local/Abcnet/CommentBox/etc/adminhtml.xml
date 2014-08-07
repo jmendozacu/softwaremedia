@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config>
+	<menu>
+		<system>
+			<children>
+				<email_template>
+					<children>
+						<commentbox translate="title" module="commentbox">
+							<title>Order Comment Templates</title>
+							<sort_order>0</sort_order>
+							<action>commentboxadmin/adminhtml_list</action>
+						</commentbox>
+					</children>
+				</email_template>
+			</children>
+		</system>
+	</menu>
+
+	<acl>
+		<resources>
+			<admin>
+				<children>
+					<system>
+						<children>
+							<commentbox translate="title" module="commentbox">
+								<title>Order Comment Templates</title>
+							</commentbox>
+							<config>
+								<children>
+									<commentbox translate="title" module="commentbox">
+										<title>Order Comment Templates</title>
+									</commentbox>
+								</children>
+							</config>
+						</children>
+					</system>
+				</children>
+			</admin>
+		</resources>
+	</acl>
+</config>

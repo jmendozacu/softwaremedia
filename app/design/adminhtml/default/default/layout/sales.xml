@@ -73,7 +73,17 @@
     </adminhtml_sales_billing_agreement_customergrid>
 
     <adminhtml_sales_order_view>
-        <reference name="head">
+    <reference name="head">
+	<action method="setCanLoadExtJs"><flag>1</flag></action>
+	<action method="setCanLoadTinyMce"><flag>1</flag></action>
+<action method="addJs"><script>lib/flex.js</script></action>
+<action method="addJs"><script>mage/adminhtml/flexuploader.js</script></action>
+	<action method="addJs"><script>mage/adminhtml/browser.js</script></action>
+	<action method="addJs"><script>prototype/window.js</script></action>
+	<action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
+	<action method="addItem"><type>js_css</type><name>prototype/windows/themes/magento.css</name></action>
+<action method="addItem"><type>js</type><name>mage/adminhtml/wysiwyg/tiny_mce/setup.js</name><params/></action>
+	
             <action method="addJs"><file>mage/adminhtml/giftmessage.js</file></action>
             <action method="addJs"><file>mage/adminhtml/giftoptions/tooltip.js</file></action>
         </reference>
