@@ -133,6 +133,7 @@ Product.OptionsPrice.prototype.updateSpecialPriceDisplay = function(price, final
     if (extra_config[id]) {
     	var msrp = extra_config[id]['msrp'];
 		var pn = extra_config[id]['pn'];
+		var qty = extra_config[id]['qty'];
 	} else {
 		
 	}
@@ -144,6 +145,11 @@ Product.OptionsPrice.prototype.updateSpecialPriceDisplay = function(price, final
 
     if (pn)
     	$("sku-container").update("<strong>Part Number: </strong>" + pn); 
+    
+    if (qty) {
+	    if ($('qty').value < qty)
+	    	$('qty').value = qty;
+    }
     	
     magentopriceLabel.each(function(x) {x.innerHTML = '$' + parseFloat(price).formatMoney();});
 

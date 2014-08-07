@@ -7,9 +7,11 @@ class OrganicInternet_SimpleConfigurableProducts_Catalog_Block_Product_View_Type
         $childProducts = array();
         foreach ($this->getAllowProducts() as $product) {
             $productId  = $product->getId();
+            $productQuantity = Mage::getModel('cataloginventory/stock_item')->loadByProduct($product->getId());
             $childProducts[$productId] = array(
                 "msrp" => $this->_registerJsPrice($this->_convertPrice($product->getMsrp())),
-                "pn" => $product->getData('manufacturer_pn_2')
+                "pn" => $product->getData('manufacturer_pn_2'),
+                "qty" => $productQuantity->getMinSaleQty()
             );
         }
         return json_encode($childProducts);

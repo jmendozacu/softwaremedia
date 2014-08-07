@@ -545,6 +545,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			$row['condition'] = 'New';
 			$row['availability'] = 'In Stock';
 			$row['description_stripped'] = strip_tags(preg_replace("/\s\s+/", " ", $row['description']));
+			$row['description_stripped'] = substr($row['description_stripped'],0,990);
 			
 			if (!$row['cpc_price'])
 				$row['cpc_price'] = $row['price'];
