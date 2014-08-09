@@ -270,13 +270,17 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$results = $this->generateCsv($csv_content);
 
 			if (!empty($results)) {
-				$mailTemplate = Mage::getModel('core/email_template')->loadDefault('Uberviz Update');
-				$mailTemplate->setSenderName('Uberviz');
-				$mailTemplate->setSenderEmail('customerservice@softwaremedia.com');
-				$mailTemplate->setTemplateSubject('Ubervis To Magento Updates!');
-				$mailTemplate->getMail()->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'Uber_To_Magento_Update.csv');
+				$mailTemplate = Mage_Core_Model_Email_Template::getMail();
+				$mailTemplate->setFrom('customerservice@softwaremedia.com', 'Uberviz');
+				$mailTemplate->setSubject('Uberviz To Magento Updates!');
+				$mailTemplate->addTo('lisa@softwaremedia.com');
+				$mailTemplate->setBodyHTML(file_get_contents($results['value']));
 
-				$mailTemplate->send('lstrauss@softwaremedia.com');
+				$mailTemplate->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'uber_to_magento_update.csv');
+				$helper = Mage::helper('smtppro');
+				$transport = $helper->getTransport(1);
+
+				$mailTemplate->send($transport);
 			}
 		}
 	}
