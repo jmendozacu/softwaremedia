@@ -43,7 +43,7 @@
     	<jobs>
 			<update_cpc_price>
 				<schedule>
-					<cron_expr>*/5 3,4 * * *</cron_expr>
+					<cron_expr>*/5 15,16 * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ocm_catalog/observer::updateNewCPCPrice</model>
