@@ -24,21 +24,20 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
-<? /* Moved to cart.phtml table footer */ ?>
+<?php /* Moved to cart.phtml table footer */ ?>
 <div class="discount">
-    <h2><?php echo $this->__('Apply Coupon / Gift Card') ?></h2>
     <form id="discount-coupon-form" action="<?php echo $this->getUrl('checkout/cart/couponPost') ?>" method="post">
+		<h2><?php echo $this->__('Apply Coupon / Gift Card') ?></h2>
         <fieldset>
             <input type="hidden" name="remove" id="remove-coupone" value="0" />
-			<input type="hidden" name="return_url" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
 			<?php if (!strlen($this->getCouponCode())): ?>
 				<div class="v-fix"><input class="input-text" id="coupon_code" name="coupon_code" value="<?php echo $this->htmlEscape($this->getCouponCode()) ?>" /></div>
-				<button class="button" onclick="discountForm.submit(false)" type="button" value="<?php echo $this->__('Submit') ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+				<button class="button" onclick="discountForm.submit(false)" type="button" value="<?php echo $this->__('Apply') ?>"><span><span><?php echo $this->__('Apply') ?></span></span></button>
 			<?php else: ?>
 				<div class="v-fix"><input class="input-text" id="coupon_code" name="coupon_code" value="<?php echo $this->htmlEscape($this->getCouponCode()) ?>" /></div>
-				<button type="button" class="button" onclick="discountForm.submit(false)" value="<?php echo $this->__('Submit') ?>"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+				<button type="button" class="button" onclick="discountForm.submit(false)" value="<?php echo $this->__('Apply') ?>"><span><span><?php echo $this->__('Apply') ?></span></span></button>
 				<div class="bottom_note">
-					<div><?php echo $this->__('Promo code ') ?><span class="code_applied availability"><?php echo $this->htmlEscape($this->getCouponCode()) ?></span><?php echo $this->__(' applied') ?></div>
+					<h2><span></span><?php echo $this->__('Promo code ') ?><span class="code_applied"><?php echo $this->htmlEscape($this->getCouponCode()) ?></span><?php echo $this->__(' applied') ?></h2>
 					<button  type="button" class="button cancel-btn" onclick="discountForm.submit(true)" value="<?php echo $this->__('remove') ?>"><span><span><?php echo $this->__('remove') ?></span></span></button>
 				</div>
 			<?php endif; ?>

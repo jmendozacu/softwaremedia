@@ -1,40 +1,4 @@
-<?php
-/**
- * Magento Enterprise Edition
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Magento Enterprise Edition License
- * that is bundled with this package in the file LICENSE_EE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://www.magentocommerce.com/license/enterprise-edition
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    design
- * @package     enterprise_default
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://www.magentocommerce.com/license/enterprise-edition
- */
-?>
-<?php
-/**
- * Shopping cart template
- *
- * @see Mage_Checkout_Block_Cart
- */
-?>
-<style>
-	.new_cart .deals .discount { display: block !important; min-height: 0 !important; }
-</style>
-<div class="cart">
+<div class="cart-new">
     <div class="page-title title-buttons">
         <h1><?php echo $this->__('Shopping Cart') ?></h1>
 		<?php if (!$this->hasError()): ?>
@@ -48,9 +12,8 @@
 	<?php echo $this->getChildHtml('form_before') ?>
     <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
 		<?php echo $this->getBlockHtml('formkey'); ?>
-		<input type="hidden" name="return_url" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
         <fieldset>
-            <table id="shopping-cart-table" class="data-table cart-table" style="margin-bottom: 25px !important;">
+            <table id="shopping-cart-table" class="data-table cart-table">
                 <col width="1" />
                 <col />
                 <col width="1" />
@@ -97,15 +60,9 @@
 
                         <td colspan="7" class="cart_subtotal a-right">
 							<div class="f-left">
-								<button onclick="jQuery('.cart_total_code').slideToggle();
-										return false;" name="more_options_button" value="update_qty" title="More Options" class="button btn-options" id="more_options_button"><span><span><?php echo $this->__('More Options'); ?></span></span></button>
-
-
                                 <button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
 
-                                <button id="c2qBtn" onclick="setLocation('/qquoteadv/index/switch2Qquote/');" class="button btn-quote" style="margin-left:3px;" type="button"><span><span>Get Quote</span></span></button>
-
-							</div>
+                            </div>
                             <label><?php echo $this->__('Subtotal: '); ?></label>
                             <span>
 								<?php
@@ -153,9 +110,17 @@
             <script type="text/javascript">decorateTable('shopping-cart-table')</script>
         </fieldset>
     </form>
-
+    <div class="form_bottom">
+		<div class="f-left">
+			<?php if ($this->getContinueShoppingUrl()): ?>
+				<button type="button" title="<?php echo $this->__('Continue Shopping') ?>" class="button btn-continue" onclick="setLocation('<?php echo $this->getContinueShoppingUrl() ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+			<?php endif; ?>
+            <button onclick="window.print();" name="print_cart_action"  title="<?php echo $this->__('Print Shopping Cart'); ?>" class="button btn-print" id="print_cart_button"><span><span><?php echo $this->__('Print Cart'); ?></span></span></button>
+		</div>
+		<div class="coupon_discount"><?php echo $this->getChildHtml('coupon') ?></div>
+	</div>
 	<?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
-    <div class="cart_total_code new_cart" style="float: none !important; clear: both; width: 1px; height: 1px; overflow: hidden;">
+    <div class="cart_total_code">
         <div class="deals">
 			<?php /* Extensions placeholder */ ?>
 			<?php echo $this->getChildHtml('checkout.cart.extra') ?>
@@ -175,7 +140,6 @@
 				<?php echo $this->getChildHtml('totals'); ?>
 			</div>
         </div>
-        <div class="clearer"></div>
     </div>
 
     <!-- START mobile-checkout-step -->
@@ -236,19 +200,11 @@
     <script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('.satisfaction').remove();
-<?php if (!strlen($this->getQuote()->getCouponCode()) && empty(Mage::getSingleton('checkout/session')->getKeepOpen())): ?>
-						jQuery('.cart_total_code').css('display', 'none');
-	<?php
-endif;
-Mage::getSingleton('checkout/session')->unsKeepOpen();
-?>
-					jQuery('.cart_total_code').width('auto');
-					jQuery('.cart_total_code').height('auto');
 				});
 
-				cxApi.setChosenVariation(
-						1, // The index of the variation shown to the visitor
-						'ChLhMwpjTbqZeLgWtmkYWQ'  // The id of the experiment the user has been exposed to
-						);
+//				cxApi.setChosenVariation(
+//						0, // The index of the variation shown to the visitor
+//						'ChLhMwpjTbqZeLgWtmkYWQ'  // The id of the experiment the user has been exposed to
+//						);
 	</script>
 </div>
