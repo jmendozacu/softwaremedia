@@ -87,7 +87,7 @@
 		<reference name="content">
 			<block type="checkout/cart" name="checkout.cart">
 				<action method="setCartTemplate">
-					<value>checkout/cart.phtml</value>
+					<value>checkout/new_cart.phtml</value>
 				</action>
 				<action method="setEmptyTemplate">
 					<value>checkout/cart/noItems.phtml</value>
