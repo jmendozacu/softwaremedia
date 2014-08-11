@@ -116,12 +116,8 @@
 				<button type="button" title="<?php echo $this->__('Continue Shopping') ?>" class="button btn-continue" onclick="setLocation('<?php echo $this->getContinueShoppingUrl() ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
 			<?php endif; ?>
             <button onclick="window.print();" name="print_cart_action"  title="<?php echo $this->__('Print Shopping Cart'); ?>" class="button btn-print" id="print_cart_button"><span><span><?php echo $this->__('Print Cart'); ?></span></span></button>
-
-
-			<?php /* <button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('Save Cart'); ?>" class="button btn-save"><span><span><?php echo $this->__('Save Cart'); ?></span></span></button> */ ?>
-
 		</div>
-		<div class="coupon_discount"><?php echo $this->getChildHtml('couponform') ?></div>
+		<div class="coupon_discount"><?php echo $this->getChildHtml('coupon') ?></div>
 	</div>
 	<?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
     <div class="cart_total_code">
