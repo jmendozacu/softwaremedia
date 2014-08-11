@@ -92,16 +92,20 @@
 					<?php echo $this->getChildHtml('extrahint') ?>
 
 
-					<?php if ($_product->getData('manufacturer_pn_2')): ?>
+					<?php //if ($_product->getData('manufacturer_pn_2')): ?>
 						<div class="product-style">
 							<?php if ($_product->isConfigurable()): ?>
 								<div id="sku-container"></div>
 							<?php else: ?>
-								<span><?php echo $_product->getData('manufacturer_pn_2') ?></span>
+								<span><?php if ($_product->getData('manufacturer_pn_2')) {
+										echo $_product->getData('manufacturer_pn_2');
+										} else {
+											echo $_product->getSku();
+										} ?></span>
 								<label><?php echo $this->__('Part #: ') ?></label>
 							<?php endif; ?>
 						</div>
-					<?php endif; ?>
+					<?php //endif; ?>
 
 					<?php if (!$this->hasOptions()): ?>
 						<div class="add-to-box">

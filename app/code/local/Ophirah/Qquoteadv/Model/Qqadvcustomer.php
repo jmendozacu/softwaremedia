@@ -261,8 +261,12 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 	 * @return \Ophirah_Qquoteadv_Model_Qqadvcustomer
 	 */
 	public function updateQuote($id, $params) {
-		$this->load($id)
-			->setData($params)
+		$this->load($id);
+		if ($params['status']) {
+			if ($this->getData('status') != $params['status'])
+				$this->setStatus($params['status']);
+		}
+		$this->setData($params)
 			->setId($id);
 		$this->save();
 
@@ -1170,6 +1174,52 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 
 		return $this;
 	}
+	
+	public function save() {
+		//echo "saving";
+		//die();
+		parent::save();
+	}
+	
+	public function setStatus($status) {
+		if ($this->getData('status') == $status)
+			return $this;
+			
+		$this->setData('status',$status);
+		
+		if ($status != 40 && $status != 60 && $status != 70 && $status != 71)
+			return $this;
+			
+		$emailTemplateVariables = array();
+		$emailTemplateVariables['url'] = Mage::getUrl('adminhtml/qquoteadv/edit', array('id' => $this->getId()));
+		$emailTemplateVariables['increment'] = $this->getIncrementId();
+		$emailTemplateVariables['status'] = Mage::helper('qquoteadv')->getStatus($status);
+		
+		//die();
+		$emailTemplate = Mage::getModel('core/email_template');
+		
+		$templateId = 'qquoteadv/emails/proposal';
+
+		$emailTemplate->loadDefault('qquoteadv_status_change', 'en_US');
+		
+		//$emailTemplate->setSenderName('sender name');
+		//$emailTemplate->setSenderEmail('sender@test.com');
+		$sender = $this->getEmailSenderInfo();
+		
+		$emailTemplate->setSenderName($sender['name']);
+		$emailTemplate->setSenderEmail($sender['email']);
+		$emailTemplate->setTemplateSubject("Quote " . $this->getIncrementId() . " has been updated: " . Mage::helper('qquoteadv')->getStatus($status));
+		$emailTemplate->setDesignConfig(array('store' => $this->getStoreId()));
+		$emailTemplate->getProcessedTemplate($emailTemplateVariables);
+		
+		try {
+			$emailTemplate->send($sender['email'], $sender['name'], $emailTemplateVariables);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		} 
+    
+		return $this;
+	}
 
 	/**
 	 * If fixed Quote Total is given
@@ -1487,8 +1537,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 			}
 		}
 		if (!empty($errors)) {
-//			Mage::throwException(implode("\n", $errors));
-			Mage::log(implode('\n', $errors), null, 'quote.log');
+			Mage::throwException(implode("\n", $errors));
 		}
 
 		Mage::dispatchEvent('sales_quote_product_add_after', array('items' => $items));

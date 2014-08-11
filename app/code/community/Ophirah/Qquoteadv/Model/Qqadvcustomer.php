@@ -1170,6 +1170,56 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 
 		return $this;
 	}
+	
+	public function save() {
+		echo "saving";
+		die();
+		parent::save();
+	}
+	
+	public function setStatus($status) {
+		$this->setData('status',$status);
+		$emailTemplate = Mage::getModel('core/email_template');
+		
+		$templateId = 'qquoteadv/emails/proposal';
+
+			// get locale of quote sent so we can sent email in that language
+			$storeLocale = Mage::getStoreConfig('general/locale/code', $_quoteadv->getStoreId());
+
+			if (is_numeric($templateId)) {
+				$emailTemplate->load($templateId);
+			} else {
+				$emailTemplate->loadDefault($templateId, $storeLocale);
+			}
+
+
+		//->loadDefault('qquoteadv_status_change');
+		
+		$emailTemplateVariables = array();
+		$emailTemplateVariables['var1'] = 'var1 value';
+		$emailTemplateVariables['var2'] = 'var 2 value';
+		$emailTemplateVariables['var3'] = 'var 3 value';
+		
+		$emailTemplate->getProcessedTemplate($emailTemplateVariables);
+		
+		//$emailTemplate->setSenderName('sender name');
+		//$emailTemplate->setSenderEmail('sender@test.com');
+		$sender = $this->getEmailSenderInfo();
+		echo $sender['name'] . "<br />";
+		echo $sender['email'] . "<br />";
+		die();
+		
+		$emailTemplate->setSenderName($sender['name']);
+		$emailTemplate->setSenderEmail($sender['email']);
+		
+		try {
+		$emailTemplate->send('jeff.losee@gmail.com', "Jeff", $emailTemplateVariables);
+		} catch (Exception $e) {
+		echo $e->getMessage();
+		} 
+    
+		return $this;
+	}
 
 	/**
 	 * If fixed Quote Total is given

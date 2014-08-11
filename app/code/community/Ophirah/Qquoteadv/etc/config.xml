@@ -95,6 +95,11 @@
         </helpers>
         <template>
             <email>
+	            <qquoteadv_status_change translate="label" module="qquoteadv">
+	                <label>Status change</label>
+	                <file>qquoteadv/status_change.html</file>
+	                <type>html</type>
+	            </qquoteadv_status_change>
                 <qquoteadv_emails_new_account translate="label" module="qquoteadv">
                     <label>cart2quote new account</label>
                     <file>qquoteadv/qquoteadv_account_new.html</file>
