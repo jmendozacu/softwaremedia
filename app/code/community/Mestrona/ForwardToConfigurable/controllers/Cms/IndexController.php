@@ -83,6 +83,8 @@ class Mestrona_ForwardToConfigurable_Cms_IndexController extends Mage_Core_Contr
             $product = $productList->getFirstItem();
             
             if ($product->getId()) {
+            	$prod = Mage::getModel('catalog/product')->load($product->getId());
+            	
             	$parentIds = Mage::getModel('catalog/product_type_configurable')
 	            ->getParentIdsByChild($product->getId());
 	
@@ -107,7 +109,7 @@ class Mestrona_ForwardToConfigurable_Cms_IndexController extends Mage_Core_Contr
 		        for ($i = 0; $i < count($attributesId); $i++) {
 		        	$attribute = Mage::getModel('catalog/resource_eav_attribute')->load($attributesId[$i]);
 		            //Add an array to the $attributes array that contains the attribute ID at the current index and the attribute value at the current index
-		            $attributes[$i] =  $attributesId[$i] . "=" . $product->getData($attribute->getName());
+		            $attributes[$i] =  $attributesId[$i] . "=" . $prod->getData($attribute->getName());
 		        }
 				$attrList = implode('&',$attributes);
 				
