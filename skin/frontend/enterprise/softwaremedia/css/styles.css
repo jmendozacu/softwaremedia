@@ -2138,7 +2138,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .cart-new .coupon_discount form {
 	display: inline-block;
     float: right;
-    min-width: 500px;
+    min-width: 520px;
 	margin-top: 17px;
 }
 
