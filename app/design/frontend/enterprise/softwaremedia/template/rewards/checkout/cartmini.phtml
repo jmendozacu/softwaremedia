@@ -37,6 +37,7 @@ $cant_use_points = (($this->getMinSpendablePoints() == $this->getMaxSpendablePoi
 
 							<form action="<?php echo Mage::getUrl('customer/account/loginPost'); ?>" method="post" id="login-form" class="hidden">
 								<?php echo $this->getBlockHtml('formkey'); ?>
+								<input type="hidden" name="return_url" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
 								<div class="col1-set">
 									<div class="col-1 registered-users">
 										<div class="content">

@@ -1976,7 +1976,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 
 /* New Shopping Cart =================================================================== */
 .cart-new { }
-.cart-new form {width: 100%;float: left}
+.cart-new form {width: 100%;}
 .cart-new .title-buttons { }
 .cart-new .messages,
 .cart-new .messages li { margin:0; }
@@ -2016,6 +2016,10 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 .cart-new .shipping fieldset {padding: 10px 10px 0 10px;min-height: 198px}
 .cart-new .deals p,
 .cart-new .deals label { margin:0; display:block;padding: 0 22px 14px 28px}
+
+.cart-new .deals label.padded { padding: 10px; clear: both; }
+.cart-new .deals input.align-right { float: right; }
+.cart-new .deals label { float: left; padding:0 22px 14px 0 }
 .cart-new .deals .input-text { width:193px; margin:0; float:left;padding: 0 15px;height: 28px;line-height: 28px }
 .cart-new .deals .widget-sku { display:block; margin:0 0 20px; width:264px; }
 .cart-new .deals .widget-sku .block-title { background:inherit; border:inherit; color:#000; font-size:16px; margin:0 0 5px; padding:0; }

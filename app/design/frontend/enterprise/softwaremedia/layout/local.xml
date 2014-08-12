@@ -2,7 +2,7 @@
 
 <layout version="0.1.0">
     <default>
-    
+
         <reference name="top.menu">
 
         </reference>
@@ -103,9 +103,9 @@
         </reference>
 		-->
 		        <remove name="catalog.leftnav" />
-        <remove name="enterprisecatalog.leftnav"/> 
+        <remove name="enterprisecatalog.leftnav"/>
         <reference name="left">
-           <block type="amshopby/catalog_layer_view" name="amshopby.navleft" after="currency" template="catalog/layer/view.phtml"/> 
+           <block type="amshopby/catalog_layer_view" name="amshopby.navleft" after="currency" template="catalog/layer/view.phtml"/>
         </reference>
         <reference name="content">
                 <block type="amshopby/catalog_layer_view_top" name="amshopby.navtop" before="-" template="amshopby/view_top.phtml"/>
@@ -170,6 +170,7 @@
 
         <reference name="checkout.cart">
         <block type="checkout/cart_coupon" name="checkout.cart.couponform" as="couponform" template="checkout/cart/coupon.phtml"/>
+        <block type="checkout/cart_coupon" name="checkout.cart.newcouponform" as="newcouponform" template="checkout/cart/newcoupon.phtml"/>
         </reference>
 
 
