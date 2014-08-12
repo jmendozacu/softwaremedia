@@ -12,6 +12,7 @@
 	<?php echo $this->getChildHtml('form_before') ?>
     <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
 		<?php echo $this->getBlockHtml('formkey'); ?>
+		<input type="hidden" name="return_url" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
         <fieldset>
             <table id="shopping-cart-table" class="data-table cart-table">
                 <col width="1" />
@@ -117,7 +118,7 @@
 			<?php endif; ?>
             <button onclick="window.print();" name="print_cart_action"  title="<?php echo $this->__('Print Shopping Cart'); ?>" class="button btn-print" id="print_cart_button"><span><span><?php echo $this->__('Print Cart'); ?></span></span></button>
 		</div>
-		<div class="coupon_discount"><?php echo $this->getChildHtml('coupon') ?></div>
+		<div class="coupon_discount"><?php echo $this->getChildHtml('newcouponform') ?></div>
 	</div>
 	<?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
     <div class="cart_total_code">
@@ -202,9 +203,9 @@
 					jQuery('.satisfaction').remove();
 				});
 
-//				cxApi.setChosenVariation(
-//						0, // The index of the variation shown to the visitor
-//						'ChLhMwpjTbqZeLgWtmkYWQ'  // The id of the experiment the user has been exposed to
-//						);
+				cxApi.setChosenVariation(
+						1, // The index of the variation shown to the visitor
+						'Gc6KfMuCTKGI-LaNqot4fg'  // The id of the experiment the user has been exposed to
+						);
 	</script>
 </div>
