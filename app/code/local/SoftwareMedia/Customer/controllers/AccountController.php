@@ -145,6 +145,8 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 	 * @return Mage_Customer_AccountController
 	 */
 	protected function processNewPoints(Mage_Customer_Model_Customer $customer) {
+		/*
+		
 		$transfer = Mage::getModel('rewards/transfer')->setReasonId(TBT_Rewards_Model_Transfer_Reason::REASON_ADMIN_ADJUSTMENT)->setComments('New Brochure Landing Page Points')->setCurrencyId(1)->setQuantity(1000);
 		$transfer->setId(null)->setCustomerId($customer->getId());
 
@@ -154,6 +156,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		}
 		//$this->_getSession()->addSuccess('You receive a bonus 1000 points!');
 		$transfer->save();
+		*/
 	}
 
 	/**
