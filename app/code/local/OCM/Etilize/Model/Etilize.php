@@ -93,6 +93,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	
 
 	public function updateSpex() {
+		
 		Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
 		
 		//Mage::log("\n\n************************ Etilize Updated Start at ".date("l, F d, Y h:i" ,time())." ************************", null, 'OCM_Spex.log');
@@ -102,16 +103,17 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
         
     	$collection = Mage::getModel('catalog/product')
     	->getCollection()
-    	->addAttributeToSelect('sku')
+    	->addAttributeToSelect('sku','SY-LITGWZU1EI1ES')
     	->addAttributeToSelect('name')
     	->addAttributeToSelect('brand')
     	->addAttributeToSelect('manufacturer_pn_2')
     	->addAttributeToSelect('etilize_manufactureid')
-    	->addAttributeToFilter('etilize_updated',1351)
+    	->addAttributeToFilter('etilize_updated',0)
     	->setPageSize(100);
     	
     	//Cycle through the collection of products
 		foreach ($collection as $product) {
+			echo "<h2>" . $product->getId() . "</h2>";
 			//Setup Time System
 			list($usec, $sec) = explode(' ', microtime());
    			$script_start = (float) $sec + (float) $usec;
@@ -128,14 +130,13 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 			//This is where the attributes will be processed.
 			$attributes = $etilizeResult->getAttributes();
 			//Mage::log($attributes,null,'SPEX.log');
-            //$this->buildAttributes($attributes, $product);
+            $product = $this->buildAttributes($attributes, $product);
 			
-			//$skus = $etilizeResult->getSkus();
-            //$this->buildSkuAttributes($skus, $product);
+			$skus = $etilizeResult->getSkus();
+            $product = $this->buildSkuAttributes($skus, $product);
 
 			
-			continue;
-			
+			//continue;
 			if (!$this->getError())
 			{
 				if ($this->_deleteAllProductImages)
@@ -147,7 +148,6 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 					$this->updateImages($resources, $product);
 				}
 			}
-   			
    			if (!$this->getError()){
    				//Setup Time collection
 				list($usec, $sec) = explode(' ', microtime());
@@ -158,27 +158,34 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	   			$logMessage .= "\nUpdating this product took : ".$elapsed_time." seconds";
 	   			$logMessage .= "\n----------------------------------------------------------------";
 	   			Mage::log($logMessage, null, 'OCM_Spex.log');
-   			
+
    				$etilizeResult = array(
    					"etilize_result" => "Product last updated at ".date("l, F d, Y h:i" ,time()).$logMessage,
    					"etilize_updated" => "1");
    				try {
-					Mage::getSingleton('catalog/product_action')
-        				->updateAttributes(array(0 => $this->_productID), $etilizeResult, 0);
+   					print_r($etilizeResult);
+   					$product->setData('etilize_results',"Product last updated at ".date("l, F d, Y h:i" ,time()).$logMessage);
+   					$product->setData('etilize_updated',1);
+   					$product->save();
+   					
+					//Mage::getSingleton('catalog/product_action')
+        			//	->updateAttributes(array(array($this->_productID)), $etilizeResult, 0);
+        			//	echo "3";
    				}
 				catch (Exception $e)
-				{
+				{	
+						print_r($e);
 						Mage::log($e, null, 'OCM_Spex.log');
 				}
-				
    			}elseif ($this->getError())
    			{
    				$etilizeResult = array(
    					"etilize_result" => "Errors in product updated check OCM_Spex.log file in /var/log",
    					"etilize_updated" => "0");
    				try {
-					Mage::getSingleton('catalog/product_action')
-        				->updateAttributes(array(0 => $this->_productID), $etilizeResult, 0);
+					$product->setData('etilize_results',"Product last updated at ".date("l, F d, Y h:i" ,time()).$logMessage);
+   					$product->setData('etilize_updated',1);
+   					$product->save();
    				}
 				catch (Exception $e)
 				{
@@ -215,12 +222,12 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 							
 						Mage::log($attributeLabel. " does not exist", null, 'OCM_Spex.log');
 						Mage::log("Creating new attribute ".$attributeCode, null, 'OCM_Spex.log');
-						$this->createAttribute($attributeCode, $attributeLabel);
+						//$this->createAttribute($attributeCode, $attributeLabel);
 					}
 
 					if (($this->_attributeType == "text") || ($this->_attributeType == "textarea"))
 					{
-						$this->updateProductAttributes($attributeCode, $attribute, $product);
+						$product = $this->updateProductAttributes($attributeCode, $attribute, $product);
 					}
         			elseif ($this->_attributeType == "multiselect")
         			{
@@ -241,6 +248,8 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
         			}
 				}//end of foreach($group as $attribute)
 			}//end of foreach($attributes as $group)
+			
+			return $product;
 	}
 	
 	private function buildSkuAttributes($attributes, $product)
@@ -265,13 +274,15 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 					else {
 						Mage::log($attributeLabel. " does not exist", null, 'OCM_Spex.log');
 						Mage::log("Creating new attribute ".$attributeCode, null, 'OCM_Spex.log');
-						$this->createAttribute($attributeCode, $attributeLabel);
+						//$this->createAttribute($attributeCode, $attributeLabel);
 					}
 
 						$this->updateProductAttributes($attributeCode, $attribute['number'], $product);
 
 				}//end of foreach($group as $attribute)
 			}//end of foreach($attributes as $group)
+			
+			return $product;
 	}
 
 	private function updateImages($resources, $product)
@@ -351,9 +362,9 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 		//Mage::log($attributeArray,null,'OCM_att.log');
 		try 
 		{
-			
-			Mage::getSingleton('catalog/product_action')
-        		->updateAttributes(array(0 => $this->_productID), $attributeArray , 0);
+			$product->setData($attributeCode,$attributeData);
+			//Mage::getSingleton('catalog/product_action')
+        	//	->updateAttributes(array(0 => $this->_productID), $attributeArray , 0);
 		}
 		catch (Exception $e)
 		{
@@ -364,6 +375,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 			$this->setError(true);
 		}
 		unset ($attributeArray);
+		return $product;
 	}
 	
 	
