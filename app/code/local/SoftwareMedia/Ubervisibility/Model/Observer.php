@@ -79,6 +79,21 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				}
 			}
 
+			$subs = $prod->getSubstitutionLinkCollection();
+
+			if ($subs) {
+				$sync = false;
+				foreach ($subs as $sub) {
+					if ($sub->getPriceSync() > 0) {
+						$sync = true;
+						break;
+					}
+				}
+
+				$data['isPriceSynchronized'] = $sync;
+			} else {
+				$data['isPriceSynchronized'] = false;
+			}
 
 			$data['shippingGroup'] = strtoupper($prod->getResource()->getAttribute('package_id')->getFrontend()->getValue($prod));
 
