@@ -18,14 +18,14 @@
 	</frontend>
 	<crontab>
         <jobs>
-            <ocm_etilize>
+            <!--ocm_etilize>
                 <schedule>
                 	<cron_expr>*/5 * * * *</cron_expr>
                 </schedule>
                 <run>
                 	<model>etilize/etilize::updateSpex</model>
                 </run>
-            </ocm_etilize>
+            </ocm_etilize-->
         </jobs>
     </crontab>
     <global>

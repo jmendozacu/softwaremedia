@@ -93,6 +93,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	
 
 	public function updateSpex() {
+		
 		Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
 		
 		//Mage::log("\n\n************************ Etilize Updated Start at ".date("l, F d, Y h:i" ,time())." ************************", null, 'OCM_Spex.log');
@@ -102,12 +103,12 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
         
     	$collection = Mage::getModel('catalog/product')
     	->getCollection()
-    	->addAttributeToSelect('sku')
+    	->addAttributeToSelect('sku','SY-LITGWZU1EI1ES')
     	->addAttributeToSelect('name')
     	->addAttributeToSelect('brand')
     	->addAttributeToSelect('manufacturer_pn_2')
     	->addAttributeToSelect('etilize_manufactureid')
-    	->addAttributeToFilter('etilize_updated',1351)
+    	->addAttributeToFilter('etilize_updated',0)
     	->setPageSize(100);
     	
     	//Cycle through the collection of products
@@ -134,8 +135,8 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
             //$this->buildSkuAttributes($skus, $product);
 
 			
-			continue;
-			
+			//continue;
+			echo "1";
 			if (!$this->getError())
 			{
 				if ($this->_deleteAllProductImages)
@@ -147,7 +148,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 					$this->updateImages($resources, $product);
 				}
 			}
-   			
+   			echo "2";
    			if (!$this->getError()){
    				//Setup Time collection
 				list($usec, $sec) = explode(' ', microtime());
@@ -158,19 +159,22 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 	   			$logMessage .= "\nUpdating this product took : ".$elapsed_time." seconds";
 	   			$logMessage .= "\n----------------------------------------------------------------";
 	   			Mage::log($logMessage, null, 'OCM_Spex.log');
-   			
+
    				$etilizeResult = array(
    					"etilize_result" => "Product last updated at ".date("l, F d, Y h:i" ,time()).$logMessage,
    					"etilize_updated" => "1");
    				try {
+   				print_r($etilizeResult);
+   				die();
 					Mage::getSingleton('catalog/product_action')
         				->updateAttributes(array(0 => $this->_productID), $etilizeResult, 0);
+        				echo "3";
    				}
 				catch (Exception $e)
 				{
 						Mage::log($e, null, 'OCM_Spex.log');
 				}
-				
+				echo "3";
    			}elseif ($this->getError())
    			{
    				$etilizeResult = array(
