@@ -136,7 +136,6 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 
 			
 			//continue;
-			echo "1";
 			if (!$this->getError())
 			{
 				if ($this->_deleteAllProductImages)
@@ -148,7 +147,6 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 					$this->updateImages($resources, $product);
 				}
 			}
-   			echo "2";
    			if (!$this->getError()){
    				//Setup Time collection
 				list($usec, $sec) = explode(' ', microtime());
@@ -164,8 +162,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
    					"etilize_result" => "Product last updated at ".date("l, F d, Y h:i" ,time()).$logMessage,
    					"etilize_updated" => "1");
    				try {
-   				print_r($etilizeResult);
-   				die();
+   					print_r($etilizeResult);
 					Mage::getSingleton('catalog/product_action')
         				->updateAttributes(array(0 => $this->_productID), $etilizeResult, 0);
         				echo "3";
@@ -174,7 +171,6 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
 				{
 						Mage::log($e, null, 'OCM_Spex.log');
 				}
-				echo "3";
    			}elseif ($this->getError())
    			{
    				$etilizeResult = array(
