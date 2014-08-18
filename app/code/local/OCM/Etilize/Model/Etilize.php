@@ -113,6 +113,7 @@ class OCM_Etilize_Model_Etilize extends Mage_Core_Model_Abstract {
     	
     	//Cycle through the collection of products
 		foreach ($collection as $product) {
+			echo "<h2>" . $product->getId() . "</h2>";
 			//Setup Time System
 			list($usec, $sec) = explode(' ', microtime());
    			$script_start = (float) $sec + (float) $usec;
