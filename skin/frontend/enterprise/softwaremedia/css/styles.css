@@ -1976,7 +1976,7 @@ ul.cms-menu.type-square ul { list-style-type:square; }
 
 /* New Shopping Cart =================================================================== */
 .cart-new { }
-.cart-new form {width: 100%;}
+.cart-new form {width: 100%; float: left;}
 .cart-new .title-buttons { }
 .cart-new .messages,
 .cart-new .messages li { margin:0; }
