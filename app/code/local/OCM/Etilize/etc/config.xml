@@ -20,7 +20,7 @@
         <jobs>
             <ocm_etilize>
                 <schedule>
-                	<cron_expr>*/5 * * * *</cron_expr>
+                	<cron_expr>*/5 0,1,23,22,21,20,19,18,17,16,15,14,13,12 * * *</cron_expr>
                 </schedule>
                 <run>
                 	<model>etilize/etilize::updateSpex</model>

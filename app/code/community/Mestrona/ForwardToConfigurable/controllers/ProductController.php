@@ -26,7 +26,7 @@ class Mestrona_ForwardToConfigurable_ProductController extends Mage_Catalog_Prod
             }
 					 //This returns the Label and Value of each selected option as an array. E.g. array( array('label'=>'Length', 'value'=>'32"'))
 		        $attributesInfo = $parentProduct->getTypeInstance()->getSelectedAttributesInfo();
-				var_dump($attributesId);
+
 		        //This returns the IDs of the attributes that were used to make the configurable product. E.g. array( 0=>513 )
 		        $attributesId = $parentProduct->getTypeInstance()->getUsedProductAttributeIds();
 		        
