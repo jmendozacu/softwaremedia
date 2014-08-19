@@ -294,7 +294,12 @@ var window_width = jQuery(window).width();
 jQuery(function() {
 	init();
 	if (getQueryVariable('ovchn')) {
-		document.cookie="softwaremedia_ovchn=" + getQueryVariable('ovchn');
+		var myDate = new Date();
+		myDate.setMonth(myDate.getMonth() + 12);
+
+		document.cookie = "softwaremedia_ovchn=" + getQueryVariable('ovchn') + ";expires=" + myDate 
+                  + ";domain=.www.softwaremedia.com;path=/";
+
 	}
 });
 
