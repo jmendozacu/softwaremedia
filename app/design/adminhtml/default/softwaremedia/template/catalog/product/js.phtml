@@ -92,8 +92,14 @@
 		}
 <?php endif; ?>
 
+	var isPriceSyncShown = false;
 	function checkPriceSync() {
+		console.log($$('select[name=price_sync]').length);
 		if ($$('select[name=price_sync]').length > 0) {
+
+			if (isPriceSyncShown) {
+				$$('select[name=price_sync]').stopObserving('change');
+			}
 			$$('select[name=price_sync]').invoke('observe', 'change', function() {
 				if ($(this).getValue() == 1) {
 					var parent = $(this).up(1);
@@ -105,6 +111,8 @@
 					}
 				}
 			});
+
+			isPriceSyncShown = true;
 		}
 	}
 
