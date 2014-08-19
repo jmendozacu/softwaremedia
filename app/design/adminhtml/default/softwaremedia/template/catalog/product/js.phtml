@@ -28,6 +28,7 @@
 //<![CDATA[
 	Event.observe(window, 'load', recalculateTax);
 	Event.observe(window, 'load', registerTaxRecalcs);
+	Event.observe(window, 'change', checkPriceSync);
 
 	function registerTaxRecalcs()
 	{
@@ -83,7 +84,6 @@
 		}
 	}
 	varienGlobalEvents.attachEventHandler('showTab', bindActiveProductTab);
-	varienGlobalEvents.attachEventHandler('showTab', checkPriceSync);
 
 // bind active tab
 <?php if ($tabsBlock = $this->getLayout()->getBlock('product_tabs')): ?>
@@ -92,9 +92,8 @@
 		}
 <?php endif; ?>
 
-	var isPriceSyncShown = false;
-	function checkPriceSync(event) {
-		if (!isPriceSyncShown && $$('select[name=price_sync]').length > 0) {
+	function checkPriceSync() {
+		if ($$('select[name=price_sync]').length > 0) {
 			$$('select[name=price_sync]').invoke('observe', 'change', function() {
 				if ($(this).getValue() == 1) {
 					var parent = $(this).up(1);
@@ -106,8 +105,6 @@
 					}
 				}
 			});
-
-			isPriceSyncShown = true;
 		}
 	}
 
