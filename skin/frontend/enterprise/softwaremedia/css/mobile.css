@@ -246,6 +246,7 @@
 	/* Checkout Options */
 	.mobile-checkout-step li { display: block;  }
 	.cart .checkout-types    { float: none; width: 250px; margin: 0px auto; }
+	.cart-new .checkout-types    { float: none; width: 250px; margin: 0px auto; }
 
 	/* Checkout Help */
 	.help-title { background: #323232 url(../images/amshopby-collapsed.png) center right no-repeat; font-size: 25px; text-transform: capitalize; color: #fff; font-family: "tablet-gothic-condensed","Century-Gothic","Helvetica",sans-serif; font-style: normal; font-weight: 400; width: 94%; margin: 0 2%; padding: 1% 1%; cursor: pointer; }
@@ -259,10 +260,15 @@
 
 	.cart .shipping   { width: 100%; margin: 0; }
 	.cart .totals     { width: 96%; margin: 12px 2% 0 2%;  }
+	.cart-new .shipping   { width: 100%; margin: 0; }
+	.cart-new .totals     { width: 96%; margin: 12px 2% 0 2%;  }
 	.block-cart-total { min-height: 10px !important; }
 	.cart .line-10    { display: none; }
 	.cart .crosssells { display: none; }
 	.cart .checkout-types li    { float: none;margin-bottom: 12px; }
+	.cart-new .line-10    { display: none; }
+	.cart-new .crosssells { display: none; }
+	.cart-new .checkout-types li    { float: none;margin-bottom: 12px; }
 	.need-help-block            { padding: 0px; width: 96%; margin: 0 2%; background-color: #eaeaea; }
 	.need-help-block span.phone { padding-left: 72px; background: url("../images/phone-icon.png") no-repeat 27px center; margin-top: 8px; }
 	.need-help-block span.phone,

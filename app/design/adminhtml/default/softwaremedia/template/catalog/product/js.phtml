@@ -92,22 +92,5 @@
 		}
 <?php endif; ?>
 
-	function checkPriceSync() {
-		if ($$('select[name=price_sync]').length > 0) {
-
-			$$('select[name=price_sync]').invoke('observe', 'change', function() {
-				if ($(this).getValue() == 1) {
-					var parent = $(this).up(1);
-					var price = parent.down('td.js-price');
-					var keepPrice = confirm('Price will be ' + $(price).innerHTML.trim() + '. Are you sure?');
-
-					if (!keepPrice) {
-						$(this).setValue(0);
-					}
-				}
-			});
-		}
-	}
-
 //]]>
 </script>

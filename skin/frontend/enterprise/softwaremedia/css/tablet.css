@@ -222,6 +222,8 @@
 	.cart-checkout-bottom,
 	.cart form,
 	.cart .totals table,
+	.cart-new form,
+	.cart-new .totals table,
 	.form_bottom { width: 96%; margin: 0 2%; }
 
 	.btn-print { display: none; }
@@ -236,12 +238,14 @@
 	.cart .deals { width: 35%; }
 	.cart .shipping { width: 25%; margin: 0 13px; }
 	.cart .totals { width: 25% }
+	.cart-new .deals { width: 35%; }
+	.cart-new .shipping { width: 25%; margin: 0 13px; }
+	.cart-new .totals { width: 25% }
 	.cart-data-content { padding: 0px; }
-	/*.cart form td { width: 100%; }*/
 	.cart_total_code .v-fix { width: 65%; }
 	.cart-checkout-bottom .cart form { float: right; width: auto; }
-	.cart .messages { width: 96%; margin: 0 2%; }
-	.cart .crosssells { width: 96%; margin: 0 2%; }
+	.cart .messages, .cart-new .messages { width: 96%; margin: 0 2%; }
+	.cart .crosssells, .cart-new .crosssells { width: 96%; margin: 0 2%; }
 
 	.form_bottom form { width: auto; }
 	.form_bottom .coupon_discount h2 { float: right; }
