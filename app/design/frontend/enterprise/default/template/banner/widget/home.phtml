@@ -24,11 +24,11 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
-
+<div class="widget widget-banner">
     <?php $bannersContent =  $this->getBannersContent() ?>
-    <?php $first = 0; ?>
+    <ul>
     <?php foreach ($bannersContent as $bannerId => $content): ?>
-    	<?php if ($first) {  continue; }?>
-        <p><?php echo $content?></p>
-        <?php $first = 1; ?>
+        <li><?php echo $content?></li>
     <?php endforeach; ?>
+    </ul>
+</div>
