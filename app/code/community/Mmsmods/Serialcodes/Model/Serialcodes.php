@@ -381,7 +381,7 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 			if ($source == 'controller' && $item->getProductType() == 'configurable' && !$product->getSerialCodeSendEmail()) {
 				$product = Mage::getModel('catalog/product')->setStoreId($storeid)->load($product->getIdBySku($item->getProductOptionByCode('simple_sku')));
 			}
-			if (($product->getSerialCodeSendEmail() && $source != 'invoicing') || $source == 'controller') {
+			if (($product->getSerialCodeSendEmail() && !($source == 'invoicing' && $item->getQtyRefunded() > 0)) || $source == 'controller') {
 				if ($parentitem = $item->getParentItem()) {
 					if ($parentitem->getProductType() == 'configurable') {
 						$item = $parentitem;
