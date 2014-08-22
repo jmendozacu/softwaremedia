@@ -64,9 +64,11 @@
             </div>
             <?php echo $this->getChildHtml('topMenu') ?>
 			<div class="search-header">
-                <?php echo $this->getChildHtml('topSearch') ?>
+                
                 <div class="f-fix header-top-right">
-                    <div class="header-phone"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('phone-number')->toHtml(); ?></div>
+                    <div class="header-phone"><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('phone-number')->toHtml(); ?>
+                    
+                    <span>Mon-Fri 7am-5:30pm MST</span></div>
                     <div id="lpButDivID-1281459515319" class="btn-chat">
                     </div>
                     <script type="text/javascript" charset="UTF-8" >
@@ -74,6 +76,7 @@
                     </script>
                 </div>
 			</div>
+			<?php echo $this->getChildHtml('topSearch') ?>
 			<div class="clear"></div>
 			
 			<!-- START Mobile Navigation -->

@@ -53,7 +53,12 @@
 }
 /* Header */
 .header .header-phone {
-	line-height: 31px;
+	line-height: 18px;
+	width: 140px;
+}
+.header .header-phone span {
+display: inline-block;
+	font-size: 10px;
 }
 #header-fix {
 	border-bottom: 2px solid #C4C4C4;
@@ -116,6 +121,8 @@
 }
 .header .search-header .btn-chat {
 	height: 22px;
+	top: 12px;
+position: relative;
 }
 /* Banner */
 .widget-banner ul {
