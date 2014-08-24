@@ -289,6 +289,37 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
             // Log
             Mage::log('Kount status transitioned from review to allow.', Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
 
+			/*
+			//Create invoice/capture			
+			$qty = array();
+			
+			$invoice = Mage::getModel('sales/order_invoice_api');
+			$invoiceId = $invoice->create($oOrder->getIncrementId(), $qty);
+			
+			$invoice->capture($invoiceId);
+
+			*/
+			
+			try {
+				if($oOrder->canInvoice()) {
+					Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
+				
+					$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
+					if (!$invoice->getTotalQty()) {
+						Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
+					}
+					$invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+					$invoice->register();
+					$transactionSave = Mage::getModel('core/resource_transaction')
+						->addObject($invoice)
+						->addObject($invoice->getOrder());
+					$transactionSave->save();
+				}
+			}
+			catch (Mage_Core_Exception $e) {
+			
+			}
+
             // Check if pre-hold status & state were saved
             // If not, we won't do anything here
             if ($oOrder->getHoldBeforeState() == null || $oOrder->getHoldBeforeState() == null) {
