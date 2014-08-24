@@ -6,6 +6,8 @@
 #    Action php5-cgi /cgi-bin/php5-cgi
 #    AddHandler php5-cgi .php
 
+ModPagespeed off
+
 ############################################
 ## GoDaddy specific options
 
