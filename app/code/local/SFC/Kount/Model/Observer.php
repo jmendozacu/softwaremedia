@@ -366,7 +366,7 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
 				Mage::log('KOUNT APPROVED ORDER ' . $oOrder->getId(),NULL,'kount-capture.log');
 				try {
 					if($oOrder->canInvoice()) {
-						Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
+						//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
 					
 						$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
 						if (!$invoice->getTotalQty()) {

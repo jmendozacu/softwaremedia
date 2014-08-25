@@ -303,7 +303,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 			try {
 				Mage::log('KOUNT NEWLY APPROVED ' . $oOrder->getId(),NULL,'kount-capture.log');
 				if($oOrder->canInvoice()) {
-					Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
+					//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
 				
 					$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
 					if (!$invoice->getTotalQty()) {
