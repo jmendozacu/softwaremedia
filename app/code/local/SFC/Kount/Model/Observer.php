@@ -119,6 +119,10 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
                     // -- Request
                     $sRisRespCode = $oRisRequest->sendRisInquiry($oPayment, $oOrder);
 
+					if ($sRisRespCode == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {
+						
+						
+					}
                     // -- Response
                     if (empty($sRisRespCode) || $sRisRespCode == SFC_Kount_Helper_RisRequest::RIS_RESP_DECLINE) {
                         Mage::throwException(SFC_Kount_Helper_RisRequest::RIS_MESSAGE_REJECTED);
@@ -358,6 +362,31 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
             $oOrder->setData('kount_ris_rule', $sRisRules);
             $oOrder->setData('kount_ris_description', $sRisDescription);
 
+			if ($sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {	
+				Mage::log('KOUNT APPROVED ORDER ' . $oOrder->getId(),NULL,'kount-capture.log');
+				try {
+					if($oOrder->canInvoice()) {
+						Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
+					
+						$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
+						if (!$invoice->getTotalQty()) {
+							Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
+						}
+						$invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+						$invoice->register();
+						$transactionSave = Mage::getModel('core/resource_transaction')
+							->addObject($invoice)
+							->addObject($invoice->getOrder());
+						$transactionSave->save();
+					} else {
+						Mage::log('Order does not allow invoicing ' . $oOrder->getId(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+					}
+				}
+				catch (Mage_Core_Exception $e) {
+					Mage::log($e->getMessage(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+				}
+			}
+					
             // Review Status Returned from Kount RIS
             if ($sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_REVIEW ||
                 $sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_MANGREV

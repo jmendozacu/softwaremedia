@@ -301,6 +301,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 			*/
 			
 			try {
+				Mage::log('KOUNT NEWLY APPROVED ' . $oOrder->getId(),NULL,'kount-capture.log');
 				if($oOrder->canInvoice()) {
 					Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
 				
@@ -314,10 +315,12 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 						->addObject($invoice)
 						->addObject($invoice->getOrder());
 					$transactionSave->save();
+				} else {
+					Mage::log('Order does not allow invoicing ' . $oOrder->getId(), NULL,'kount-capture.log');
 				}
 			}
 			catch (Mage_Core_Exception $e) {
-			
+				Mage::log($e->getMessage(), NULL,,'kount-capture.log');
 			}
 
             // Check if pre-hold status & state were saved
