@@ -320,7 +320,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 				}
 			}
 			catch (Mage_Core_Exception $e) {
-				Mage::log($e->getMessage(), NULL,,'kount-capture.log');
+				Mage::log($e->getMessage(), NULL,'kount-capture.log');
 			}
 
             // Check if pre-hold status & state were saved
