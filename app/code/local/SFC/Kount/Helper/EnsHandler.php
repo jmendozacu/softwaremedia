@@ -300,29 +300,8 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 
 			*/
 			
-			try {
-				Mage::log('KOUNT NEWLY APPROVED ' . $oOrder->getId(),NULL,'kount-capture.log');
-				if($oOrder->canInvoice()) {
-					//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
-				
-					$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
-					if (!$invoice->getTotalQty()) {
-						Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
-					}
-					$invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
-					$invoice->register();
-					$transactionSave = Mage::getModel('core/resource_transaction')
-						->addObject($invoice)
-						->addObject($invoice->getOrder());
-					$transactionSave->save();
-				} else {
-					Mage::log('Order does not allow invoicing ' . $oOrder->getId(), NULL,'kount-capture.log');
-				}
-			}
-			catch (Mage_Core_Exception $e) {
-				Mage::log($e->getMessage(), NULL,'kount-capture.log');
-			}
-
+			Mage::helper('kount')->captureOrder($oOrder);
+			
             // Check if pre-hold status & state were saved
             // If not, we won't do anything here
             if ($oOrder->getHoldBeforeState() == null || $oOrder->getHoldBeforeState() == null) {

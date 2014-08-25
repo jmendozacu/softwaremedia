@@ -28,6 +28,30 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
     const ORDER_STATUS_KOUNT_DECLINE = 'decline_kount';
     const ORDER_STATUS_KOUNT_DECLINE_LABEL = 'Decline';
 
+	public function captureOrder($oOrder) {
+		try {
+			if($oOrder->canInvoice()) {
+				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
+			
+				$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
+				if (!$invoice->getTotalQty()) {
+					Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
+				}
+				$invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+				$invoice->register();
+				$transactionSave = Mage::getModel('core/resource_transaction')
+					->addObject($invoice)
+					->addObject($invoice->getOrder());
+				$transactionSave->save();
+			} else {
+				Mage::log('Order does not allow invoicing ' . $oOrder->getId(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+			}
+		}
+		catch (Mage_Core_Exception $e) {
+			Mage::log($e->getMessage(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+		}
+		return $this;
+	}
     /**
      * Test if this Magento Edition / Version is fully compatible
      */
