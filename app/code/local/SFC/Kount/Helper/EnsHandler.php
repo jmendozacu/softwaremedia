@@ -300,7 +300,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 
 			*/
 			
-			Mage::helper('kount')->captureOrder($oOrder);
+			
 			
             // Check if pre-hold status & state were saved
             // If not, we won't do anything here
@@ -312,7 +312,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 
             // Move order from Hold to previous status
             Mage::helper('kount')->restorePreHoldOrderStatus($oOrder);
-
+			Mage::helper('kount')->captureOrder($oOrder);
         }
 
     }
