@@ -32,6 +32,8 @@
 @media only screen and (min-width: 600px) {
 
 	.toolbar .sidebar { display: none; }
+	.hide-tablet { display: none; }
+	.hide-desktop { display: none; }
 }
 
 
@@ -57,7 +59,7 @@
 	width: 140px;
 }
 .header .header-phone span {
-display: inline-block;
+	display: inline-block;
 	font-size: 10px;
 }
 #header-fix {
@@ -122,7 +124,7 @@ display: inline-block;
 .header .search-header .btn-chat {
 	height: 22px;
 	top: 12px;
-position: relative;
+	position: relative;
 }
 /* Banner */
 .widget-banner ul {
