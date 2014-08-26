@@ -29,6 +29,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
     const ORDER_STATUS_KOUNT_DECLINE_LABEL = 'Decline';
 
 	public function captureOrder($oOrder) {
+		Mage::log('Trying to capture ORDER' . $oOrder->getId(), NULL,'kount-new.log');
 		try {
 			if($oOrder->canInvoice()) {
 				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
@@ -44,11 +45,11 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 					->addObject($invoice->getOrder());
 				$transactionSave->save();
 			} else {
-				Mage::log('Order does not allow invoicing ' . $oOrder->getId(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+				Mage::log('Order does not allow invoicing ' . $oOrder->getId(), NULL,'kount-new.log');
 			}
 		}
 		catch (Mage_Core_Exception $e) {
-			Mage::log($e->getMessage(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+			Mage::log($e->getMessage(), NULL,'kount-new.log');
 		}
 		return $this;
 	}
