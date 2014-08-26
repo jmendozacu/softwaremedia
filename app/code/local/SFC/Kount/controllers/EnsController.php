@@ -53,7 +53,7 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
 
             // Retrieve the XML sent in the HTTP POST request to the ResponseHandler
             $sResponse = $GLOBALS['HTTP_RAW_POST_DATA'];
-
+			$r = implode($GLOBALS);
 			$rResponse = file_get_contents('php://input');
 			
             // Handler
@@ -65,6 +65,7 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
             Mage::log('ENS REQUEST',NULL,'kount-log.log');
             Mage::log("S: " . $sResponse,NULL,'kount-log.log');
             Mage::log("R: " . $rResponse,NULL,'kount-log.log');
+            Mage::log("A: " . $r,NULL,'kount-log.log');
             $aEvents = $oParser->loadXML($sResponse)->xmlToArray();
             if (empty($aEvents) || !is_array($aEvents)) {
                 Mage::throwException('Unable to parse Xml.');
