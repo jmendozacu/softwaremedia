@@ -59,6 +59,7 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
 
             // Parse Xml
             $oParser = new Mage_Xml_Parser();
+            Mage::log($sResponse,NULL,'kount-log.log');
             $aEvents = $oParser->loadXML($sResponse)->xmlToArray();
             if (empty($aEvents) || !is_array($aEvents)) {
                 Mage::throwException('Unable to parse Xml.');
