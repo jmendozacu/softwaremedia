@@ -66,6 +66,11 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
 	            if (is_array($val)) {
 		        	foreach($val as $k => $v) {  
 		            	Mage::log("GLOBALS " . $k . ": " . $v,NULL,'kount-log.log');
+		            	if (is_array($v)) {
+				        	foreach($v as $k1 => $v1) {  
+				            	Mage::log("GLOBALS " . $k . " " . $k1 . ": " . $v1,NULL,'kount-log.log');
+				            }
+			            }
 		            }
 	            }
 	            Mage::log($key . ": " . $val,NULL,'kount-log.log');
