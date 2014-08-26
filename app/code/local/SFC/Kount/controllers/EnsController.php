@@ -61,9 +61,12 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
 
             // Parse Xml
             $oParser = new Mage_Xml_Parser();
+             Mage::log('ENS REQUEST',NULL,'kount-log.log');
+            foreach($_POST as $key => $val) {
+	            Mage::log($key . ": " . $val,NULL,'kount-log.log');
+            }
+           
             
-            Mage::log('ENS REQUEST',NULL,'kount-log.log');
-            Mage::log("S: " . $sResponse,NULL,'kount-log.log');
             Mage::log("R: " . $rResponse,NULL,'kount-log.log');
             Mage::log("A: " . $r,NULL,'kount-log.log');
             $aEvents = $oParser->loadXML($sResponse)->xmlToArray();
