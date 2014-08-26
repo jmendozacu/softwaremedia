@@ -62,7 +62,7 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
             // Parse Xml
             $oParser = new Mage_Xml_Parser();
              Mage::log('ENS REQUEST',NULL,'kount-log.log');
-            foreach($_REQUEST as $key => $val) {
+            foreach($GLOBALS as $key => $val) {
 	            Mage::log($key . ": " . $val,NULL,'kount-log.log');
             }
            
