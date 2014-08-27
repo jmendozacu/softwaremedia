@@ -119,6 +119,10 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
                     // -- Request
                     $sRisRespCode = $oRisRequest->sendRisInquiry($oPayment, $oOrder);
 
+					if ($sRisRespCode == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {
+						
+						
+					}
                     // -- Response
                     if (empty($sRisRespCode) || $sRisRespCode == SFC_Kount_Helper_RisRequest::RIS_RESP_DECLINE) {
                         Mage::throwException(SFC_Kount_Helper_RisRequest::RIS_MESSAGE_REJECTED);
@@ -331,7 +335,9 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
             $sIsAdmin = Mage::getSingleton('core/session')->getSkipKountAdmin();
             if (!empty($sIsAdmin)) {
                 Mage::log('Skipped for admin store.', Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
-
+				
+				Mage::helper('kount')->captureOrder($oOrder);
+				
                 return $this;
             }
 
@@ -358,6 +364,11 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
             $oOrder->setData('kount_ris_rule', $sRisRules);
             $oOrder->setData('kount_ris_description', $sRisDescription);
 
+			if ($sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {	
+				Mage::log('KOUNT APPROVED ORDER ' . $oOrder->getId(),NULL,'kount-capture.log');
+				Mage::helper('kount')->captureOrder($oOrder);
+			}
+					
             // Review Status Returned from Kount RIS
             if ($sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_REVIEW ||
                 $sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_MANGREV

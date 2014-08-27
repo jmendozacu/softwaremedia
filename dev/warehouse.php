@@ -6,68 +6,29 @@ Mage::app('admin')->setUseSessionInUrl(false);
 //OCM_Fulfillment_Model_Warehouse_Ingram
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 
-$helper = Mage::helper('ocm_fulfillment'); 
-
-  //$product = Mage::getModel('catalog/product')->load(6833);
-  //$helper->updateStock($product);
-  
- // die();
-/*
-  echo $product->setData('etilize_manufactureid','Test1');
-  $product->save();
-
-  $collection =Mage::getResourceModel('catalog/product_collection')->addAttributeToFilter('sku', array('like'=>array('%KA-KL1843ACCFS%')))->addAttributeToSelect('*');
-  foreach($collection as $item) {
-  //echo $item->setData('etilize_manufactureid','Test');
-  //$item->save();
-  }
-  die();
-  $order = Mage::getModel('sales/order')->load(121);
-
-  $result = Mage::helper('ocm_frauddetection')->isViolations($order);
-  if($result){
-  $order->setState('new','orders_suspect_hold',$result,false)->save();
-  }
-
-  die();
-
-  /*
-  $collection = Mage::getModel('catalog/product')->getCollection()
-  ->addAttributeToSelect('*')
-  ->addAttributeToFilter('sku','AD-61101754');
- */
+$oOrder = Mage::getModel('sales/order')->load(8352);
 
 
-
-//Mage::getModel('ocm_fulfillment/observer');
-//updatePriceQtyFromCsv
-//Mage::getModel('ocm_fulfillment/warehouse_synnex')->urlConnect();
-//$model = Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();
-ini_set('display_startup_errors', 1);
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-//$helper = Mage::helper('chasePaymentTech');
-
-//$api = new SoftwareMedia_Ubervisibility_Helper_Api();
-//$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/mpn/VMPXRBENS14/100/0');
-//var_dump($ubervis_prod);
-//$marketers = $api->callApi(Zend_Http_Client::GET, 'marketer/comparison/1');
-//var_dump($ubervis_prod);
-//die();
-
+try {
+					if($oOrder->canInvoice()) {
+					
+						$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
+						if (!$invoice->getTotalQty()) {
+							Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
+						}
+						$invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+						$invoice->register();
+						$transactionSave = Mage::getModel('core/resource_transaction')
+							->addObject($invoice)
+							->addObject($invoice->getOrder());
+						$transactionSave->save();
+					} else {
+						Mage::log('Order does not allow invoicing ' . $oOrder->getId(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+					}
+				}
+				catch (Mage_Core_Exception $e) {
+					Mage::log($e->getMessage(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+				}
 				
-//Mage::getModel('ubervisibility/observer')->updateProduct();
-//Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQty($collection);
 
-
-//            ->addAttributeToFilter('sku','AC-VMPXRPENS13');
-/*          //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
-            //->addAttributeToSelect('cpc_price')
-            //->addattributeToFilter('ingram_micro_usa',array('notnull'=>true))
-            //->addAttributeToSelect('price')
-            //->addAttributeToSelect('qty')
-*/
-
-Mage::getModel('etilize/etilize')->updateSpex();
 //Mage::getModel('ocm_fulfillment/warehouse_peachtree')->updatePriceQtyFrom();

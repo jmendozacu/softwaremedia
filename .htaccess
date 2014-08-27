@@ -39,7 +39,7 @@
 ## disable magic quotes for php request vars
 
     php_flag magic_quotes_gpc off
-
+	php_flag always_populate_raw_post_data On
 ############################################
 ## disable automatic session start
 ## before autoload was initialized
