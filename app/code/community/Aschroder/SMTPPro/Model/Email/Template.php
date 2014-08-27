@@ -67,17 +67,13 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		$this->setUseAbsoluteLinks(true);
 		$text = $this->getProcessedTemplate($variables, true);
 
-		if ($this->isPlain()) {
-			$mail->setBodyText($text);
-		} else {
-			$mail->setBodyHTML($text);
-		}
 		if ($variables['order']) {
 			$order = Mage::getModel('sales/order')->load($variables['order']->getIncrementId(), 'increment_id');
 			$comment = "E-Mail Sent (<a href='#'>View E-Mail</a>)";
 			$comment .= "<div style='display: none;'>";
 			$comment .= $text;
 			$comment .= "</div>";
+
 			$historyEmail = Mage::getModel('emailhistory/email');
 			$historyEmail->setOrderId($order->getId());
 			$historyEmail->setText($text);
@@ -85,7 +81,18 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			$historyEmail->setEmailName($variables['name']);
 			$historyEmail->setSubject($this->getProcessedTemplateSubject($variables));
 			$historyEmail->setCreatedAt(now());
+			$historyEmail->setIsRead(0);
 			$historyEmail->save();
+
+			if (!$this->isPlain()) {
+				$text .= '<img src="' . Mage::helper('core/url')->getHomeUrl() . '/emailread/index/index/image/' . $historyEmail->getId() . '.gif" />';
+			}
+		}
+
+		if ($this->isPlain()) {
+			$mail->setBodyText($text);
+		} else {
+			$mail->setBodyHTML($text);
 		}
 
 		$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');

@@ -27,31 +27,35 @@
 <div class="entry-edit">
     <fieldset>
         <ul class="note-list">
-        <?php foreach ($this->getFullHistory() as $_item): ?>
-            <li>
-                <strong><?php echo $this->getItemCreatedAt($_item) ?></strong>
-                <?php echo $this->getItemCreatedAt($_item, 'time') ?><span class="separator">|</span>
-                
-                <strong><?php echo $_item['email_name'] ?> &lt;<a href="mailto:<?php echo $_item['email'] ?>"><?php echo $_item['email'] ?></a>&gt;</strong>
-                <span class="separator">|</span>
-                <strong><?php echo $_item['subject'] ?></strong>
-                <span class="separator">|</span>
-                <small>
-                    
-                    <strong class="subdue">
-                    
-                    	<a href="#" onclick="window.open('<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/emailhistory/view/id/' . $_item->getId()); ?>', 'emailPop', 'height=500,width=900');">View E-Mail</a>
-                    </strong>
-                </small>
-                <span class="separator">|</span>
-                <small>
-                    
-                    <strong class="subdue">
-                    	<a href="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/emailhistory/resend/id/' . $_item->getId()); ?>">Resend E-Mail</a>
-                    </strong>
-                </small>
-            </li>
-        <?php endforeach; ?>
+			<?php foreach ($this->getFullHistory() as $_item): ?>
+				<li>
+					<strong><?php echo $this->getItemCreatedAt($_item) ?></strong>
+					<?php echo $this->getItemCreatedAt($_item, 'time') ?><span class="separator">|</span>
+
+					<strong><?php echo $_item['email_name'] ?> &lt;<a href="mailto:<?php echo $_item['email'] ?>"><?php echo $_item['email'] ?></a>&gt;</strong>
+					<span class="separator">|</span>
+					<strong><?php echo $_item['subject'] ?></strong>
+					<span class="separator">|</span>
+					<strong class='subdue'>
+						<?php echo $_item['is_read'] == 1 ? 'Read' : 'Unread'; ?>
+					</strong>
+					<span class="separator">|</span>
+					<small>
+
+						<strong class="subdue">
+
+							<a href="#" onclick="window.open('<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/emailhistory/view/id/' . $_item->getId()); ?>', 'emailPop', 'height=500,width=900');">View E-Mail</a>
+						</strong>
+					</small>
+					<span class="separator">|</span>
+					<small>
+
+						<strong class="subdue">
+							<a href="<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/emailhistory/resend/id/' . $_item->getId()); ?>">Resend E-Mail</a>
+						</strong>
+					</small>
+				</li>
+			<?php endforeach; ?>
         </ul>
     </fieldset>
 </div>
