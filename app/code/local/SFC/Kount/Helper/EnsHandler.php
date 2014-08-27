@@ -74,7 +74,11 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                 $oOrder = $this->loadOrder($aEvent);
                 // Set comment
                 $sComment = 'Kount ENS Notification: Assign transactions to agents.';
+                $oOrder->setCustomerComment($sComment);
+				$oOrder->setCustomerNoteNotify(true);
+				$oOrder->setCustomerNote($sComment);
                 $oOrder->addStatusHistoryComment($sComment)->save();
+                
                 break;
 
             case 'WORKFLOW_NOTES_ADD':
