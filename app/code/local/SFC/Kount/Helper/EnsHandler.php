@@ -271,11 +271,17 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                 // Check canCancel
                 if ($oOrder->canCancel()) {
                     // Cancel & save order
-                    $oOrder->cancel();
-                    $oOrder->save();
+                    $oOrder->cancel()->save();;
+                    
                     $sComment = "We’re sorry. Because we were unable to validate your payment information, our system detected your order as possible fraud.";
+
 					
-					$oOrder->sendOrderUpdateEmail(true,$sComment);                }
+                $oOrder->setCustomerComment($sComment);
+				$oOrder->setCustomerNoteNotify(true);
+				$oOrder->setCustomerNote($sComment);
+				$oOrder->sendOrderUpdateEmail(true,$sComment);  
+                $oOrder->addStatusHistoryComment($sComment)->setIsCustomerNotified(true)->save();
+                }
                 else {
                     // Not able to cancel this order
                     Mage::log('Unabled to cancel Magento order.', Zend_Log::ERR, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
