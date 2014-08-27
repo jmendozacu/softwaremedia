@@ -64,29 +64,34 @@ class AW_Ordertags_Model_Managetags extends Mage_Rule_Model_Rule
             ->getAllIds()
         ;
         $this->_resource->removeFromDB($objToValidate->getOrderId(), $tagsToDrop);
-
+		Mage::log('RUNNING RULES',NULL,'rule.log');
         foreach ($rules as $rule) {
+        	Mage::log("Tag ID: " . $rule->getTagId(),NULL,'rule.log');
             $ruleValidationResult = null;
             $validator = $this->getRules('instance', $rule->getTagId());
             if ($this->_validateProcess($validator, $objToValidate)) {
                 $ruleValidationResult = $validator->validate($objToValidate);
             }
-
+			
             $mssValidationResult = null;
             if ($rule->getMssRuleId()) {
                 $mssValidationResult = Mage::helper('ordertags')->validateMss($rule, $order);
             }
-
+			Mage::log("DONE Tag ID: " . $rule->getTagId(),NULL,'rule.log');
             if (
                 ($ruleValidationResult && $mssValidationResult)
                 || (is_null($ruleValidationResult) && $mssValidationResult)
                 || ($ruleValidationResult && is_null($mssValidationResult))
             ) {
+            
                 $this->_resource->removeFromDB($objToValidate->getOrderId(), $rule->getTagId());
+                Mage::log("REMOVE Tag ID: " . $rule->getTagId(),NULL,'rule.log');
                 $this->_resource->loadIdsToTable($objToValidate->getOrderId(), $rule->getTagId());
+                Mage::log("AFTER Tag ID: " . $rule->getTagId(),NULL,'rule.log');
             }
+            
         }
-
+		Mage::log('DONE RULES',NULL,'rule.log');
         /* Add default tag to order, but only if
          * 1. It is set in System > Configuration
          * 2. No rule tags were applied during validation

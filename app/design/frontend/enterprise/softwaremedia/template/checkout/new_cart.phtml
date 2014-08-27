@@ -14,101 +14,155 @@
 		<?php echo $this->getBlockHtml('formkey'); ?>
 		<input type="hidden" name="return_url" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
         <fieldset>
-            <table id="shopping-cart-table" class="data-table cart-table">
-                <col width="1" />
-                <col />
-                <col width="1" />
-				<?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
+			<div class="hide-mobile">
+				<table id="shopping-cart-table" class="data-table cart-table">
 					<col width="1" />
-				<?php endif ?>
-				<?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+					<col />
 					<col width="1" />
-				<?php endif; ?>
-				<?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
-					<col width="1" />
-				<?php endif; ?>
-                <col width="1" />
-				<?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
-					<col width="1" />
-				<?php endif; ?>
-				<?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
-					<col width="1" />
-				<?php endif; ?>
-                <col width="1" />
-
-				<?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
-                <thead>
-                    <tr>
-                        <th rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
-                        <th rowspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Product Name') ?></span></th>
-                        <th rowspan="<?php echo $mergedCells; ?>"></th>
-                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Unit Price') ?></span></th>
-                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Qty') ?></th>
-                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Subtotal') ?></th>
-                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Remove') ?></th>
-                    </tr>
-					<?php if ($this->helper('tax')->displayCartBothPrices()): ?>
-						<tr>
-							<th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
-							<th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
-							<th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
-							<th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
-						</tr>
+					<?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
+						<col width="1" />
+					<?php endif ?>
+					<?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+						<col width="1" />
 					<?php endif; ?>
-                </thead>
-                <tfoot>
-                    <tr>
+					<?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+						<col width="1" />
+					<?php endif; ?>
+					<col width="1" />
+					<?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+						<col width="1" />
+					<?php endif; ?>
+					<?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+						<col width="1" />
+					<?php endif; ?>
+					<col width="1" />
 
-                        <td colspan="7" class="cart_subtotal a-right">
-							<div class="f-left">
-                                <button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
+					<?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
+					<thead>
+						<tr>
+							<th rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
+							<th rowspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Product Name') ?></span></th>
+							<th rowspan="<?php echo $mergedCells; ?>"></th>
+							<th class="a-center" colspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Unit Price') ?></span></th>
+							<th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Qty') ?></th>
+							<th class="a-center" colspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Subtotal') ?></th>
+							<th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Remove') ?></th>
+						</tr>
+						<?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+							<tr>
+								<th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+								<th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+								<th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+								<th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+							</tr>
+						<?php endif; ?>
+					</thead>
+					<tfoot>
+						<tr>
 
-                            </div>
-                            <label><?php echo $this->__('Subtotal: '); ?></label>
-                            <span>
-								<?php
-								$_coreHelper = $this->helper('core');
-								echo $_coreHelper->currency(Mage::getSingleton('checkout/cart')->getQuote()->getSubtotal(), true, false);
-								?>
-							</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="a-right">
+							<td colspan="7" class="cart_subtotal a-right">
+								<div class="f-left">
+									<button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
 
-                            <!--[if lt IE 8]>
-                            <input type="hidden" id="update_cart_action_container" />
-                            <script type="text/javascript">
-                            <![CDATA[
-                                Event.observe(window, 'load', function()
-                                {
-                                    // Internet Explorer (lt 8) does not support value attribute in button elements
-                                    $emptyCartButton = $('empty_cart_button');
-                                    $cartActionContainer = $('update_cart_action_container');
-                                    if ($emptyCartButton && $cartActionContainer) {
-                                        Event.observe($emptyCartButton, 'click', function()
-                                        {
-                                            $emptyCartButton.setAttribute('name', 'update_cart_action_temp');
-                                            $cartActionContainer.setAttribute('name', 'update_cart_action');
-                                            $cartActionContainer.setValue('empty_cart');
-                                        });
-                                    }
+								</div>
+								<label><?php echo $this->__('Subtotal: '); ?></label>
+								<span>
+									<?php
+									$_coreHelper = $this->helper('core');
+									echo $_coreHelper->currency(Mage::getSingleton('checkout/cart')->getQuote()->getSubtotal(), true, false);
+									?>
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="a-right">
 
-                                });
-                            //]]>
-                            </script>
-                            <![endif]-->
+								<!--[if lt IE 8]>
+								<input type="hidden" id="update_cart_action_container" />
+								<script type="text/javascript">
+								<![CDATA[
+									Event.observe(window, 'load', function()
+									{
+										// Internet Explorer (lt 8) does not support value attribute in button elements
+										$emptyCartButton = $('empty_cart_button');
+										$cartActionContainer = $('update_cart_action_container');
+										if ($emptyCartButton && $cartActionContainer) {
+											Event.observe($emptyCartButton, 'click', function()
+											{
+												$emptyCartButton.setAttribute('name', 'update_cart_action_temp');
+												$cartActionContainer.setAttribute('name', 'update_cart_action');
+												$cartActionContainer.setValue('empty_cart');
+											});
+										}
 
-                        </td>
-                    </tr>
-                </tfoot>
-                <tbody>
-					<?php foreach ($this->getItems() as $_item): ?>
-						<?php echo $this->getItemHtml($_item) ?>
-					<?php endforeach ?>
-                </tbody>
-            </table>
-            <script type="text/javascript">decorateTable('shopping-cart-table')</script>
+									});
+								//]]>
+								</script>
+								<![endif]-->
+
+							</td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<?php foreach ($this->getItems() as $_item): ?>
+							<?php echo $this->getItemHtml($_item) ?>
+						<?php endforeach ?>
+					</tbody>
+				</table>
+			</div>
+			<div class="hide-tablet hide-desktop">
+				<table class="data-table cart-table show-mobile" style="display: table">
+					<thead>
+						<tr>
+							<th colspan="2">Description</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<td colspan="2" class="cart_subtotal a-right">
+
+								<button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
+								<label><?php
+									echo $this->__('Subtotal: ');
+									echo $_coreHelper->currency(Mage::getSingleton('checkout/cart')->getQuote()->getSubtotal(), true, false);
+									?></label>
+							</td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<?php $item_renderer = $this->getItemRenderer('default'); ?>
+						<?php foreach ($this->getItems() as $_item): ?>
+							<?php $item_renderer->setItem($_item); ?>
+							<tr>
+								<td><img height="75" width="75" src="<?php echo $item_renderer->getProductThumbnail(); ?>" /></td>
+								<td>
+									<a href="<?php echo $item_renderer->getProductUrl(); ?>"><?php echo $item_renderer->getProductName(); ?></a>
+									<div>
+										<strong>Quantity:</strong> <input name="cart[<?php echo $_item->getId(); ?>][qty]" type="number" value="<?php echo $_item->getQty(); ?>" class="input-text qty"/>
+									</div>
+									<div>
+										<span><strong>Unit Price:</strong> $<?php echo $_item->getPrice(); ?></span>
+									</div>
+									<div>
+										<span><strong>Subtotal:</strong> $<?php echo $_item->getPrice() * $_item->getQty(); ?></span>
+									</div>
+								</td>
+							</tr>
+						<?php endforeach ?>
+					</tbody>
+				</table>
+			</div>
+            <script type="text/javascript">
+				decorateTable('shopping-cart-table');
+
+				$$('input[name^=cart').invoke('observe', 'change', function() {
+					var val = $(this).value;
+
+					$$('input[name^=cart').each(function(name, index) {
+						$(name).value = val;
+					});
+				});
+			</script>
         </fieldset>
     </form>
     <div class="form_bottom">
@@ -144,17 +198,16 @@
     </div>
 
     <!-- START mobile-checkout-step -->
-    <div class="mobile-checkout-step show-mobile">
+    <div class="mobile-checkout-step show-mobile mobile-checkout-footer">
 		<?php if (!$this->hasError()): ?>
 			<ul class="checkout-types">
-				<?php
-				$licount = 0;
-				foreach ($this->getMethods('methods') as $method):
-					?>
-					<?php if ($methodHtml = $this->getMethodHtml($method)): $licount++; ?>
-						<li class="item-<?php echo $licount; ?>"><?php echo $methodHtml; ?></li>
-					<?php endif; ?>
-				<?php endforeach; ?>
+				<li>
+					<button onclick="window.location = '<?php echo $this->getUrl('checkout/onepage') ?>';" class="button btn-proceed-checkout btn-checkout" title="Proceed to Checkout" type="button">
+						<span>
+							<span>Proceed to Checkout</span>
+						</span>
+					</button>
+				</li>
 			</ul>
 		<?php endif; ?>
     </div>
@@ -199,13 +252,13 @@
 
 	<script src="//www.google-analytics.com/cx/api.js"></script>
     <script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery('.satisfaction').remove();
-				});
+					jQuery(document).ready(function() {
+						jQuery('.satisfaction').remove();
+					});
 
-				cxApi.setChosenVariation(
-						1, // The index of the variation shown to the visitor
-						'Gc6KfMuCTKGI-LaNqot4fg'  // The id of the experiment the user has been exposed to
-						);
+					cxApi.setChosenVariation(
+							1, // The index of the variation shown to the visitor
+							'Gc6KfMuCTKGI-LaNqot4fg'  // The id of the experiment the user has been exposed to
+							);
 	</script>
 </div>

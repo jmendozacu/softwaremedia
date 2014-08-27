@@ -289,6 +289,19 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
             // Log
             Mage::log('Kount status transitioned from review to allow.', Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
 
+			/*
+			//Create invoice/capture			
+			$qty = array();
+			
+			$invoice = Mage::getModel('sales/order_invoice_api');
+			$invoiceId = $invoice->create($oOrder->getIncrementId(), $qty);
+			
+			$invoice->capture($invoiceId);
+
+			*/
+			
+			
+			
             // Check if pre-hold status & state were saved
             // If not, we won't do anything here
             if ($oOrder->getHoldBeforeState() == null || $oOrder->getHoldBeforeState() == null) {
@@ -299,7 +312,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 
             // Move order from Hold to previous status
             Mage::helper('kount')->restorePreHoldOrderStatus($oOrder);
-
+			Mage::helper('kount')->captureOrder($oOrder);
         }
 
     }

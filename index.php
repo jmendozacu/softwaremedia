@@ -76,6 +76,7 @@ if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
 
 #ini_set('display_errors', 1);
 ini_set('default_socket_timeout', 120);
+ini_set('always_populate_raw_post_data', 'On');
 
 umask(0);
 

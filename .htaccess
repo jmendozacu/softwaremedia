@@ -39,7 +39,7 @@
 ## disable magic quotes for php request vars
 
     php_flag magic_quotes_gpc off
-
+	php_flag always_populate_raw_post_data On
 ############################################
 ## disable automatic session start
 ## before autoload was initialized
@@ -115,6 +115,18 @@
 
     Options +FollowSymLinks
     RewriteEngine on
+
+############################################
+## rewrite for when we have // in the url
+
+    RewriteCond %{SERVER_PORT}s ^(443(s)|[0-9]+s)$
+    RewriteRule ^(.*)$ - [env=askapache:%2]
+
+    RewriteBase /
+    RewriteCond %{HTTP_HOST} !=""
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\s//+(.*)\sHTTP/[0-9.]+$ [OR]
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\s(.*/)/+\sHTTP/[0-9.]+$
+    RewriteRule .* http%{ENV:askapache}://%{HTTP_HOST}/%1 [R=301,L]
 
 	RewriteRule ^/?account/(.*)$ /account-error [R,L]
 ############################################
