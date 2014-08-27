@@ -74,11 +74,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                 $oOrder = $this->loadOrder($aEvent);
                 // Set comment
                 $sComment = 'Kount ENS Notification: Assign transactions to agents.';
-                $oOrder->setCustomerComment($sComment);
-				$oOrder->setCustomerNoteNotify(true);
-				$oOrder->setCustomerNote($sComment);
                 $oOrder->addStatusHistoryComment($sComment)->save();
-                
                 break;
 
             case 'WORKFLOW_NOTES_ADD':
@@ -261,10 +257,13 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 
             // Move order from Hold to previous status
             Mage::helper('kount')->restorePreHoldOrderStatus($oOrder);
+
             // Now cancel order or issue refund or fall back on marking order as 'Kount Decline'
             // First, try to issue credit memo & refund
             Mage::log('Attempting to refund / credit memo Magento order.', Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
             $bRefunded = $this->refundOrder($oOrder);
+            $sComment = 'Refunded';
+        $oOrder->addStatusHistoryComment($sComment)->save();
             if (!$bRefunded) {
                 // If refund doesn't work, try to cancel order
                 Mage::log('Unabled to refund Magento order.', Zend_Log::ERR, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
@@ -274,11 +273,13 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                     // Cancel & save order
                     $oOrder->cancel();
                     
-				  
-						
+                    $sComment = "We’re sorry. Because we were unable to validate your payment information, our system detected your order as possible fraud.";
+					
+                $oOrder->setCustomerComment($sComment);
+				$oOrder->setCustomerNoteNotify(true);
+				$oOrder->setCustomerNote($sComment);
+                $oOrder->addStatusHistoryComment($sComment)->setIsCustomerNotified(true)->save();
                     $oOrder->save();
-                    
-                     $oOrder->addStatusHistoryComment("We’re sorry. Because we were unable to validate your payment information, our system detected your order as possible fraud.")->setIsCustomerNotified(true)->save();
                 }
                 else {
                     // Not able to cancel this order

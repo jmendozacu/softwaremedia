@@ -6,7 +6,7 @@ Mage::app('admin')->setUseSessionInUrl(false);
 //OCM_Fulfillment_Model_Warehouse_Ingram
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
 
-$oOrder = Mage::getModel('sales/order')->load(8352);
+$oOrder = Mage::getModel('sales/order')->load(8367);
 
 
 try {
