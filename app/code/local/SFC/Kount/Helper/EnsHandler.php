@@ -272,7 +272,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                 if ($oOrder->canCancel()) {
                     // Cancel & save order
                     $oOrder->cancel();
-                    
+                    $oOrder->save();
                     $sComment = "We’re sorry. Because we were unable to validate your payment information, our system detected your order as possible fraud.";
 					
                 $oOrder->setCustomerComment($sComment);
