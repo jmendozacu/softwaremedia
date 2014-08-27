@@ -114,6 +114,30 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 				]
 			}];
 	</script>
+	
+	<script type="text/javascript">
+  adroll_conversion_value_in_dollars = <?php echo $amount; ?>;
+ adroll_custom_data = {"ORDER_ID": "<?php echo $order->getIncrementId();?>"};
+
+adroll_adv_id = "YAKH427VNFE3RIAJ44VLUJ";
+adroll_pix_id = "D666DQIFWFHETOUK4WQNMI";
+  (function () {
+    var oldonload = window.onload;
+    window.onload = function () {
+      __adroll_loaded = true;
+      var scr = document.createElement("script");
+      var host = (("https:" == document.location.protocol) ? "https://s.adroll.com" : "http://a.adroll.com");
+      scr.setAttribute('async', 'true');
+      scr.type = "text/javascript";
+      scr.src = host + "/j/roundtrip.js";
+      ((document.getElementsByTagName('head') || [null])[0] || document.getElementsByTagName('script')[0].parentNode).appendChild(scr);
+      if (oldonload) {
+        oldonload()
+      }
+    };
+  }());
+</script>
+
 	<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
 	</script>
 	<!-- BEGIN COMMISSION JUNCTION TRACKING CODE – DO NOT MODIFY -->
