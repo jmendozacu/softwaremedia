@@ -19,7 +19,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
      */
     const IPADDRESS_1 = '64.128.91.251';
     const IPADDRESS_2 = '209.81.12.251';
-
+	const FRAUD_COMMENT = "We’re sorry. Because we were unable to validate your payment information, our system detected your order as possible fraud.";
     /**
      * Process event
      * @param array Event
@@ -270,6 +270,11 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                 if ($oOrder->canCancel()) {
                     // Cancel & save order
                     $oOrder->cancel();
+                    
+                    $oOrder->addStatusHistoryComment(self::FRAUD_COMMENT)
+						->setIsVisibleOnFront(true)
+						->setIsCustomerNotified(true);
+						
                     $oOrder->save();
                 }
                 else {

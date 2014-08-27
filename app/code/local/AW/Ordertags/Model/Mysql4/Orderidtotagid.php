@@ -55,12 +55,13 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
     {
     	$tags = $this->getArrayByOrderId($orderId);
     	$email = $this->getEmailByTagId($tagId);
-    	if ($email) {
-			$this->sendEmail($orderId,$email,$tagId);
-    	}
+    	
     	if (in_array($tagId,$tags))
     		return $this;
 
+		if ($email) {
+			$this->sendEmail($orderId,$email,$tagId);
+    	}
         $this->_write->beginTransaction();
         try {
             $data['tag_id'] = $tagId;
