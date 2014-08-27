@@ -40,7 +40,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 	/**
 	 * Messages
 	 */
-	const RIS_MESSAGE_REJECTED = 'Payment authorization rejection from the processor.';
+	const RIS_MESSAGE_REJECTED = 'Order did not go through since payment was rejected. Please use a different payment method.';
 	const RIS_MESSAGE_ORDERREVIEW = 'Order in review from Kount.';
 	const RIS_MESSAGE_ORDERDECLINE = 'Order declined from Kount.';
 

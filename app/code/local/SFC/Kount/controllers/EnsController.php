@@ -34,7 +34,7 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
                 && ($sIpAddress != SFC_Kount_Helper_EnsHandler::IPADDRESS_1
                     && $sIpAddress != SFC_Kount_Helper_EnsHandler::IPADDRESS_2)
             ) {
-                Mage::throwException('Invalid ENS Ip Address.');
+                Mage::throwException('Invalid ENS Ip Address: ' . $sIpAddress);
             }
 
             // Helper
@@ -61,10 +61,7 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
 
             // Parse Xml
             $oParser = new Mage_Xml_Parser();
-            
-            Mage::log('ENS REQUEST',NULL,'kount-log.log');
-            Mage::log("HTTP_RAW_POST_DATA " . $sResponse,NULL,'kount-log.log');
-            Mage::log("file_get_contents " . $rResponse,NULL,'kount-log.log');
+
             $aEvents = $oParser->loadXML($sResponse)->xmlToArray();
             if (empty($aEvents) || !is_array($aEvents)) {
                 Mage::throwException('Unable to parse Xml.');
