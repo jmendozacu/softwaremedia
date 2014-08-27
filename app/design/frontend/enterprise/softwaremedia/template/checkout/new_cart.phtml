@@ -134,7 +134,7 @@
 						<?php foreach ($this->getItems() as $_item): ?>
 							<?php $item_renderer->setItem($_item); ?>
 							<tr>
-								<td><img src="<?php echo $item_renderer->getProductThumbnail(); ?>" /></td>
+								<td><img height="75" width="75" src="<?php echo $item_renderer->getProductThumbnail(); ?>" /></td>
 								<td>
 									<a href="<?php echo $item_renderer->getProductUrl(); ?>"><?php echo $item_renderer->getProductName(); ?></a>
 									<div>
