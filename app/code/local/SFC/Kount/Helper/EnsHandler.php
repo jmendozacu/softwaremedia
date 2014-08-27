@@ -262,8 +262,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
             // First, try to issue credit memo & refund
             Mage::log('Attempting to refund / credit memo Magento order.', Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
             $bRefunded = $this->refundOrder($oOrder);
-            $sComment = 'Refunded';
-        $oOrder->addStatusHistoryComment($sComment)->save();
+
             if (!$bRefunded) {
                 // If refund doesn't work, try to cancel order
                 Mage::log('Unabled to refund Magento order.', Zend_Log::ERR, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
