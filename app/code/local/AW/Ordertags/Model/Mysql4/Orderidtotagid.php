@@ -86,7 +86,12 @@ class AW_Ordertags_Model_Mysql4_Orderidtotagid extends Mage_Core_Model_Mysql4_Ab
 		
 		$order = Mage::getModel('sales/order')->load($orderId);
 		$incrementId = $order->getIncrementId();
-		$adm_name = $this->getAdminName(Mage::getSingleton('admin/session')->getUser()->getId());
+
+		$adm_name = "SoftwareMedia";
+		if (Mage::getSingleton('admin/session')->getUser())
+			$adm_name = $this->getAdminName(Mage::getSingleton('admin/session')->getUser()->getId());
+
+		 
 		$vars['order_id'] = $orderId;
 		$vars['increment_id'] = $incrementId;
 		$vars['admin'] = $adm_name;
