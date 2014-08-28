@@ -17,9 +17,9 @@ class Aschroder_SMTPPro_Helper_Mail {
 			return true;
 		} catch (Exception $e) {
 			try {
-				Mage::log('Error: ' . $e->getMessage());
+				Mage::log('Error: ' . $e->getMessage(),NULL,'email.log');
 				Mage::logException($e);
-				Mage::log('About to resend email');
+				Mage::log('About to resend email',NULL,'email.log');
 
 				$helper = Mage::helper('smtppro');
 				$transportNoOffice = $helper->getTransportNoOffice($websiteModelId);
@@ -33,13 +33,13 @@ class Aschroder_SMTPPro_Helper_Mail {
 					$cloneMail->setFrom($configsNoOffice['username'], 'Customer Service');
 				}
 
-				Mage::log('From: ' . $cloneMail->getFrom());
+				Mage::log('From: ' . $cloneMail->getFrom(),NULL,'email.log');
 
 				$cloneMail->send($transportNoOffice); // Zend_Mail warning..
-				Mage::log('Finished resending email');
+				Mage::log('Finished resending email',NULL,'email.log');
 				//Mage::logException($er);
 			} catch (Exception $er) {
-				Mage::log('Error: ' . $er->getMessage());
+				Mage::log('Could not send e-mail: ' . $er->getMessage(),NULL,'email.log');
 				Mage::logException($er);
 				return false;
 			}

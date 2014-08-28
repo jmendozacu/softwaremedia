@@ -26,6 +26,7 @@ class Mmsmods_Serialcodes_Model_Observer extends Mage_Core_Controller_Varien_Act
 	}
 
 	public function addInvoiceCodesToOrder($observer) {
+		Mage::log('Issuing Invoice Codes',NULL,'email.log');
 		$invoice = $observer->getEvent()->getInvoice();
 		$paid = $invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_PAID;
 		$order = $invoice->getOrder();

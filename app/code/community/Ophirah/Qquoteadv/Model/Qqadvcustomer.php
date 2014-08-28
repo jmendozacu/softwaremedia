@@ -1172,8 +1172,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 	}
 	
 	public function save() {
-		echo "saving";
-		die();
+
 		parent::save();
 	}
 	
@@ -1205,9 +1204,6 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 		//$emailTemplate->setSenderName('sender name');
 		//$emailTemplate->setSenderEmail('sender@test.com');
 		$sender = $this->getEmailSenderInfo();
-		echo $sender['name'] . "<br />";
-		echo $sender['email'] . "<br />";
-		die();
 		
 		$emailTemplate->setSenderName($sender['name']);
 		$emailTemplate->setSenderEmail($sender['email']);
