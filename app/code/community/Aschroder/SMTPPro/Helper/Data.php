@@ -263,7 +263,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function asyncRequest($url, $params) {
 		$params = json_encode($params);
 		$queueItemId = Mage::getModel('smtppro/queue')->setParams($params)->save()->getId();
-		Mage::log('SENDING ' . $queueItemId,NULL,'email.log');
+		Mage::log('SENDING ASYNC ' . $queueItemId,NULL,'email.log');
 		Mage::log($url,NULL,'email.log');
 		if ($queueItemId) {
 			$post_string = '&queue_item_id=' . $queueItemId;
@@ -271,6 +271,8 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 			$url = str_replace('ubervis.php', 'index.php', $url);
 			$parts = parse_url($url);
 
+			Mage::log('FSOCKOPEN ' . $parts['host'],NULL,'email.log');
+			Mage::log('PATH ' . $parts['path'],NULL,'email.log');
 			$fp = fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80, $errno, $errstr, 30);
 
 			$out = "POST " . $parts['path'] . " HTTP/1.1\r\n";
