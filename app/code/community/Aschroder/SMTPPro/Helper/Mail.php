@@ -37,6 +37,8 @@ class Aschroder_SMTPPro_Helper_Mail {
 
 				$cloneMail->send($transportNoOffice); // Zend_Mail warning..
 				Mage::log('Finished resending email',NULL,'email.log');
+				
+				return true;
 				//Mage::logException($er);
 			} catch (Exception $er) {
 				Mage::log('Could not send e-mail: ' . $er->getMessage(),NULL,'email.log');

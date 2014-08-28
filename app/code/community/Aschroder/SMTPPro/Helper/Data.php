@@ -264,6 +264,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 		$params = json_encode($params);
 		$queueItemId = Mage::getModel('smtppro/queue')->setParams($params)->save()->getId();
 		Mage::log('SENDING ' . $queueItemId,NULL,'email.log');
+		Mage::log($url,NULL,'email.log');
 		if ($queueItemId) {
 			$post_string = '&queue_item_id=' . $queueItemId;
 
