@@ -263,6 +263,7 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function asyncRequest($url, $params) {
 		$params = json_encode($params);
 		$queueItemId = Mage::getModel('smtppro/queue')->setParams($params)->save()->getId();
+		Mage::log('SENDING ' . $queueItemId,NULL,'email.log');
 		if ($queueItemId) {
 			$post_string = '&queue_item_id=' . $queueItemId;
 
@@ -281,8 +282,9 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 			fwrite($fp, $out);
 			fclose($fp);
 		} else {
-			Mage::log('asyncRequest failed; could not save queueItem into smtppro_async_queue table');
+			Mage::log('asyncRequest failed; could not save queueItem into smtppro_async_queue table',NULL,'email.log');
 		}
+		Mage::log('SENT ' . $queueItemId,NULL,'email.log');
 	}
 
 }
