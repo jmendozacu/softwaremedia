@@ -330,4 +330,5 @@
 	.footer-top .free-shipping  { font-size: 26px; }
 	.footer-newsletter .text    { font-size: 16px; }
 	.footer-newsletter .social-footer { float: right; margin-bottom: 4px; }
+	.hide-tablet { display: none; }
 }

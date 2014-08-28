@@ -24,6 +24,12 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		// become redundant sooner or later anyway.
 
 		if (!$this->isValidForSend()) {
+			Mage::log('SMTP Pro Disable: ' . Mage::getStoreConfigFlag('system/smtp/disable'), NULL, 'email.log');
+			Mage::log('Sender Name: ' . $this->getSenderName(), NULL, 'email.log');
+			Mage::log('Sender Email: ' . $this->getSenderEmail(), NULL, 'email.log');
+			Mage::log('Template Subject: ' . $this->getTemplateSubject(), NULL, 'email.log');
+
+            
 			//Mage::log('SMTPPro: Email not valid for sending - check template, and smtp enabled/disabled setting');
 			Mage::logException(new Exception('This letter cannot be sent.')); // translation is intentionally omitted
 			return false;
@@ -67,17 +73,13 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		$this->setUseAbsoluteLinks(true);
 		$text = $this->getProcessedTemplate($variables, true);
 
-		if ($this->isPlain()) {
-			$mail->setBodyText($text);
-		} else {
-			$mail->setBodyHTML($text);
-		}
 		if ($variables['order']) {
 			$order = Mage::getModel('sales/order')->load($variables['order']->getIncrementId(), 'increment_id');
 			$comment = "E-Mail Sent (<a href='#'>View E-Mail</a>)";
 			$comment .= "<div style='display: none;'>";
 			$comment .= $text;
 			$comment .= "</div>";
+
 			$historyEmail = Mage::getModel('emailhistory/email');
 			$historyEmail->setOrderId($order->getId());
 			$historyEmail->setText($text);
@@ -85,7 +87,18 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			$historyEmail->setEmailName($variables['name']);
 			$historyEmail->setSubject($this->getProcessedTemplateSubject($variables));
 			$historyEmail->setCreatedAt(now());
+			$historyEmail->setIsRead(0);
 			$historyEmail->save();
+
+			if (!$this->isPlain()) {
+				$text .= '<img src="' . Mage::helper('core/url')->getHomeUrl() . '/emailread/index/index/image/' . $historyEmail->getId() . '.gif" />';
+			}
+		}
+
+		if ($this->isPlain()) {
+			$mail->setBodyText($text);
+		} else {
+			$mail->setBodyHTML($text);
 		}
 
 		$mail->setSubject('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?=');
@@ -119,9 +132,9 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 			$mailObject = serialize($mail);
 			$transportObject = serialize($transport);
 
-			Mage::log('About to send email through async');
+			Mage::log('About to send email through async',NULL,'email.log');
 			Mage::helper('smtppro')->asyncRequest(Mage::getBaseUrl() . 'smtppro/async/mail/', array('mail_object' => $mailObject, 'website_model_id' => $this->getDesignConfig()->getStore(), 'transport' => $transportObject));
-			Mage::log('Finished sending email');
+			Mage::log('Finished sending email',NULL,'email.log');
 
 			// Record one email for each receipient
 			foreach ($emails as $key => $email) {
@@ -134,6 +147,7 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 
 			$this->_mail = null;
 		} catch (Exception $e) {
+			Mage::log($e->getMessage(),NULL,'email.log');
 			Mage::logException($e);
 			return false;
 		}
