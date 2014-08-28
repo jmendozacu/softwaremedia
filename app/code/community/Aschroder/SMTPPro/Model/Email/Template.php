@@ -24,13 +24,6 @@ class Aschroder_SMTPPro_Model_Email_Template extends Mage_Core_Model_Email_Templ
 		// become redundant sooner or later anyway.
 
 		if (!$this->isValidForSend()) {
-			Mage::log('SMTP Pro Disable: ' . Mage::getStoreConfigFlag('system/smtp/disable'), NULL, 'email.log');
-			Mage::log('Sender Name: ' . $this->getSenderName(), NULL, 'email.log');
-			Mage::log('Sender Email: ' . $this->getSenderEmail(), NULL, 'email.log');
-			Mage::log('Template Subject: ' . $this->getTemplateSubject(), NULL, 'email.log');
-
-            
-			//Mage::log('SMTPPro: Email not valid for sending - check template, and smtp enabled/disabled setting');
 			Mage::logException(new Exception('This letter cannot be sent.')); // translation is intentionally omitted
 			return false;
 		}
