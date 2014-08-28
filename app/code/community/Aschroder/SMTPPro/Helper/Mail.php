@@ -3,17 +3,20 @@
 class Aschroder_SMTPPro_Helper_Mail {
 
 	public function sendMailObject($mailObject, $websiteModelId = 0, $transport = null) {
+		Mage::log('sendMailObject ACTION',NULL,'email.log');
+
 		$mail = array();
 		try {
+			Mage::log('Sending first try... ',NULL,'email.log');
 			if (empty($transport)) {
 				$transport = Mage::helper('smtppro')->getTransport($websiteModelId);
 			} else {
 				$transport = unserialize($transport);
 			}
-
+			Mage::log('Sending first try Step 2... ',NULL,'email.log');
 			$mail = unserialize($mailObject);
 			$mail->send($transport);
-
+			Mage::log('Sent... ',NULL,'email.log');
 			return true;
 		} catch (Exception $e) {
 			try {
