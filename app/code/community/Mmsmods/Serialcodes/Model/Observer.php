@@ -26,10 +26,12 @@ class Mmsmods_Serialcodes_Model_Observer extends Mage_Core_Controller_Varien_Act
 	}
 
 	public function addInvoiceCodesToOrder($observer) {
-		Mage::log('Issuing Invoice Codes',NULL,'email.log');
+		
 		$invoice = $observer->getEvent()->getInvoice();
+		
 		$paid = $invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_PAID;
 		$order = $invoice->getOrder();
+		Mage::log('Issuing Invoice Codes: ' . $order->getId(),NULL,'email.log');
 		$source = 'invoicing';
 		$sc_model = Mage::getSingleton('serialcodes/serialcodes');
 		$sc_model->issueSerialCodes($order, $source, NULL, $paid);
@@ -50,6 +52,7 @@ class Mmsmods_Serialcodes_Model_Observer extends Mage_Core_Controller_Varien_Act
 	public function addCheckoutCodesToOrder($observer) {
 		$session = Mage::getSingleton('checkout/session');
 		$order = Mage::getSingleton('sales/order')->load($session->getLastOrderId());
+		Mage::log('Issuing Checkout Codes: ' . $order->getId(),NULL,'email.log');
 		if ($order->getData()) {
 			$source = 'checkout';
 			$sc_model = Mage::getSingleton('serialcodes/serialcodes');
@@ -68,6 +71,7 @@ class Mmsmods_Serialcodes_Model_Observer extends Mage_Core_Controller_Varien_Act
 	public function addPendingCodesToOrder($observer) {
 		$order = $observer->getEvent()->getOrder();
 		$source = 'pending';
+		Mage::log('Issuing Pending Codes: ' . $order->getId(),NULL,'email.log');
 		Mage::getSingleton('serialcodes/serialcodes')->issueSerialCodes($order, $source);
 		return $this;
 	}
