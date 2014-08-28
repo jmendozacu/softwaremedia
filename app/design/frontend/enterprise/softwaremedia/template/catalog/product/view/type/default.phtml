@@ -44,6 +44,7 @@ if($_product->isConfigurable()) {
     $sku = $simple->getSku();
 }
 ?>
+<?php if ($_product->isSaleable()): ?>
 <?php echo $this->getChildHtml('product_type_data_extra') ?>
 <?php echo $this->getPriceHtml($simple) ?>
 <?php $msrp = floatval($simple->getTypeInstance()->getMsrp()); ?>
@@ -59,3 +60,4 @@ if($_product->isConfigurable()) {
     </p>
 <?php endif;?>
 </div>
+<?php endif; ?>
