@@ -263,12 +263,16 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function asyncRequest($url, $params) {
 		$params = json_encode($params);
 		$queueItemId = Mage::getModel('smtppro/queue')->setParams($params)->save()->getId();
+		Mage::log('SENDING ASYNC ' . $queueItemId,NULL,'email.log');
+		Mage::log($url,NULL,'email.log');
 		if ($queueItemId) {
 			$post_string = '&queue_item_id=' . $queueItemId;
 
 			$url = str_replace('ubervis.php', 'index.php', $url);
 			$parts = parse_url($url);
 
+			Mage::log('FSOCKOPEN ' . $parts['host'],NULL,'email.log');
+			Mage::log('PATH ' . $parts['path'],NULL,'email.log');
 			$fp = fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80, $errno, $errstr, 30);
 
 			$out = "POST " . $parts['path'] . " HTTP/1.1\r\n";
@@ -281,8 +285,9 @@ class Aschroder_SMTPPro_Helper_Data extends Mage_Core_Helper_Abstract {
 			fwrite($fp, $out);
 			fclose($fp);
 		} else {
-			Mage::log('asyncRequest failed; could not save queueItem into smtppro_async_queue table');
+			Mage::log('asyncRequest failed; could not save queueItem into smtppro_async_queue table',NULL,'email.log');
 		}
+		Mage::log('SENT ' . $queueItemId,NULL,'email.log');
 	}
 
 }

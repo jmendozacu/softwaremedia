@@ -236,7 +236,7 @@
 			</serialcodes_items>
 		</helpers>
 		<events>
-			<!--<sales_order_place_after>
+			<sales_order_place_after>
 				<observers>
 					<serialcodes>
 						<type>singleton</type>
@@ -244,7 +244,7 @@
 						<method>addPendingCodesToOrder</method>
 					</serialcodes>
 				</observers>
-			</sales_order_place_after>-->
+			</sales_order_place_after>
 			<sales_order_invoice_save_after>
 				<observers>
 					<serialcodes>
