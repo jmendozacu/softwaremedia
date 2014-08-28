@@ -30,13 +30,16 @@ class SFC_Kount_EnsController extends Mage_Core_Controller_Front_Action
 
             // Validate Ip addresses
             $sIpAddress = Mage::helper('core/http')->getRemoteAddr();
+            Mage::log('ENS IP: ' . $sIpAddress,NULL,'kount.log');
+            /*
             if (!Mage::getStoreConfig('kount/account/test')
                 && ($sIpAddress != SFC_Kount_Helper_EnsHandler::IPADDRESS_1
                     && $sIpAddress != SFC_Kount_Helper_EnsHandler::IPADDRESS_2)
             ) {
                 Mage::throwException('Invalid ENS Ip Address: ' . $sIpAddress);
             }
-
+			*/
+			
             // Helper
             $oPathHelper = new SFC_Kount_Helper_Paths();
 
