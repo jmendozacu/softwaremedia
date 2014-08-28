@@ -15,6 +15,7 @@ class Aschroder_SMTPPro_Helper_Mail {
 			}
 			Mage::log('Sending first try Step 2... ',NULL,'email.log');
 			$mail = unserialize($mailObject);
+			Mage::log('Sending first try Step 3... ',NULL,'email.log');
 			$mail->send($transport);
 			Mage::log('Sent... ',NULL,'email.log');
 			return true;
