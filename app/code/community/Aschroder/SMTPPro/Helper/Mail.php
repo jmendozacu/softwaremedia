@@ -3,21 +3,16 @@
 class Aschroder_SMTPPro_Helper_Mail {
 
 	public function sendMailObject($mailObject, $websiteModelId = 0, $transport = null) {
-		Mage::log('sendMailObject ACTION',NULL,'email.log');
 
 		$mail = array();
 		try {
-			Mage::log('Sending first try... ',NULL,'email.log');
 			if (empty($transport)) {
 				$transport = Mage::helper('smtppro')->getTransport($websiteModelId);
 			} else {
 				$transport = unserialize($transport);
 			}
-			Mage::log('Sending first try Step 2... ',NULL,'email.log');
 			$mail = unserialize($mailObject);
-			Mage::log('Sending first try Step 3... ',NULL,'email.log');
 			$mail->send($transport);
-			Mage::log('Sent... ',NULL,'email.log');
 			return true;
 		} catch (Exception $e) {
 			try {
@@ -36,8 +31,6 @@ class Aschroder_SMTPPro_Helper_Mail {
 					$cloneMail->clearFrom();
 					$cloneMail->setFrom($configsNoOffice['username'], 'Customer Service');
 				}
-
-				Mage::log('From: ' . $cloneMail->getFrom(),NULL,'email.log');
 
 				$cloneMail->send($transportNoOffice); // Zend_Mail warning..
 				Mage::log('Finished resending email',NULL,'email.log');
