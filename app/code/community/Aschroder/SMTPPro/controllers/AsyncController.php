@@ -12,6 +12,8 @@ class Aschroder_SMTPPro_AsyncController extends Mage_Core_Controller_Front_Actio
 		} else {
 			$queueItem->setStatus('failed')->save();
 		}
+		
+		Mage::log('MAIL ID ' . $queueItemId,NULL,'email.log');
 	}
 
 }
