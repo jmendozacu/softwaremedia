@@ -25,11 +25,20 @@
 		}
 	@media print {
 		.button-box { display: none !important; }
-		.date-box { display: block !important; }
+		.date-box { display: block !important; font-size: 12px; }
 		.date-box,.content-header h3  { float: none !important; }
 		.content-header span {
 			display: inline-block;
 		}
+		.content-header {
+			position: relative;
+			margin-bottom: 5px;
+			
+		}
+		.content-header h3 {
+			font-size: 1em;
+		}
+		
 	}
 	.button-box {
 		float: right;
@@ -40,6 +49,7 @@
 		padding-right: 14px;
 		display: block;	
 		padding-left: 14px;
+		font-size: 
 	}
 	.submit {
 		border-width: 1px;
@@ -68,7 +78,7 @@ white-space: nowrap;
 	</div>
 	<div class="date-box">
 		
-		Sent <span> to <?php echo $current_email->getEmail(); ?> on</span> <?php echo date('M jS, Y',strtotime($current_email->getCreatedAt())); ?>
+		Sent <span> to <strong><?php echo $current_email->getEmail(); ?></strong> on</span> <?php echo date('M jS, Y',strtotime($current_email->getCreatedAt())); ?> at <?php echo date('g:iA',strtotime($current_email->getCreatedAt())); ?>
 		 - <strong>
 		<?php 	if ($current_email->getIsRead())
 					echo "Read";
