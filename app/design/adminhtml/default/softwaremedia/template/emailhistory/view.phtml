@@ -20,9 +20,26 @@
 		position:fixed;
 		width: 100%;
 	}
+		.content-header span {
+			display: none;
+		}
+	@media print {
+		.button-box { display: none !important; }
+		.date-box { display: block !important; }
+		.date-box,.content-header h3  { float: none !important; }
+		.content-header span {
+			display: inline-block;
+		}
+	}
 	.button-box {
 		float: right;
 		padding-right: 14px;
+	}
+	.date-box {
+		float: right;
+		padding-right: 14px;
+		display: block;	
+		padding-left: 14px;
 	}
 	.submit {
 		border-width: 1px;
@@ -48,6 +65,17 @@ white-space: nowrap;
 		<input name="newemail" type="text" value="<?php echo $current_email->getEmail(); ?>" />
 		<input class="submit" type="submit" value="Send E-Mail" />
 		</form>
+	</div>
+	<div class="date-box">
+		
+		Sent <span> to <?php echo $current_email->getEmail(); ?> on</span> <?php echo date('M jS, Y',strtotime($current_email->getCreatedAt())); ?>
+		 - <strong>
+		<?php 	if ($current_email->getIsRead())
+					echo "Read";
+				else
+					echo "Unread";
+		?>
+		 </strong>
 	</div>
 	<div style="clear: both;"></div>
 </div>
