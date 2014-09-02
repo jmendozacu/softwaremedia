@@ -31,7 +31,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 	public function captureOrder($oOrder) {
 		Mage::log('Trying to capture ORDER' . $oOrder->getId(), NULL,'kount-new.log');
 		try {
-
+			
 
 			if($oOrder->canInvoice()) {
 				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
@@ -184,7 +184,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
     public function restorePreHoldOrderStatus($oOrder)
     {
         // Move order from Hold to previous status
-        $oOrder->setState($oOrder->getHoldBeforeState(), $oOrder->getHoldBeforeStatus());
+        $oOrder->setState('processing','processing');
         $oOrder->setHoldBeforeState(null);
         $oOrder->setHoldBeforeStatus(null);
         $oOrder->save();
