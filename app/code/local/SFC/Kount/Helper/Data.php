@@ -31,6 +31,8 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 	public function captureOrder($oOrder) {
 		Mage::log('Trying to capture ORDER' . $oOrder->getId(), NULL,'kount-new.log');
 		try {
+			Mage::throwException(Mage::helper('core')->__('Test'));
+
 			if($oOrder->canInvoice()) {
 				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
 			
@@ -50,6 +52,23 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 		catch (Mage_Core_Exception $e) {
 			Mage::log($e->getMessage(), NULL,'kount-new.log');
+			foreach ($oOrder->getAllItems() as $item) {
+        		$item->setQtyInvoiced(0);
+        		
+        		$item->setRowInvoiced(NULL);
+				$item->setBaseRowInvoiced(0);
+				
+				$item->save();
+			}
+			
+			$oOrder->setStatus('orders_suspect_hold');
+			
+			$sComment = "Error: Could not automatically create invoice. Please invoice manually.";
+            $oOrder->addStatusHistoryComment($sComment);
+
+			$oOrder->save();
+				
+			Mage::log("Reset Invoice", NULL,'kount-new.log');
 		}
 		return $this;
 	}

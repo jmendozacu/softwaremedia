@@ -248,7 +248,7 @@
 	.cart .checkout-types    { float: none; width: 250px; margin: 0px auto; }
 	.cart-new .checkout-types    { float: right; width: 250px; margin: 0px auto; }
 	.cart-new .checkout-types .btn-proceed-checkout span span { font-size: 13px; }
-	.cart-new .deals {width: 96%; margin: 12px 2% 0 2%;}
+	.cart-new .deals {width: 96% !important; margin: 12px 2% 0 2%;}
 	.cart-new .mobile-checkout-footer .checkout-types { float: none;}
 
 	/* Checkout Help */
@@ -261,9 +261,9 @@
 	.checkout-cart-index .col-main .page-title li              { padding-right: 0px; }
 	.checkout-cart-index .col-main .page-title .checkout-types { display: none; }
 
-	.cart .shipping   { width: 100%; margin: 0; }
+	.cart-new .shipping   { margin: 0; width: 90%; margin: 12px 2% 0 2%;}
 	.cart .totals     { width: 96%; margin: 12px 2% 0 2%;  }
-	.cart-new .shipping   { width: 100%; margin: 0; }
+	.cart-new .shipping   { margin: 0; width: 90%; margin: 12px 2% 0 2%;}
 	.cart-new .totals     { width: 96%; margin: 12px 2% 0 2%;  }
 	.block-cart-total { min-height: 10px !important; }
 	.cart .line-10    { display: none; }
