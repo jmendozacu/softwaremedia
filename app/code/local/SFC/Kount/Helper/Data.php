@@ -31,7 +31,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 	public function captureOrder($oOrder) {
 		Mage::log('Trying to capture ORDER' . $oOrder->getId(), NULL,'kount-new.log');
 		try {
-			Mage::throwException(Mage::helper('core')->__('Test'));
+
 
 			if($oOrder->canInvoice()) {
 				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
