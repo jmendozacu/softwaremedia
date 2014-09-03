@@ -32,7 +32,27 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 		Mage::log('Trying to capture ORDER' . $oOrder->getId(), NULL,'kount-new.log');
 		try {
 			
-
+			if ($oOrder->canUnhold()) {
+				 Mage::log('Order Can Unhold ' . $oOrder->getId(), NULL,'kount-new.log');
+			}
+			if ($oOrderthis->isPaymentReview()) {
+	            Mage::log('Order  payment review ' . $oOrder->getId(), NULL,'kount-new.log');
+	        }
+	        $state = $oOrder->getState();
+	        if ($oOrder->isCanceled() || $state === 'complete' || $state === 'closed') {
+	             Mage::log('Order  cancelled or bad state' . $state, NULL,'kount-new.log');
+	        }
+	
+	        if ($oOrder->getActionFlag('invoice') === false) {
+	            Mage::log('No Invoice Action Flag', NULL,'kount-new.log');
+	        }
+	
+	        foreach ($oOrder->getAllItems() as $item) {
+	            if ($item->getQtyToInvoice()>0 && !$item->getLockedDoInvoice()) {
+	                return true;
+	            }
+	        }
+        
 			if($oOrder->canInvoice()) {
 				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
 			
