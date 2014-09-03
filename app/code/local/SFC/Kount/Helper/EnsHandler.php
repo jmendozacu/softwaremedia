@@ -244,7 +244,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
         if ($aEvent['new_value'] == SFC_Kount_Helper_RisRequest::RIS_RESP_DECLINE &&
             $aEvent['old_value'] == SFC_Kount_Helper_RisRequest::RIS_RESP_REVIEW
         ) {
-        	if ($oOrder->getStatus() == 'canceled' || $oOrder->getStatus() == 'closed')
+        	if ($oOrder->getStatus() == 'canceled' || $oOrder->getStatus() == 'closed') {
         		return;
         	}
         	
