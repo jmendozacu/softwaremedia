@@ -46,7 +46,17 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 	        if ($oOrder->getActionFlag('invoice') === false) {
 	            Mage::log('No Invoice Action Flag', NULL,'kount-new.log');
 	        }
-        
+	
+			$iTest = false;
+	        foreach ($oOrder->getAllItems() as $item) {
+	            if ($item->getQtyToInvoice()>0 && !$item->getLockedDoInvoice()) {
+	                $iTest = true;
+	            }
+	        }
+			if (!$iTest) {
+				Mage::log('No items invoice flag', NULL,'kount-new.log');
+			}
+			
 			if($oOrder->canInvoice()) {
 				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
 			
