@@ -35,7 +35,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 			if ($oOrder->canUnhold()) {
 				 Mage::log('Order Can Unhold ' . $oOrder->getId(), NULL,'kount-new.log');
 			}
-			if ($oOrderthis->isPaymentReview()) {
+			if ($oOrder->isPaymentReview()) {
 	            Mage::log('Order  payment review ' . $oOrder->getId(), NULL,'kount-new.log');
 	        }
 	        $state = $oOrder->getState();
@@ -45,12 +45,6 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 	
 	        if ($oOrder->getActionFlag('invoice') === false) {
 	            Mage::log('No Invoice Action Flag', NULL,'kount-new.log');
-	        }
-	
-	        foreach ($oOrder->getAllItems() as $item) {
-	            if ($item->getQtyToInvoice()>0 && !$item->getLockedDoInvoice()) {
-	                //return true;
-	            }
 	        }
         
 			if($oOrder->canInvoice()) {
