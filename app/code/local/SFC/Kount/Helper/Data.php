@@ -216,8 +216,13 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function restorePreHoldOrderStatus($oOrder)
     {
-        // Move order from Hold to previous status
-        $oOrder->setState('processing','processing');
+    	if ($oOrder->getHoldBeforeState() && $oOrder->getHoldBeforeStatus()) {
+	    	$oOrder->setState($oOrder->getHoldBeforeState(),$oOrder->getHoldBeforeStatus());
+	    	
+    	} else {
+        	// Move order from Hold to previous status
+        	$oOrder->setState('processing','processing');
+		}
         $oOrder->setHoldBeforeState(null);
         $oOrder->setHoldBeforeStatus(null);
         $oOrder->save();
