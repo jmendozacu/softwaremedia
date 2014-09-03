@@ -284,9 +284,10 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                 else {
                     // Not able to cancel this order
                     Mage::log('Unabled to cancel Magento order.', Zend_Log::ERR, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
-                    Mage::log('Setting status to Kount Decline', Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+                    Mage::log('Setting status to Kount Decline ' . $oOrder->getStatus(), Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
                     // Set status to Kount Decline
-                    Mage::helper('kount')->setOrderToKountDecline($oOrder);
+                    if ($oOrder->getStatus() != 'canceled')
+                    	Mage::helper('kount')->setOrderToKountDecline($oOrder);
                 }
             }
         }
