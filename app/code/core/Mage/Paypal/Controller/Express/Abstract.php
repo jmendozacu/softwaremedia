@@ -355,6 +355,9 @@ abstract class Mage_Paypal_Controller_Express_Abstract extends Mage_Core_Control
                 $this->getResponse()->setRedirect($url);
                 return;
             }
+            if ($order)
+            	$order->setState(Mage_Sales_Model_Order::STATE_NEW, true)->save();
+
             $this->_initToken(false); // no need in token anymore
             $this->_redirect('checkout/onepage/success');
             return;
