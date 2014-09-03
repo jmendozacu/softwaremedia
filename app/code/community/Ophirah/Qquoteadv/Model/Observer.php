@@ -197,13 +197,22 @@ class Ophirah_Qquoteadv_Model_Observer
     
     public function setQuoteStatus($event){  
       $quoteId = Mage::getSingleton('core/session')->proposal_quote_id;
+      
+      $orderId = $event->getOrder()->getId();
+
       if (empty($quoteId)) {
         $quoteId = Mage::getSingleton('adminhtml/session')->getUpdateQuoteId(); 
       }
       
       if ($_quoteadv = Mage::getModel('qquoteadv/qqadvcustomer')->load($quoteId) ) {
         $_quoteadv->setStatus(Ophirah_Qquoteadv_Model_Status::STATUS_ORDERED);
-
+		$user = $_quoteadv->getSalesRepresentative();
+		
+		if ($user) {
+			$pt = Mage::getModel('peachtree/referer')->loadByAttribute('order_id',$orderId);
+			if ($pt)
+				$pt->setRefererId($user->getUsername())->save();
+		}
         try{
             $_quoteadv->save();
             
