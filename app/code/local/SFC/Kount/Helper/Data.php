@@ -49,7 +49,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 	
 	        foreach ($oOrder->getAllItems() as $item) {
 	            if ($item->getQtyToInvoice()>0 && !$item->getLockedDoInvoice()) {
-	                return true;
+	                //return true;
 	            }
 	        }
         
