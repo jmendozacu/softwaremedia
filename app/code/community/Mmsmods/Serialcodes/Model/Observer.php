@@ -26,11 +26,15 @@ class Mmsmods_Serialcodes_Model_Observer extends Mage_Core_Controller_Varien_Act
 	}
 
 	public function addInvoiceCodesToOrder($observer) {
-		
+		Mage::log('adding invoice codes',NULL,'keys.log');
 		$invoice = $observer->getEvent()->getInvoice();
 		
 		$paid = $invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_PAID;
 		$order = $invoice->getOrder();
+		
+		if ($order->getStatus() == 'closed')
+			return $this;
+			
 		$source = 'invoicing';
 		$sc_model = Mage::getSingleton('serialcodes/serialcodes');
 		$sc_model->issueSerialCodes($order, $source, NULL, $paid);
