@@ -68,6 +68,13 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 				$transactionSave->save();
 			} else {
 				Mage::log('Order does not allow invoicing ' . $oOrder->getId(), NULL,'kount-new.log');
+				$oOrder->setStatus('orders_suspect_hold');
+			
+				$sComment = "Error: Could not automatically create invoice. Please invoice manually.";
+	            $oOrder->addStatusHistoryComment($sComment);
+	
+				$oOrder->save();
+
 			}
 			
 			Mage::log('Done Invoicing' . $oOrder->getId(), NULL,'kount-new.log');
