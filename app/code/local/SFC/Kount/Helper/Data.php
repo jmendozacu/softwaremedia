@@ -69,6 +69,8 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 			} else {
 				Mage::log('Order does not allow invoicing ' . $oOrder->getId(), NULL,'kount-new.log');
 			}
+			
+			Mage::log('Done Invoicing' . $oOrder->getId(), NULL,'kount-new.log');
 		}
 		catch (Mage_Core_Exception $e) {
 			Mage::log($e->getMessage(), NULL,'kount-new.log');
