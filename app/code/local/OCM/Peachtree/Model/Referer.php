@@ -55,6 +55,7 @@ class OCM_Peachtree_Model_Referer extends Mage_Core_Model_Abstract {
 			'BUYM' => 'Buy.com',
 			'BEST' => 'Best Buy',
 			'AdCenter' => 'MSN Adcenter',
+			'RETARG' => 'Retargeting'
 			//‘Unknown’ for anything else
 			)
 			)
@@ -83,6 +84,7 @@ class OCM_Peachtree_Model_Referer extends Mage_Core_Model_Abstract {
 			'BEST' => 'Best Buy',
 			'AdCenter' => 'MSN Adcenter',
 			'AMZ' => 'Amazon',
+			'RETARG' => 'Retargeting'
 			//‘Unknown’ for anything else
 		);
 	}
