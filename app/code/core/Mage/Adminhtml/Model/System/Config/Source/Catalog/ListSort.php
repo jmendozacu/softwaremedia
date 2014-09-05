@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Magento Enterprise Edition
  *
@@ -24,7 +25,6 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
-
 /**
  * Adminhtml Catalog Product List Sortable allowed sortable attributes source
  *
@@ -32,35 +32,39 @@
  * @package    Mage_Adminhtml
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Adminhtml_Model_System_Config_Source_Catalog_ListSort
-{
-    /**
-     * Retrieve option values array
-     *
-     * @return array
-     */
-    public function toOptionArray()
-    {
-        $options = array();
-        $options[] = array(
-            'label' => Mage::helper('catalog')->__('Best Value'),
-            'value' => 'position'
-        );
-        foreach ($this->_getCatalogConfig()->getAttributesUsedForSortBy() as $attribute) {
-            $options[] = array(
-                'label' => Mage::helper('catalog')->__($attribute['frontend_label']),
-                'value' => $attribute['attribute_code']
-            );
-        }
-        return $options;
-    }
+class Mage_Adminhtml_Model_System_Config_Source_Catalog_ListSort {
 
-    /**
-     * Retrieve Catalog Config Singleton
-     *
-     * @return Mage_Catalog_Model_Config
-     */
-    protected function _getCatalogConfig() {
-        return Mage::getSingleton('catalog/config');
-    }
+	/**
+	 * Retrieve option values array
+	 *
+	 * @return array
+	 */
+	public function toOptionArray() {
+		$options = array();
+		$options[] = array(
+			'label' => Mage::helper('catalog')->__('Best Value'),
+			'value' => 'position'
+		);
+		$options[] = array(
+			'label' => Mage::helper('catalog')->__('Popularity'),
+			'value' => 'popularity'
+		);
+		foreach ($this->_getCatalogConfig()->getAttributesUsedForSortBy() as $attribute) {
+			$options[] = array(
+				'label' => Mage::helper('catalog')->__($attribute['frontend_label']),
+				'value' => $attribute['attribute_code']
+			);
+		}
+		return $options;
+	}
+
+	/**
+	 * Retrieve Catalog Config Singleton
+	 *
+	 * @return Mage_Catalog_Model_Config
+	 */
+	protected function _getCatalogConfig() {
+		return Mage::getSingleton('catalog/config');
+	}
+
 }
