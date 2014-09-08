@@ -26,6 +26,9 @@
 ?>
 
 <?php
+//echo get_class($this);
+$curProd = $this->getSelectedProduct();
+	
 $_product    = $this->getProduct();
 $_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
 ?>
@@ -89,7 +92,7 @@ function changeSku(confAttributeId, sel) {
 			jQuery('#download-text').slideUp();
 		}
 	}
-   var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
+    var productMap = <?php echo Mage::helper('core')->jsonEncode($productMap);?>;
     var selectedAttributeId = sel.options[sel.selectedIndex].value;
     if (selectedAttributeId) {
         var options = spConfig.config.attributes[confAttributeId].options;
@@ -97,6 +100,8 @@ function changeSku(confAttributeId, sel) {
         if (productMap[productId] == "In Stock. Ships Free Today")
         	productMap[productId] = "In Stock. Ships Free Today (during business hours)";
         	
+       
+	
         $("availability_message").update(productMap[productId]);
     } else {
         $("availability_message").update("Select an option above");
@@ -171,4 +176,5 @@ jQuery('.super-attribute-select').change(function() {
     updateHash();
 });
 
+ adroll_custom_data = {"product_id": "<?php echo $curProd ? $curProd->getData('manufacturer_pn_2') : $_product->getData('manufacturer_pn_2'); ?>"};
 </script>
