@@ -42,6 +42,12 @@ if($_product->isConfigurable()) {
 } else {
     $simple = $_product;
     $sku = $simple->getSku();
+    ?>
+<script type="text/javascript">
+ adroll_custom_data = {"product_id": "<?php echo $_product->getData('manufacturer_pn_2'); ?>"};
+</script>
+
+    <?php
 }
 ?>
 <?php if ($_product->isSaleable()): ?>

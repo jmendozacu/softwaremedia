@@ -3,6 +3,45 @@
 class OrganicInternet_SimpleConfigurableProducts_Catalog_Block_Product_View_Type_Configurable
     extends Mage_Catalog_Block_Product_View_Type_Configurable
 {
+
+	//Return current product based on parameters in query string
+	public function getSelectedProduct() {
+		//If no query string, no selected product is available
+		if (!$_SERVER['QUERY_STRING'])
+			return false;
+			
+		parse_str($_SERVER['QUERY_STRING'], $params);
+		
+		//Check for matches in each available product
+		foreach ($this->getAllowProducts() as $product) {
+			$match = false;
+			
+			//Loop through query string parameters and check if all values match product values
+			foreach($params as $key=>$val) {
+				$attribute = Mage::getModel('eav/entity_attribute')->load($key);
+				$attributeCode = $attribute->getAttributeCode();
+				
+				//Skip parameter if it doesn't match up with any product attribute
+				if (!$attributeCode)
+					continue;
+
+				//Ignore parameters that don't specify a value
+				if (!$val)
+					continue;
+					
+				if ($product->getData($attributeCode) == $val)
+					$match = true;
+				else
+					$match = false;
+
+			}
+			
+			if ($match) {
+				return $product;
+			}
+		}
+		return false;
+	}
     public function getExtraJson() {
         $childProducts = array();
         foreach ($this->getAllowProducts() as $product) {
