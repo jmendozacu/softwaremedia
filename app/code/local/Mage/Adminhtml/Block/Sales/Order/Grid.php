@@ -63,7 +63,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			->joinLeft('ocm_peachtree_referer', '`ocm_peachtree_referer`.order_id = `main_table`.entity_id', array('referer_id'));
 
 		$collection->addAddressFields();
-		$collection->getSelect()->joinLeft(array('sfo' => 'sales_flat_order'), 'sfo.entity_id=main_table.entity_id', array('sfo.customer_email','sfo.remote_ip'));
+		$collection->getSelect()->joinLeft(array('sfo' => 'sales_flat_order'), 'sfo.entity_id=main_table.entity_id', array('sfo.customer_email','sfo.x_forwarded_for'));
 
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
@@ -132,11 +132,11 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'index' => 'customer_email',
 			'filter_index' => 'sfo.customer_email'
 		));
-		$this->addColumn('remote_ip', array(
+		$this->addColumn('x_forwarded_for', array(
 			'header' => Mage::helper('sales')->__('Remote IP'),
-			'index' => 'remote_ip',
+			'index' => 'x_forwarded_for',
 			'width' => '100px',
-			'filter_index' => 'sfo.remote_ip'
+			'filter_index' => 'sfo.x_forwarded_for'
 		));
 		$this->addColumn('billing_name', array(
 			'header' => Mage::helper('sales')->__('Bill to Name'),
