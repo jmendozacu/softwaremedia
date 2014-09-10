@@ -335,14 +335,13 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
             $sIsAdmin = Mage::getSingleton('core/session')->getSkipKountAdmin();
             if (!empty($sIsAdmin)) {
                 Mage::log('Skipped for admin store.', Zend_Log::INFO, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
-				$oOrder->save();
-				$oPayment->save();
-				Mage::helper('kount')->captureOrder($oOrder);
-		        //$oOrder->setData('state', "pending");
-		        //$oOrder->setStatus("pending");       
+				
+				//Mage::helper('kount')->captureOrder($oOrder);
+		        $oOrder->setData('state', "pending");
+		        $oOrder->setStatus("pending");       
 		        //$history = $order->addStatusHistoryComment('Order was set to Complete by our automation tool.', false);
 		        //$history->setIsCustomerNotified(false);
-		        //$oOrder->save();
+		        $oOrder->save();
         
                 return $this;
             }
