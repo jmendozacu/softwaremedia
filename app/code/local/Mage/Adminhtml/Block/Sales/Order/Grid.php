@@ -64,6 +64,9 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 
 		$collection->addAddressFields();
 		$collection->getSelect()->joinLeft(array('sfo' => 'sales_flat_order'), 'sfo.entity_id=main_table.entity_id', array('sfo.customer_email','sfo.x_forwarded_for'));
+		
+		$collection->getSelect()->joinLeft(array('cust' => 'customer_entity_int'), 'sfo.customer_id=cust.entity_id AND cust.attribute_id=1541', array('cust.value'));
+	
 
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
@@ -137,6 +140,16 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'index' => 'x_forwarded_for',
 			'width' => '100px',
 			'filter_index' => 'sfo.x_forwarded_for'
+		));
+		$this->addColumn('value', array(
+			'header' => Mage::helper('sales')->__('Suspicious'),
+			'index' => 'value',
+			'filter_index' => 'cust.value',
+			'type'  => 'options',
+		    'options'   =>  array(
+		        '1' => 'Yes',
+		        ''  => 'No'
+		    )
 		));
 		$this->addColumn('billing_name', array(
 			'header' => Mage::helper('sales')->__('Bill to Name'),
