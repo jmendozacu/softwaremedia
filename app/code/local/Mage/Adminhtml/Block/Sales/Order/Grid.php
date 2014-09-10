@@ -147,9 +147,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'filter_index' => 'cust.value',
 			'type'  => 'options',
 		    'options'   =>  array(
-		        '1' => 'Yes',
-		        '0'  => '',
-		        ''  => 'No'
+		        '1' => 'Yes'
 		    )
 		));
 		$this->addColumn('billing_name', array(
