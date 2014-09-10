@@ -31,9 +31,7 @@ $cant_use_points = (($this->getMinSpendablePoints() == $this->getMaxSpendablePoi
 						<?php if ($cant_use_points): ?>
 							<span class="points_slider_msg">
 								<?php
-								$msg = $this->__("Please [[log-in]] to your account to see your points.");
-								echo str_replace("[[", "<a href='javascript:showLogIn()'>", str_replace("]]", "</a>", $msg));
-								?></span>
+								echo "You have no points available to spend";								?></span>
 
 							<form action="<?php echo Mage::getUrl('customer/account/loginPost'); ?>" method="post" id="login-form" class="hidden">
 								<?php echo $this->getBlockHtml('formkey'); ?>
