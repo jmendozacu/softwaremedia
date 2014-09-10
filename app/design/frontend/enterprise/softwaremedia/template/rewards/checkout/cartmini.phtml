@@ -8,7 +8,7 @@ $cant_use_points = (($this->getMinSpendablePoints() == $this->getMaxSpendablePoi
 			<h2><?php echo $this->__('Spend your points'); ?></h2>
 		</div>
 		<div class="box-content">
-			<?php if ($this->needsLogin()): ?>
+			<?php if (!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
 				<span class="no_points_to_spend">
 					<?php
 					$msg = $this->__("You need to [[log-in]] to use your points.");
