@@ -26,6 +26,7 @@
 ?>
 <?php $_order = $this->getOrder() ?>
 <?php
+$_customer = Mage::getModel('customer/customer')->load($_order->getCustomerId());
 $orderAdminDate = $this->formatDate($_order->getCreatedAtDate(), 'medium', true);
 $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', true);
 ?>
@@ -156,6 +157,12 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                 <tr>
                     <td class="label"><label><?php echo Mage::helper('sales')->__('Customer Group') ?></label></td>
                     <td class="value"><strong><?php echo $_groupName ?></strong></td>
+                </tr>
+                <?php endif; ?>
+                <?php if ($_customer->getSuspicious()) : ?>
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('sales')->__('Suspicious?') ?></label></td>
+                    <td class="value"><strong>Yes</strong></td>
                 </tr>
                 <?php endif; ?>
                 <?php foreach ($this->getCustomerAccountData() as $data):?>

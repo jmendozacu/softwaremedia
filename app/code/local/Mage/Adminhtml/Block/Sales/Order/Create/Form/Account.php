@@ -87,11 +87,19 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Form_Account extends Mage_Adminhtm
             /* @var $attribute Mage_Customer_Model_Attribute */
             $attributes[$attribute->getAttributeCode()] = $attribute;
         }
-        
-            
-		//var
         $fieldset = $this->_form->addFieldset('main', array());
-
+        
+        if ($this->getCustomer()->getSuspicious()) {
+	        $fieldset->addField('suspicious', 'text',
+            array(
+                'label' => 'Suspicious',
+                'name' => 'suspicuous',
+                'value' =>	'Yes',
+                'disabled' => true
+            ));
+        }		//var
+        
+		
         $this->_addAttributesToForm($attributes, $fieldset);
 		$fieldset->addField('purchase_order', 'text',
             array(
@@ -150,6 +158,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Form_Account extends Mage_Adminhtm
         if ($this->getQuote()->getCustomerEmail()) {
             $data['email']  = $this->getQuote()->getCustomerEmail();
         }
+        $data['suspicious'] = 'Yes';
 		$data['purchase_order'] = Mage::getSingleton('adminhtml/session')->getData('order_purchase_order');
         return $data;
     }
