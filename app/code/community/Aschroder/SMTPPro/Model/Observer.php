@@ -10,9 +10,9 @@
 class Aschroder_SMTPPro_Model_Observer {
 	
 	public function resendEmailQueue($observer) {
-		$queueItems = Mage::getModel('smtppro/queue')->getCollection()->setOrder('id','ASC')->addFieldToFilter('status','');
-		
-		$queueItems->getSelect()->limit(10);
+		$queueItems = Mage::getModel('smtppro/queue')->getCollection()->setOrder('id','ASC')->addFieldToFilter('status', array('neq' => 'resend_failed'))->addFieldToFilter('datetime', array('lt' => date('Y-m-d h:i:s', time() - 60 * 60 * 1)));
+
+		$queueItems->getSelect()->limit(30);
 		
 		foreach($queueItems as $queueItem) {
 			Mage::log('Resending queue item ' . $queueItem->getId(),NULL,'queue.log');
@@ -21,7 +21,7 @@ class Aschroder_SMTPPro_Model_Observer {
 				$queueItem->delete();
 				Mage::log('Success',NULL,'queue.log');
 			} else {
-				$queueItem->setStatus('failed')->save();
+				$queueItem->setStatus('resend_failed')->save();
 				Mage::log('Failed',NULL,'queue.log');
 			}
 		}	
