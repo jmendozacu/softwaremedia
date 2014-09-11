@@ -9,6 +9,24 @@
 
 class Aschroder_SMTPPro_Model_Observer {
 	
+	public function resendEmailQueue($observer) {
+		$queueItems = Mage::getModel('smtppro/queue')->getCollection()->setOrder('id','ASC')->addFieldToFilter('status','');
+		
+		$queueItems->getSelect()->limit(10);
+		
+		foreach($queueItems as $queueItem) {
+			Mage::log('Resending queue item ' . $queueItem->getId(),NULL,'queue.log');
+			$params = json_decode($queueItem->getParams(), true);
+			if (Mage::helper('smtppro/mail')->sendMailObject($params['mail_object'], $params['website_model_id'], $params['transport'])) {
+				$queueItem->delete();
+				Mage::log('Success',NULL,'queue.log');
+			} else {
+				$queueItem->setStatus('failed')->save();
+				Mage::log('Failed',NULL,'queue.log');
+			}
+		}	
+	}
+	
 	public function log($observer) {
 		
 		$event = $observer->getEvent();

@@ -157,4 +157,13 @@
 			</settings>
 		</smtppro>
 	</default>
+	<!--crontab>
+        <jobs>
+            <resend_email_queue>
+                <schedule><cron_expr>0 0 * * *</cron_expr></schedule>
+                <run><model>smtppro/observer::resendEmailQueue</model></run>
+            </resend_email_queue>
+		</jobs>
+    </crontab-->
+
 </config>
