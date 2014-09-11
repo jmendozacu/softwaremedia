@@ -321,11 +321,17 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         $orderState = Mage_Sales_Model_Order::STATE_NEW;
         $stateObject = new Varien_Object();
 
-		$sIsAdmin = Mage::getSingleton('core/session')->getSkipKountAdmin();
-        if (!empty($sIsAdmin)) {
-        	$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
-        }
-            
+		Mage::log('Checkout ADMIN logged in',NULL,'ttt.log');
+		
+		Mage::getSingleton('core/session', array('name' => 'adminhtml'));
+		$session = Mage::getSingleton('admin/session');
+		if ($session->isLoggedIn()) {
+			$admin = $session->getUser();
+			if ($admin->getId()) {//check if the admin is logged in
+				$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
+			}
+		}            
+		
         /**
          * Do order payment validation on payment method level
          */
