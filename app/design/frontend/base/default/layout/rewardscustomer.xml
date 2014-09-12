@@ -47,8 +47,7 @@
             <block type="rewards/customer" name="rewards.customer" template="rewards/customer.phtml">
                 <block type="rewards/customer_summary" name="customer.summary" as="summary"/>
                 <block type="rewards/customer_transfers_earnings" name="customer.earnings" as="earnings" />
-                <block type="rewards/customer_sendpoints" name="customer.sendpoints" as="sendpoints"  
-                        template="rewards/customer/sendpoints.phtml" />
+              
                 <block type="rewards/customer_preferences" name="customer.preferences" as="preferences"
                         template="rewards/customer/preferences.phtml" />        
             </block>
