@@ -338,10 +338,10 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
 				
 				//Mage::helper('kount')->captureOrder($oOrder);
 		        //$oOrder->setData('state', "pending");
-		        $oOrder->setStatus('orders_suspect_hold');      
+		        //$oOrder->setStatus('orders_suspect_hold');      
 		        //$history = $order->addStatusHistoryComment('Order was set to Complete by our automation tool.', false);
 		        //$history->setIsCustomerNotified(false);
-		        $oOrder->save();
+		        //$oOrder->save();
         
                 return $this;
             }
