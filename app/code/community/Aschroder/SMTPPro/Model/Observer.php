@@ -15,6 +15,8 @@ class Aschroder_SMTPPro_Model_Observer {
 		$queueItems->getSelect()->limit(20);
 		
 		foreach($queueItems as $queueItem) {
+			if (!$queueItem->getParams())
+				continue;
 			Mage::log('Resending queue item ' . $queueItem->getId(),NULL,'queue.log');
 			$params = json_decode($queueItem->getParams(), true);
 			if (Mage::helper('smtppro/mail')->sendMailObject($params['mail_object'], $params['website_model_id'], $params['transport'])) {
