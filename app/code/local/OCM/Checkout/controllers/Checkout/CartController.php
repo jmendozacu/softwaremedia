@@ -114,7 +114,7 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController 
 		}
 
 		if ($cookie->get('ab') || (empty($cookie->get('ab')) && $val == 1)) {
-			$this->getRequest()->setParam('return_url', Mage::getUrl('checkout/cart/new'));
+			$this->getRequest()->setParam('return_url', Mage::getUrl('checkout/cart'));
 		}
 
 		$cart = $this->_getCart();

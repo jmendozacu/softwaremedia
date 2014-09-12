@@ -86,7 +86,7 @@
 							<?php else: ?>
 								<?php
 								$cookie = Mage::getSingleton('core/cookie');
-								$url = (empty($cookie->get('ab')) || $cookie->get('ab') == 0) ? $this->getUrl('checkout/cart') : $this->getUrl('checkout/cart/new');
+								$url = (empty($cookie->get('ab')) || $cookie->get('ab') == 0) ? $this->getUrl('checkout/cart') : $this->getUrl('checkout/cart');
 								?>
 								<a href="<?php echo $url; ?>"><span class="label"><?php echo $this->__('Cart Subtotal:') ?></span> <?php echo Mage::helper('checkout')->formatPrice($this->getSubtotal()) ?><?php if ($_subtotalInclTax = $this->getSubtotalInclTax()): ?> / <?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?> <?php echo Mage::helper('tax')->getIncExcText(true) ?><?php endif; ?><img src="<?php echo $this->getSkinUrl("images/minicart.png") ?>" ></a>
 							<?php endif; ?>
