@@ -328,6 +328,8 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
 
             // Move order from Hold to previous status
             Mage::helper('kount')->restorePreHoldOrderStatus($oOrder);
+            $oOrder->save();
+            sleep(2);
 			Mage::helper('kount')->captureOrder($oOrder);
         }
 
