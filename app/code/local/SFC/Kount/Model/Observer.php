@@ -381,7 +381,7 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
                 // Setting order to Kount Review / Hold not supported for Authorize.Net Direct Post
                 $oOrder = $oObserver->getEvent()->getOrder();
                 $oPayment = $oOrder->getPayment();
-                if ($oPayment->getMethod() != 'authorizenet_directpost') {
+                if ($oPayment->getMethod() != 'authorizenet_directpost' && $oOrder->canInvoice()) {
                     // Set status to Kount Review
                     Mage::helper('kount')->setOrderToKountReview($oOrder);
                 }
