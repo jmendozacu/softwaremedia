@@ -101,7 +101,7 @@ class OCM_ChasePaymentTech_Model_PaymentMethod extends Mage_Payment_Model_Method
 	}
 
 	public function capture(Varien_Object $payment, $amount) {
-		Mage::throwException('test error');
+		//Mage::throwException('test error');
 		//Get admin Payment of frontend Payment
 		if (Mage::app()->getRequest()->getControllerName() == 'sales_order_create') 
 			$onePage = Mage::getSingleton('adminhtml/sales_order_create')->getQuote()->getPayment();

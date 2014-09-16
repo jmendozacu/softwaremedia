@@ -337,9 +337,15 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         $customer = Mage::getModel('customer/customer')->loadByEmail($order->getCustomerEmail());
         if ($customer->getId()) {
         	if (in_array($customer->getGroupId(),array(10,9,13,14))) {
-		        $action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
+		        //$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
 	        }
         }
+        
+        $sApprove = Mage::getSingleton('core/session')->getKountApprove();
+        if (!empty($sApprove)) {
+			$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
+        }
+        
         if ($action) {
             if ($methodInstance->isInitializeNeeded()) {
                 /**
