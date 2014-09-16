@@ -94,6 +94,8 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
         		
         		$item->setRowInvoiced(0);
 				$item->setBaseRowInvoiced(0);
+				$item->setTaxInvoiced(0);
+				$item->setBaseTaxInvoiced(0);
 				
 				$item->save();
 			}

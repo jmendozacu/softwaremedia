@@ -120,8 +120,11 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
                     $sRisRespCode = $oRisRequest->sendRisInquiry($oPayment, $oOrder);
 
 					if ($sRisRespCode == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {
+						Mage::getSingleton('core/session')->setKountApprove(1);
+						Mage::log('Already APproved',NULL,'kk-test.log');
 						
-						
+					} else {
+						Mage::getSingleton('core/session')->setKountApprove(0);
 					}
                     // -- Response
                     if (empty($sRisRespCode) || $sRisRespCode == SFC_Kount_Helper_RisRequest::RIS_RESP_DECLINE) {
