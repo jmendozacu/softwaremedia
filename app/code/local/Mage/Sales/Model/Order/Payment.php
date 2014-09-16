@@ -336,9 +336,9 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         Mage::log('Loading Customer',NULL,'order-test.log');
         $customer = Mage::getModel('customer/customer')->loadByEmail($order->getCustomerEmail());
         if ($customer->getId()) {
-        	Mage::log('Has Customer ID',NULL,'order-test.log');
-        	Mage::log('Customer Group: ' . $customer->getCustomerGroupId(),NULL,'order-test.log');
-        	if (in_array($customer->getCustomerGroupId(),array(10,9,13,14))) {
+        	Mage::log('Has Customer ID: ' . $customer->getId(),NULL,'order-test.log');
+        	Mage::log('Customer Group: ' . $customer->getGroupId(),NULL,'order-test.log');
+        	if (in_array($customer->getGroupId(),array(10,9,13,14))) {
 		        $action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
 	        }
         }
