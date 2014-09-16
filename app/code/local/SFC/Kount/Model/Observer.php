@@ -371,6 +371,8 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
 
 			if ($sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {	
 				Mage::log('KOUNT APPROVED ORDER ' . $oOrder->getId(),NULL,'kount-capture.log');
+				$oOrder->save();
+				sleep(2);
 				Mage::helper('kount')->captureOrder($oOrder);
 			}
 					
