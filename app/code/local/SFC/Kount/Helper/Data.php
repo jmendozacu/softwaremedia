@@ -30,6 +30,10 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function captureOrder($oOrder) {
 		Mage::log('Trying to capture ORDER' . $oOrder->getId(), NULL,'kount-new.log');
+		if ($oOrder->hasInvoices()) {
+			Mage::log('Order ' . $oOrder->getId() . ' already has invoice', NULL,'kount-new.log');
+			return;
+		}
 		try {
 			
 			if ($oOrder->canUnhold()) {
@@ -88,7 +92,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 			foreach ($oOrder->getAllItems() as $item) {
         		$item->setQtyInvoiced(0);
         		
-        		$item->setRowInvoiced(NULL);
+        		$item->setRowInvoiced(0);
 				$item->setBaseRowInvoiced(0);
 				
 				$item->save();
