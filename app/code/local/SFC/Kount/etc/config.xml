@@ -82,15 +82,6 @@
                     </kount_observer>
                 </observers>
             </sales_order_place_after>
-            <sales_order_save_after>
-                <observers>
-                    <kount_observer>
-                        <type>singleton</type>
-                        <class>SFC_Kount_Model_Observer</class>
-                        <method>orderSavedAfter</method>
-                    </kount_observer>
-                </observers>
-            </sales_order_save_after>
         </events>
         <helpers>
             <kount>

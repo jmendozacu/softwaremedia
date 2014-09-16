@@ -290,20 +290,6 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
         return $this;
     }
 
-	/**
-     * Order placed after
-     * @param Varien_Event_Observer $oObserver
-     */
-    public function orderSavedAfter($oObserver) {
-    	$oOrder = $oObserver->getEvent()->getOrder();
-	    $sRisResponse = $oOrder->getData('kount_ris_response');
-	    if ($sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {	
-			Mage::log('KOUNT SAVE APPROVED ORDER ' . $oOrder->getId(),NULL,'kount-capture.log');
-			if ($oOrder->getStatus() == 'processing' && $oOrder->canInvoice())
-				Mage::helper('kount')->captureOrder($oOrder);
-		}
-    }
-    
     /**
      * Order placed after
      * @param Varien_Event_Observer $oObserver
@@ -384,8 +370,8 @@ class SFC_Kount_Model_Observer extends Mage_Core_Model_Mysql4_Abstract
             $oOrder->setData('kount_ris_description', $sRisDescription);
 
 			if ($sRisResponse == SFC_Kount_Helper_RisRequest::RIS_RESP_APPRV) {	
-				//Mage::log('KOUNT APPROVED ORDER ' . $oOrder->getId(),NULL,'kount-capture.log');
-				//Mage::helper('kount')->captureOrder($oOrder);
+				Mage::log('KOUNT APPROVED ORDER ' . $oOrder->getId(),NULL,'kount-capture.log');
+				Mage::helper('kount')->captureOrder($oOrder);
 			}
 					
             // Review Status Returned from Kount RIS
