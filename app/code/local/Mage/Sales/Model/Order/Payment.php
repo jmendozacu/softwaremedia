@@ -333,6 +333,13 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         if (!empty($sIsAdmin)) {
         	$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
         }
+
+        $customer = Mage::getModel('customer/customer')->loadByEmail($order->getCustomerEmail());
+        if ($customer->getId()) {
+        	if (in_array($customer->getGroupId(),array(10,9,13,14))) {
+		        $action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
+	        }
+        }
         if ($action) {
             if ($methodInstance->isInitializeNeeded()) {
                 /**
