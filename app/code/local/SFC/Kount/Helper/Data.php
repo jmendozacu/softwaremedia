@@ -63,7 +63,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 			
 			if($oOrder->canInvoice()) {
 				//Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
-			
+				Mage::log('Invoicing' . $oOrder->getId(), NULL,'kount-new.log');
 				$invoice = Mage::getModel('sales/service_order', $oOrder)->prepareInvoice();
 				if (!$invoice->getTotalQty()) {
 					Mage::throwException(Mage::helper('core')->__('Cannot create an invoice without products.'));
@@ -88,6 +88,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 			Mage::log('Done Invoicing' . $oOrder->getId(), NULL,'kount-new.log');
 		}
 		catch (Mage_Core_Exception $e) {
+			Mage::log("Reset Invoice", NULL,'kount-new.log');
 			Mage::log($e->getMessage(), NULL,'kount-new.log');
 			foreach ($oOrder->getAllItems() as $item) {
         		$item->setQtyInvoiced(0);
@@ -107,7 +108,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
 
 			$oOrder->save();
 				
-			Mage::log("Reset Invoice", NULL,'kount-new.log');
+			
 		}
 		return $this;
 	}
