@@ -53,6 +53,18 @@ class SoftwareMedia_Account_Adminhtml_System_AccountController extends Mage_Admi
 		$this->_addContent($this->getLayout()->createBlock('adminhtml/system_account_edit'));
 		$this->renderLayout();
 	}
+	public function updatePOAction() {
+		$order_id = Mage::app()->getRequest()->getParam('orderid');
+		
+		$order = Mage::getModel('sales/order')->load($order_id);
+		$order->setAccountName(Mage::app()->getRequest()->getParam('name'))
+			->setAccountEmail(Mage::app()->getRequest()->getParam('email'))
+			->setAccountPhone(Mage::app()->getRequest()->getParam('phone'))
+			->setCheckNo(Mage::app()->getRequest()->getParam('check'))
+			->setPaidDate(Mage::app()->getRequest()->getParam('paid'))
+			->setPrefContact(Mage::app()->getRequest()->getParam('contact'))
+			->save();
+	}
 
 	/**
 	 * Saving edited user information
