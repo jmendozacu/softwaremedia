@@ -100,6 +100,13 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 			$product = Mage::getModel('catalog/product')->setStoreId($order->getStoreId())->load($product->getIdBySku($item->getProductOptionByCode('simple_sku')));
 			$hide = $hide || (empty($codeid) && $this->getPendingStatus($order, $item, $product, $i));
 		}
+		
+		$payment = $order->getPayment();
+		
+		//Don't hide codes for purchase orders
+		if ($payment->getMethodInstance()->getCode() == 'purchaseorder')
+			return false;
+			
 		return $hide;
 	}
 
@@ -413,7 +420,7 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 					for ($i = 0; $i < $count; $i++) {
 						$showmessage = $i == 0;
 						if ($this->hidePendingCodes($order, $item, $product, $codeids[$i], $i)) {
-							//$codes[$i] = Mage::helper('serialcodes')->__('Issued when payment received.');
+							$codes[$i] = Mage::helper('serialcodes')->__('Issued when payment received.');
 						}
 						$templatearray[$template]['html'] .= '<br /><span class="sc_code">' . $codes[$i] . '</span>';
 						if ($product->getSerialCodeUseVoucher()) {
