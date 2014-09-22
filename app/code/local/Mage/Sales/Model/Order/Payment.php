@@ -330,8 +330,10 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         $methodInstance->validate();
         $action = $methodInstance->getConfigPaymentAction();
         $sIsAdmin = Mage::getSingleton('core/session')->getSkipKountAdmin();
-        if (!empty($sIsAdmin)) {
-        	$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
+        if (!empty($sIsAdmin) && $methodInstance->getCode() != 'purchaseorder') {
+       		 Mage::log('ADMIN CAPTURE',NULL,'new.log');
+        	Mage::log('ADMIN CODE: ' . $methodInstance->getCode(),NULL,'new.log');
+			$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
         }
 
         $customer = Mage::getModel('customer/customer')->loadByEmail($order->getCustomerEmail());
