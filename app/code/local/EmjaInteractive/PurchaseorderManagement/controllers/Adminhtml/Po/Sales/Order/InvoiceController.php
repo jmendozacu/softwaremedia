@@ -10,11 +10,11 @@ class EmjaInteractive_PurchaseorderManagement_Adminhtml_Po_Sales_Order_InvoiceCo
         $qtys = $this->_getItemQtys();
         foreach($invoice->getOrder()->getAllItems() as $item) {
             if (!isset($qtys[$item->getItemId()])) {
-                Mage::throwException('You must invoice all items. Partial capturing is disallowed here.');
+                //Mage::throwException('You must invoice all items. Partial capturing is disallowed here.');
             }
 
             if ($qtys[$item->getItemId()] < $item->getQtyOrdered()) {
-                Mage::throwException('You must invoice all items. Partial capturing is disallowed here.');
+                //Mage::throwException('You must invoice all items. Partial capturing is disallowed here.');
             }
         }
     }
