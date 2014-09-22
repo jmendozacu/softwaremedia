@@ -350,6 +350,9 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
 			$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
         }
         
+        if ($methodInstance->getCode() == 'purchaseorder')
+        	$orderState = Mage_Sales_Model_Order::STATE_PROCESSING;
+        	
         if ($action) {
             if ($methodInstance->isInitializeNeeded()) {
                 /**
