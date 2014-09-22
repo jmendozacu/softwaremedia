@@ -342,7 +342,7 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         }
         
         $sApprove = Mage::getSingleton('core/session')->getKountApprove();
-        if (!empty($sApprove)) {
+        if (!empty($sApprove) && $methodInstance->getCode() != 'purchaseorder') {
 			$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
         }
         
