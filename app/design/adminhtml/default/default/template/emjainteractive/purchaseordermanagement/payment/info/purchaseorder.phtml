@@ -34,7 +34,10 @@
 <p><?php echo Mage::helper('payment')->__('NET TERMS: %s', $this->htmlEscape($this->getNetTerms())) ?></p>
 <p>Contact: <span class="account_view" id="contact_view"><?php  echo $order->getData('pref_contact') ? $order->getData('pref_contact') : "E-Mail"; ?></span><span style="display: none;" class="account_edit"><select id="contactedit"><option value="E-Mail">E-Mail</option><option <?php if ($order->getData('pref_contact')=='Phone') { echo " selected=\"selected\" "; } ?>value="Phone">Phone</option><option <?php if ($order->getData('pref_contact')=='Address') { echo " selected=\"selected\" "; } ?>value="Address">Address</option></select></span></p>
 </div>
-
+<?php
+            	$session = Mage::getSingleton("core/session");
+if (!$session->getData("capture_information")): 
+				?>
 <div class="box-right">
 <p>Account Info <span class="account_view">(<a href="#" onclick="return accountEdit();">edit</a>)</span>:</p>
 <p>Name: <span class="account_view" id="name_view"><?php echo $order->getData('account_name'); ?></span><span style="display: none;" class="account_edit"><input type="text" id="nameedit" value="<?php echo $order->getData('account_name'); ?>"/></span></p>
@@ -96,3 +99,4 @@
 		});
 	}
 </script>
+<?php endif; ?>

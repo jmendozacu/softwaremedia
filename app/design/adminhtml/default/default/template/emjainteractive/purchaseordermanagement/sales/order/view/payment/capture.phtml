@@ -5,7 +5,12 @@
                 <h4 class="icon-head head-payment-method"><?php echo Mage::helper('sales')->__('Capture Information') ?></h4>
             </div>
             <fieldset>
+            	<?php
+            	$session = Mage::getSingleton("core/session");
+				$session->setData("capture_information", true);
+				?>
                 <?php echo $this->getChildHtml('info') ?>
+                <?php $session->setData("capture_information", false); ?>
             </fieldset>
         </div>
     </div>
