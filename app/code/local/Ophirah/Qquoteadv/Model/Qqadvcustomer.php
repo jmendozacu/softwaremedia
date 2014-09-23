@@ -1216,7 +1216,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 		$emailTemplate->getProcessedTemplate($emailTemplateVariables);
 		
 		try {
-			$emailTemplate->send($sender['email'], $sender['name'], $emailTemplateVariables);
+			$emailTemplate->send("jlosee@softwaremedia.com", $sender['name'], $emailTemplateVariables);
 		} catch (Exception $e) {
 			Mage::log('Could not send: ' . $e->getMessage(),NULL,'jeremy.log');
 		} 
