@@ -31,24 +31,31 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 				->addAttributeToSort('entity_id', 'DESC');
     }
 	
-	public function getOrderCollection($from, $to)
+	public function getOrderCollection($from, $to, $po = false, $net = false)
     {
         $collection = Mage::getResourceModel('sales/order_grid_collection')
-				->addAttributeToFilter('payment_method', 'purchaseorder')
-				->addAttributeToFilter('status', array('nin' => array('complete', 'canceled')));
-		
+				->addAttributeToFilter('main_table.payment_method', 'purchaseorder')
+				->addAttributeToFilter('main_table.status', array('nin' => array('complete', 'canceled')));
+				
+
+		if($po != NULL)
+			$collection->addFieldToFilter('po_number', array('like' => '%' . $po . '%'));
+			
+		if($net != NULL)
+			$collection->addFieldToFilter('net_terms', array('like' => '%' . $net . '%'));
+				
 		if($from != NULL)
-			$collection->addAttributeToFilter('created_at', array('from' => $from));
+			$collection->addAttributeToFilter('main_table.created_at', array('from' => $from));
 		
 		if($to != NULL)
-			$collection->addAttributeToFilter('created_at', array('to' => $to));
+			$collection->addAttributeToFilter('main_table.created_at', array('to' => $to));
 		
-		$collection->addAttributeToSort('entity_id', 'DESC');
-		
+		$collection->addAttributeToSort('main_table.entity_id', 'DESC');
+
 		return $collection;
     }
 	
-	public function getCreditMemoCollection($from, $to)
+	public function getCreditMemoCollection($from, $to, $po = false, $net = false)
     {
         $collection = Mage::getResourceModel('sales/order_creditmemo_grid_collection');
 		
@@ -57,24 +64,46 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 		
 		if($to != NULL)
 			$collection->addAttributeToFilter('created_at', array('to' => $to));
+			
+		if($po != NULL)
+			$collection->addFieldToFilter('order.po_number', array('like' => '%' . $po . '%'));
 		
+		if($net != NULL)
+			$collection->addFieldToFilter('order.net_terms', array('like' => '%' . $net . '%'));
+				
 		$collection->addAttributeToSort('entity_id', 'DESC');
 		
+		$collection->getSelect()->joinLeft(
+					'sales_flat_order_grid as order', 'order.entity_id = main_table.order_id', array('po_number' => 'po_number')
+				);
+				
 		return $collection;
     }
 	
-	public function getInvoiceCollection($from, $to)
+	public function getInvoiceCollection($from, $to, $po = false, $net = false)
     {
         $collection = Mage::getResourceModel('sales/order_invoice_grid_collection');
+		
 		
 		if($from != NULL)
 			$collection->addAttributeToFilter('created_at', array('from' => $from));
 		
 		if($to != NULL)
 			$collection->addAttributeToFilter('created_at', array('to' => $to));
+			
+		if($po != NULL)
+			$collection->addFieldToFilter('order.po_number', array('like' => '%' . $po . '%'));
 		
+		if($net != NULL)
+			$collection->addFieldToFilter('order.net_terms', array('like' => '%' . $net . '%'));
+			
+		$collection->getSelect()->joinLeft(
+					'sales_flat_order_grid as order', 'order.entity_id = main_table.order_id', array('po_number' => 'po_number')
+				);
+				
 		$collection->addAttributeToSort('entity_id', 'DESC');
 		
+		//echo $collection->getSelect();
 		return $collection;
 	}
 	

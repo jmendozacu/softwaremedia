@@ -26,6 +26,8 @@ $baseUrl = str_replace('index.php/', '', $baseUrl);
 $company_name = $this->getRequest()->getParam('company_name');
 $from = $this->getRequest()->getParam('from');
 $to = $this->getRequest()->getParam('to');
+$po = $this->getRequest()->getParam('po');
+$net = $this->getRequest()->getParam('net');
 
 $fromFormatted = NULL;
 $toFormatted = NULL;
@@ -125,6 +127,18 @@ Zend_Date::setOptions(array('format_type' => 'php'));
                                     </script>
                                 </td>
                             </tr>
+                            <tr>
+                                <td class="label"><label for="ar_report_to">PO#</label></td>
+                                <td class="value">
+                                    <input type="text" style="width:110px !important;" class=" required-entry input-text" title="Po" value="<?php echo $po ?>" id="ar_report_po" name="po" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><label for="ar_report_to">Net Terms</label></td>
+                                <td class="value">
+                                    <input type="text" style="width:110px !important;" class=" required-entry input-text" title="Po" value="<?php echo $net ?>" id="ar_report_net" name="net" />
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -191,9 +205,9 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 						$poNumbers[$allOrder->getId()] = $allOrder->getPoNumber();
 					}
 					
-					$orderCollection = $this->getOrderCollection($fromFormatted, $toFormatted);
-                    $creditmemoCollection = $this->getCreditMemoCollection($fromFormatted, $toFormatted);
-					$invoiceCollection = $this->getInvoiceCollection($fromFormatted, $toFormatted);
+					$orderCollection = $this->getOrderCollection($fromFormatted, $toFormatted, $po, $net);
+                    $creditmemoCollection = $this->getCreditMemoCollection($fromFormatted, $toFormatted, $po, $net);
+					$invoiceCollection = $this->getInvoiceCollection($fromFormatted, $toFormatted, $po, $net);
 					
 					?>
                     <tbody>
@@ -353,7 +367,7 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 								
 								?>
 								<tr>
-									<td style="text-align:center"><a href="<?php echo $this->getUrl('adminhtml/sales_invoice/view', array('invoice_id' => $invoice->getId())) ?>"><?php echo $invoice->getIncrementId() ?></a></td>
+									<td style="text-align:center"><a href="<?php echo $this->getUrl('adminhtml/sales_order/view', array('order_id' => $invOrder->getId())) ?>"><?php echo $invOrder->getIncrementId() ?></a></td>
 									<td style="text-align:center">Invoice</td>
 									<td style="text-align:center"><?php echo date('n/j/Y',strtotime($invoice->getCreatedAt())) ?></td>
 									<td style="text-align:center"><?php echo $orderCompany ? $orderCompany : $invOrder->getBillingAddress()->getCompany() ?></td>

@@ -9,6 +9,8 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 		$company_name = $this->getRequest()->getParam('company_name');
 		$from = $this->getRequest()->getParam('from');
 		$to = $this->getRequest()->getParam('to');
+		$po = $this->getRequest()->getParam('po');
+		$net = $this->getRequest()->getParam('net');
 		
 		$fromFormatted = NULL;
 		$toFormatted = NULL;
@@ -41,9 +43,9 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 			$poNumbers[$allOrder->getId()] = $allOrder->getPoNumber();
 		}
 		
-		$orderCollection = $ar->getOrderCollection($fromFormatted, $toFormatted);
-		$creditmemoCollection = $ar->getCreditMemoCollection($fromFormatted, $toFormatted);
-		$invoiceCollection = $ar->getInvoiceCollection($fromFormatted, $toFormatted);
+		$orderCollection = $ar->getOrderCollection($fromFormatted, $toFormatted, $po, $net);
+		$creditmemoCollection = $ar->getCreditMemoCollection($fromFormatted, $toFormatted, $po, $net);
+		$invoiceCollection = $ar->getInvoiceCollection($fromFormatted, $toFormatted, $po, $net);
 
 		if(count($orderCollection) or count($creditmemoCollection) or count($invoiceCollection)) {
 			$customerModel = Mage::getModel('customer/customer');
@@ -199,7 +201,7 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 					}
 					
 					$data	= array();
-					$data[] = '"'.$invoice->getIncrementId().'"';
+					$data[] = '"'.$invoice->getOrderId().'"';
 					$data[] = '"Invoice"';
 					$data[] = '"'.date('n/j/Y',strtotime($invoice->getCreatedAt())).'"';
 					$data[] = $orderCompany ? '"'.$orderCompany .'"' : '"'.$invOrder->getBillingAddress()->getCompany().'"';
