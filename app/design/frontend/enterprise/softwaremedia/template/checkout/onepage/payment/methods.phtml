@@ -39,6 +39,16 @@
 <?php
     foreach ($methods as $_method):
         $_code = $_method->getCode();
+       // echo $_code;
+        if ($_code == 'purchaseorder' && !Mage::getSingleton('customer/session')->isLoggedIn())
+        	continue;
+        
+        if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+	        $customer = Mage::getSingleton('customer/session')->getCustomer();
+	        if ($_code == 'purchaseorder' && !$customer->getPoLimit()>0)
+	        	continue;
+        }
+        	
 ?>
     <dt>
     <?php if(!$oneMethod): ?>
