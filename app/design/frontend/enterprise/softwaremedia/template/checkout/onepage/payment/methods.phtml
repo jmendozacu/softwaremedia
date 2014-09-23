@@ -33,13 +33,16 @@
 ?>
 <dl class="sp-methods" id="checkout-payment-method-load">
 <?php
-    $methods = $this->getMethods();
-    $oneMethod = count($methods) <= 1;
+    $methodList = $this->getMethods();
+    //$oneMethod = count($methods) <= 1;
 ?>
 <?php
-    foreach ($methods as $_method):
+    foreach ($methodList as $_method):
         $_code = $_method->getCode();
-       // echo $_code;
+       
+       	if ($_code == 'checkmo')
+       		continue;
+       		
         if ($_code == 'purchaseorder' && !Mage::getSingleton('customer/session')->isLoggedIn())
         	continue;
         
@@ -48,7 +51,18 @@
 	        if ($_code == 'purchaseorder' && !$customer->getPoLimit()>0)
 	        	continue;
         }
-        	
+        
+        $methods[] = $_method;
+	endforeach;
+?>
+<?php
+    $oneMethod = count($methods) <= 1;
+?>
+<?php
+    foreach ($methods as $_method):
+        $_code = $_method->getCode();
+       // echo $_code;
+      
 ?>
     <dt>
     <?php if(!$oneMethod): ?>
