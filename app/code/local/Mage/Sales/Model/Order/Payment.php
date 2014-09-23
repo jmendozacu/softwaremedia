@@ -330,9 +330,7 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         $methodInstance->validate();
         $action = $methodInstance->getConfigPaymentAction();
         $sIsAdmin = Mage::getSingleton('core/session')->getSkipKountAdmin();
-        if (!empty($sIsAdmin) && $methodInstance->getCode() != 'purchaseorder') {
-       		 Mage::log('ADMIN CAPTURE',NULL,'new.log');
-        	Mage::log('ADMIN CODE: ' . $methodInstance->getCode(),NULL,'new.log');
+        if (!empty($sIsAdmin) && $methodInstance->getCode() != 'purchaseorder' && $methodInstance->getCode() != 'checkmo') {
 			$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
         }
 
@@ -344,13 +342,11 @@ class Mage_Sales_Model_Order_Payment extends Mage_Payment_Model_Info
         }
         
         $sApprove = Mage::getSingleton('core/session')->getKountApprove();
-        if (!empty($sApprove) && $methodInstance->getCode() != 'purchaseorder') {
-        	Mage::log('ADMIN CAPTURE',NULL,'new.log');
-        	Mage::log('ADMIN CODE: ' . $methodInstance->getCode(),NULL,'new.log');
+        if (!empty($sApprove) && $methodInstance->getCode() != 'purchaseorder' && $methodInstance->getCode() != 'checkmo') {
 			$action = Mage_Payment_Model_Method_Abstract::ACTION_AUTHORIZE_CAPTURE;
         }
         
-        if ($methodInstance->getCode() == 'purchaseorder')
+        if ($methodInstance->getCode() == 'purchaseorder' || $methodInstance->getCode() == 'checkmo')
         	$orderState = Mage_Sales_Model_Order::STATE_PROCESSING;
         	
         if ($action) {
