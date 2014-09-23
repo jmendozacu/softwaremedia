@@ -1205,10 +1205,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 		//$emailTemplate->setSenderName('sender name');
 		//$emailTemplate->setSenderEmail('sender@test.com');
 		$sender = $this->getEmailSenderInfo();
-		
-		Mage::log('Sending E-Mail: ' . $sender['name'],NULL,'jeremy.log');
-		Mage::log('Sending E-Mail: ' . $sender['email'],NULL,'jeremy.log');
-		
+				
 		$emailTemplate->setSenderName($sender['name']);
 		$emailTemplate->setSenderEmail($sender['email']);
 		$emailTemplate->setTemplateSubject("Quote " . $this->getIncrementId() . " has been updated: " . Mage::helper('qquoteadv')->getStatus($status));
