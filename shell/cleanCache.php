@@ -24,15 +24,7 @@ try {
 
 echo "\n";
 
-try {
-    echo "Cleaning stored cache... ";
-    flush();
-    echo Mage::app()->getCacheInstance()->clean() ? "[OK]" : "[ERROR]";
-    echo "\n\n";
-} catch (exception $e) {
-    die("[ERROR:" . $e->getMessage() . "]");
-}
-/*
+
 try {
     echo "Cleaning merged JS/CSS...";
     flush();
@@ -51,4 +43,13 @@ try {
 } catch (exception $e) {
     die("[ERROR:" . $e->getMessage() . "]");
 }
-*/
+
+
+try {
+    echo "Cleaning stored cache... ";
+    flush();
+    echo Mage::app()->getCacheInstance()->clean() ? "[OK]" : "[ERROR]";
+    echo "\n\n";
+} catch (exception $e) {
+    die("[ERROR:" . $e->getMessage() . "]");
+}
