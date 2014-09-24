@@ -87,7 +87,7 @@
 		<reference name="content">
 			<block type="checkout/cart" name="checkout.cart">
 				<action method="setCartTemplate">
-					<value>checkout/new_cart.phtml</value>
+					<value>checkout/cart.phtml</value>
 				</action>
 				<action method="setEmptyTemplate">
 					<value>checkout/cart/noItems.phtml</value>
@@ -133,9 +133,11 @@
 					<block type="checkout/onepage_link" name="checkout.cart.methods.onepage.bottom" template="checkout/onepage/link.phtml"/>
 					<block type="checkout/multishipping_link" name="checkout.cart.methods.multishipping" template="checkout/multishipping/link.phtml"/>
 				</block>
-
+				
 				<block type="checkout/cart_coupon" name="newcouponform" as="newcouponform" template="checkout/cart/newcoupon.phtml"/>
-				<block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping" template="checkout/cart/newshipping.phtml"/>
+				<block type="checkout/cart_coupon" name="checkout.cart.coupon" as="coupon" template="checkout/cart/coupon.phtml"/>
+				<block type="checkout/cart_shipping" name="checkout.cart.shipping" as="shipping" template="checkout/cart/shipping.phtml"/>
+
 				<block type="core/text_list" name="checkout.cart.widget" as="checkout_cart_widget" translate="label">
 					<label>Shopping Cart Items After</label>
 				</block>
