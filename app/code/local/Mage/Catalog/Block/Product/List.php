@@ -145,10 +145,7 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
 			$toolbar->addOrderToAvailableOrders('created_at', 'Newest Release');
 		}
 		if ($sort = $this->getSortBy()) {
-			if ($toolbar->getCurrentOrder() == 'created_at')
-				$toolbar->setDefaultOrder('desc');
-			else
-				$toolbar->setDefaultOrder($sort);
+			$toolbar->setDefaultOrder($sort);
 		}
 		if ($dir = $this->getDefaultDirection()) {
 			$toolbar->setDefaultDirection($dir);
@@ -157,10 +154,6 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
 			$toolbar->setModes($modes);
 		}
 
-		//if ($toolbar->getCurrentOrder() == 'created_at')
-		//	$this->getRequest()->setParam($this->getDirectionVarName(),'desc');
-			//$dir  'desc';
-			
 		// set collection to toolbar and apply sort
 		$toolbar->setCollection($collection);
 
@@ -168,9 +161,6 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
 		Mage::dispatchEvent('catalog_block_product_list_collection', array(
 			'collection' => $this->_getProductCollection()
 		));
-		
-		
-
 
 		$this->_getProductCollection()->load();
 

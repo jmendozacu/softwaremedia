@@ -340,9 +340,6 @@ class Mage_Catalog_Block_Product_List_Toolbar extends Mage_Core_Block_Template {
 	 */
 	public function getCurrentDirection() {
 		$dir = $this->_getData('_current_grid_direction');
-		if ($this->getCurrentOrder() == 'created_at')
-			$dir  'desc';
-			
 		if ($dir) {
 			return $dir;
 		}
@@ -362,9 +359,6 @@ class Mage_Catalog_Block_Product_List_Toolbar extends Mage_Core_Block_Template {
 		if (!$dir || !in_array($dir, $directions)) {
 			$dir = $this->_direction;
 		}
-		
-		
-		
 		$this->setData('_current_grid_direction', $dir);
 		return $dir;
 	}
