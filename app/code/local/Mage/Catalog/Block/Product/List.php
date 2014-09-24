@@ -157,8 +157,8 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
 			$toolbar->setModes($modes);
 		}
 
-		if ($toolbar->getCurrentOrder() == 'created_at')
-			$this->getRequest()->setParam($this->getDirectionVarName(),'desc');
+		//if ($toolbar->getCurrentOrder() == 'created_at')
+		//	$this->getRequest()->setParam($this->getDirectionVarName(),'desc');
 			//$dir  'desc';
 			
 		// set collection to toolbar and apply sort
