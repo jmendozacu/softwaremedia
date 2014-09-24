@@ -61,6 +61,7 @@ class Mage_Contacts_IndexController extends Mage_Core_Controller_Front_Action
 
     public function postAction()
     {
+    	echo "POST";
     	die();
         $post = $this->getRequest()->getPost();
         if ( $post ) {
@@ -109,14 +110,23 @@ class Mage_Contacts_IndexController extends Mage_Core_Controller_Front_Action
                 $translate->setTranslateInline(true);
 
                 Mage::getSingleton('customer/session')->addSuccess(Mage::helper('contacts')->__('Your inquiry was submitted and will be responded to as soon as possible. Thank you for contacting us.'));
-                $this->_redirect('request-a-quote');
-
+                
+                echo $post['prevurl'];
+                die();
+                
+                if ($post['prevurl'])
+                	$this->_redirect($post['prevurl']);
+				else
+					$this->_redirect('request-a-quote');
                 return;
             } catch (Exception $e) {
                 $translate->setTranslateInline(true);
 
                 Mage::getSingleton('customer/session')->addError(Mage::helper('contacts')->__('Unable to submit your request. Please, try again later'));
-                $this->_redirect('request-a-quote');
+                if ($post['prevurl'])
+                	$this->_redirect($post['prevurl']);
+				else
+					$this->_redirect('request-a-quote');
                 return;
             }
 

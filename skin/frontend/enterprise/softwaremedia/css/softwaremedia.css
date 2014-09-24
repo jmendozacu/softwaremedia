@@ -46,6 +46,7 @@
 	position: relative;
 }
 .messages {
+	clear: both;
     float: none;
     margin: 0 auto;
     overflow: hidden;

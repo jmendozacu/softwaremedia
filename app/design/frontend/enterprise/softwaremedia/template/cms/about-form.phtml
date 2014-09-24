@@ -25,7 +25,7 @@
  */
 ?>
 <div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
-<form action="<?php echo $this->getFormAction(); ?>" id="contactForm" method="post">
+<form action="/contacts/index/post/" id="contactForm" method="post">
     <div class="fieldset">
         <ul class="form-list">
             <li class="fields">
@@ -72,16 +72,14 @@
                 </div>
             </li>
 
-            <li>
-                <label for="captcha" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Please answer the following:') ?></label>
-                <div class="input-box">
-                    <label>Three + Nineteen =</label><input name="captcha" id="captcha" title="<?php echo Mage::helper('contacts')->__('Please answer the following') ?>" value="" class="input-text required-entry" type="text" />
-                </div>
-            </li>
+
         </ul>
     </div>
     <div class="buttons-set">
         <p class="required"><?php echo Mage::helper('contacts')->__('* Required Fields') ?></p>
+        
+        <input type="hidden" name="prevurl" id="prevurl" value="about-form" />
+        <input type="hidden" name="formname" id="formname" value="About Form" />
         <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />
         <button type="submit" title="<?php echo Mage::helper('contacts')->__('Submit') ?>" class="button"><span><span><?php echo Mage::helper('contacts')->__('Submit') ?></span></span></button>
     </div>
