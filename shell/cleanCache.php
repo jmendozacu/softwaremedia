@@ -24,11 +24,17 @@ try {
 
 echo "\n";
 
-/*
+
 try {
     echo "Cleaning merged JS/CSS...";
     flush();
-    Mage::getModel('core/design_package')->cleanMergedJsCss();
+    $dir = Mage::getBaseDir('media') . DS . 'css';
+	Varien_Io_File::rmdirRecursive($dir);
+	
+	$dir = Mage::getBaseDir('media') . DS . 'css_secure';
+	Varien_Io_File::rmdirRecursive($dir);
+
+                //Mage::getModel('core/design_package')->cleanMergedJsCss();
     Mage::dispatchEvent('clean_media_cache_after');
     echo "[OK]\n\n";
 } catch (Exception $e) {
@@ -43,7 +49,7 @@ try {
 } catch (exception $e) {
     die("[ERROR:" . $e->getMessage() . "]");
 }
-*/
+
 
 try {
     echo "Cleaning stored cache... ";
