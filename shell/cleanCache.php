@@ -2,8 +2,9 @@
 date_default_timezone_set("America/Denver");
 echo "Start Cleaning all caches at ... " . date("Y-m-d H:i:s") . "\n\n";
 ini_set("display_errors", 1);
+$path = substr(realpath(dirname(__FILE__)),0,-5);
 
-require '../app/Mage.php';
+require $path . '/app/Mage.php';
 Mage::app('admin')->setUseSessionInUrl(false);
 Mage::getConfig()->init();
 
