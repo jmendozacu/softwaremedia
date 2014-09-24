@@ -24,6 +24,7 @@ try {
 
 echo "\n";
 
+/*
 
 try {
     echo "Cleaning merged JS/CSS...";
@@ -49,7 +50,7 @@ try {
 } catch (exception $e) {
     die("[ERROR:" . $e->getMessage() . "]");
 }
-
+*/
 
 try {
     echo "Cleaning stored cache... ";
