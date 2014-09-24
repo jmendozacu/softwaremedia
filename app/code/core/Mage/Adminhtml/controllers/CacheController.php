@@ -141,16 +141,11 @@ class Mage_Adminhtml_CacheController extends Mage_Adminhtml_Controller_Action
     public function cleanMediaAction()
     {
         try {
-            //Mage::getModel('core/design_package')->cleanMergedJsCss();
-            //Mage::dispatchEvent('clean_media_cache_after');
-            
-            $dir = Mage::getBaseDir('media') . DS . 'css';
-			Varien_Io_File::rmdirRecursive($dir);
-			
-			$dir = Mage::getBaseDir('media') . DS . 'css_secure';
-			Varien_Io_File::rmdirRecursive($dir);
-			$this->_getSession()->addSuccess(
-                Mage::helper('adminhtml')->__('The JavaScript/CSS cache has been cleaned.'));
+            Mage::getModel('core/design_package')->cleanMergedJsCss();
+            Mage::dispatchEvent('clean_media_cache_after');
+            $this->_getSession()->addSuccess(
+                Mage::helper('adminhtml')->__('The JavaScript/CSS cache has been cleaned.')
+            );
         }
         catch (Exception $e) {
             $this->_getSession()->addException(
