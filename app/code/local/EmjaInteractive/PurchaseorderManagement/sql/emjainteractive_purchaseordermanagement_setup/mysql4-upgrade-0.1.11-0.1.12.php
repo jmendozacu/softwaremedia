@@ -19,7 +19,7 @@ $installer->addAttribute('customer', 'cod', array(
     'default'           => '',
     'searchable'        => false,
     'filterable'        => false,
-    'comparable'        => false,
+    'adminhtml_only'    => true,
     'visible_on_front'  => false,
     'unique'            => false,
     'sort_order'        => '230',
