@@ -245,7 +245,7 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 								}
 								
 								$orderDueDate = '';
-								$netTerms = $order->getNetTerms();
+								$netTerms = ($order->getNetTerms() ? $order->getNetTerms() : '30');
 								if(!empty($netTerms)) {
 									$shipmentDate = NULL;
 									foreach($order->getShipmentsCollection() as $shipment) {
@@ -255,11 +255,11 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 									
 									if($shipmentDate) {
 										$date = new Zend_Date($shipmentDate, 'Y-m-d');
-										$date->addDay(30); //$date->addDay($netTerms);
+										$date->addDay($netTerms);
 										$orderDueDate = $date->get('n/j/Y');
 									} else {
 										$date = new Zend_Date($order->getCreatedAt(), 'Y-m-d');
-										$date->addDay(30); //$date->addDay($netTerms);
+										$date->addDay($netTerms);
 										$orderDueDate = $date->get('n/j/Y');
 									}
 								} else {
@@ -271,9 +271,11 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 									
 									if($shipmentDate) {
 										$date = new Zend_Date($shipmentDate, 'Y-m-d');
+										$date->addDay(30);
 										$orderDueDate = $date->get('n/j/Y');
 									} else {
 										$date = new Zend_Date($order->getCreatedAt(), 'Y-m-d');
+										$date->addDay(30);
 										$orderDueDate = $date->get('n/j/Y');
 									}
 								}
