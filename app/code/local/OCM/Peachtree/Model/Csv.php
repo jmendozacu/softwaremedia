@@ -186,6 +186,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$terms = self::DISPLAYED_TERMS;
 			}
 			
+			if ($payment == 'purchaseorder') {
+				$terms = 'Prepaid Wire';
+			}
+			if ($payment == 'purchaseorder' && substr($order->getNetTerms(),0,3) == 'COD')
+				$terms = 'COD';
+				
 			$common_values = array(
 				'customer_id' => 'O' . date('my', strtotime($order->getData('created_at'))),
 				'invoice_id' => $orderId,
@@ -232,14 +238,14 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			
 			//If PO, don't put under wholesale customer
 			if ($payment == 'purchaseorder') {
-				$common_values['customer_id'] = '';
-			}
+				$common_values['customer_id'] = '';	
 			
-			//If Peachtree ID exists, assign it
-			if ($order->getCustomerId()) {
-				$customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
-				if ($customer->getPeachtreeId()) {
-					$common_values['customer_id'] = $customer->getPeachtreeId();
+				//If Peachtree ID exists, assign it
+				if ($order->getCustomerId()) {
+					$customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
+					if ($customer->getPeachtreeId()) {
+						$common_values['customer_id'] = $customer->getPeachtreeId();
+					}
 				}
 			}
 			$i = 1;

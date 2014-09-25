@@ -43,7 +43,7 @@ class EmjaInteractive_PurchaseorderManagement_Model_Sales_Order_Observer
                             $item->setNetTerms($netTerms);
                         }
 
-                        $order->addStatusToHistory('processing', 'IMPORTANT: Order has NOT been paid and should be shipped COD.', false);
+                        $order->addStatusToHistory('processmanually', 'IMPORTANT: Order has NOT been paid and should be shipped COD.', false);
                     }
                     
                     
