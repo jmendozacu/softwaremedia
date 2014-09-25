@@ -26,6 +26,7 @@ class EmjaInteractive_PurchaseorderManagement_Model_Sales_Order_Observer
 
                 if (Mage::app()->getStore()->isAdmin()) {
                     $orderPostData = Mage::app()->getRequest()->getParam('order', array());
+                    
                     if (isset($orderPostData['account']) && isset($orderPostData['account']['net_terms'])) {
                         $netTerms = $orderPostData['account']['net_terms'];
                         $order->setNetTerms($netTerms);
@@ -33,6 +34,19 @@ class EmjaInteractive_PurchaseorderManagement_Model_Sales_Order_Observer
                             $item->setNetTerms($netTerms);
                         }
                     }
+                    
+                    $paymentPostData = Mage::app()->getRequest()->getParam('payment', array());
+                    if ($paymentPostData['cod']) {
+	                    $netTerms = 'COD ' . $paymentPostData['cod'];
+                        $order->setNetTerms($netTerms);
+                        foreach($order->getAllItems() as $item) {
+                            $item->setNetTerms($netTerms);
+                        }
+
+                        $order->addStatusToHistory('processing', 'IMPORTANT: Order has NOT been paid and should be shipped COD.', false);
+                    }
+                    
+                    
                 }
 
             } catch (Exception $e) {
@@ -123,6 +137,8 @@ class EmjaInteractive_PurchaseorderManagement_Model_Sales_Order_Observer
             $customer->setPoCredit($credit)->save();
             array_push($this->_incrementedOrdersId, $order->getId());
             $order->setIncreasedCredit(true);
+
+			Mage::getResourceModel('ordertags/orderidtotagid')->addIntoDB($order->getId(), 37);
         }
     }
 

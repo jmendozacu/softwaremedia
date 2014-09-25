@@ -269,7 +269,7 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_Account extends Mage_Adminhtml_Bloc
 
 		//Read only net terms attributes for most admin groups
 		if (!in_array(Mage::getSingleton('admin/session')->getUser()->getRole()->getId(),array(1,31))) {
-			foreach(array('net_terms','po_limit','po_credit') as $code) {
+			foreach(array('net_terms','po_limit','po_credit','cod') as $code) {
 		        $element = $form->getElement($code);
 		        if ($element) {
 		            $element->setReadonly(true, true);

@@ -279,7 +279,11 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 				}
 				
 				$orderDueDate = '';
-				$netTerms = $order->getNetTerms();
+				$netTerms = ($order->getData('net_terms') ? $order->getData('net_terms') : '30');
+				$netTerms = str_replace('NET ' ,'', $netTerms);
+				if ($netTerms == 'COD Secured' || $netTerms == 'COD Company Check')
+					$netTerms = '30';
+								
 				if(!empty($netTerms)) {
 					$shipmentDate = NULL;
 					foreach($order->getShipmentsCollection() as $shipment) {
@@ -287,29 +291,20 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 						break;
 					}
 					
-					if($shipmentDate) {
-						$date = new Zend_Date($shipmentDate, 'Y-m-d');
-						$date->addDay(30); //$date->addDay($netTerms);
-						$orderDueDate = $date->get('n/j/Y');
-					} else {
 						$date = new Zend_Date($order->getCreatedAt(), 'Y-m-d');
-						$date->addDay(30); //$date->addDay($netTerms);
+						$date->addDay($netTerms);
 						$orderDueDate = $date->get('n/j/Y');
-					}
+					
 				} else {
 					$shipmentDate = NULL;
 					foreach($order->getShipmentsCollection() as $shipment) {
 						$shipmentDate = $shipment->getCreatedAt();
 						break;
 					}
-					
-					if($shipmentDate) {
-						$date = new Zend_Date($shipmentDate, 'Y-m-d');
-						$orderDueDate = $date->get('n/j/Y');
-					} else {
+
 						$date = new Zend_Date($order->getCreatedAt(), 'Y-m-d');
 						$orderDueDate = $date->get('n/j/Y');
-					}
+					
 				}
 				
 				$orderDaysPastDue = '';
@@ -320,7 +315,10 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 				if($orderDaysPastDue <= 0)
 					$orderDaysPastDue = '';
 				
-				if(!empty($netTerms))
+				$netTerms = ($order->getData('net_terms') ? $order->getData('net_terms') : '30');
+				$netTerms = str_replace('NET ' ,'', $netTerms);
+								
+				if(!empty($netTerms) && $netTerms != 'COD Secured' && $netTerms != 'COD Company Check')
 					$netTerms = 'NET ' . $netTerms;
 				
 				$data	= array();

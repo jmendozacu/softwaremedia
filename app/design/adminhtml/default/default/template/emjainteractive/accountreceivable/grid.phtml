@@ -247,7 +247,7 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 								$orderDueDate = '';
 								$netTerms = ($order->getData('net_terms') ? $order->getData('net_terms') : '30');
 								$netTerms = str_replace('NET ' ,'', $netTerms);
-								if ($netTerms == 'COD')
+								if ($netTerms == 'COD Secured' || $netTerms == 'COD Company Check')
 									$netTerms = '30';
 									
 								if(!empty($netTerms)) {
@@ -284,8 +284,11 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 								
 								if($orderDaysPastDue <= 0)
 									$orderDaysPastDue = '';
+									
+								$netTerms = ($order->getData('net_terms') ? $order->getData('net_terms') : '30');
+								$netTerms = str_replace('NET ' ,'', $netTerms);
 								
-								if(!empty($netTerms))
+								if(!empty($netTerms) && $netTerms != 'COD Secured' && $netTerms != 'COD Company Check')
 									$netTerms = 'NET ' . $netTerms;
 								
 								?>

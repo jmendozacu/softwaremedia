@@ -24,6 +24,7 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 ?>
+<?php $customer = Mage::getModel('customer/customer')->load(Mage::getSingleton('adminhtml/session_quote')->getCustomerId()); ?>
 <ul id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none">
     <li>
         <div class="input-box">
@@ -31,4 +32,16 @@
             <input type="text" id="po_number" name="payment[po_number]" title="<?php echo Mage::helper('payment')->__("Purchase Order Number") ?>" class="required-entry input-text" value="<?php echo $this->getInfoData('po_number') ?>"/>
         </div>
     </li>
+    <?php if ($customer->getCod()): ?>
+    <li>
+        <div class="input-box">
+            <label for="po_number"><?php echo Mage::helper('payment')->__('COD Type') ?></label><br/>
+            <select name="payment[cod]" id="cod">
+            	<option value="">None</option>
+            	<option value="Secured Funds">Secured Funds</option>
+            	<option value="Company Check">Company Check</option>
+            </select>
+        </div>
+    </li>
+    <?php endif; ?>
 </ul>
