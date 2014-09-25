@@ -182,8 +182,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					$t = str_replace('Net ' ,'', $order->getNetTerms());
 					$t = str_replace('NET ' ,'', $t);
 					$terms .= $t;
-				else
+				} else {
 					$terms .= '30';
+				}
 			} else {
 				$terms = self::DISPLAYED_TERMS;
 			}
