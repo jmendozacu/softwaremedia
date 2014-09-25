@@ -77,7 +77,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 		if (!$filter) {
 			return $this;
 		} else if ($filter == 'main') {
-			$this->getCollection()->getSelect()->where('main_table.status NOT IN (? , ? , ? )', array('complete', 'canceled', 'closed'));
+			$this->getCollection()->getSelect()->where('main_table.status NOT IN (? , ? , ? )', array('complete', 'canceled', 'closed', 'paypal_canceled_reversal'));
 		} else {
 			$this->getCollection()->getSelect()->where('main_table.status = ?', $filter);
 		}
