@@ -24,6 +24,8 @@
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
+<?php $netTerms =  (Mage::getSingleton('customer/session')->getCustomer()->getNetTerms() ? Mage::getSingleton('customer/session')->getCustomer()->getNetTerms() : '30'); ?>
+
 <p><?php echo $this->getMethod()->getTitle() ?></p>
 <p><?php echo Mage::helper('payment')->__('PO NUMBER: %s', $this->htmlEscape($this->getInfo()->getPoNumber())) ?></p>
-<p><?php echo Mage::helper('payment')->__('NET TERMS: %s', $this->htmlEscape($this->getNetTerms())) ?></p>
+<p><?php echo Mage::helper('payment')->__('NET TERMS: %s', $this->htmlEscape($netTerms)) ?></p>

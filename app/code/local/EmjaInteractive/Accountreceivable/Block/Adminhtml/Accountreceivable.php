@@ -31,13 +31,15 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 				->addAttributeToSort('entity_id', 'DESC');
     }
 	
-	public function getOrderCollection($from, $to, $po = false, $net = false)
+	public function getOrderCollection($from, $to, $po = false, $net = false, $order = false)
     {
         $collection = Mage::getResourceModel('sales/order_grid_collection')
 				->addAttributeToFilter('main_table.payment_method', 'purchaseorder')
-				->addAttributeToFilter('main_table.status', array('nin' => array('complete', 'canceled')));
-				
+				->addAttributeToFilter('main_table.status', array('nin' => array('complete', 'canceled')));	
 
+		if($order != NULL)
+			$collection->addFieldToFilter('increment_id', array('like' => '%' . $order . '%'));
+			
 		if($po != NULL)
 			$collection->addFieldToFilter('po_number', array('like' => '%' . $po . '%'));
 			
@@ -51,14 +53,17 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 			$collection->addAttributeToFilter('main_table.created_at', array('to' => $to));
 		
 		$collection->addAttributeToSort('main_table.entity_id', 'DESC');
-
+		
 		return $collection;
     }
 	
-	public function getCreditMemoCollection($from, $to, $po = false, $net = false)
+	public function getCreditMemoCollection($from, $to, $po = false, $net = false, $order = false)
     {
         $collection = Mage::getResourceModel('sales/order_creditmemo_grid_collection');
 		
+		if($order != NULL)
+			$collection->addFieldToFilter('order.increment_id', array('like' => '%' . $order . '%'));
+			
 		if($from != NULL)
 			$collection->addAttributeToFilter('created_at', array('from' => $from));
 		
@@ -76,15 +81,17 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 		$collection->getSelect()->joinLeft(
 					'sales_flat_order_grid as order', 'order.entity_id = main_table.order_id', array('po_number' => 'po_number')
 				);
-				
+		
 		return $collection;
     }
 	
-	public function getInvoiceCollection($from, $to, $po = false, $net = false)
+	public function getInvoiceCollection($from, $to, $po = false, $net = false, $order = false)
     {
         $collection = Mage::getResourceModel('sales/order_invoice_grid_collection');
 		
-		
+		if($order != NULL)
+			$collection->addFieldToFilter('order.increment_id', array('like' => '%' . $order . '%'));
+			
 		if($from != NULL)
 			$collection->addAttributeToFilter('created_at', array('from' => $from));
 		

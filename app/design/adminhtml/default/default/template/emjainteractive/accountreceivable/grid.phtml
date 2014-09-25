@@ -28,6 +28,7 @@ $from = $this->getRequest()->getParam('from');
 $to = $this->getRequest()->getParam('to');
 $po = $this->getRequest()->getParam('po');
 $net = $this->getRequest()->getParam('net');
+$order = $this->getRequest()->getParam('order');
 
 $fromFormatted = NULL;
 $toFormatted = NULL;
@@ -128,6 +129,12 @@ Zend_Date::setOptions(array('format_type' => 'php'));
                                 </td>
                             </tr>
                             <tr>
+                                <td class="label"><label for="ar_report_to">Order #</label></td>
+                                <td class="value">
+                                    <input type="text" style="width:110px !important;" class=" required-entry input-text" title="Po" value="<?php echo $order ?>" id="ar_report_order" name="order" />
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="label"><label for="ar_report_to">PO#</label></td>
                                 <td class="value">
                                     <input type="text" style="width:110px !important;" class=" required-entry input-text" title="Po" value="<?php echo $po ?>" id="ar_report_po" name="po" />
@@ -205,9 +212,9 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 						$poNumbers[$allOrder->getId()] = $allOrder->getPoNumber();
 					}
 					
-					$orderCollection = $this->getOrderCollection($fromFormatted, $toFormatted, $po, $net);
-                    $creditmemoCollection = $this->getCreditMemoCollection($fromFormatted, $toFormatted, $po, $net);
-					$invoiceCollection = $this->getInvoiceCollection($fromFormatted, $toFormatted, $po, $net);
+					$orderCollection = $this->getOrderCollection($fromFormatted, $toFormatted, $po, $net, $order);
+                    $creditmemoCollection = $this->getCreditMemoCollection($fromFormatted, $toFormatted, $po, $net, $order);
+					$invoiceCollection = $this->getInvoiceCollection($fromFormatted, $toFormatted, $po, $net, $order);
 					
 					?>
                     <tbody>

@@ -11,6 +11,7 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 		$to = $this->getRequest()->getParam('to');
 		$po = $this->getRequest()->getParam('po');
 		$net = $this->getRequest()->getParam('net');
+		$order = $this->getRequest()->getParam('order');
 		
 		$fromFormatted = NULL;
 		$toFormatted = NULL;
@@ -43,9 +44,9 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 			$poNumbers[$allOrder->getId()] = $allOrder->getPoNumber();
 		}
 		
-		$orderCollection = $ar->getOrderCollection($fromFormatted, $toFormatted, $po, $net);
-		$creditmemoCollection = $ar->getCreditMemoCollection($fromFormatted, $toFormatted, $po, $net);
-		$invoiceCollection = $ar->getInvoiceCollection($fromFormatted, $toFormatted, $po, $net);
+		$orderCollection = $ar->getOrderCollection($fromFormatted, $toFormatted, $po, $net, $order);
+		$creditmemoCollection = $ar->getCreditMemoCollection($fromFormatted, $toFormatted, $po, $net, $order);
+		$invoiceCollection = $ar->getInvoiceCollection($fromFormatted, $toFormatted, $po, $net, $order);
 
 		if(count($orderCollection) or count($creditmemoCollection) or count($invoiceCollection)) {
 			$customerModel = Mage::getModel('customer/customer');
