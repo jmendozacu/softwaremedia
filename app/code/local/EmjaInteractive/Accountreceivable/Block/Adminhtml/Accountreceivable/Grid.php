@@ -281,7 +281,7 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 				$orderDueDate = '';
 				$netTerms = ($order->getData('net_terms') ? $order->getData('net_terms') : '30');
 				$netTerms = str_replace('NET ' ,'', $netTerms);
-				if ($netTerms == 'COD Secured' || $netTerms == 'COD Company Check')
+				if (substr($netTerms,0,3) == 'COD')
 					$netTerms = '30';
 								
 				if(!empty($netTerms)) {
@@ -318,7 +318,7 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 				$netTerms = ($order->getData('net_terms') ? $order->getData('net_terms') : '30');
 				$netTerms = str_replace('NET ' ,'', $netTerms);
 								
-				if(!empty($netTerms) && $netTerms != 'COD Secured' && $netTerms != 'COD Company Check')
+				if(!empty($netTerms) && substr($netTerms,0,3) != 'COD')
 					$netTerms = 'NET ' . $netTerms;
 				
 				$data	= array();
