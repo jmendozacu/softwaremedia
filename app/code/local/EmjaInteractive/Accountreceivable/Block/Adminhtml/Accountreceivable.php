@@ -54,8 +54,6 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 		
 		$collection->addAttributeToSort('main_table.entity_id', 'DESC');
 		
-		echo $collection->getSelect();
-		
 		return $collection;
     }
 	
