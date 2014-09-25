@@ -246,6 +246,9 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 								
 								$orderDueDate = '';
 								$netTerms = ($order->getNetTerms() ? $order->getNetTerms() : '30');
+								$netTerms = str_replace('NET ' ,'', $netTerms);
+								if ($netTerms = 'COD')
+									$netTerms = '30';
 								if(!empty($netTerms)) {
 									$shipmentDate = NULL;
 									foreach($order->getShipmentsCollection() as $shipment) {
@@ -264,7 +267,8 @@ Zend_Date::setOptions(array('format_type' => 'php'));
 									}
 								} else {
 									$shipmentDate = NULL;
-									foreach($order->getShipmentsCollection() as $shipment) {
+									foreach($order->getShipmentsCollection()
+									 as $shipment) {
 										$shipmentDate = $shipment->getCreatedAt();
 										break;
 									}
