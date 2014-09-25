@@ -178,8 +178,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			$payment = $order->getPayment()->getMethodInstance()->getCode();
 			if ($payment == 'purchaseorder') {
 				$terms = 'NET';
-				if ($order->getNetTerms())
-					$terms .= $order->getNetTerms();
+				if ($order->getNetTerms()) {
+					$t = str_replace('Net ' ,'', $order->getNetTerms());
+					$t = str_replace('NET ' ,'', $t);
+					$terms .= $t;
 				else
 					$terms .= '30';
 			} else {
