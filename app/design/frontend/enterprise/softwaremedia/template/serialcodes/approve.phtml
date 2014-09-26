@@ -1,0 +1,51 @@
+<div class="page-title">
+    <h1>Your Serial Codes</h1>
+</div>
+
+
+<div class="std">
+	<?php $order = $this->getOrder(); ?>
+	<?php if ($order->getId()):?>
+	<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('serial_codes_issue')->toHtml(); ?>
+	<br /><br />
+	<table>
+		<thead>
+			<tr>
+				<td>Product Name</td>
+				<td>Codes</td>
+			</tr>
+		</thead>
+		<tbody>
+	<?php 
+	foreach ($order->getAllItems() as $item) {
+		echo "<tr>";
+		echo "<td>" . $item->getName() . "</td>";
+			
+		if ($item->getSerialCodes()) {
+			if ($item->getSerialCodesViewed()) {
+				echo "<td>" . $item->getSerialCodes() . "</td>";
+			} else {
+				echo "<td><span id=\"code_" . $item->getId() . "\"\"><a href=\"#\" onclick=\"issueCode('" . $item->getId() . "');\">Issue Code?</a></span></td>";
+			} 
+		} else {
+			echo "<td>No Codes Available</td>";
+		}
+		echo "</tr>";
+	}
+	?>
+		</tbody>
+	</table>
+	<?php else: ?>
+		Error: Invalid Order Key
+	<?php endif; ?>
+</div>
+
+<script type="text/javascript">
+	var unique = '<?php echo $this->getUnique(); ?>';
+	function issueCode(itemId) {
+		new Ajax.Updater('code_' + itemId, '<?php echo Mage::helper("adminhtml")->getUrl('serialcodes/index/redeem'); ?>', {
+		  method: 'get',
+		  parameters: {item: itemId, unique: unique}
+		});
+	}
+</script>

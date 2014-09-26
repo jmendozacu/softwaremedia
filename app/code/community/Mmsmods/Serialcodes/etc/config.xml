@@ -22,7 +22,7 @@
 <config>
 	<modules>
 		<Mmsmods_Serialcodes>
-			<version>1.4.3.1</version>
+			<version>1.4.5</version>
 		</Mmsmods_Serialcodes>
 	</modules>
 	<admin>
@@ -159,6 +159,22 @@
 		</translate>
 	</adminhtml>
 	<frontend>
+		<layout>
+			<updates>
+				<serialcodes>
+					<file>serialcodes.xml</file>
+				</serialcodes>
+			</updates>
+		</layout>
+        <routers>
+            <serialcodes>
+                <use>standard</use>
+                <args>
+                    <module>Mmsmods_Serialcodes</module>
+                    <frontName>serialcodes</frontName>
+                </args>
+            </serialcodes>
+        </routers> 
 		<translate>
 			<modules>
 				<Mmsmods_Serialcodes>

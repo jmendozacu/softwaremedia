@@ -59,6 +59,7 @@ class Mmsmods_Serialcodes_Adminhtml_Serialcodes_ItemsController extends Mage_Adm
 				$pid = $this->getRequest()->getParam('id');
 				$postData = $this->getRequest()->getPost();
 				$issued = round($postData['serial_codes_issued']);
+				$viewed = round($postData['serial_codes_viewed']);
 				$pcodes = explode("\n",$postData['serial_codes']);
 				$pcodes = array_map('trim', $pcodes);
 				$pcodes = array_filter($pcodes);
@@ -71,6 +72,7 @@ class Mmsmods_Serialcodes_Adminhtml_Serialcodes_ItemsController extends Mage_Adm
 					->setSerialCodeIds(implode(',',$icodes))
 					->setSerialCodesIssued($issued)
 					->setSerialCodePool($sku)
+					->setSerialViewed($viewed)
 					->save();
 				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('serialcodes')->__('Successfully saved.'));
 				Mage::getSingleton('adminhtml/session')->setSerialcodesData(false);
@@ -93,6 +95,7 @@ class Mmsmods_Serialcodes_Adminhtml_Serialcodes_ItemsController extends Mage_Adm
 				$pid = $this->getRequest()->getParam('id');
 				$postData = $this->getRequest()->getPost();
 				$issued = round($postData['sc_issued_'.$pid]);
+				$viewed = round($postData['sc_viewed_'.$pid]);
 				$pcodes = explode("\n",$postData['serial_codes_'.$pid]);
 				$pcodes = array_map('trim', $pcodes);
 				$pcodes = array_filter($pcodes);
@@ -104,6 +107,7 @@ class Mmsmods_Serialcodes_Adminhtml_Serialcodes_ItemsController extends Mage_Adm
 					->setSerialCodes(implode("\n",$pcodes))
 					->setSerialCodeIds(implode(',',$icodes))
 					->setSerialCodesIssued($issued)
+					->setSerialCodesViewed($viewed)
 					->setSerialCodePool($sku)
 					->save();
 				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('serialcodes')->__('Successfully saved.'));

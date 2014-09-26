@@ -80,7 +80,15 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Items_Edit_Tab_Form extend
 			'required'  => false,
 			'name'      => 'serial_codes_issued'
 		));
-
+		
+		$fieldset->addField('serial_codes_viewed', 'select', array(
+			'label'     => Mage::helper('serialcodes')->__('Serial Codes Viewed'),
+			'class'     => 'optional',
+			'required'  => false,
+			'name'      => 'serial_codes_viewed',
+			'values' 	=> array(array('value'=>'0', 'label'='No'),array('value'=>'1', 'label'='Yes'))
+		));
+		
         if ( Mage::getSingleton('adminhtml/session')->getSerialcodesItemsData() )
         {
             $form->setValues(Mage::getSingleton('adminhtml/session')->getSerialcodesItemsData());
