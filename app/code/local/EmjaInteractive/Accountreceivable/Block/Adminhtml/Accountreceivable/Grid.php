@@ -12,6 +12,7 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 		$po = $this->getRequest()->getParam('po');
 		$net = $this->getRequest()->getParam('net');
 		$order = $this->getRequest()->getParam('order');
+		$pt = $this->getRequest()->getParam('pt');
 		
 		$fromFormatted = NULL;
 		$toFormatted = NULL;
@@ -44,11 +45,11 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 			$poNumbers[$allOrder->getId()] = $allOrder->getPoNumber();
 		}
 		
-		$orderCollection = $ar->getOrderCollection($fromFormatted, $toFormatted, $po, $net, $order);
+		$orderCollection = $ar->getOrderCollection($fromFormatted, $toFormatted, $po, $net, $order, $pt);
 		$creditmemoCollection = $ar->getCreditMemoCollection($fromFormatted, $toFormatted, $po, $net, $order);
 		$invoiceCollection = $ar->getInvoiceCollection($fromFormatted, $toFormatted, $po, $net, $order);
 
-		if(count($orderCollection) or count($creditmemoCollection) or count($invoiceCollection)) {
+		if(count($orderCollection)) {
 			$customerModel = Mage::getModel('customer/customer');
 			$addressModel = Mage::getModel('customer/address');
 			
@@ -136,89 +137,6 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 				$csv .= implode(',', $data)."\n";
 			}
 		
-			foreach($creditmemoCollection as $creditmemo) {
-				$cmOrder = Mage::getSingleton('sales/order')->load($creditmemo->getOrderId());
-				
-				if($cmOrder->getBillingAddress()->getCompany() and $company_name != '' and $company_name != 'all' and $cmOrder->getBillingAddress()->getCompany() != $company_name) continue;
-				
-				if($cmOrder->getPoNumber()) {
-					$orderCompany = '';
-					if($cmOrder->getCustomerId() == NULL) {
-						$orderCompany = $cmOrder->getBillingAddress()->getCompany();
-						if(($company_name != '' and $company_name != 'all') and $cmOrder->getBillingAddress()->getCompany() != $company_name) {
-							continue;
-						}
-					} elseif($cmOrder->getCustomerId()) {
-						$customer = $customerModel->load($cmOrder->getCustomerId());
-						$billingAddress = $customer->getDefaultBilling();
-						if($billingAddress) {
-							$address = $addressModel->load($billingAddress);
-							$orderCompany = $address->getCompany();
-							if(($company_name != '' and $company_name != 'all') and $address->getCompany() != $company_name)
-							continue;
-						}
-					}
-					
-					$data	= array();
-					$data[] = '"'.$creditmemo->getIncrementId().'"';
-					$data[] = '"Credit Memo"';
-					$data[] = '"'.date('n/j/Y',strtotime($creditmemo->getCreatedAt())).'"';
-					$data[] = $orderCompany ? '"'.$orderCompany .'"' : '"'.$cmOrder->getBillingAddress()->getCompany().'"';
-					$data[] = '"PO"';
-					$data[] = '""';
-					$data[] = '""';
-					$data[] = '""';
-					$data[] = '"'.'-'.Mage::helper('core')->currency($creditmemo->getGrandTotal(), true, false).'"';
-					$data[] = '""';
-					$data[] = '"'.'-'.Mage::helper('core')->currency($creditmemo->getGrandTotal(), true, false).'"';
-					$data[] = '""';
-					$data[] = '""';
-					
-					$csv .= implode(',', $data)."\n";
-				}
-			}
-			
-			foreach($invoiceCollection as $invoice) {
-				if(array_key_exists($invoice->getOrderId(), $poNumbers)) {
-					$invOrder = Mage::getSingleton('sales/order')->load($invoice->getOrderId());
-					
-					if($invOrder->getBillingAddress()->getCompany() and $company_name != '' and $company_name != 'all' and $invOrder->getBillingAddress()->getCompany() != $company_name) continue;
-					
-					$orderCompany = '';
-					if($invOrder->getCustomerId() == NULL) {
-						$orderCompany = $invOrder->getBillingAddress()->getCompany();
-						if(($company_name != '' and $company_name != 'all') and $invOrder->getBillingAddress()->getCompany() != $company_name) {
-							continue;
-						}
-					} elseif($invOrder->getCustomerId()) {
-						$customer = $customerModel->load($invOrder->getCustomerId());
-						$billingAddress = $customer->getDefaultBilling();
-						if($billingAddress) {
-							$address = $addressModel->load($billingAddress);
-							$orderCompany = $address->getCompany();
-							if(($company_name != '' and $company_name != 'all') and $address->getCompany() != $company_name)
-							continue;
-						}
-					}
-					
-					$data	= array();
-					$data[] = '"'.$invoice->getOrderId().'"';
-					$data[] = '"Invoice"';
-					$data[] = '"'.date('n/j/Y',strtotime($invoice->getCreatedAt())).'"';
-					$data[] = $orderCompany ? '"'.$orderCompany .'"' : '"'.$invOrder->getBillingAddress()->getCompany().'"';
-					$data[] = '"'.$poNumbers[$invoice->getOrderId()].'"';
-					$data[] = '""';
-					$data[] = '""';
-					$data[] = '""';
-					$data[] = '"'.'-'.Mage::helper('core')->currency($invoice->getGrandTotal(), true, false).'"';
-					$data[] = '""';
-					$data[] = '"'.'-'.Mage::helper('core')->currency($invoice->getGrandTotal(), true, false).'"';
-					$data[] = '"'.$invoice->getOfflineCaptureMethod().' - '.$invoice->getOfflineCaptureReference().'"';
-					$data[] = '""';
-					
-					$csv .= implode(',', $data)."\n";
-				}
-			}
 		}
 		
 		return $csv;
@@ -339,89 +257,6 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable_Grid e
 				$xml .= $this->toXml($data, 'item', false, false);
 			}
 		
-			foreach($creditmemoCollection as $creditmemo) {
-				$cmOrder = Mage::getSingleton('sales/order')->load($creditmemo->getOrderId());
-				
-				if($cmOrder->getBillingAddress()->getCompany() and $company_name != '' and $company_name != 'all' and $cmOrder->getBillingAddress()->getCompany() != $company_name) continue;
-				
-				if($cmOrder->getPoNumber()) {
-					$orderCompany = '';
-					if($cmOrder->getCustomerId() == NULL) {
-						$orderCompany = $cmOrder->getBillingAddress()->getCompany();
-						if(($company_name != '' and $company_name != 'all') and $cmOrder->getBillingAddress()->getCompany() != $company_name) {
-							continue;
-						}
-					} elseif($cmOrder->getCustomerId()) {
-						$customer = $customerModel->load($cmOrder->getCustomerId());
-						$billingAddress = $customer->getDefaultBilling();
-						if($billingAddress) {
-							$address = $addressModel->load($billingAddress);
-							$orderCompany = $address->getCompany();
-							if(($company_name != '' and $company_name != 'all') and $address->getCompany() != $company_name)
-							continue;
-						}
-					}
-					
-					$data	= array();
-					$data['TransactionNumber'] = $creditmemo->getIncrementId();
-					$data['TransactionType'] = 'Credit Memo';
-					$data['TransactionDate'] = date('n/j/Y',strtotime($creditmemo->getCreatedAt()));
-					$data['Company'] = $orderCompany ? $orderCompany : $cmOrder->getBillingAddress()->getCompany();
-					$data['PurchaseOrderNumber'] = 'PO';
-					$data['DueDate'] = '';
-					$data['DaysPastDue'] = '';
-					$data['Terms'] = '';
-					$data['TransactionAmount'] = '-'.Mage::helper('core')->currency($creditmemo->getGrandTotal(), true, false);
-					$data['Discount'] = '';
-					$data['OpenAmount'] = '-'.Mage::helper('core')->currency($creditmemo->getGrandTotal(), true, false);
-					$data['PaymentMethod'] = '';
-					$data['Notes'] = '';
-	
-					$xml .= $this->toXml($data, 'item', false, false);
-				}
-			}
-			
-			foreach($invoiceCollection as $invoice) {
-				if(array_key_exists($invoice->getOrderId(), $poNumbers)) {
-					$invOrder = Mage::getSingleton('sales/order')->load($invoice->getOrderId());
-					
-					if($invOrder->getBillingAddress()->getCompany() and $company_name != '' and $company_name != 'all' and $invOrder->getBillingAddress()->getCompany() != $company_name) continue;
-					
-					$orderCompany = '';
-					if($invOrder->getCustomerId() == NULL) {
-						$orderCompany = $invOrder->getBillingAddress()->getCompany();
-						if(($company_name != '' and $company_name != 'all') and $invOrder->getBillingAddress()->getCompany() != $company_name) {
-							continue;
-						}
-					} elseif($invOrder->getCustomerId()) {
-						$customer = $customerModel->load($invOrder->getCustomerId());
-						$billingAddress = $customer->getDefaultBilling();
-						if($billingAddress) {
-							$address = $addressModel->load($billingAddress);
-							$orderCompany = $address->getCompany();
-							if(($company_name != '' and $company_name != 'all') and $address->getCompany() != $company_name)
-							continue;
-						}
-					}
-					
-					$data	= array();
-					$data['TransactionNumber'] = $invoice->getIncrementId();
-					$data['TransactionType'] = 'Invoice';
-					$data['TransactionDate'] = date('n/j/Y',strtotime($invoice->getCreatedAt()));
-					$data['Company'] = $orderCompany ? $orderCompany : $invOrder->getBillingAddress()->getCompany();
-					$data['PurchaseOrderNumber'] = $poNumbers[$invoice->getOrderId()];
-					$data['DueDate'] = '';
-					$data['DaysPastDue'] = '';
-					$data['Terms'] = '';
-					$data['TransactionAmount'] = '-'.Mage::helper('core')->currency($invoice->getGrandTotal(), true, false);
-					$data['Discount'] = '';
-					$data['OpenAmount'] = '-'.Mage::helper('core')->currency($invoice->getGrandTotal(), true, false);
-					$data['PaymentMethod'] = $invoice->getOfflineCaptureMethod().' - '.$invoice->getOfflineCaptureReference();
-					$data['Notes'] = '';
-
-					$xml .= $this->toXml($data, 'item', false, false);
-				}
-			}
 		}
 		
 		$xml.= '</items>';

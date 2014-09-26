@@ -31,12 +31,15 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 				->addAttributeToSort('entity_id', 'DESC');
     }
 	
-	public function getOrderCollection($from, $to, $po = false, $net = false, $order = false)
+	public function getOrderCollection($from, $to, $po = false, $net = false, $order = false, $pt = false)
     {
         $collection = Mage::getResourceModel('sales/order_grid_collection')
 				->addAttributeToFilter('main_table.payment_method', 'purchaseorder')
 				->addAttributeToFilter('main_table.status', array('nin' => array('complete', 'canceled')));	
-
+				
+		if($pt != NULL)
+			$collection->addFieldToFilter('peachtree.value', array('like' => '%' . $pt . '%'));
+		
 		if($order != NULL)
 			$collection->addFieldToFilter('increment_id', array('like' => '%' . $order . '%'));
 			
@@ -54,6 +57,16 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 		
 		$collection->addAttributeToSort('main_table.entity_id', 'DESC');
 		
+		$attribute_code = "peachtree_id"; 
+		$attribute_details =
+		Mage::getSingleton("eav/config")->getAttribute('customer',    $attribute_code);
+		$attribute = $attribute_details->getData();
+
+		$collection->getSelect()->joinLeft(
+					'customer_entity_varchar as peachtree', 'peachtree.entity_id = main_table.customer_id AND peachtree.attribute_id = ' . $attribute['attribute_id'], array('peachtree' => 'value')
+				);
+		echo $collection->getSelect();
+			
 		return $collection;
     }
 	
