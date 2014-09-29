@@ -44,10 +44,7 @@ class Amasty_Pgrid_Block_Adminhtml_Sales_Order extends Mage_Adminhtml_Block_Sale
             $this->_removeButton('add');
         }
         
-        $this->_addButton('attributes_button', array(
-        	'label' => $this->__('Grid Columns'),
-	        'onclick' => 'pAttribute.showConfig();',
-		));
+        
 
     }
 
