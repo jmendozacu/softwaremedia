@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config>
+	<menu>
+		<report>
+			<children>
+				<accountreceivable module="accountreceivable">
+					<title>Account Receivables</title>
+					<sort_order>100</sort_order>
+					<action>accountreceivable/adminhtml_accountreceivable</action>
+				</accountreceivable>
+			</children>
+		</report>
+	</menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <report>
+                    	<children>
+                        <accountreceivable translate="title" module="accountreceivable">
+                            <title>Account Receivable</title>
+                        </accountreceivable>
+                    </children>
+                    </report>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

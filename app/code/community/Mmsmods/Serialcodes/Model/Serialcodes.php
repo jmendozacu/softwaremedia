@@ -100,6 +100,13 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 			$product = Mage::getModel('catalog/product')->setStoreId($order->getStoreId())->load($product->getIdBySku($item->getProductOptionByCode('simple_sku')));
 			$hide = $hide || (empty($codeid) && $this->getPendingStatus($order, $item, $product, $i));
 		}
+		
+		$payment = $order->getPayment();
+		
+		//Don't hide codes for purchase orders
+		if ($payment->getMethodInstance()->getCode() == 'purchaseorder')
+			return false;
+			
 		return $hide;
 	}
 

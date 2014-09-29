@@ -1,0 +1,13 @@
+<?php 
+
+$code = Mage::registry('current_invoice')->getOrder()->getPayment()->getMethodInstance()->getCode();
+if ($code != "checkmo"):
+?>
+<script type="text/javascript">
+//<![CDATA[
+    document.observe("dom:loaded", function() {
+        emjaCapturePayment.init();
+    });
+//]]>
+</script>
+<?php endif; ?>

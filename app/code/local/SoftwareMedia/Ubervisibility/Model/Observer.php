@@ -18,7 +18,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
 		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
 		$collection->getSelect()->where('type_id != "bundle"');
-//		$collection->getSelect()->where('sku = "TEST12345BUNDLE"');
+//		$collection->getSelect()->where('sku = "MS-T5D01575"');
 		$collection->setOrder('ubervis_updated', 'ASC');
 		$collection->setPageSize(100);
 
@@ -121,6 +121,10 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$data['availability'] = 'OUT_OF_STOCK';
 			}
 
+			if (substr_compare($mpn, 'DL', strlen($mpn) - 2, 2) === 0) {
+				$data['productCondition'] = 'Downloadable';
+			}
+
 			$prod_id = null;
 
 			// Set the defaults if we must
@@ -203,6 +207,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$csv_content = array();
 
 		$ubervis_updated_site_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/site', array(), 999);
+		die(var_dump($ubervis_updated_site_prods));
 		$ubervis_updated_cpc_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/cpc', array(), 999);
 
 		$sku_list = array();

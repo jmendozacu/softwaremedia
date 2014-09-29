@@ -1,0 +1,102 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php $order = $this->getInfo()->getOrder(); ?>
+<?php $order = Mage::getModel('sales/order')->load($order->getId()); ?>
+<?php $accountingRole = in_array(Mage::getSingleton('admin/session')->getUser()->getRole()->getId(),array(1,31)); ?>
+
+<div class="box-left">
+<p><?php echo $this->getMethod()->getTitle() ?></p>
+<p><?php echo Mage::helper('payment')->__('PO NUMBER: %s', $this->htmlEscape($this->getInfo()->getPoNumber())) ?></p>
+<p><?php echo Mage::helper('payment')->__('NET TERMS: %s', $this->htmlEscape($this->getNetTerms())) ?></p>
+<p>Contact: <span class="account_view" id="contact_view"><?php  echo $order->getData('pref_contact') ? $order->getData('pref_contact') : "E-Mail"; ?></span><span style="display: none;" class="account_edit"><select id="contactedit"><option value="E-Mail">E-Mail</option><option <?php if ($order->getData('pref_contact')=='Phone') { echo " selected=\"selected\" "; } ?>value="Phone">Phone</option><option <?php if ($order->getData('pref_contact')=='Address') { echo " selected=\"selected\" "; } ?>value="Address">Address</option></select></span></p>
+</div>
+<?php
+            	$session = Mage::getSingleton("core/session");
+if (!$session->getData("capture_information")): 
+				?>
+<div class="box-right">
+<p>Account Info <span class="account_view">(<a href="#" onclick="return accountEdit();">edit</a>)</span>:</p>
+<p>Name: <span class="account_view" id="name_view"><?php echo $order->getData('account_name'); ?></span><span style="display: none;" class="account_edit"><input type="text" id="nameedit" value="<?php echo $order->getData('account_name'); ?>"/></span></p>
+<p>E-Mail: <span class="account_view" id="acemail_view"><a href="mailto:<?php echo $order->getData('account_email'); ?>"><?php echo $order->getData('account_email'); ?></a></span><span style="display: none;" class="account_edit"><input type="text" id="acemailedit" value="<?php echo $order->getData('account_email'); ?>"/></span></p>
+<p>Phone: <span class="account_view" id="phone_view"><?php  echo $order->getData('account_phone'); ?></span><span style="display: none;" class="account_edit"><input type="text" id="phoneedit" value="<?php  echo $order->getData('account_phone'); ?>" /></span></p>
+<p>Check #: <span <?php if ($accountingRole): ?>class="account_view" <?php endif; ?>id="check_view"><?php  echo $order->getData('check_no'); ?></span><span style="display: none;" <?php if ($accountingRole): ?>class="account_edit"<?php endif; ?>><input type="text" id="checkedit" value="<?php  echo $order->getData('check_no'); ?>" /></span></p>
+<p>Paid Date: <span <?php if ($accountingRole): ?>class="account_view" <?php endif; ?>id="paid_view"><?php  echo $order->getData('paid_date'); ?></span><span style="display: none;" <?php if ($accountingRole): ?>class="account_edit" <?php endif; ?>><input type="text" id="paidedit" value="<?php  echo $order->getData('paid_date'); ?>" /></span></p>
+<p class="account_edit" style="display: none;">(<a href="#" onclick="return accountSave();">save</a>) (<a href="#" onclick="return accountCancel();">cancel</a>)</p>
+</div>
+<script type="text/javascript">
+	function accountEdit() {
+		$$('.account_view').each(
+		   function (e) {
+		      e.hide(); 
+		   } 
+		);
+		$$('.account_edit').each(
+		   function (e) {
+		      e.show(); 
+		   } 
+		);
+		return false;
+	}
+	function accountCancel() {
+		$$('.account_view').each(
+		   function (e) {
+		      e.show(); 
+		   } 
+		);
+		$$('.account_edit').each(
+		   function (e) {
+		      e.hide(); 
+		   } 
+		);
+		return false;
+	}
+	
+	function accountSave() {
+		
+		var name = $('nameedit').getValue();
+		var email = $('acemailedit').getValue();
+		var phone = $('phoneedit').getValue();
+		var paid = $('paidedit').getValue();
+		var check = $('checkedit').getValue();
+		var contact = $('contactedit').getValue();
+		
+		new Ajax.Request('<?php echo Mage::helper("adminhtml")->getUrl('adminhtml/system_account/updatePO'); ?>', {
+		  method: 'get',
+		  parameters: {email: email,phone: phone,name: name,paid: paid,check: check,contact: contact,orderid: <?php echo $order->getId(); ?>},
+		  onSuccess: function(transport){
+		  	accountCancel();
+			$('acemail_view').update('<a href="mailto:' + email + '"><strong>' + email + '</strong></a> ');
+			$('phone_view').update(phone);
+			$('name_view').update(name);
+			$('check_view').update(check);
+			$('paid_view').update(paid);
+			$('contact_view').update(contact);
+		  }
+		});
+	}
+</script>
+<?php endif; ?>
