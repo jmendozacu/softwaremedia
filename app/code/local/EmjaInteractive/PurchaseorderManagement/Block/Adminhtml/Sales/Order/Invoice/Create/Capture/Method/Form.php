@@ -11,6 +11,9 @@ class EmjaInteractive_PurchaseorderManagement_Block_Adminhtml_Sales_Order_Invoic
         /**
          * Create child blocks for payment methods forms
          */
+        if ($this->getOrder()->getPayment()->getMethodInstance()->getCode() != 'purchaseorder')
+        	return;
+        	
         foreach ($this->getMethods() as $method) {
 
             if ($method->getCode() == 'checkmo') {
