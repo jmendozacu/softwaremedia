@@ -36,6 +36,7 @@ class EmjaInteractive_PurchaseorderManagement_Model_Sales_Order_Observer
                     }
                     
                     $paymentPostData = Mage::app()->getRequest()->getParam('payment', array());
+                    
                     if ($paymentPostData['cod']) {
 	                    $netTerms = 'COD ' . $paymentPostData['cod'];
                         $order->setNetTerms($netTerms);
@@ -137,8 +138,9 @@ class EmjaInteractive_PurchaseorderManagement_Model_Sales_Order_Observer
             $customer->setPoCredit($credit)->save();
             array_push($this->_incrementedOrdersId, $order->getId());
             $order->setIncreasedCredit(true);
-
-			Mage::getResourceModel('ordertags/orderidtotagid')->addIntoDB($order->getId(), 37);
+			
+			if (substr($order->getNetTerms(),0,3) == 'COD')
+				Mage::getResourceModel('ordertags/orderidtotagid')->addIntoDB($order->getId(), 37);
         }
     }
 
