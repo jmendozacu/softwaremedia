@@ -65,7 +65,6 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
 		$collection->getSelect()->joinLeft(
 					'customer_entity_varchar as peachtree', 'peachtree.entity_id = main_table.customer_id AND peachtree.attribute_id = ' . $attribute['attribute_id'], array('peachtree' => 'value')
 				);
-		echo $collection->getSelect();
 			
 		return $collection;
     }
