@@ -234,6 +234,23 @@ class Amasty_Pgrid_Helper_Data extends Mage_Core_Helper_Abstract
         return array('name', 'sku', 'price', 'qty', 'visibility', 'status');
     }
     
+    public function getOrderGridAttributes()
+    {
+        // will load columns by admin users, if necessary
+        $extraKey = '';
+        if (Mage::getStoreConfig('ampgrid/attr/byadmin'))
+        {
+            $extraKey = Mage::getSingleton('admin/session')->getUser()->getId();
+        }
+        $selected = (string) Mage::getStoreConfig('ampgrid/attributes/onsales' . $extraKey);
+
+        if ($selected)
+        {
+            return explode(',', $selected);
+        }
+        return array();
+    }
+    
     public function getGridAttributes()
     {
         // will load columns by admin users, if necessary

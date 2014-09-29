@@ -13,9 +13,9 @@ class EmjaInteractive_PurchaseorderManagement_Model_Adminhtml_Sales_Order_Grid_O
                     Mage::getSingleton('emjainteractive_purchaseordermanagement/adminhtml_system_config_source_order_payment_method')->getPaymentMethods()
                 );
             }
-			$block->removeColumn('payment_method');
-			$block->removeColumn('po_number');
-			$block->removeColumn('net_terms');
+			//$block->removeColumn('payment_method');
+			//$block->removeColumn('po_number');
+			//$block->removeColumn('net_terms');
 			
             $block->getMassactionBlock()->addItem('pdforders_order', array(
                  'label'=> Mage::helper('sales')->__('Print PO Invoice'),
