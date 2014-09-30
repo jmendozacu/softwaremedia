@@ -68,7 +68,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 		$orders->getSelect()->group('main_table.entity_id');
 		
 		foreach($orders as $order) {
-		
+			$invoiceItems = false;
 			if ($order->getInvoiceId()) {
 				$invoice = Mage::getModel('sales/order_invoice')->load($order->getInvoiceId());
 				$invoiceItems = Mage::getResourceModel('sales/order_invoice_item_collection')
@@ -253,7 +253,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			}
 			$i = 1;
 			
-			
+			$hasInvoice = false;
 			if ($invoiceItems) {
 				$hasInvoice = true;
 				$items = $invoiceItems;
