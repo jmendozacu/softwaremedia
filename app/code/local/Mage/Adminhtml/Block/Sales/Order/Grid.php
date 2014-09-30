@@ -199,7 +199,13 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 		));
 
 		$referer_arr = OCM_Peachtree_Model_Referer::getReferers();
-
+		$adminUserModel = Mage::getModel('admin/user');
+		$userCollection = $adminUserModel->getCollection(); 
+		
+		foreach($userCollection as $user) {
+			$referer_arr[$user->getUsername()] = $user->getFirstname() . " " . $user->getLastname();
+		}
+		
 		$this->addColumn('referer', array(
 			'header' => Mage::helper('sales')->__('Referer'),
 			'index' => 'referer_id',
