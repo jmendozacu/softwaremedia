@@ -142,7 +142,10 @@ class Mage_Adminhtml_Block_Sales_Order_View extends Mage_Adminhtml_Block_Widget_
 			}
 		}
 
-		if ($this->_isAllowedAction('invoice') && $order->canInvoice()) {
+		$paymentMethod = $order->getPayment()->getMethodInstance()->getCode(); 
+		$accountingRole = in_array(Mage::getSingleton('admin/session')->getUser()->getRole()->getId(),array(1,31));
+		
+		if (($this->_isAllowedAction('invoice') && $order->canInvoice() && $paymentMethod != 'purchaseorder') || ($this->_isAllowedAction('invoice') && $order->canInvoice() && $accountingRole)) {
 			$_label = $order->getForcedDoShipmentWithInvoice() ?
 				Mage::helper('sales')->__('Invoice and Ship') :
 				Mage::helper('sales')->__('Invoice');

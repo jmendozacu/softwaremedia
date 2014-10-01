@@ -107,8 +107,6 @@
             
             <adminhtml>
                 <rewrite>
-                	<sales_order_grid>Amasty_Pgrid_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
-                	<sales_order>Amasty_Pgrid_Block_Adminhtml_Sales_Order</sales_order>
                     <catalog_product_grid>Amasty_Pgrid_Block_Adminhtml_Catalog_Product_Grid</catalog_product_grid>
                     <catalog_category_tab_product>Amasty_Pgrid_Block_Adminhtml_Catalog_Category_Tab_Product</catalog_category_tab_product>
                 </rewrite>
