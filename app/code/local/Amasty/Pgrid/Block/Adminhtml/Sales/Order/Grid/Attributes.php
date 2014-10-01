@@ -25,6 +25,7 @@ class Amasty_Pgrid_Block_Adminhtml_Sales_Order_Grid_Attributes extends Mage_Admi
 	    	'payment_method' => 'Payment Method',
 	    	'billing_company' => 'Company Name',
 	    	'eul_company' => 'EUL Company Name',
+	    	'billing_telephone' => 'Billing Phone',
 	    	'x_forwarded_for' => 'Remote IP',
 	    	'referer' => 'Referer',
 	    	'value' => 'Suspicious',

@@ -138,6 +138,13 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 			'index' => 'company',
 			'filter_index' => 'billing_o_a.company'
 		));
+		
+		$this->addColumn('billing_telephone', array(
+			'header' => Mage::helper('sales')->__('Telephone'),
+			'index' => 'telephone',
+			'filter_index' => 'billing_o_a.telephone'
+		));
+		
 		$this->addColumn('customer_email', array(
 			'header' => Mage::helper('sales')->__('E-Mail'),
 			'index' => 'customer_email',
