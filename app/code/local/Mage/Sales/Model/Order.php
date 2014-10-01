@@ -1280,7 +1280,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         // Start store emulation process
         $appEmulation = Mage::getSingleton('core/app_emulation');
         $initialEnvironmentInfo = $appEmulation->startEnvironmentEmulation($storeId);
-
+		
+		
         try {
             // Retrieve specified view block from appropriate design package (depends on emulated store)
             $paymentBlock = Mage::helper('payment')->getInfoBlock($this->getPayment())
@@ -1304,7 +1305,9 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
             $templateId = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE, $storeId);
             $customerName = $this->getCustomerName();
         }
-
+		if ($this->getPayment()->getMethodInstance()->getCode() == 'purchaseorder')
+			$templateId = 99;
+			
         $mailer = Mage::getModel('core/email_template_mailer');
         $emailInfo = Mage::getModel('core/email_info');
         $emailInfo->addTo($this->getCustomerEmail(), $customerName);

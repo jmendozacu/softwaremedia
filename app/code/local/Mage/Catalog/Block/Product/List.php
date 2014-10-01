@@ -145,15 +145,29 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
 			$toolbar->addOrderToAvailableOrders('created_at', 'Newest Release');
 		}
 		if ($sort = $this->getSortBy()) {
-			$toolbar->setDefaultOrder($sort);
+			//echo $sort;
+			//die();
+			//if ($toolbar->getCurrentOrder() == 'created_at')
+				//$toolbar->setDefaultOrder('desc');
+			//else
+				$toolbar->setDefaultOrder($sort);
 		}
+		//echo $this->getDefaultDirection();
+		//die();
 		if ($dir = $this->getDefaultDirection()) {
-			$toolbar->setDefaultDirection($dir);
+				$toolbar->setDefaultDirection($dir);
 		}
+		if ($toolbar->getCurrentOrder() == 'created_at')
+				$toolbar->setDefaultDirection('desc');
+				
 		if ($modes = $this->getModes()) {
 			$toolbar->setModes($modes);
 		}
 
+		//if ($toolbar->getCurrentOrder() == 'created_at')
+		//	$this->getRequest()->setParam($this->getDirectionVarName(),'desc');
+			//$dir  'desc';
+			
 		// set collection to toolbar and apply sort
 		$toolbar->setCollection($collection);
 
@@ -161,6 +175,9 @@ class Mage_Catalog_Block_Product_List extends Mage_Catalog_Block_Product_Abstrac
 		Mage::dispatchEvent('catalog_block_product_list_collection', array(
 			'collection' => $this->_getProductCollection()
 		));
+		
+		
+
 
 		$this->_getProductCollection()->load();
 

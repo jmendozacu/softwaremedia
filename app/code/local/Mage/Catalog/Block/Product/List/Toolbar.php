@@ -339,13 +339,29 @@ class Mage_Catalog_Block_Product_List_Toolbar extends Mage_Core_Block_Template {
 	 * @return string
 	 */
 	public function getCurrentDirection() {
+	
 		$dir = $this->_getData('_current_grid_direction');
+		
+		
 		if ($dir) {
+			if ($this->getCurrentOrder() == 'created_at' && $dir == 'asc')
+				$dir = 'desc';
+			elseif ($this->getCurrentOrder() == 'created_at' && $dir == 'desc')
+				$dir = 'asc';	
+					
+			
+			
 			return $dir;
 		}
 
 		$directions = array('asc', 'desc');
 		$dir = strtolower($this->getRequest()->getParam($this->getDirectionVarName()));
+		
+		if ($this->getCurrentOrder() == 'created_at' && $dir == 'asc')
+			$dir = 'desc';
+		elseif ($this->getCurrentOrder() == 'created_at' && $dir == 'desc')
+			$dir = 'asc';	
+					
 		if ($dir && in_array($dir, $directions)) {
 			if ($dir == $this->_direction) {
 				Mage::getSingleton('catalog/session')->unsSortDirection();
@@ -455,6 +471,12 @@ class Mage_Catalog_Block_Product_List_Toolbar extends Mage_Core_Block_Template {
 		if (is_null($order)) {
 			$order = $this->getCurrentOrder() ? $this->getCurrentOrder() : $this->_availableOrder[0];
 		}
+
+		if ($order == 'created_at' && $this->getCurrentDirection() == 'asc')
+			$direction = 'desc';
+		elseif ($order == 'created_at' && $this->getCurrentDirection() == 'desc')
+			$direction = 'asc';	
+			
 		return $this->getPagerUrl(array(
 				$this->getOrderVarName() => $order,
 				$this->getDirectionVarName() => $direction,
