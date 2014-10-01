@@ -425,9 +425,16 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 					for ($i = 0; $i < $count; $i++) {
 						$showmessage = $i == 0;
 						//if ($this->hidePendingCodes($order, $item, $product, $codeids[$i], $i)) {
-							$codes[$i] = "<a href=\"" .Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'serialcodes/index/index/order/' . $encoded . "\">Click here to view your codes</a>";
+							$cCount = "";
+							if ($count > 1) 
+								$cCount = "s (" . $count . " available)";
+								
+							$codes[$i] = "<a href=\"" .Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'serialcodes/index/index/order/' . $encoded . "\">Click here to view your code" . $cCount . "</a>";
+			
+							
 						//}
 						$templatearray[$template]['html'] .= '<br /><span class="sc_code">' . $codes[$i] . '</span>';
+						$i = $count;
 						if ($product->getSerialCodeUseVoucher()) {
 							$templatearray[$template]['code'] = $codes[$i];
 							$this->dispatchDeliveryEmail($order, $templatearray, $showmessage);

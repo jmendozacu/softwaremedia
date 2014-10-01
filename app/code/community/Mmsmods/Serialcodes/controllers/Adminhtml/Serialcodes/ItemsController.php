@@ -102,6 +102,23 @@ class Mmsmods_Serialcodes_Adminhtml_Serialcodes_ItemsController extends Mage_Adm
 				$item = Mage::getSingleton('sales/order_item')->load($pid);
 				$sku = '';
 				$icodes = Mage::getSingleton('serialcodes/serialcodes')->bindCodePool($item, $source, $pcodes, $issued, $sku);
+				$admin = Mage::getSingleton('admin/session')->getUser();
+				$order = Mage::getModel('sales/order')->load($item->getOrderId());
+				
+				if ($item->getSerialCodes() != $postData['serial_codes_'.$pid]) {
+					if ($postData['serial_codes_'.$pid] && !$item->getSerialCodes())
+						$order->addStatusHistoryComment('<strong>KEYS ADDED BY ' . $admin->getUsername() . ':</strong><br />New Codes:<br />' . nl2br($postData['serial_codes_'.$pid]));
+					elseif(!$postData['serial_codes_'.$pid])
+						$order->addStatusHistoryComment('<strong>KEYS REMOVED BY ' . $admin->getUsername() . ':</strong><br />Previous Codes:<br />' . nl2br($item->getSerialCodes()));
+					else
+						$order->addStatusHistoryComment('<strong>KEYS CHANGED BY ' . $admin->getUsername() . ':</strong><br />Previous Codes:<br />' . nl2br($item->getSerialCodes()) . '<br /><br />New Codes:<br />' . nl2br($postData['serial_codes_'.$pid]));
+						
+					$order->save();
+				}
+				
+				if (count($pcodes) == 0)
+					$viewed = 0;
+					
 				$item
 					->setSerialCodeType(trim($postData['sc_type_'.$pid]))
 					->setSerialCodes(implode("\n",$pcodes))
@@ -110,6 +127,7 @@ class Mmsmods_Serialcodes_Adminhtml_Serialcodes_ItemsController extends Mage_Adm
 					->setSerialCodesViewed($viewed)
 					->setSerialCodePool($sku)
 					->save();
+					
 				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('serialcodes')->__('Successfully saved.'));
 				Mage::getSingleton('adminhtml/session')->setSerialcodesData(false);
 				$this->_redirect('adminhtml/sales_order/view', array('order_id' => $item->getOrderId()));

@@ -99,7 +99,7 @@
 					<th class="a-center"><?php echo $this->helper('serialcodes')->__('Ordered') ?></th>
 					<th><?php echo $this->helper('serialcodes')->__('Product') ?></th>
 					<th><span class="nobr"><?php echo $this->helper('serialcodes')->__('Serial Code Type') ?></span></th>
-					<th><span class="nobr"><?php echo $this->helper('serialcodes')->__('Redeemed?') ?></span></th>
+					<th><span class="nobr"><?php echo $this->helper('serialcodes')->__('Viewed?') ?></span></th>
 					<th><span class="nobr"><?php echo $this->helper('serialcodes')->__('Serial Codes') ?></span></th>
 					<th class="a-center last"><span class="nobr"><?php echo $this->helper('serialcodes')->__('Action') ?></span></th>
 				</tr>
@@ -142,7 +142,7 @@
 						<td class="a-center">
 							<?php if(!$editable) { ?>&ndash;<?php } else { ?>
 								<a href = "#" onclick = "document.getElementById('serialcodes_mask').style.display='block';document.getElementById('serialcodes_popup_<?php echo $item_values['id'] ?>').style.display='block';return false;"><?php echo Mage::helper('serialcodes')->__('Edit') ?></a>
-								<div id="serialcodes_popup_<?php echo $item_values['id'] ?>" style="display:none;position:fixed;top:110px;left:50%;width:535px;height:470px;margin-left:-220px;background-color:#FAFAFA;border:1px solid #D6D6D6;z-index:400;">
+								<div id="serialcodes_popup_<?php echo $item_values['id'] ?>" style="display:none;position:fixed;top:110px;left:50%;width:535px;height:500px;margin-left:-220px;background-color:#FAFAFA;border:1px solid #D6D6D6;z-index:400;">
 									<div class="entry-edit">
 										<div class="entry-edit-head">
 											<h4 class="icon-head head-serialcodes"><?php echo Mage::helper('serialcodes')->__('Edit Serial Codes') ?></h4>
@@ -201,7 +201,10 @@
 														<tr style="background:transparent !important;">
 															<td class="label" style=""><label for="sc_viewed_<?php echo $item_values['id'] ?>">Serial Codes Viewed</label></td>
 															<td class="value" style="">
-																<input id="sc_issued_<?php echo $item_values['id'] ?>" name="sc_viewed_<?php echo $item_values['id'] ?>" value="<?php echo $item_values['viewed'] ?>" class="optional input-text" type="text"/>
+																<select id="sc_viewed_<?php echo $item_values['id'] ?>" name="sc_viewed_<?php echo $item_values['id'] ?>">
+																	<option value="">No</option>
+																	<option value="1"<?php if ($item_values['viewed'] == 1) echo " selected=\"selected\""; ?>>Yes</option>
+																</select>
 															</td>
 														</tr>
 													</tbody>

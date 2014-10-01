@@ -67,7 +67,11 @@
 				else
 					$suffix = "";
 					
-				echo "<td><span id=\"code_" . $item->getId() . "\"\"><a href=\"#\" onclick=\"issueCode('" . $item->getId() . "','" . $item->getName() . "');\">Issue Code" . $suffix . " (" . $item->getSerialCodesIssued() . " available)</a></span></td>";
+				echo "<td><span id=\"code_" . $item->getId() . "\"\"><a href=\"#\" onclick=\"issueCode('" . $item->getId() . "','" . $item->getName() . "');\">Issue Code" . $suffix;
+				if ($item->getSerialCodesIssued() > 0)
+					echo " (" . $item->getSerialCodesIssued() . " available)";
+					
+				echo "</a></span></td>";
 			} 
 		} else {
 			echo "<td>No Codes Available</td>";
