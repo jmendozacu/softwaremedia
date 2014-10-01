@@ -42,6 +42,31 @@ class Mmsmods_Serialcodes_Block_Serialcodes extends Mage_Core_Block_Template
         
     }
     
+    public function getAdditional($productId) {
+	    $data = array();
+	    $product = Mage::getModel('catalog/product')->load($productId);
+	    $attributes = $product->getAttributes();
+	    foreach ($attributes as $attribute) {
+	
+	        if ($attribute->getIsVisibleOnFront() && !in_array($attribute->getAttributeCode(), $excludeAttr)) {
+	            $value = $attribute->getFrontend()->getValue($product);
+	
+	            if (!$product->hasData($attribute->getAttributeCode())) {
+	                $value = Mage::helper('catalog')->__('N/A');
+	            } elseif ((string)$value == '') {
+	                $value = Mage::helper('catalog')->__('No');
+	            } elseif ($attribute->getFrontendInput() == 'price' && is_string($value)) {
+	                $value = Mage::app()->getStore()->convertPrice($value, true);
+	            }
+	
+	            if (is_string($value) && strlen($value)) {
+	                $data[$attribute->getStoreLabel()] = $value;
+	            }
+	        }
+	    }
+	    return $data;
+    }
+    
     public function encrypt($pure_string, $encryption_key) {
 	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
 	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
