@@ -47,7 +47,7 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 		}
 		
 		$item->setSerialCodesViewed(1)->save();
-		echo $item->getSerialCodes();
+		echo nl2br($item->getSerialCodes());
 	}
 	
 	public function encrypt($pure_string, $encryption_key) {

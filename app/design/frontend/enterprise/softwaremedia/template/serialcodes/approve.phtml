@@ -60,9 +60,14 @@
 					
 			$hasCodes = true;
 			if ($item->getSerialCodesViewed()) {
-				echo "<td>" . $item->getSerialCodes() . "</td>";
+				echo "<td>" . nl2br($item->getSerialCodes()) . "</td>";
 			} else {
-				echo "<td><span id=\"code_" . $item->getId() . "\"\"><a href=\"#\" onclick=\"issueCode('" . $item->getId() . "','" . $item->getName() . "');\">Issue Code</a></span></td>";
+				if ($item->getSerialCodesIssued() > 1)
+					$suffix = "s"; 
+				else
+					$suffix = "";
+					
+				echo "<td><span id=\"code_" . $item->getId() . "\"\"><a href=\"#\" onclick=\"issueCode('" . $item->getId() . "','" . $item->getName() . "');\">Issue Code" . $suffix . " (" . $item->getSerialCodesIssued() . " available)</a></span></td>";
 			} 
 		} else {
 			echo "<td>No Codes Available</td>";
