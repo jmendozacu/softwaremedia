@@ -281,6 +281,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			// Map other order fields to UDF fields
 			// Map shipping method and carrier
 			$shippingFields = explode('_', $oOrder->getShippingMethod());
+			$oInquiry->setUserDefinedField('LICENSING', 0);
 			if (isset($shippingFields[0])) {
 				$oInquiry->setUserDefinedField('CARRIER', $shippingFields[0]);
 			}
