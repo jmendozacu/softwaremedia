@@ -60,7 +60,9 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 				'sku' => new Zend_Db_Expr('group_concat(DISTINCT CONCAT(`sales_flat_order_item`.sku," (", CAST(`sales_flat_order_item`.qty_ordered AS UNSIGNED),")") SEPARATOR "<br />")')
 				)
 			)
-			->joinLeft('ocm_peachtree_referer', '`ocm_peachtree_referer`.order_id = `main_table`.entity_id', array('referer_id'));
+			->joinLeft('ocm_peachtree_referer', '`ocm_peachtree_referer`.order_id = `main_table`.entity_id', array('referer_id'))
+			->joinLeft('aitoc_order_entity_custom', '`aitoc_order_entity_custom`.entity_id = `main_table`.entity_id AND `aitoc_order_entity_custom`.attribute_id = 1393', array('eul_company' => 'value'))
+			;
 
 		$collection->addAddressFields();
 		$collection->getSelect()->joinLeft(array('sfo' => 'sales_flat_order'), 'sfo.entity_id=main_table.entity_id', array('sfo.customer_email','sfo.x_forwarded_for'));
@@ -125,6 +127,12 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 		));
 
 
+		$this->addColumn('eul_company', array(
+			'header' => Mage::helper('sales')->__('EUL Company'),
+			'index' => 'eul_company',
+			'filter_index' => 'aitoc_order_entity_custom.value'
+		));
+		
 		$this->addColumn('billing_company', array(
 			'header' => Mage::helper('sales')->__('Company'),
 			'index' => 'company',
