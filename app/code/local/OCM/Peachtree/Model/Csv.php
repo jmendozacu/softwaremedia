@@ -134,8 +134,8 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				}
 			}
 			
-			$has_tax_line = ($order->getData('tax_amount') > 0) ? 1 : 0;
-			$has_ship_line = ($order->getData('shipping_amount') > 0) ? 1 : 0;
+			$has_tax_line = ($order->getData('tax_amount')- $order->getData('tax_refunded') > 0) ? 1 : 0;
+			$has_ship_line = ($order->getData('shipping_amount') - $order->getData('shipping_refunded') > 0) ? 1 : 0;
 			$has_promo_line = ($order->getData('discount_amount') != 0) ? 1 : 0;
 			
 			if ($has_promo_line && ($invoice->getData('discount_amount')) * -1 + $points_discount > 0) {
@@ -173,6 +173,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				
 				$itemCount++;
 			}
+			if ($itemCount == 0)
+				continue;
+				
 			$orderId = $order->getIncrementId();
 			
 			$payment = $order->getPayment()->getMethodInstance()->getCode();
@@ -271,7 +274,16 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				if ($orderItem->getQtyRefunded() == $orderItem->getQtyInvoiced() && $orderItem->getQtyInvoiced() > 0)
 					continue;
 					
-				$itemQty = $orderItem->getQtyInvoiced() ? $orderItem->getQtyInvoiced() : $orderItem->getQtyOrdered();
+				if ($orderItem->getQtyInvoiced() > 0)
+					$itemQty = $orderItem->getQtyInvoiced();
+				else
+					$itemQty = $orderItem->getQtyOrdered();
+					
+				if ($item->getQty())
+					$itemQty = $item->getQty();
+					
+
+				$unitPrice = $item->getRowTotal() / $itemQty;
 				$itemQty = $itemQty - $orderItem->getQtyRefunded();
 				
 				if (!$shipTime)
@@ -279,9 +291,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				
 				$rowTotal = $item->getRowTotal();
 				
+				
 				//Subtract any refunded items from row total
-				if ($orderItem->getQtyRefunded())
-					$rowTotal -= $item->getPrice() * $orderItem->getQtyRefunded();
+				if ($orderItem->getAmountRefunded())
+					$rowTotal -= $orderItem->getAmountRefunded();
 				
 				//Update customer id for FBA orders
 				if (substr($item->getSku(), -3) == 'FBA' && $order->getCustomerId() == 1121)
@@ -294,12 +307,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'item_id' => $item->getSku(),
 					'description' => $item->getName(),
 					'gl_account' => self::GL_ACCOUNT_ITEM,
-					'unit_price' =>number_format($item->getRowTotal() / $orderItem->getQtyOrdered() * -1,2,'.',''),
+					'unit_price' =>number_format($unitPrice * -1,2,'.',''),
 					'tax_type' => self::TAX_TYPE_ITEM,
 					'amount' => $rowTotal * -1,
 				);
 				
-				
+					
 				//Split up grouped products into their associated products
 				if( $item->getProductType() == 'grouped' ) {
 					$product = Mage::getModel('catalog/product')->load($item->getProductId());
@@ -339,7 +352,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'description' => 'Salt Lake County Sales Tax',
 					'gl_account' => self::GL_ACCOUNT_TAX,
 					'tax_type' => self::TAX_TYPE_TAX,
-					'amount' => ($order->getData('tax_amount')) * -1,
+					'amount' => ($order->getData('tax_amount') - $order->getData('tax_refunded')) * -1,
 					'sales_tax_agency_id' => self::SALES_TAX_ID,
 				);
 				$line_values = array_merge($common_values, $tax_values);
@@ -354,7 +367,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'description' => 'Freight Amount',
 					'gl_account' => self::GL_ACCOUNT_FRIEGHT,
 					'tax_type' => self::TAX_TYPE_FRIEGHT,
-					'amount' => ($order->getData('shipping_amount')) * -1,
+					'amount' => ($order->getData('shipping_amount') - $order->getData('shipping_refunded')) * -1,
 				);
 				$line_values = array_merge($common_values, $ship_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
