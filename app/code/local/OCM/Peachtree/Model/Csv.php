@@ -271,8 +271,8 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				if ($orderItem->getQtyRefunded() == $orderItem->getQtyInvoiced() && $orderItem->getQtyInvoiced() > 0)
 					continue;
 					
-				
-				$itemQty = $orderItem->getQtyInvoiced() - $orderItem->getQtyRefunded();
+				$itemQty = $orderItem->getQtyInvoiced() ? $orderItem->getQtyInvoiced() : $orderItem->getQtyOrdered();
+				$itemQty = $itemQty - $orderItem->getQtyRefunded();
 				
 				if (!$shipTime)
 					$shipTime = date('m/d/Y', strtotime($item->getData('item_ship_date')));
