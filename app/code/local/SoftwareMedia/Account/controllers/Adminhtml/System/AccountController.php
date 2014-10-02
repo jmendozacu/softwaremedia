@@ -36,13 +36,23 @@ require_once 'Mage/Customer/controllers/AccountController.php';
 class SoftwareMedia_Account_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_Action {
 	
 	public function updateEmailAction() {
+		$admin = Mage::getSingleton('admin/session')->getUser();
 		$order_id = Mage::app()->getRequest()->getParam('orderid');
 		$email_address =  Mage::app()->getRequest()->getParam('email');
 		
-		Mage::log($order_id . " - " . $email_address);
+		$order = Mage::getModel('sales/order')->load($order_id);
+		$order->addStatusHistoryComment('<strong>ORDER E-MAIL CHANGED</strong><br />From "' . $order->getCustomerEmail()  . '" to "' . $email_address . '" by <strong>' . $admin->getUsername() . '</strong>');
+		$order->setCustomerEmail($email_address)->save();
+	}
+	
+	public function updatePoNumberAction() {
+		$admin = Mage::getSingleton('admin/session')->getUser();
+		$order_id = Mage::app()->getRequest()->getParam('orderid');
+		$po =  Mage::app()->getRequest()->getParam('po');
 		
 		$order = Mage::getModel('sales/order')->load($order_id);
-		$order->setCustomerEmail($email_address)->save();
+		$order->addStatusHistoryComment('<strong>ORDER PO CHANGED</strong><br />From "' . $order->getPurchaseOrder()  . '" to "' . $po . '" by <strong>' . $admin->getUsername() . '</strong>');
+		$order->setPurchaseOrder($po)->save();
 	}
 	
 	public function indexAction() {
