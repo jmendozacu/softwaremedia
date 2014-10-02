@@ -278,6 +278,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					$itemQty = $orderItem->getQtyInvoiced();
 				else
 					$itemQty = $orderItem->getQtyOrdered();
+					
+				if ($item->getQty())
+					$itemQty = $item->getQty();
+					
 
 				$unitPrice = $item->getRowTotal() / $itemQty;
 				$itemQty = $itemQty - $orderItem->getQtyRefunded();
