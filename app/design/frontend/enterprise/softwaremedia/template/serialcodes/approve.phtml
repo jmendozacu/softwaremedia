@@ -49,6 +49,8 @@
 			echo " <a href='#' onclick='viewDetails(" . $item->getId() . ")'>(view details)</a>";
 			echo "<table style='display: none; margin-top: 10px;' id='details" . $item->getId() . "'>";
 			foreach($additional as $key=>$value) {
+				if ($value == 'No' || $value == 'N/A')
+					continue;
 				echo "<tr><td style='background: #e8e8e8;'>" . $key. ": </td> <td>" . $value . "</td></tr>";
 			}
 			echo "</table>";
