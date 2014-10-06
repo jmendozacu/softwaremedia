@@ -373,6 +373,11 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 	}
 
 	public function sendDeliveryEmail($order, $source = NULL, $items = NULL) {
+		$key = '12312312522';
+		$encrypted = $this->encrypt($order->getId(), $key);
+		$encrypted = base64_encode($encrypted);
+		$encoded = urlencode($encrypted);
+		
 		$templatearray = array();
 		$storeid = $order->getStoreId();
 		$isManual = true;
@@ -419,10 +424,17 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 					$templatearray[$template]['html'] .= '<span class="sc_product">' . $product->getName() . '</span>';
 					for ($i = 0; $i < $count; $i++) {
 						$showmessage = $i == 0;
-						if ($this->hidePendingCodes($order, $item, $product, $codeids[$i], $i)) {
-							$codes[$i] = Mage::helper('serialcodes')->__('Issued when payment received.');
-						}
+						//if ($this->hidePendingCodes($order, $item, $product, $codeids[$i], $i)) {
+							$cCount = "";
+							if ($count > 1) 
+								$cCount = "s (" . $count . " available)";
+								
+							$codes[$i] = "<a href=\"" .Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'serialcodes/index/index/order/' . $encoded . "\">Click here to view your code" . $cCount . "</a>";
+			
+							
+						//}
 						$templatearray[$template]['html'] .= '<br /><span class="sc_code">' . $codes[$i] . '</span>';
+						$i = $count;
 						if ($product->getSerialCodeUseVoucher()) {
 							$templatearray[$template]['code'] = $codes[$i];
 							$this->dispatchDeliveryEmail($order, $templatearray, $showmessage);
@@ -540,5 +552,21 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 			}
 		}
 	}
-
+    
+    public function encrypt($pure_string, $encryption_key) {
+	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+	    $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $encryption_key, utf8_encode($pure_string), MCRYPT_MODE_ECB, $iv);
+	    return $encrypted_string;
+	}
+	
+	/**
+	 * Returns decrypted original string
+	 */
+	public function decrypt($encrypted_string, $encryption_key) {
+	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+	    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $encrypted_string, MCRYPT_MODE_ECB, $iv);
+	    return $decrypted_string;
+	}
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<layout version="0.1.0">
+	<serialcodes_index_index>
+	<label>Customer My Account My Payment Methods</label>
+	<reference name="root">
+		<action method="setTemplate"><template>page/1column.phtml</template></action>
+	</reference>
+	<reference name="content">
+		<block type="serialcodes/serialcodes" name="view.codes" template="serialcodes/approve.phtml" as="view_codes" translate="label">
+			<label>View Codes</label>
+		</block>
+	</reference>
+	</serialcodes_index_index>
+<!-- Customer -->
+</layout>
