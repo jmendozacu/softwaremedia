@@ -31,7 +31,7 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 		
 		$itemId = $this->getRequest()->getParam('item');
 		$unique = $this->getRequest()->getParam('unique');
-		$unique = str_replace('87542', '%2F', $unique);
+		$unique = str_replace('87542', '/', $unique);
 		
 		
 		if (!$itemId) {
