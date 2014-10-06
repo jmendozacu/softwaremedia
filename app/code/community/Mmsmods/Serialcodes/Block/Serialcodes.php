@@ -31,7 +31,7 @@ class Mmsmods_Serialcodes_Block_Serialcodes extends Mage_Core_Block_Template
 
 		
 		//To Decrypt:
-		$orderId = $this->decrypt(urldecode(base64_decode($encrypted)), $key);
+		$orderId = $this->decrypt(base64_decode(urldecode($encrypted)), $key);
 
 		$order = Mage::getModel('sales/order')->load($orderId);
     	
