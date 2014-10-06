@@ -377,7 +377,8 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 		$encrypted = $this->encrypt($order->getId(), $key);
 		$encrypted = base64_encode($encrypted);
 		$encoded = urlencode($encrypted);
-		
+		$encoded = str_replace('%2F','87542', $encoded);
+	
 		$templatearray = array();
 		$storeid = $order->getStoreId();
 		$isManual = true;

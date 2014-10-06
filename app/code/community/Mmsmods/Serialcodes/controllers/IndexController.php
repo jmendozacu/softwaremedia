@@ -31,6 +31,7 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 		
 		$itemId = $this->getRequest()->getParam('item');
 		$unique = $this->getRequest()->getParam('unique');
+		$unique = str_replace('87542', '%2F', $unique);
 		
 		
 		if (!$itemId) {
@@ -41,6 +42,13 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 		$item = Mage::getModel('sales/order_item')->load($itemId);
 		$orderId = $this->decrypt(base64_decode(urldecode($unique)), $key);
 		$order = Mage::getModel('sales/order')->load($orderId);
+		
+		if (!$order->getId()) {
+	    	$orderId = $this->decrypt(base64_decode($unique), $key);
+			$order = Mage::getModel('sales/order')->load($orderId);
+    	}
+    		
+    		
 		if ($order->getId() != $item->getOrderId()) {
 			echo "Error Validating " . $this->decrypt(base64_decode(urldecode($unique)), $key) . "-" . $item->getOrderId();
 			return;

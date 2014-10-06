@@ -27,10 +27,7 @@ class Mmsmods_Serialcodes_Block_Serialcodes extends Mage_Core_Block_Template
 
 		//To Encrypt:
 		$encrypted = $this->getRequest()->getParam('order');
-    		
-		//$encrypted = $this->encrypt('8417', $key);
-		//$encrypted = base64_encode($encrypted);
-		//echo urlencode($encrypted);
+		$encrypted = str_replace('87542', '%2F', $encrypted);
 
 		//To Decrypt:
 		$orderId = $this->decrypt(urldecode(base64_decode($encrypted)), $key);
