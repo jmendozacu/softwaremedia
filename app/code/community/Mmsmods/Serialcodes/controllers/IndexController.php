@@ -40,14 +40,8 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 		}
 			
 		$item = Mage::getModel('sales/order_item')->load($itemId);
-		$orderId = $this->decrypt(base64_decode(urldecode($unique)), $key);
+		$orderId = $this->decrypt($unique, $key);
 		$order = Mage::getModel('sales/order')->load($orderId);
-		
-		if (!$order->getId()) {
-	    	$orderId = $this->decrypt(base64_decode($unique), $key);
-			$order = Mage::getModel('sales/order')->load($orderId);
-    	}
-    		
     		
 		if ($order->getId() != $item->getOrderId()) {
 			echo "Error Validating " . $this->decrypt(base64_decode(urldecode($unique)), $key) . "-" . $item->getOrderId();
@@ -58,11 +52,14 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 		echo nl2br($item->getSerialCodes());
 	}
 	
-	public function encrypt($pure_string, $encryption_key) {
+    public function encrypt($pure_string, $encryption_key) {
 	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $dirty = array("+", "/", "=");
+		$clean = array("PL174", "SL174", "EQ174");
 	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 	    $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $encryption_key, utf8_encode($pure_string), MCRYPT_MODE_ECB, $iv);
-	    return $encrypted_string;
+	    $encrypted_string = base64_encode($encrypted_string);
+	    return str_replace($dirty, $clean, $encrypted_string);
 	}
 	
 	/**
@@ -70,8 +67,11 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 	 */
 	public function decrypt($encrypted_string, $encryption_key) {
 	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $dirty = array("+", "/", "=");
+		$clean = array("PL174", "SL174", "EQ174");
 	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-	    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $encrypted_string, MCRYPT_MODE_ECB, $iv);
+	    $string = base64_decode(str_replace($clean, $dirty, $encrypted_string));
+	    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $string, MCRYPT_MODE_ECB, $iv);
 	    return $decrypted_string;
 	}
 	

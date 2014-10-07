@@ -375,9 +375,7 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 	public function sendDeliveryEmail($order, $source = NULL, $items = NULL) {
 		$key = '12312312522';
 		$encrypted = $this->encrypt($order->getId(), $key);
-		$encrypted = base64_encode($encrypted);
-		$encoded = urlencode($encrypted);
-		$encoded = str_replace('%2F','87542', $encoded);
+		$encoded = str_replace('%2F','87542', $encrypted);
 	
 		$templatearray = array();
 		$storeid = $order->getStoreId();
@@ -556,9 +554,12 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
     
     public function encrypt($pure_string, $encryption_key) {
 	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $dirty = array("+", "/", "=");
+		$clean = array("PL174", "SL174", "EQ174");
 	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 	    $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $encryption_key, utf8_encode($pure_string), MCRYPT_MODE_ECB, $iv);
-	    return $encrypted_string;
+	    $encrypted_string = base64_encode($encrypted_string);
+	    return str_replace($dirty, $clean, $encrypted_string);
 	}
 	
 	/**
@@ -566,8 +567,11 @@ class Mmsmods_Serialcodes_Model_Serialcodes extends Mage_Core_Model_Abstract {
 	 */
 	public function decrypt($encrypted_string, $encryption_key) {
 	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $dirty = array("+", "/", "=");
+		$clean = array("PL174", "SL174", "EQ174");
 	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-	    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $encrypted_string, MCRYPT_MODE_ECB, $iv);
+	    $string = base64_decode(str_replace($clean, $dirty, $encrypted_string));
+	    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $string, MCRYPT_MODE_ECB, $iv);
 	    return $decrypted_string;
 	}
 }
