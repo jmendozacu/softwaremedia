@@ -25,4 +25,54 @@ class Mmsmods_Serialcodes_IndexController extends Mage_Core_Controller_Front_Act
 			$this->loadLayout();
 			$this->renderLayout();
 	}
+	
+	public function redeemAction() {
+		$key = '12312312522';
+		
+		$itemId = $this->getRequest()->getParam('item');
+		$unique = $this->getRequest()->getParam('unique');
+		$unique = str_replace('87542', '/', $unique);
+		
+		
+		if (!$itemId) {
+			echo "Error: No Item";
+			return false;
+		}
+			
+		$item = Mage::getModel('sales/order_item')->load($itemId);
+		$orderId = $this->decrypt(base64_decode(urldecode($unique)), $key);
+		$order = Mage::getModel('sales/order')->load($orderId);
+		
+		if (!$order->getId()) {
+	    	$orderId = $this->decrypt(base64_decode($unique), $key);
+			$order = Mage::getModel('sales/order')->load($orderId);
+    	}
+    		
+    		
+		if ($order->getId() != $item->getOrderId()) {
+			echo "Error Validating " . $this->decrypt(base64_decode(urldecode($unique)), $key) . "-" . $item->getOrderId();
+			return;
+		}
+		
+		$item->setSerialCodesViewed(1)->save();
+		echo nl2br($item->getSerialCodes());
+	}
+	
+	public function encrypt($pure_string, $encryption_key) {
+	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+	    $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $encryption_key, utf8_encode($pure_string), MCRYPT_MODE_ECB, $iv);
+	    return $encrypted_string;
+	}
+	
+	/**
+	 * Returns decrypted original string
+	 */
+	public function decrypt($encrypted_string, $encryption_key) {
+	    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+	    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+	    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $encrypted_string, MCRYPT_MODE_ECB, $iv);
+	    return $decrypted_string;
+	}
+	
 }
