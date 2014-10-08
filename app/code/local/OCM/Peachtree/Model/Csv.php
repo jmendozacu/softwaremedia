@@ -179,14 +179,18 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			$orderId = $order->getIncrementId();
 			
 			$payment = $order->getPayment()->getMethodInstance()->getCode();
+			$dueDate =  date('m/d/Y', strtotime($order->getData('created_at')));
+			
 			if ($payment == 'purchaseorder') {
 				$terms = 'NET';
 				if ($order->getNetTerms()) {
 					$t = str_replace('Net ' ,'', $order->getNetTerms());
 					$t = str_replace('NET ' ,'', $t);
 					$terms .= $t;
+					$dueDate = strtotime("+".$t." days", strtotime($order->getData('created_at')));
 				} else {
 					$terms .= '30';
+					$dueDate = strtotime("+30 days", strtotime($order->getData('created_at')));
 				}
 			} else {
 				$terms = self::DISPLAYED_TERMS;
@@ -195,8 +199,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			if ($payment == 'checkmo') {
 				$terms = 'Prepaid Wire';
 			}
-			if ($payment == 'purchaseorder' && substr($order->getNetTerms(),0,3) == 'COD')
+			if ($payment == 'purchaseorder' && substr($order->getNetTerms(),0,3) == 'COD') {
 				$terms = 'COD';
+				$dueDate = strtotime("+30 days", strtotime($order->getData('created_at')));	
+			}
 				
 			$common_values = array(
 				'customer_id' => 'O' . date('my', strtotime($order->getData('created_at'))),
@@ -204,7 +210,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				'date' => date('m/d/Y', strtotime($order->getData('created_at'))),
 				'ship_via' => $shipVia,
 				'ship_date' => '', //item, tax, frieght
-				'due_date' => date('m/d/Y', strtotime($order->getData('created_at'))),
+				'due_date' => $dueDate,
 				'displayed_terms' => $terms,
 				'sales_rep_id' => OCM_Peachtree_Model_Referer::getNameByCode($order->getData('referer_id')),
 				'account_receivable' => self::ACCOUNT_RECEIVABLE,
