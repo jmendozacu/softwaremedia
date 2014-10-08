@@ -187,10 +187,10 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					$t = str_replace('Net ' ,'', $order->getNetTerms());
 					$t = str_replace('NET ' ,'', $t);
 					$terms .= $t;
-					$dueDate = strtotime("+".$t." days", strtotime($order->getData('created_at')));
+					$dueDate = date('m/d/Y', strtotime("+".$t." days", strtotime($order->getData('created_at'))));
 				} else {
 					$terms .= '30';
-					$dueDate = strtotime("+30 days", strtotime($order->getData('created_at')));
+					$dueDate = date('m/d/Y', strtotime("+30 days", strtotime($order->getData('created_at'))));
 				}
 			} else {
 				$terms = self::DISPLAYED_TERMS;
@@ -201,7 +201,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			}
 			if ($payment == 'purchaseorder' && substr($order->getNetTerms(),0,3) == 'COD') {
 				$terms = 'COD';
-				$dueDate = strtotime("+30 days", strtotime($order->getData('created_at')));	
+				$dueDate = date('m/d/Y', strtotime("+30 days", strtotime($order->getData('created_at'))));	
 			}
 				
 			$common_values = array(
