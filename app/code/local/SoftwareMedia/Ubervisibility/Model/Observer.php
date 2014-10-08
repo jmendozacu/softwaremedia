@@ -9,7 +9,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 
 	public function updateProduct() {
 		$from = date('Y-m-d H:i:s', time() - (24 * 60 * 60));
-
+		Mage::app()->setCurrentStore(1);
 		Mage::log('Starting ubervis update', null, 'ubervis.log');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
