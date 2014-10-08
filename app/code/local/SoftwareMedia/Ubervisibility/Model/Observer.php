@@ -8,11 +8,13 @@
 class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer {
 
 	public function updateProduct() {
+		Mage::app()->setCurrentStore(1);
 		$from = date('Y-m-d H:i:s', time() - (24 * 60 * 60));
 
 		Mage::log('Starting ubervis update', null, 'ubervis.log');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
+
 		$collection->addAttributeToSelect('*');
 		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock', 'min_sale_qty'));
 		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
@@ -50,7 +52,9 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			}
 
 			$data['title'] = $updated_data['name'];
-			$data['link'] = $prod->getProductUrl();
+			$data['link'] = $prod->getProductUrl(false);
+			echo $data['link'];
+			die();
 			$data['link'] = str_replace('warehouse.php/', '', $data['link']);
 			$data['link'] = str_replace('index.php/', '', $data['link']);
 			$data['link'] = str_replace('ubervis.php/', '', $data['link']);
