@@ -1,6 +1,0 @@
-<?php
-$productId = $this->getProduct_id();
-$_product = Mage::getModel('catalog/product')->load($productId); //load the product
-?>
-
-<img src="<?php echo Mage::helper('catalog/image')->init($_product, 'thumbnail')->resize(75, 75); ?>" alt="<?php echo $this->htmlEscape($_product['name']); ?>" border="0" width="75" />
