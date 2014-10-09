@@ -9,7 +9,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 
 	public function updateProduct() {
 		$from = date('Y-m-d H:i:s', time() - (24 * 60 * 60));
-		Mage::app()->setCurrentStore(1);
+		//Mage::app()->setCurrentStore(1);
 		Mage::log('Starting ubervis update', null, 'ubervis.log');
 		$collection = Mage::getModel('catalog/product')->getCollection();
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
@@ -28,6 +28,10 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			Mage::log('Updating ' . $updated_data['name'], null, 'ubervis.log');
 			Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
 
+			$product = Mage::getModel('catalog/product')
+            ->setStoreId(1)
+            ->load($prod->getId()); 
+            
 			$api = new SoftwareMedia_Ubervisibility_Helper_Api();
 			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
 			$data = array();
@@ -50,7 +54,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			}
 
 			$data['title'] = $updated_data['name'];
-			$data['link'] = $prod->getProductUrl();
+			$data['link'] = $product->getProductUrl();
 			$data['link'] = str_replace('warehouse.php/', '', $data['link']);
 			$data['link'] = str_replace('index.php/', '', $data['link']);
 			$data['link'] = str_replace('ubervis.php/', '', $data['link']);
