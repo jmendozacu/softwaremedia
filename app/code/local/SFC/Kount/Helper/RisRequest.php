@@ -331,7 +331,6 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			$numRefundedOrders = 0;
 			
 			if ($oOrder->getCustomerId()) {
-				Mage::log('CID:' . $oOrder->getCustomerId(),NULL,'numOrers.log');
 				$customerOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
                         ->addFieldToFilter('state', 'complete');   
@@ -339,7 +338,6 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                 $numOrders = count($customerOrders);
 			}
 			
-			Mage::log('NUm ORers:' . $numOrders,NULL,'numOrers.log');
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
 			//$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
 			
