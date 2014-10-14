@@ -134,8 +134,8 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				}
 			}
 			
-			$has_tax_line = ($order->getData('tax_amount')- $order->getData('tax_refunded') > 0) ? 1 : 0;
-			$has_ship_line = ($order->getData('shipping_amount') - $order->getData('shipping_refunded') > 0) ? 1 : 0;
+			$has_tax_line = ($order->getData('tax_amount') > 0) ? 1 : 0;
+			$has_ship_line = ($order->getData('shipping_amount') > 0) ? 1 : 0;
 			$has_promo_line = ($order->getData('discount_amount') != 0) ? 1 : 0;
 			
 			if ($has_promo_line && ($invoice->getData('discount_amount')) * -1 + $points_discount > 0) {
@@ -158,8 +158,6 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				if ($item->getParentItemId())
 					continue;
 				
-				if ($item->getQtyRefunded() == $item->getQtyInvoiced() && $item->getQtyInvoiced() > 0)
-					continue;
 					
 				//Count up grouped products
 				if( $item->getProductType() == 'grouped' ) {
@@ -276,10 +274,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				
 				if ($orderItem->getParentItemId())
 					continue;
-				
-				if ($orderItem->getQtyRefunded() == $orderItem->getQtyInvoiced() && $orderItem->getQtyInvoiced() > 0)
-					continue;
-					
+
 				if ($orderItem->getQtyInvoiced() > 0)
 					$itemQty = $orderItem->getQtyInvoiced();
 				else
@@ -290,7 +285,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					
 
 				$unitPrice = $item->getRowTotal() / $itemQty;
-				$itemQty = $itemQty - $orderItem->getQtyRefunded();
+				//$itemQty = $itemQty - $orderItem->getQtyRefunded();
 				
 				if (!$shipTime)
 					$shipTime = date('m/d/Y', strtotime($item->getData('item_ship_date')));
@@ -299,8 +294,8 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				
 				
 				//Subtract any refunded items from row total
-				if ($orderItem->getAmountRefunded())
-					$rowTotal -= $orderItem->getAmountRefunded();
+				//if ($orderItem->getAmountRefunded())
+				//	$rowTotal -= $orderItem->getAmountRefunded();
 				
 				//Update customer id for FBA orders
 				if (substr($item->getSku(), -3) == 'FBA' && $order->getCustomerId() == 1121)
@@ -358,7 +353,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'description' => 'Salt Lake County Sales Tax',
 					'gl_account' => self::GL_ACCOUNT_TAX,
 					'tax_type' => self::TAX_TYPE_TAX,
-					'amount' => ($order->getData('tax_amount') - $order->getData('tax_refunded')) * -1,
+					'amount' => ($order->getData('tax_amount')) * -1,
 					'sales_tax_agency_id' => self::SALES_TAX_ID,
 				);
 				$line_values = array_merge($common_values, $tax_values);
@@ -373,11 +368,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'description' => 'Freight Amount',
 					'gl_account' => self::GL_ACCOUNT_FRIEGHT,
 					'tax_type' => self::TAX_TYPE_FRIEGHT,
-					'amount' => ($order->getData('shipping_amount') - $order->getData('shipping_refunded')) * -1,
+					'amount' => ($order->getData('shipping_amount')) * -1,
 				);
 				$line_values = array_merge($common_values, $ship_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
+			
 
 			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
 
@@ -409,6 +405,178 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			}
 		
 		}
+		
+		$creditMemos = Mage::getModel('sales/order_creditmemo')->getCollection()->addFieldToFilter('created_at', 				array(
+			'from' => $this->getFrom(),
+			'to' => date('Y-m-d', strtotime($this->getTo()) + 60 * 60 * 24),
+			'date' => true, // specifies conversion of comparison values
+			));
+			
+		foreach($creditMemos as $creditMemo) {
+			$items = $creditMemo->getAllItems();
+			$order = Mage::getModel('sales/order')->load($creditMemo->getOrderId());
+			
+			
+			$has_tax_line = ($creditMemo->getData('tax_amount') > 0) ? 1 : 0;
+			$has_ship_line = ($creditMemo->getData('shipping_amount') > 0) ? 1 : 0;
+			
+			$terms = 'Refund';
+			
+			//Skip products with parents (configurbales would be counted twice otherwise)
+			foreach ($items as $item) {
+				$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
+				
+				if ($orderItem->getParentItemId())
+					continue;
+				
+					
+				//Count up grouped products
+				/*
+				if( $orderItem->getProductType() == 'grouped' ) {
+					$product = Mage::getModel('catalog/product')->load($item->getProductId());
+					$associatedProducts = $product->getTypeInstance(true)->getAssociatedProducts($product);
+					foreach($associatedProducts as $groupSubProd) {
+						$itemCount++;
+					}
+					continue;
+				}
+				*/
+				$itemCount++;
+			}
+					
+			
+			$orderId = $order->getIncrementId() . "-CM";
+			
+			$i = 0;
+			$add = "";
+			$orderCreditMemos = Mage::getModel('sales/order_creditmemo')->getCollection()->addFieldToFilter('order_id',$order->getId());
+			
+			foreach ($orderCreditMemos as $inv) {
+				if ($inv->getId() == $creditMemo->getId()) {
+					$add = $i;
+				}
+				$i++;
+			}	
+			if ($add)
+				$orderId .= "-" . $add;
+				
+			$common_values = array(
+				'customer_id' => 'O' . date('my', strtotime($creditMemo->getData('created_at'))),
+				'invoice_id' => $orderId,
+				'date' => date('m/d/Y', strtotime($creditMemo->getData('created_at'))),
+				'ship_via' => $shipVia,
+				'ship_date' => '', //item, tax, frieght
+				'due_date' => date('m/d/Y', strtotime($creditMemo->getData('created_at'))),
+				'displayed_terms' => $terms,
+				'sales_rep_id' => '',
+				'account_receivable' => self::ACCOUNT_RECEIVABLE,
+				'sales_tax_id' => ($has_tax_line) ? self::SALES_TAX_ID : '',
+				'number_of_distributions' => $itemCount + $has_tax_line + $has_ship_line,
+				'invoice_cm_distributions' => '', //item, tax, frieght
+				'qty' => 0, //item
+				'item_id' => '', //item 'sku'
+				'description' => '', //item, tax, frieght - title
+				'gl_account' => '', //item, tax, frieght - get from constant
+				'unit_price' => 0, //item
+				'tax_type' => '', //item, tax, frieght - get from constant
+				'amount' => '', //item, tax, frieght - price x qty
+				'sales_tax_agency_id' => ''
+			);
+			
+			
+			
+			//Manually set referrer for Buy.com customers
+			if ($order->getCustomerId() == 1117) {
+				$common_values['customer_id'] = 'BUY.COM';
+				$common_values['sales_rep_id'] = 'Buy.com';
+			}
+			if ($order->getCustomerId() == 1120) {
+				$common_values['customer_id'] = 'BESTBUY.COM';
+				$common_values['sales_rep_id'] = 'Best Buy';
+			}
+			if ($order->getCustomerId() == 1121) {
+				$common_values['customer_id'] = 'AMAZONSWM';
+				$common_values['sales_rep_id'] = 'Amazon';
+
+				$payment = $order->getPayment();
+				$additionalData = @unserialize($payment->getAdditionalData());
+				$common_values['invoice_id'] = $additionalData['channel_order_id'];
+			}
+
+			//If Peachtree ID exists, assign it
+			if ($order->getCustomerId()) {
+				$customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
+				if ($customer->getPeachtreeId()) {
+					$common_values['customer_id'] = $customer->getPeachtreeId();
+				}
+			}
+			
+			$i = 1;
+			foreach ($items as $item) {
+				
+				$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
+				$invoiceItems = Mage::getModel('sales/order_invoice_item')->getCollection();
+				$invoiceItems->addAttributeToFilter('order_item_id',$item->getOrderItemId());
+				$invoiceItem = $invoiceItems->getFirstItem();
+
+				if ($orderItem->getParentItemId())
+					continue;
+				$invMult = $invoiceItem->getQty() / $orderItem->getQtyOrdered();
+				$itemQty = $item->getQty() * $invMult;
+				
+				$rowTotal = $item->getRowTotal();
+				
+				//Update customer id for FBA orders
+				if (substr($item->getSku(), -3) == 'FBA' && $order->getCustomerId() == 1121)
+					$common_values['customer_id'] = 'AMAZONFBA';
+
+				$item_values = array(
+					'ship_date' => date('m/d/Y'),
+					'invoice_cm_distributions' => $i++,
+					'qty' => $itemQty * -1,
+					'item_id' => $invoiceItem->getSku(),
+					'description' => $invoiceItem->getName(),
+					'gl_account' => self::GL_ACCOUNT_ITEM,
+					'unit_price' =>number_format($unitPrice,2,'.',''),
+					'tax_type' => self::TAX_TYPE_ITEM,
+					'amount' => $rowTotal,
+				);
+				
+				
+				$line_values = array_merge($common_values, $item_values);
+				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
+			}
+			
+			if ($has_tax_line) {
+				$tax_values = array(
+					'ship_date' => $shipTime, //use last item ship date
+					'invoice_cm_distributions' => 0,
+					'description' => 'Salt Lake County Sales Tax',
+					'gl_account' => self::GL_ACCOUNT_TAX,
+					'tax_type' => self::TAX_TYPE_TAX,
+					'amount' => ($order->getData('tax_amount')),
+					'sales_tax_agency_id' => self::SALES_TAX_ID,
+				);
+				$line_values = array_merge($common_values, $tax_values);
+				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
+			}
+
+			if ($has_ship_line) {
+				$ship_values = array(
+					'ship_date' => $shipTime, //use last item ship date
+					'invoice_cm_distributions' => 0,
+					'description' => 'Freight Amount',
+					'gl_account' => self::GL_ACCOUNT_FRIEGHT,
+					'tax_type' => self::TAX_TYPE_FRIEGHT,
+					'amount' => ($order->getData('shipping_amount')),
+				);
+				$line_values = array_merge($common_values, $ship_values);
+				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
+			}
+
+			
+		}
+
 		return $csv;
 	}
 

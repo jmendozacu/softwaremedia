@@ -327,6 +327,20 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 
 			$oInquiry->setUserDefinedField('LICENSING', $hasLicensing);
 			
+			$numOrders = 0;
+			$numRefundedOrders = 0;
+			
+			if ($oOrder->getCustomerId()) {
+				$customerOrders = Mage::getResourceModel('sales/order_collection')
+                        ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
+                        ->addFieldToFilter('state', 'complete');   
+                        
+                $numOrders = count($customerOrders);
+			}
+			
+			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
+			//$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
+			
 			// Get response
 			$oResponse = $oInquiry->getResponse();
 			if (!$oResponse) {
