@@ -334,7 +334,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 				Mage::log('CID:' . $oOrder->getCustomerId(),NULL,'numOrers.log');
 				$customerOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
-                        ->addFieldToFilter('state', 'completed');   
+                        ->addFieldToFilter('state', 'complete');   
                         
                 $numOrders = count($customerOrders);
 			}
