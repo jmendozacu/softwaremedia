@@ -122,7 +122,7 @@ window.onload=function()
     doctype : '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
     setup : function(ed) {
       ed.onKeyUp.add(function(ed, evt) {
-          $('history_comment').value = tinyMCE.get('history_comment').getContent();
+          $('history_comment').update(tinyMCE.get('history_comment').getContent());
       });
    }
 
