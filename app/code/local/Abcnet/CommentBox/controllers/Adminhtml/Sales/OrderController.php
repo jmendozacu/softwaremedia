@@ -30,12 +30,17 @@ class Abcnet_CommentBox_Adminhtml_Sales_OrderController extends Mage_Adminhtml_S
                 $notify = isset($data['is_customer_notified']) ? $data['is_customer_notified'] : false;
                 $visible = isset($data['is_visible_on_front']) ? $data['is_visible_on_front'] : false;
 
-                $order->addStatusHistoryComment($data['comment'], $data['status'])
+				$comment = $data['comment'];
+				
+				$admin = Mage::getSingleton('admin/session')->getUser();
+
+                $order->addStatusHistoryComment($comment, $data['status'])
                     ->setIsVisibleOnFront($visible)
-                    ->setIsCustomerNotified($notify);
+                    ->setIsCustomerNotified($notify)
+                    ->setAdmin($admin->getUsername());
 
                 //$comment = trim(strip_tags($data['comment']));
-                $comment = $data['comment'];
+                
 
                 $order->save();
                 $order->sendOrderUpdateEmail($notify, $comment);

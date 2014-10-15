@@ -75,7 +75,7 @@
     <?php foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item): ?>
         <li>
             <strong><?php echo $this->helper('core')->formatDate($_item->getCreatedAtDate(), 'medium') ?></strong>
-            <?php echo $this->helper('core')->formatTime($_item->getCreatedAtDate(), 'medium') ?><span class="separator">|</span><strong><?php echo $_item->getStatusLabel() ?></strong><br/><small><?php echo $this->helper('sales')->__('Customer') ?>
+            <?php echo $this->helper('core')->formatTime($_item->getCreatedAtDate(), 'medium') ?><span class="separator">|</span><strong><?php echo $_item->getStatusLabel() ?></strong><?php if ($_item->getAdmin()): ?><span class="separator">|</span><strong><?php echo $_item->getAdmin() ?></strong><?php endif; ?><br/><small><?php echo $this->helper('sales')->__('Customer') ?>
             <strong class="subdue">
                 <?php if ($this->isCustomerNotificationNotApplicable($_item)): ?>
                 <?php echo $this->helper('sales')->__('Notification Not Applicable') ?>
