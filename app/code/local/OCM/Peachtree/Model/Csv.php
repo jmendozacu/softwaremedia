@@ -349,6 +349,34 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$line_values = array_merge($common_values, $item_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
+			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
+
+				$promo_values = array(
+					'ship_date' => $shipTime, //use last item ship date
+					'invoice_cm_distributions' => $i++,
+					'description' => 'Promo: ' . $order->getData('coupon_rule_name'),
+					'gl_account' => self::GL_ACCOUNT_PROMO,
+					'tax_type' => self::TAX_TYPE_PROMO,
+					'amount' => ($order->getData('discount_amount')) * -1 + $points_discount,
+					'item_id' => 'SM-PROMOUSED'
+				);
+				$line_values = array_merge($common_values, $promo_values);
+				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
+			}
+			if ($has_points_line) {
+
+				$promo_values = array(
+					'ship_date' => $shipTime, //use last item ship date
+					'invoice_cm_distributions' => $i++,
+					'description' => 'Loyalty Discount',
+					'gl_account' => self::GL_ACCOUNT_PROMO,
+					'tax_type' => self::TAX_TYPE_PROMO,
+					'amount' => $points_discount * -1,
+					'item_id' => 'LOYALTY'
+				);
+				$line_values = array_merge($common_values, $promo_values);
+				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
+			}
 
 			if ($has_tax_line) {
 
@@ -379,34 +407,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
 
-			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
-
-				$promo_values = array(
-					'ship_date' => $shipTime, //use last item ship date
-					'invoice_cm_distributions' => $i++,
-					'description' => 'Promo: ' . $order->getData('coupon_rule_name'),
-					'gl_account' => self::GL_ACCOUNT_PROMO,
-					'tax_type' => self::TAX_TYPE_PROMO,
-					'amount' => ($order->getData('discount_amount')) * -1 + $points_discount,
-					'item_id' => 'SM-PROMOUSED'
-				);
-				$line_values = array_merge($common_values, $promo_values);
-				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
-			}
-			if ($has_points_line) {
-
-				$promo_values = array(
-					'ship_date' => $shipTime, //use last item ship date
-					'invoice_cm_distributions' => 0,
-					'description' => 'Loyalty Discount',
-					'gl_account' => self::GL_ACCOUNT_PROMO,
-					'tax_type' => self::TAX_TYPE_PROMO,
-					'amount' => $points_discount * -1,
-					'item_id' => 'LOYALTY'
-				);
-				$line_values = array_merge($common_values, $promo_values);
-				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
-			}
+			
 		
 		}
 		return $csv;
