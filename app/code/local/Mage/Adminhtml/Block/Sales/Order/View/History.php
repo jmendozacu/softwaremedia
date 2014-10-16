@@ -35,7 +35,7 @@ class Mage_Adminhtml_Block_Sales_Order_View_History extends Mage_Adminhtml_Block
 {
     protected function _prepareLayout()
     {
-        $onclick = "$('history_comment').update(tinyMCE.get('history_comment').getContent()); submitAndReloadArea($('order_history_block').parentNode, '".$this->getSubmitUrl()."');";
+        $onclick = "tinyMCE.triggerSave(); submitAndReloadArea($('order_history_block').parentNode, '".$this->getSubmitUrl()."');";
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
                 'label'   => Mage::helper('sales')->__('Submit Comment'),
