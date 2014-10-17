@@ -354,7 +354,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 						$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 						
 						$hasPrice = true;
-						$i++;
+						$i = $i++;
 					}
 					continue;
 				}
@@ -362,7 +362,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$line_values = array_merge($common_values, $item_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
-			$i++;
+			$i= $i++;
 			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
 
 				$promo_values = array(
