@@ -329,14 +329,17 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'amount' => $rowTotal * -1,
 				);
 				
-					
+				$i++;
 				//Split up grouped products into their associated products
 				if( $item->getProductType() == 'grouped' ) {
 					$product = Mage::getModel('catalog/product')->load($item->getProductId());
 					$associatedProducts = $product->getTypeInstance(true)->getAssociatedProducts($product);
 					$hasPrice = false;
+					
+					$i--;
 					foreach($associatedProducts as $groupSubProd) {
 						$qty = 1;
+						
 						if ($groupSubProd->getQty() > 0)
 							$qty = $groupSubProd->getQty();
 							
@@ -353,16 +356,18 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 						$line_values = array_merge($common_values, $item_values);
 						$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 						
+						$i++;
+						
 						$hasPrice = true;
-						$i = $i++;
 					}
+					
 					continue;
 				}
 				
 				$line_values = array_merge($common_values, $item_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
-			$i= $i++;
+			
 			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
 
 				$promo_values = array(
