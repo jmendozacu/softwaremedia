@@ -152,13 +152,24 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			$itemCount = 0;
 			$grouped = array();
 			
+			$hasInvoice = false;
+			if ($invoiceItems) {
+				$hasInvoice = true;
+				$items = $invoiceItems;
+			}
+			
 			//Skip products with parents (configurbales would be counted twice otherwise)
 			foreach ($items as $item) {
+				if ($hasInvoice) 
+					$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
+				else 
+					$orderItem = $item;
+					
 				//$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
-				if ($item->getParentItemId())
+				if ($orderItem->getParentItemId())
 					continue;
 				
-				if ($item->getQtyRefunded() == $item->getQtyInvoiced() && $item->getQtyInvoiced() > 0)
+				if ($orderItem->getQtyRefunded() == $orderItem->getQtyInvoiced() && $orderItem->getQtyInvoiced() > 0)
 					continue;
 					
 				//Count up grouped products
