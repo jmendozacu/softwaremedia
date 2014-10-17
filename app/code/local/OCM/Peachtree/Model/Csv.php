@@ -319,7 +319,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 
 				$item_values = array(
 					'ship_date' => date('m/d/Y', strtotime($item->getData('item_ship_date'))),
-					'invoice_cm_distributions' => $i++,
+					'invoice_cm_distributions' => $i,
 					'qty' => $itemQty,
 					'item_id' => $item->getSku(),
 					'description' => $item->getName(),
@@ -362,6 +362,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$line_values = array_merge($common_values, $item_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
+			$i++;
 			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
 
 				$promo_values = array(
