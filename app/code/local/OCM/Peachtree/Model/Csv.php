@@ -332,6 +332,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 						$item_values['item_id'] = $groupSubProd->getSku();
 						$item_values['description'] = $groupSubProd->getName();
 						$item_values['qty'] = $qty * $orderItem->getQtyOrdered();
+						$item_values['invoice_cm_distributions'] = $i++;
 						$item_values['unit_price'] = number_format($item_values['amount'] / $item_values['qty'],2,'.','');
 						
 						if ($hasPrice) {
