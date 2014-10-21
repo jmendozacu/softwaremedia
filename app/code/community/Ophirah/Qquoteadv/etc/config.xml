@@ -357,7 +357,7 @@
                     <model>qquoteadv/observer::updateStatusProposal</model>
                 </run>
             </update_status_proposal>
-            <!--qquoteadv_expire_email>
+            <qquoteadv_expire_email>
                 <schedule>
                     <cron_expr>1 6 * * *</cron_expr>                  
                 </schedule>
@@ -388,7 +388,7 @@
                 <run>
                     <model>qquoteadv/qqadvcustomer::send3rdReminderEmail</model>
                 </run>
-            </qquoteadv_reminder_email_3--> 
+            </qquoteadv_reminder_email_3> 
         </jobs>
     </crontab>
     <frontend>
