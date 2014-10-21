@@ -6,6 +6,7 @@
 /app/etc/local.xml
 /downloader/
 .DS_Store
+.htaccess
 export
 export/
 /export/
