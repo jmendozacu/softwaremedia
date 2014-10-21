@@ -101,13 +101,21 @@
 </div>
 
 <script type="text/javascript">
+
 function deleteTinyMCE() {
 
 	if (tinyMCE.get('history_comment')) {
 		tinyMCE.get('history_comment').setContent('');
-		tinyMCE.get('history_comment').remove();
+		//tinyMCE.get('history_comment').remove();
 	}
-		
+    tinyMCE.execCommand('mceRemoveControl', false, 'history_comment');
+    
+	tinyMCE.execCommand('mceAddControl', true, 'history_comment');
+}
+
+window.onload=function()
+{
+
 	tinyMCE.init({
     mode : "exact",
     elements: "history_comment",
@@ -137,10 +145,7 @@ function deleteTinyMCE() {
   
 
   });
-}
-window.onload=function()
-{
-deleteTinyMCE();
+
 
 
 };
