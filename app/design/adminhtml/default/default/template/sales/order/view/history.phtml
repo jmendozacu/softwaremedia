@@ -101,15 +101,19 @@
 </div>
 
 <script type="text/javascript">
-
 function deleteTinyMCE() {
 
 	if (tinyMCE.get('history_comment')) {
-		tinyMCE.get('history_comment').setContent('');
-		tinyMCE.get('history_comment').remove();
+		//tinyMCE.get('history_comment').setContent('');
 	}
-    tinyMCE.execCommand('mceRemoveControl', false, 'history_comment');
-    
+	var length = tinymce.editors.length;
+	for (var i=length; i>=0; i--) {
+		if (tinymce.editors[i]) {
+		tinyMCE.execCommand('mceRemoveControl',false, tinymce.editors[i].id); 
+		}
+	};
+	
+
 	tinyMCE.init({
     mode : "exact",
     elements: "history_comment",
@@ -139,41 +143,12 @@ function deleteTinyMCE() {
   
 
   });
+  
+  tinyMCE.get('history_comment').setContent('');
 }
-
 window.onload=function()
 {
-
-	tinyMCE.init({
-    mode : "exact",
-    elements: "history_comment",
-    theme : "advanced",
-    content: '',
-    plugins : "inlinepopups,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
-    theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
-    theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redor",
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "left",
-    theme_advanced_path_location : "bottom",
-    extended_valid_elements : "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
-    theme_advanced_resize_horizontal : 'true',
-    theme_advanced_resizing : 'true',
-    apply_source_formatting : 'true',
-    convert_urls : 'false',
-    force_br_newlines : 'true',
-    doctype : '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-    setup : function(ed) {
-      ed.onKeyUp.add(function(ed, evt) {
-          //$('history_comment').update(tinyMCE.get('history_comment').getContent());
-      });
-      
-
-   }
-   
-  
-
-  });
-
+deleteTinyMCE();
 
 
 };
