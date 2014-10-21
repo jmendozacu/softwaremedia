@@ -55,7 +55,7 @@
             </select>
         </span>
         <span class="field-row">
-            <label class="normal" for="history_comment"><?php echo Mage::helper('sales')->__('Comment') ?></label>
+         
             <textarea name="history[comment]" rows="3" cols="5" style="height:12em; width:450px;" id="history_comment"></textarea>
         </span>
         <div class="f-left">
@@ -103,8 +103,12 @@
 <script type="text/javascript">
 function deleteTinyMCE() {
 
-	
-	   tinyMCE.init({
+	if (tinyMCE.get('history_comment')) {
+		tinyMCE.get('history_comment').setContent('');
+		tinyMCE.get('history_comment').remove();
+	}
+		
+	tinyMCE.init({
     mode : "exact",
     elements: "history_comment",
     theme : "advanced",
