@@ -186,40 +186,6 @@ function submitAndReloadArea(area, url) {
     }
 }
 
-/**
- * @todo add validation for fields
- */
-function submitAndReloadCommentArea(area, url) {
-    if($(area)) {
-        var fields = $(area).select('input', 'select', 'textarea');
-        var data = Form.serializeElements(fields, true);
-        url = url + (url.match(new RegExp('\\?')) ? '&isAjax=true' : '?isAjax=true');
-        new Ajax.Request(url, {
-            parameters: $H(data),
-            loaderArea: area,
-            onSuccess: function(transport) {
-                try {
-                    if (transport.responseText.isJSON()) {
-                        var response = transport.responseText.evalJSON()
-                        if (response.error) {
-                            alert(response.message);
-                        }
-                        if(response.ajaxExpired && response.ajaxRedirect) {
-                            setLocation(response.ajaxRedirect);
-                        }
-                    } else {
-                        $(area).update(transport.responseText);
-                        deleteTinyMCE();
-                    }
-                }
-                catch (e) {
-                    $(area).update(transport.responseText);
-                }
-            }
-        });
-    }
-}
-
 /********** MESSAGES ***********/
 /*
 Event.observe(window, 'load', function() {
