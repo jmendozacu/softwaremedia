@@ -102,12 +102,7 @@
 
 <script type="text/javascript">
 function deleteTinyMCE() {
-	for(var i=0, n=tinyMCE.editors.length; i<n; i++) {
-    
-    delete document.getElementById(tinyMCE.editors[i].id);
-    	 tinymce.editors[i].setContent('');
-		tinyMCE.execCommand('mceRemoveControl',false, tinymce.editors[i].id); 
-	}
+
 	
 	   tinyMCE.init({
     mode : "exact",
