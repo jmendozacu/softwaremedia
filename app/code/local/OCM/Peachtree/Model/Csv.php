@@ -152,13 +152,24 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			$itemCount = 0;
 			$grouped = array();
 			
+			$hasInvoice = false;
+			if ($invoiceItems) {
+				$hasInvoice = true;
+				$items = $invoiceItems;
+			}
+			
 			//Skip products with parents (configurbales would be counted twice otherwise)
 			foreach ($items as $item) {
+				if ($hasInvoice) 
+					$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
+				else 
+					$orderItem = $item;
+					
 				//$orderItem = Mage::getModel('sales/order_item')->load($item->getOrderItemId());
-				if ($item->getParentItemId())
+				if ($orderItem->getParentItemId())
 					continue;
 				
-				if ($item->getQtyRefunded() == $item->getQtyInvoiced() && $item->getQtyInvoiced() > 0)
+				if ($orderItem->getQtyRefunded() == $orderItem->getQtyInvoiced() && $orderItem->getQtyInvoiced() > 0)
 					continue;
 					
 				//Count up grouped products
@@ -308,7 +319,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 
 				$item_values = array(
 					'ship_date' => date('m/d/Y', strtotime($item->getData('item_ship_date'))),
-					'invoice_cm_distributions' => $i++,
+					'invoice_cm_distributions' => $i,
 					'qty' => $itemQty,
 					'item_id' => $item->getSku(),
 					'description' => $item->getName(),
@@ -318,20 +329,24 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'amount' => $rowTotal * -1,
 				);
 				
-					
+				$i++;
 				//Split up grouped products into their associated products
 				if( $item->getProductType() == 'grouped' ) {
 					$product = Mage::getModel('catalog/product')->load($item->getProductId());
 					$associatedProducts = $product->getTypeInstance(true)->getAssociatedProducts($product);
 					$hasPrice = false;
+					
+					$i--;
 					foreach($associatedProducts as $groupSubProd) {
 						$qty = 1;
+						
 						if ($groupSubProd->getQty() > 0)
 							$qty = $groupSubProd->getQty();
 							
 						$item_values['item_id'] = $groupSubProd->getSku();
 						$item_values['description'] = $groupSubProd->getName();
 						$item_values['qty'] = $qty * $orderItem->getQtyOrdered();
+						$item_values['invoice_cm_distributions'] = $i;
 						$item_values['unit_price'] = number_format($item_values['amount'] / $item_values['qty'],2,'.','');
 						
 						if ($hasPrice) {
@@ -341,14 +356,18 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 						$line_values = array_merge($common_values, $item_values);
 						$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 						
+						$i++;
+						
 						$hasPrice = true;
 					}
+					
 					continue;
 				}
 				
 				$line_values = array_merge($common_values, $item_values);
 				$csv .= '"' . implode('","', $line_values) . '"' . "\r\n";
 			}
+			
 			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
 
 				$promo_values = array(
