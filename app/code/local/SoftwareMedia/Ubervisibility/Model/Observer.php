@@ -64,7 +64,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['brand'] = $brand;
 			$data['description'] = $updated_data['description'];
 			$data['message'] = $updated_data['stock_message'];
-			$data['froogle_category'] = $updated_data['google_cat'];
+			$data['froogleCategory'] = $updated_data['google_cat'];
 			$data['edition'] = $updated_data['version'];
 			$data['weight'] = $updated_data['weight'];
 			$data['cost'] = $updated_data['cost'];
@@ -75,6 +75,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['manageStock'] = ($updated_data['manage_stock'] > 0);
 			$hasCat = false;
             
+            var_dump($data);
+            die();
             $cats = $product->getCategoryIds();
             $catList = array();
 			foreach ($cats as $category_id) {
