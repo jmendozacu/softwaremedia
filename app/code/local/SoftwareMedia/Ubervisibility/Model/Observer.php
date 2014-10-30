@@ -92,9 +92,6 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				reset($catList);
 				$data['category'] = current($catList);
 			}
-			
-			var_dump($data);
-            die();
             
 			$cats = $prod->getCategoryIds();
 			foreach ($cats as $category_id) {
