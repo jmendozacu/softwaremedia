@@ -64,7 +64,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['brand'] = $brand;
 			$data['description'] = $updated_data['description'];
 			$data['message'] = $updated_data['stock_message'];
-
+			$data['froogle_category'] = $updated_data['google_cat'];
 			$data['edition'] = $updated_data['version'];
 			$data['weight'] = $updated_data['weight'];
 			$data['cost'] = $updated_data['cost'];
@@ -73,6 +73,24 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['msrp'] = $updated_data['msrp'];
 			$data['minimumSalesQuantity'] = intval($updated_data['min_sale_qty']);
 			$data['manageStock'] = ($updated_data['manage_stock'] > 0);
+			$hasCat = false;
+            
+            $cats = $product->getCategoryIds();
+            $catList = array();
+			foreach ($cats as $category_id) {
+			    $_cat = Mage::getModel('catalog/category')->load($category_id);
+			    $catFeed =  $this->getCategoryPath($_cat);
+			    if ($catFeed) {
+			    	$catList[$catFeed[0]] = $catFeed[1];
+			    	$hasCat = true;
+			    }
+			} 
+			
+			if ($hasCat) {
+				krsort($catList);
+				reset($catList);
+				$data['category'] = current($catList);
+			}
 
 			$cats = $prod->getCategoryIds();
 			foreach ($cats as $category_id) {
@@ -308,8 +326,22 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			}
 		}
 	}
-
-	private function generateCsv($data, $delimiter = ',', $enclosure = '"') {
+	
+    public function getCategoryPath($category) {
+    	if ($category->getFeedCategory()) {
+	    	return array($category->getLevel(),$category->getResource()->getAttribute('feed_category')->getFrontend()->getValue($category));
+    	}
+    	if($category->getLevel() == 2 || $category->getLevel() == 1) {
+	    	return false;
+    	} else {
+	    	$parentCategory = Mage::getModel('catalog/category')->load($category->getParentId());
+	    	return $this->getCategoryPath($parentCategory);
+    	}
+    		    
+	    
+    }
+    
+    private function generateCsv($data, $delimiter = ',', $enclosure = '"') {
 		$csv = new Varien_Io_File();
 		$path = Mage::getBaseDir('var') . DS . 'export' . DS;
 		$file = $path . 'uber_to_magento_update.csv';
