@@ -81,7 +81,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			if ($sub_model->getData('manage_stock') == 0)
 				$qty = 9999;
 			
-			//Mage::log('Manage Stock: ' . $sub_model->getData('manage_stock'),null,'stock.log');
+			Mage::log('Manage Stock: ' . $sub_model->getData('manage_stock'),null,'stock.log');
 			
 			foreach (array('techdata','synnex','ingram') as $warehouse_name) {	
 				if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
@@ -92,7 +92,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				if (!$cost && $prod->getData('cost'))
 					$cost = $prod->getData('cost') * $link->getQty();
 			}
-			$qty+=$item->getData('pt_qty');
+			//$qty+=$item->getData('pt_qty');
 		}
 		
 		//if ($cost) 
