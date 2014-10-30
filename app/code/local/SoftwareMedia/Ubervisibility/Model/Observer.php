@@ -75,8 +75,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['manageStock'] = ($updated_data['manage_stock'] > 0);
 			$hasCat = false;
             
-            var_dump($data);
-            die();
+            
             $cats = $product->getCategoryIds();
             $catList = array();
 			foreach ($cats as $category_id) {
@@ -93,7 +92,10 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				reset($catList);
 				$data['category'] = current($catList);
 			}
-
+			
+			var_dump($data);
+            die();
+            
 			$cats = $prod->getCategoryIds();
 			foreach ($cats as $category_id) {
 				$_cat = Mage::getModel('catalog/category')->load($category_id);
