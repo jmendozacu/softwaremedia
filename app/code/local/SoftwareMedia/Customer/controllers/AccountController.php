@@ -99,8 +99,8 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 
 		$customer = $this->_getCustomer();
 
-		if (isset($postData['new_website_brochure'])) {
-			$customer->setData('new_website_brochure', 1);
+		if (isset($postData['q4_2014_brochure'])) {
+			$customer->setData('q4_2014_brochure', 1);
 		}
 
 		try {
@@ -130,7 +130,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		}
 
 		$errUrl = $this->_getUrl('*/*/create', array('_secure' => true));
-		if ($postData['error_url'] == 'new') {
+		if ($postData['error_url'] == 'brochure') {
 			$errUrl = $postData['error_url'];
 			$this->_redirect($errUrl);
 		} else {
