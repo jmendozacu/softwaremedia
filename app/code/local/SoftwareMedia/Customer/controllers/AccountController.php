@@ -96,8 +96,6 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			return;
 		}
 
-		echo "Test";
-		die();
 		$postData = Mage::app()->getRequest()->getPost();
 
 		$customer = $this->_getCustomer();
@@ -113,6 +111,9 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 				$customer->save();
 				$this->_dispatchRegisterSuccess($customer);
 				$this->_successProcessRegistration($customer);
+				if (isset($postData['q4_2014_brochure'])) {
+					$this->_redirect('brochure');
+				}
 				return;
 			} else {
 				$this->_addSessionError($errors);
