@@ -120,7 +120,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			}
 		} catch (Mage_Core_Exception $e) {
 			echo "test 1";
-			die();
+
 			$session->setCustomerFormData($this->getRequest()->getPost());
 			if ($e->getCode() === Mage_Customer_Model_Customer::EXCEPTION_EMAIL_EXISTS) {
 				$url = $this->_getUrl('customer/account/forgotpassword');
@@ -131,6 +131,8 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 				$message = $e->getMessage();
 			}
 			$session->addError($message);
+			echo "test 2";
+			die();
 			//if (isset($postData['q4_2014_brochure'])) {
 					$errUrl = $this->_getUrl('brochure');
 					echo $errUrl;
