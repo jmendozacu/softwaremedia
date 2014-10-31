@@ -122,8 +122,8 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			$session->setCustomerFormData($this->getRequest()->getPost());
 			if ($e->getCode() === Mage_Customer_Model_Customer::EXCEPTION_EMAIL_EXISTS) {
 				$url = $this->_getUrl('customer/account/forgotpassword');
-				$message = $this->__('Error: There is already an account with this email address. If you are sure that it is your email address, <a href="%s">click here</a> to get your password and access your account.', $url);
-				//$session->setEscapeMessages(false);
+				$message = $this->__('There is already an account with this email address. If you are sure that it is your email address, <a href="%s">click here</a> to get your password and access your account.', $url);
+				$session->setEscapeMessages(false);
 				
 			} else {
 				$message = $e->getMessage();
@@ -132,6 +132,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			//if (isset($postData['q4_2014_brochure'])) {
 					$errUrl = $this->_getUrl('brochure');
 					$this->_redirect($errUrl);
+					return;
 			//	}
 		} catch (Exception $e) {
 			$session->setCustomerFormData($this->getRequest()->getPost())
