@@ -82,6 +82,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 	 * Create customer account action
 	 */
 	public function createPostAction() {
+		
 		/** @var $session Mage_Customer_Model_Session */
 		$session = $this->_getSession();
 		if ($session->isLoggedIn()) {
@@ -95,6 +96,8 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			return;
 		}
 
+		echo "Test";
+		die();
 		$postData = Mage::app()->getRequest()->getPost();
 
 		$customer = $this->_getCustomer();
@@ -131,7 +134,8 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 
 		$errUrl = $this->_getUrl('*/*/create', array('_secure' => true));
 		if (isset($postData['q4_2014_brochure'])) {
-			$this->_redirect('brochure');
+			$errUrl = $this->_getUrl('brochure', array('_secure' => true));
+			$this->_redirect($errUrl);
 		} else {
 			$this->_redirectError($errUrl);
 		}
