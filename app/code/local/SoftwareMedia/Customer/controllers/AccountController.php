@@ -128,11 +128,11 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			} else {
 				$message = $e->getMessage();
 			}
-			//$session->addError($message);
-			if (isset($postData['q4_2014_brochure'])) {
-					$errUrl = $this->_getUrl('brochure');
+			$session->addError($message);
+			//if (isset($postData['q4_2014_brochure'])) {
+			//		$errUrl = $this->_getUrl('brochure');
 					$this->_redirect($errUrl);
-				}
+			//	}
 		} catch (Exception $e) {
 			$session->setCustomerFormData($this->getRequest()->getPost())
 				->addException($e, $this->__('Cannot save the customer.'));
