@@ -132,7 +132,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			}
 			$session->addError($message);
 			echo "test 2";
-			die();
+
 			//if (isset($postData['q4_2014_brochure'])) {
 					$errUrl = $this->_getUrl('brochure');
 					echo $errUrl;
