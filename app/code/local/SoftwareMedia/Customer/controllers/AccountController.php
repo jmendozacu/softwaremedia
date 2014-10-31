@@ -130,7 +130,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			}
 			$session->addError($message);
 			//if (isset($postData['q4_2014_brochure'])) {
-			//		$errUrl = $this->_getUrl('brochure');
+					$errUrl = $this->_getUrl('brochure');
 					$this->_redirect($errUrl);
 			//	}
 		} catch (Exception $e) {
@@ -138,7 +138,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 				->addException($e, $this->__('Cannot save the customer.'));
 		}
 
-		$errUrl = $this->_getUrl('*/*/create', array('_secure' => true));
+		$errUrl = $this->_getUrl('brochure');
 		if (isset($postData['q4_2014_brochure'])) {
 			$errUrl = $this->_getUrl('brochure');
 			$this->_redirect($errUrl);
