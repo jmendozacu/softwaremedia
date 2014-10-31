@@ -137,7 +137,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 					$errUrl = $this->_getUrl('brochure');
 					echo $errUrl;
 
-					$this->_redirect($errUrl);
+					$this->_redirectUrl($errUrl);
 					return;
 			//	}
 		} catch (Exception $e) {
