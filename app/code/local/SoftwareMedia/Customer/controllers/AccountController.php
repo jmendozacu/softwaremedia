@@ -126,7 +126,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 				$session->setEscapeMessages(false);
 				if (isset($postData['q4_2014_brochure'])) {
 					$errUrl = $this->_getUrl('brochure', array('_secure' => true));
-					$this->_redirectError($errUrl);
+					$this->_redirect($errUrl);
 					return;
 				}
 			} else {
@@ -143,7 +143,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 			$errUrl = $this->_getUrl('brochure', array('_secure' => true));
 			$this->_redirect($errUrl);
 		} else {
-			$this->_redirectError($errUrl);
+			$this->_redirect($errUrl);
 		}
 	}
 
