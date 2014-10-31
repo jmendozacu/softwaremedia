@@ -141,7 +141,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		$errUrl = $this->_getUrl('*/*/create', array('_secure' => true));
 		if (isset($postData['q4_2014_brochure'])) {
 			$errUrl = $this->_getUrl('brochure');
-			$this->_redirect($errUrl);
+			$this->_redirectUrl($errUrl);
 		} else {
 			$this->_redirect($errUrl);
 		}
