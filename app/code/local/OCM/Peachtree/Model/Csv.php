@@ -259,6 +259,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$common_values['invoice_id'] = $additionalData['channel_order_id'];
 			}
 			
+			if ($order->getCustomerId()) {
+				$customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
+				if ($customer->getData('q4_2014_brochure') == 1)
+					$common_values['sales_rep_id'] = 'Brochure';
+			}
 			//If PO, don't put under wholesale customer
 			if ($payment == 'purchaseorder') {
 				$common_values['customer_id'] = '';	

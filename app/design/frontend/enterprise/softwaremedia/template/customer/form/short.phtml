@@ -54,7 +54,7 @@
 	list-style-type: none !important;
 }
 h3.orange {
-	background: #cc6731;
+	background: #666;
 	padding: 10px 15px !important;
 	color: #fff;
 	text-align: right;
@@ -69,12 +69,12 @@ h3.orange {
 
 <?php if (!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
 <div class="account-create">
-	<h3 class="orange">Sign up today! <span>Create an account and get 1000 reward points!</span></h3>
+	<h3 class="orange">Sign up for Rewards! <span>Create an account and get 2,000 reward points!</span></h3>
     <form action="/customer/account/createpost/" method="post" id="form-validate" enctype="multipart/form-data">
         <div class="fieldset">
-            <input type="hidden" name="success_url" value="new" />
-            <input type="hidden" name="error_url" value="new" />
-            <input type="hidden" name="new_website_brochure" value="1" />
+            <input type="hidden" name="success_url" value="brochure" />
+            <input type="hidden" name="error_url" value="brochure" />
+            <input type="hidden" name="q4_2014_brochure" value="1" />
             <ul class="form-list">
                 <li class="fields">
                 <?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getFormData())->setForceUseCustomerAttributes(true)->toHtml() ?>

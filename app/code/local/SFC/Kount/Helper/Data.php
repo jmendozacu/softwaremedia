@@ -226,7 +226,7 @@ class SFC_Kount_Helper_Data extends Mage_Core_Helper_Abstract
     	if ($oOrder->getHoldBeforeState() && $oOrder->getHoldBeforeStatus()) {
 	    	$oOrder->setState($oOrder->getHoldBeforeState(),$oOrder->getHoldBeforeStatus());
 	    	
-    	} else {
+    	} elseif($oOrder->getState() == Mage_Sales_Model_Order::STATE_HOLDED) {
         	// Move order from Hold to previous status
         	$oOrder->setState('processing','processing');
 		}
