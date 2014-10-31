@@ -71,7 +71,7 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		}
 		$postData = Mage::app()->getRequest()->getPost();
 
-		if ($postData['success_url'] == 'new') {
+		if ($postData['success_url'] == 'brochure') {
 			$this->processNewPoints($customer);
 			$successUrl = $postData['success_url'];
 		}
@@ -124,6 +124,11 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 				$url = $this->_getUrl('customer/account/forgotpassword');
 				$message = $this->__('There is already an account with this email address. If you are sure that it is your email address, <a href="%s">click here</a> to get your password and access your account.', $url);
 				$session->setEscapeMessages(false);
+				if (isset($postData['q4_2014_brochure'])) {
+					$errUrl = $this->_getUrl('brochure', array('_secure' => true));
+					$this->_redirectError($errUrl);
+					return;
+				}
 			} else {
 				$message = $e->getMessage();
 			}
