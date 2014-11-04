@@ -25,7 +25,7 @@ class Amazon_Payments_Model_Observer_Onepage
                 Mage::app()->getFrontController()->getResponse()->setRedirect($_helper->getStandaloneUrl());
             }
 
-            //$observer->getEvent()->getLayout()->getUpdate()->addHandle('checkout_onepage_index_amazon_payments');
+            $observer->getEvent()->getLayout()->getUpdate()->addHandle('checkout_onepage_index_amazon_payments');
         }
 
     }
