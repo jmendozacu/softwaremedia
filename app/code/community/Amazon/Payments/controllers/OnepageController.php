@@ -76,13 +76,13 @@ class Amazon_Payments_OnepageController extends Amazon_Payments_Controller_Check
         }
         if ($this->getRequest()->isPost()) {
             $data = $this->getRequest()->getPost('shipping_method', '');
-            if (!$data['firstname'] || !$data['lastname']) {
+           // if (!$data['firstname'] || !$data['lastname']) {
             	$result = array();
 	            $result['error'] = true;
 				$result['message'] = "First and last name are required";
 	            $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
 	            return;
-            }
+            //}
             $result = $this->_getOnepage()->saveShippingMethod($data);
             // $result will contain error data if shipping method is empty
             if (!$result) {
