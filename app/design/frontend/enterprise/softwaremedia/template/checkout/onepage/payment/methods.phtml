@@ -47,7 +47,10 @@
 <?php
     foreach ($methodList as $_method):
         $_code = $_method->getCode();
-       echo $_code;
+		if ($_code == 'amazon_payments') {
+			$amazon = $_method;
+			continue;
+		}
        	if ($_code == 'checkmo')
        		continue;
        		
@@ -62,6 +65,8 @@
         
         $methods[] = $_method;
 	endforeach;
+	if ($amazon)
+		$methods[] = $amazon;
 ?>
 <?php
     $oneMethod = count($methods) <= 1;
