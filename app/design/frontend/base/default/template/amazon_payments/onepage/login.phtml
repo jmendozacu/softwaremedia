@@ -50,18 +50,20 @@
 			</fieldset>
 </form>
 
-				<br /><br />
-				<h3>Don't have an account?</h3>
-				<br />
-				<input type="hidden" name="checkout_method" id="login:guest" value="guest" checked="checked" class="radio" />
-				<button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
-
+				
 
         
     </div>
     <div class="col-2">
 		<h3><?php echo $this->__('Amazon Login') ?></h3>
         <?php echo $this->getChildHtml('col1_before')?>
+        <br /><br />
+				<h3>Don't have an account?</h3>
+				<br />
+				<input type="hidden" name="checkout_method" id="login:guest" value="guest" checked="checked" class="radio" />
+				<button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
+
+
     </div>
 </div>
 <script type="text/javascript">
