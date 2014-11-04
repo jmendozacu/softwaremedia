@@ -49,10 +49,10 @@
 				</ul>
 			</fieldset>
 			<fieldset class="">
-				<p>Don't have an account?</p>
+				<h3>Don't have an account?</h3>
 				<ul class="form-list">
 					<li class="buttons-set">
-						   <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue as ') : $this->__('Register')) ?></span></span></button>
+						   <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
 
 					</li>
 				</ul>
@@ -61,7 +61,7 @@
         
     </div>
     <div class="col-2">
-
+		<h3><?php echo $this->__('Amazon Login') ?></h3>
         <?php echo $this->getChildHtml('col1_before')?>
     </div>
 </div>
