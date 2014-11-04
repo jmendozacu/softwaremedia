@@ -214,6 +214,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 				$terms = 'COD';
 				$dueDate = date('m/d/Y', strtotime("+30 days", strtotime($order->getData('created_at'))));	
 			}
+			if ($payment == 'amazon_payments') {
+				$terms = 'Amazon PP';	
+			}
 				
 			$common_values = array(
 				'customer_id' => 'O' . date('my', strtotime($order->getData('created_at'))),
@@ -271,6 +274,9 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					$common_values['customer_id'] = $customer->getPeachtreeId();
 				}
 			}
+			
+			
+			
 			$i = 1;
 			
 			$hasInvoice = false;
