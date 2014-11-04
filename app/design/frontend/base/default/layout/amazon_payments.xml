@@ -101,13 +101,7 @@
             <action method="addItem"><type>skin_css</type><name>amazon_payments/css/styles_onepage.css</name><params/></action>
         </reference>
 
-        <reference name="checkout.progress.wrapper">
-            <block type="amazon_payments/onepage_progress" name="checkout.progress" before="-" template="checkout/onepage/progress.phtml">
-                <block type="amazon_payments/onepage_progress" name="shipping.progress" template="amazon_payments/onepage/progress/widget.phtml"></block>
-                <block type="amazon_payments/onepage_progress" name="shippingmethod.progress" template="checkout/onepage/progress/shipping_method.phtml"></block>
-            </block>
-        </reference>
-		
+
         <block type="amazon_payments/onepage" name="checkout.onepage" template="checkout/onepage.phtml">
 
             <block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="amazon_payments/onepage/login_cancel.phtml" />
@@ -133,7 +127,17 @@
     One page checkout progress block
     Override to prevent "undefined" notices
     -->
+    <checkout_onepage_progress>
+        <!-- Mage_Checkout -->
+        <remove name="right"/>
+        <remove name="left"/>
 
+        <block type="amazon_payments/onepage_progress" name="root" output="toHtml" template="checkout/onepage/progress.phtml">
+            <block type="checkout/onepage_payment_info" name="payment_info">
+                <action method="setInfoTemplate"><method></method><template></template></action>
+            </block>
+        </block>
+    </checkout_onepage_progress>
 
 
     <!--
