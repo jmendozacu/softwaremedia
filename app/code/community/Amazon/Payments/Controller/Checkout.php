@@ -198,7 +198,7 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
             $regionModel = Mage::getModel('directory/region')->loadByCode($address->getStateOrRegion(), $address->getCountryCode());
             $regionId    = $regionModel->getId();
 
-			if (!$firstName || $lastName)
+			if (!$firstName || !$lastName)
 				Mage::throwException('First and last name are required. Please modify shipping information');
 			
             $data = array(
