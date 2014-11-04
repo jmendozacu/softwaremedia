@@ -42,6 +42,8 @@
 					<li class="buttons-set">
 						<input name="context" type="hidden" value="checkout">
 						<button type="button" class="button" onclick="loginForm.submit()"><span><span>Login</span></span></button>
+						   <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue as Guest') : $this->__('Register')) ?></span></span></button>
+
 					</li>
 				</ul>
 			</fieldset>
@@ -53,7 +55,6 @@
         <?php echo $this->getChildHtml('col1_before')?>
     </div>
 </div>
-
 <script type="text/javascript">
 //<![CDATA[
     var loginForm = new VarienForm('login-form', true);
