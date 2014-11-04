@@ -93,28 +93,7 @@
     -->
     <checkout_onepage_index_amazon_payments>
 
-        <remove name="checkout.onepage.billing" />
-        <remove name="checkout.onepage.shipping" />
-        <remove name="checkout.onepage.payment" />
 
-        <block type="amazon_payments/onepage" name="checkout.onepage" template="checkout/onepage.phtml">
-
-            <block type="checkout/onepage_login" name="checkout.onepage.login" as="login" template="amazon_payments/onepage/login_cancel.phtml" />
-
-            <block type="amazon_payments/onepage_widget" name="amazon_payments.onepage.widget" as="widget" template="amazon_payments/onepage/widget.phtml" />
-
-            <block type="checkout/onepage_shipping_method" name="checkout.onepage.shipping_method" as="shipping_method" template="checkout/onepage/shipping_method.phtml">
-                <block type="checkout/onepage_shipping_method_available" name="checkout.onepage.shipping_method.available" as="available" template="checkout/onepage/shipping_method/available.phtml"/>
-                <block type="checkout/onepage_shipping_method_additional" name="checkout.onepage.shipping_method.additional" as="additional" template="checkout/onepage/shipping_method/additional.phtml"/>
-            </block>
-            <block type="checkout/onepage_payment" name="checkout.onepage.payment" as="payment" template="checkout/onepage/payment.phtml">
-                <block type="checkout/onepage_payment_methods" name="checkout.payment.methods" as="methods" template="checkout/onepage/payment/info.phtml">
-                    <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
-                </block>
-            </block>
-            <block type="checkout/onepage_review" name="checkout.onepage.review" as="review" template="checkout/onepage/review.phtml"/>
-
-        </block>
 
     </checkout_onepage_index_amazon_payments>
 
