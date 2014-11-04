@@ -115,6 +115,21 @@
         </events>
     </frontend>
 
-
+    <default>
+        <payment>
+            <amazon_payments>
+                <title>Amazon Payments</title>
+                <model>amazon_payments/paymentMethod</model>
+                <payment_action>authorize_capture</payment_action>
+                <show_pay_cart>1</show_pay_cart>
+                <order_status>processing</order_status>
+                <active>1</active>
+                <secure_cart>1</secure_cart>
+                <button_type>PwA</button_type>
+                <button_color>Gold</button_color>
+                <button_size>medium</button_size>
+            </amazon_payments>
+        </payment>
+    </default>
 
 </config>
