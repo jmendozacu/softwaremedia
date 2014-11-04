@@ -49,13 +49,11 @@
 				</ul>
 			</fieldset>
 			<fieldset class="">
+				<br /><br />
 				<h3>Don't have an account?</h3>
-				<ul class="form-list">
-					<li class="buttons-set">
-						   <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
+				<br />
+				<button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
 
-					</li>
-				</ul>
 			</fieldset>
         </form>
         
