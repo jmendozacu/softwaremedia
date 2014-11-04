@@ -42,7 +42,11 @@
 					<li class="buttons-set">
 						<input name="context" type="hidden" value="checkout">
 						<button type="button" class="button" onclick="loginForm.submit()"><span><span>Login</span></span></button>
-						   <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue as Guest') : $this->__('Register')) ?></span></span></button>
+						
+
+					</li>
+					<li class="buttons-set">
+						   <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue as ') : $this->__('Register')) ?></span></span></button>
 
 					</li>
 				</ul>
