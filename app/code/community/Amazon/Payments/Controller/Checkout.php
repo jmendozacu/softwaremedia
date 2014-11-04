@@ -199,7 +199,7 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
             $regionId    = $regionModel->getId();
 
 			if (!$firstName || !$lastName)
-				Mage::throwException('First and last name required. Please add or modify your shipping address with full name.');
+				Mage::throwException('First and last name required. Please add a new shipping address with full name.');
 			
             $data = array(
                 'firstname'   => $firstName,
