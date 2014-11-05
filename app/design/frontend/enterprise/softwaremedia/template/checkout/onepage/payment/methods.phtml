@@ -88,7 +88,15 @@
     </dt>
     <?php if ($html = $this->getPaymentMethodFormHtml($_method)): ?>
     <dd>
-        <?php echo $html; ?>
+        <?php 
+        	if ($_code=='amazon_payments'): ?>
+        	<ul class="form-list" id="payment_form_<?php echo $this->getMethodCode() ?>_1" style="display:none;">
+    <li class="form-alt">Amazon<?php echo Mage::app()->getLayout()->createBlock('amazon_payments/button')->setTemplate('amazon_payments/button.phtml')->toHtml(); ?></li>
+</ul>
+			<? else:
+        	echo $html; 
+        	endif; ?>
+        	?>
     </dd>
     <?php endif; ?>
 <?php endforeach; ?>
