@@ -303,7 +303,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			$oInquiry->setEpoch(time());
 
 			$hasLicensing = 0;
-			$isSuspicious = 0;
+			
 			// Cart
 			$aCart = array();
 			foreach ($oOrder->getAllVisibleItems() as $oItem) {
@@ -334,19 +334,12 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 				$customerOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
                         ->addFieldToFilter('state', 'complete');   
-                $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId()));
-                $isSuspicious = $customer->getSuspicious();
+                        
                 $numOrders = count($customerOrders);
-                
-                $customerOrders = Mage::getResourceModel('sales/order_collection')
-                        ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
-                        ->addFieldToFilter('state', array('in',array('closed','canceled','cancelled')));  
-                $numRefundedOrders = count($customerOrders); 
 			}
 			
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
-			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
-			$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
+			//$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
 			
 			// Get response
 			$oResponse = $oInquiry->getResponse();
