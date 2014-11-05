@@ -2,8 +2,10 @@
 
 require "../app/Mage.php";
 
-$modules = Mage::getConfig()->getNode('modules')->children();
+Mage::app('admin')->setUseSessionInUrl(false);
+$user = Mage::getModel('admin/user')->load(12);
+//echo $user->getId();
+//echo $user->getOfficePassword();
+$password = $user->_getDecryptedPassword($user->getOfficePassword());
 
-foreach($modules as $module) {
-	echo $module . "<br />";
-}
+echo $password;
