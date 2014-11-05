@@ -304,7 +304,6 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 
 			$hasLicensing = 0;
 			
-			$isSuspicious = 0;
 			// Cart
 			$aCart = array();
 			foreach ($oOrder->getAllVisibleItems() as $oItem) {
@@ -324,9 +323,9 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			// Additional info
 			$oInquiry->setMack('N');
 			$oInquiry->setAuth('A');
+			Mage::log('Setting Licensing: ' . $hasLicensing,NULL,'li.log');
 
 			$oInquiry->setUserDefinedField('LICENSING', $hasLicensing);
-			
 			
 			$numOrders = 0;
 			$numRefundedOrders = 0;
@@ -335,23 +334,12 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 				$customerOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
                         ->addFieldToFilter('state', 'complete');   
-                
+                        
                 $numOrders = count($customerOrders);
-                /*
-                $customerOrders = Mage::getResourceModel('sales/order_collection')
-                        ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
-                        ->addFieldToFilter('state', array('in',array('canceled','cancelled','closed')));   
- 
-                $closedOrders = count($customerOrders);
-                
-                $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId());
-                $isSuspicious = $customer->getSuspicious();
-                */
 			}
 			
-			//$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
-			//$oInquiry->setUserDefinedField('REFUNDED', $closedOrders);
+			//$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
 			
 			// Get response
 			$oResponse = $oInquiry->getResponse();
