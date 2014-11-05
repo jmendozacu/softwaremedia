@@ -304,7 +304,6 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 
 			$hasLicensing = 0;
 			$isSuspicious = 0;
-			
 			// Cart
 			$aCart = array();
 			foreach ($oOrder->getAllVisibleItems() as $oItem) {
@@ -327,6 +326,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			Mage::log('Setting Licensing: ' . $hasLicensing,NULL,'li.log');
 
 			$oInquiry->setUserDefinedField('LICENSING', $hasLicensing);
+			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			
 			$numOrders = 0;
 			$numRefundedOrders = 0;
@@ -337,14 +337,9 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                         ->addFieldToFilter('state', 'complete');   
                         
                 $numOrders = count($customerOrders);
-                
-                $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId());
-                $isSuspicious = $customer->getSuspicious();
 			}
 			
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
-			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
-			
 			//$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
 			
 			// Get response
