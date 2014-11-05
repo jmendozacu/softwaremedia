@@ -31,6 +31,14 @@
  * @see Mage_Checkout_Block_Onepage_Payment_Methods
  */
 ?>
+<style>
+#payment_form_amazon_payments {
+	display: block !important;
+}
+#uniform-p_method_amazon_payments, label[for=p_method_amazon_payments] {
+	display: none !important;
+}
+</style>
 <dl class="sp-methods" id="checkout-payment-method-load">
 <?php
     $methodList = $this->getMethods();
@@ -39,7 +47,10 @@
 <?php
     foreach ($methodList as $_method):
         $_code = $_method->getCode();
-       
+		if ($_code == 'amazon_payments') {
+			$amazon = $_method;
+			continue;
+		}
        	if ($_code == 'checkmo')
        		continue;
        		
@@ -54,6 +65,8 @@
         
         $methods[] = $_method;
 	endforeach;
+	if ($amazon)
+		$methods[] = $amazon;
 ?>
 <?php
     $oneMethod = count($methods) <= 1;

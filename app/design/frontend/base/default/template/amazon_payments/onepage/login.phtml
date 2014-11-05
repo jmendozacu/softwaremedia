@@ -1,0 +1,87 @@
+<?php
+/**
+ * Amazon Payments
+ *
+ * @category    Amazon
+ * @package     Amazon_Payments
+ * @copyright   Copyright (c) 2014 Amazon.com
+ * @license     http://opensource.org/licenses/Apache-2.0  Apache License, Version 2.0
+ */
+?>
+<?php /* Extensions placeholder */ ?>
+<?php echo $this->getChildHtml('checkout.onepage.login.extra')?>
+<div class="col2-set">
+    <?php echo $this->getChildHtml('login_before')?>
+    <div class="col-1">
+    
+            <h3><?php echo $this->__('Login') ?></h3>
+
+        <?php //echo $this->getChildHtml('col2_before')?>
+
+        <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<form id="login-form" action="<?php echo $this->getPostAction() ?>" method="post">
+			<?php echo $this->getBlockHtml('formkey'); ?>
+			<fieldset class="">
+				<p>Already registered? Please log in below:</p>
+				<ul class="form-list">
+					<li>
+						<label for="login-email">Email Address</label>
+						<div class="input-box validation-passed">
+							<input type="text" class="input-text required-entry validate-email" id="login-email" name="login[username]" value="<?php echo $this->escapeHtml($this->getUsername()) ?>" />
+						</div>
+					</li>
+					<li>
+						<label for="login-password">Password</label>
+						<div class="input-box validation-passed">
+							<input type="password" class="input-text validate-password required-entry validation-passed" id="login-password" name="login[password]">
+						</div>
+					</li>
+										<li class="note">
+						<a href="http://softwaremedia.local/customer/account/forgotpassword/">Forgot Your Password?</a>
+					</li>
+					<li class="buttons-set">
+						<input name="context" type="hidden" value="checkout">
+						<button type="button" class="button" onclick="loginForm.submit()"><span><span>Login</span></span></button>
+						
+
+					</li>
+					
+				</ul>
+			</fieldset>
+</form>
+
+				
+
+        
+    </div>
+    <div class="col-2">
+		<h3><?php echo $this->__('Amazon Login') ?></h3>
+        <?php echo $this->getChildHtml('col1_before')?>
+        <br /><br />
+				<h3>Don't have an account?</h3>
+				<br />
+				<input type="hidden" name="checkout_method" id="login:guest" value="guest" checked="checked" class="radio" />
+				<button style="margin-top: 0;" type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
+
+
+    </div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var loginForm = new VarienForm('login-form', true);
+    $('login-email').observe('keypress', bindLoginPost);
+    $('login-password').observe('keypress', bindLoginPost);
+    function bindLoginPost(evt){
+        if (evt.keyCode == Event.KEY_RETURN) {
+            loginForm.submit();
+        }
+    }
+    function onepageLogin(button)
+    {
+        if(loginForm.validator && loginForm.validator.validate()){
+            button.disabled = true;
+            loginForm.submit();
+        }
+    }
+//]]>
+</script>

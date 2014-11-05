@@ -146,8 +146,10 @@
 						Element.insert(Form.findFirstElement(payment.form), inputer);
 						Element.insert(Form.findFirstElement(payment.form), listValue);
 					} catch (notelem) {
-						$("co-payment-form").insert(inputer);
-						$("co-payment-form").insert(listValue);
+						if ($("co-payment-form")) {
+							$("co-payment-form").insert(inputer);
+							$("co-payment-form").insert(listValue);
+						}
 					}
 				}
 
