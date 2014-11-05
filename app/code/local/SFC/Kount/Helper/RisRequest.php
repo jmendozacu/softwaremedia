@@ -337,7 +337,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                         ->addFieldToFilter('state', 'complete');   
                 
                 $numOrders = count($customerOrders);
-                
+                /*
                 $customerOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
                         ->addFieldToFilter('state', array('in',array('canceled','cancelled','closed')));   
@@ -346,11 +346,12 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                 
                 $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId());
                 $isSuspicious = $customer->getSuspicious();
+                */
 			}
 			
-			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
+			//$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
-			$oInquiry->setUserDefinedField('REFUNDED', $closedOrders);
+			//$oInquiry->setUserDefinedField('REFUNDED', $closedOrders);
 			
 			// Get response
 			$oResponse = $oInquiry->getResponse();
