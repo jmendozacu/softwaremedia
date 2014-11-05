@@ -8,7 +8,8 @@
  * @license     http://opensource.org/licenses/Apache-2.0  Apache License, Version 2.0
  */
 ?>
-<?php //if ($this->isAmazonPayButtonEnabled()): ?>
+<?php echo "Amazon"; ?>
+<?php if ($this->isAmazonPayButtonEnabled()): ?>
 
   <div id="<?php echo $this->getAmazonPayButtonId(); ?>"></div>
 
@@ -37,4 +38,4 @@
 
   </script>
 
-<?php //endif; ?>
+<?php endif; ?>
