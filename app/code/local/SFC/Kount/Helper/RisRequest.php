@@ -326,7 +326,6 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			Mage::log('Setting Licensing: ' . $hasLicensing,NULL,'li.log');
 
 			$oInquiry->setUserDefinedField('LICENSING', $hasLicensing);
-			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			
 			$numOrders = 0;
 			$numRefundedOrders = 0;
@@ -335,11 +334,13 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 				$customerOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
                         ->addFieldToFilter('state', 'complete');   
-                        
+                $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId()));
+                $isSuspicious = $customer->getSuspicious();
                 $numOrders = count($customerOrders);
 			}
 			
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
+			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			//$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
 			
 			// Get response
