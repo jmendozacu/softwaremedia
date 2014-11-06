@@ -348,7 +348,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                 
                 $processingOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
-                        ->addFieldToFilter('state', array('in',array('processing','pending','new')));   
+                        ->addFieldToFilter('state', array('in',array('processing','new','holded')));   
                         
                 $numProcessingOrders = count($processingOrders);
                 
