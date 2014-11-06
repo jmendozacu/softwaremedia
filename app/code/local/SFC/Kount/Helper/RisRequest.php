@@ -329,7 +329,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			$oInquiry->setUserDefinedField('LICENSING', $hasLicensing);
 			
 			$numOrders = 0;
-			$numRefundedOrders = 0;
+			$numClosedOrders = 0;
 			
 			if ($oOrder->getCustomerId()) {
 				$customerOrders = Mage::getResourceModel('sales/order_collection')
@@ -349,6 +349,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			}
 			
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
+			$oInquiry->setUserDefinedField('REFUNDED', $numClosedOrders);
 			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			
 			// Get response
