@@ -338,6 +338,12 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                         
                 $numOrders = count($customerOrders);
                 
+                $closedOrders = Mage::getResourceModel('sales/order_collection')
+                        ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
+                        ->addFieldToFilter('state', 'closed');   
+                        
+                $numClosedOrders = count($numClosedOrders);
+                
                 $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId());
                 $isSuspicious = $customer->getSuspicious();
 			}
