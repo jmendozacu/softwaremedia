@@ -340,7 +340,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                 
                 $closedOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
-                        ->addFieldToFilter('state', 'closed');   
+                        ->addFieldToFilter('state', array('in',array('closed','canceled')));   
                         
                 $numClosedOrders = count($numClosedOrders);
                 
