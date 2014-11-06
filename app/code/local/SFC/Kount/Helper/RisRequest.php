@@ -303,6 +303,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			$oInquiry->setEpoch(time());
 
 			$hasLicensing = 0;
+			$isSuspicious = 0;
 			
 			// Cart
 			$aCart = array();
@@ -336,10 +337,13 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                         ->addFieldToFilter('state', 'complete');   
                         
                 $numOrders = count($customerOrders);
+                
+                $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId());
+                $isSuspicious = $customer->getSuspicious();
 			}
 			
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
-			//$oInquiry->setUserDefinedField('REFUNDED', $numRefundedOrders);
+			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			
 			// Get response
 			$oResponse = $oInquiry->getResponse();
