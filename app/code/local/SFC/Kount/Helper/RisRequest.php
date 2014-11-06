@@ -330,11 +330,13 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			
 			$numOrders = 0;
 			$numClosedOrders = 0;
+			$$numProcessingOrders = 0;
 			
 			if ($oOrder->getCustomerId()) {
 				$customerOrders = Mage::getResourceModel('sales/order_collection')
                         ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
-                        ->addFieldToFilter('state', 'complete');   
+                        ->addFieldToFilter('state', 'complete')
+                        ->addFieldToFilter('created_at', array('lt' => date('Y-m-d H:i:s', time() - 60 * 60 * 24 * 120)));
                         
                 $numOrders = count($customerOrders);
                 
@@ -344,11 +346,18 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
                         
                 $numClosedOrders = count($closedOrders);
                 
+                $processingOrders = Mage::getResourceModel('sales/order_collection')
+                        ->addFieldToFilter('customer_id', $oOrder->getCustomerId())
+                        ->addFieldToFilter('state', array('in',array('processing','pending','new')));   
+                        
+                $numProcessingOrders = count($processingOrders);
+                
                 $customer = Mage::getModel('customer/customer')->load($oOrder->getCustomerId());
                 $isSuspicious = $customer->getSuspicious();
 			}
 			
 			$oInquiry->setUserDefinedField('ORDERS', $numOrders);
+			$oInquiry->setUserDefinedField('PROCESSING', $numProcessingOrders);
 			$oInquiry->setUserDefinedField('REFUNDED', $numClosedOrders);
 			$oInquiry->setUserDefinedField('SUSPICIOUS', $isSuspicious);
 			
