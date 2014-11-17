@@ -295,7 +295,23 @@ varienGrid.prototype = {
         }
     },
     resetFilter : function(){
-        this.reload(this.addVarToUrl(this.filterVar, ''));
+    	var filters = $('sales_order_grid_filter_status');
+    	if (filters) {
+	        var elements = [];
+	        filters.value = 'main'
+	        elements.push(filters);
+		}
+        
+        //if (!this.doFilterCallback || (this.doFilterCallback && this.doFilterCallback())) {
+        	if (filters) {
+        		this.addVarToUrl(this.filterVar, encode_base64(Form.serializeElements(elements)));
+        	} else {
+	        	this.addVarToUrl(this.filterVar, '');
+        	}
+            this.reload(this.url);
+        //}
+    	
+        //this.reload(this.addVarToUrl(this.filterVar, ''));
     },
     checkCheckboxes : function(element){
         elements = Element.select($(this.containerId), 'input[name="'+element.name+'"]');
