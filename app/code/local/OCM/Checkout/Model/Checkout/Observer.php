@@ -11,12 +11,12 @@ class OCM_Checkout_Model_Checkout_Observer extends Mage_Checkout_Model_Observer 
             $customerQuote = Mage::getModel('sales/quote')
                 ->loadByCustomer(Mage::getSingleton('customer/session')->getCustomerId()); //the cart from last login         
             //set it to the session before login and remove its items if any
-            $customerQuote->setQuoteId($lastQid);
-            $this->_removeAllItems($customerQuote);
+            //$customerQuote->setQuoteId($lastQid);
+            //$this->_removeAllItems($customerQuote);
             
         } else { //no session before login, so empty the cart (current cart is the old cart)
-            $quote = Mage::getModel('checkout/session')->getQuote();                                
-            $this->_removeAllItems($quote);
+            //$quote = Mage::getModel('checkout/session')->getQuote();                                
+            //$this->_removeAllItems($quote);
         }        
     }
     
