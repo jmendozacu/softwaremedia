@@ -188,6 +188,11 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
                 'promotion_description' => $storeData['description']
             );
 
+			$quote = Mage::getModel('sales/quote')
+                ->setWebsite(Mage::app()->getWebsite($websiteId))
+                ->loadByCustomer($customer->getId());
+             echo $quote->getId();
+             die();
             $mail->setDesignConfig(array('area' => 'frontend', 'store' => $store->getId()));
             $mail->sendTransactional($storeData['template_id'], $identity,
                 $customer->getEmail(), null, $templateVars, $store->getId()
