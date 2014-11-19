@@ -23,6 +23,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         foreach($allStores as $storeid => $val)
         {
             if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeid)) {
+            	echo "processing";
                 $this->_proccess($storeid);
             }
         }
@@ -34,6 +35,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
      */
     protected function _proccess($store)
     {
+    	echo "process";
         //Mage::app()->setCurrentStore($store);
         Mage::unregister('_singleton/core/design_package' );
         Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
