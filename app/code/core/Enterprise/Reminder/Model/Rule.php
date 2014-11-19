@@ -192,7 +192,7 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
             
 
 			$quote = Mage::getModel('sales/quote')
-                ->setWebsite(Mage::app()->getWebsite($websiteId))
+                ->setWebsite(Mage::app()->getWebsite($customer->getWebsiteId()))
                 ->loadByCustomer($customer->getId());
              echo $quote->getId();
              die();
