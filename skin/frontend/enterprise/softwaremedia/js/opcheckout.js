@@ -183,8 +183,13 @@ Checkout.prototype = {
             this.gotoSection('billing', true);
         }
         else{
-            alert(Translator.translate('Please choose to register or to checkout as a guest').stripTags());
-            return false;
+            this.method = 'guest';
+            var request = new Ajax.Request(
+                this.saveMethodUrl,
+                {method: 'post', onFailure: this.ajaxFailure.bind(this), parameters: {method:'guest'}}
+            );
+            Element.hide('register-customer-password');
+            this.gotoSection('billing', true);
         }
         document.body.fire('login:setMethod', {method : this.method});
     },
