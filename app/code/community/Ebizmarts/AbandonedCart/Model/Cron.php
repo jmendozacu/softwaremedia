@@ -22,6 +22,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeid => $val)
         {
+        	echo "store";
             if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeid)) {
             	echo "processing";
                 $this->_proccess($storeid);
