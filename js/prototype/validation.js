@@ -594,7 +594,7 @@ Validation.addAllThese([
             }],
     ['validate-zip-international', 'Please enter a valid zip code. For Example 90602 or 90602-1234 for United States or Mexico or A1B2C3 for Canada.', function(v) { // allows for US, MX and Canada zip codes
             
-            if (document.getElementById("billing:country_id")) {
+            if (document.getElementById("billing:country_id") && document.getElementById("opc-billing").classList.contains('active')) {
                 var country_id = document.getElementById("billing:country_id").value;
                 switch(country_id) {
                     case "US":
