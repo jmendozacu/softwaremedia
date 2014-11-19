@@ -187,6 +187,9 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
                 'promotion_name' => $storeData['label'],
                 'promotion_description' => $storeData['description']
             );
+            
+            echo "loading quote";
+            
 
 			$quote = Mage::getModel('sales/quote')
                 ->setWebsite(Mage::app()->getWebsite($websiteId))
