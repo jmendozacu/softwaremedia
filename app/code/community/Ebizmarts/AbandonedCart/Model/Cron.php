@@ -18,6 +18,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
      */
     public function abandoned()
     {
+    	echo "running"l
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeid => $val)
         {
@@ -25,6 +26,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $this->_proccess($storeid);
             }
         }
+        echo "done";
     }
 
     /**
@@ -170,7 +172,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
                 }
                 $translate = Mage::getSingleton('core/translate');
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$store);
+                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId,$sender,'jeff@jaldev.com',$name,$vars,$store);
                 $translate->setTranslateInLine(true);
                 $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
                 $quote2->setEbizmartsAbandonedcartToken($token);

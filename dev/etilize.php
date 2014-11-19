@@ -11,4 +11,4 @@ Mage::app('admin')->setUseSessionInUrl(false);
 //$ingram = Mage::getModel('ocm_fulfillment/warehouse_ingram')->getQty('AD-65158504AD01A00');
 //updatePriceQtyFromCsv            
 //Mage::getModel('ocm_fulfillment/observer')->updateProductWarehouseData();
-Mage::getModel('etilize/etilize')->updateSpex();
+Mage::getModel('ebizmarts_abandonedcart/cron')->abandoned();
