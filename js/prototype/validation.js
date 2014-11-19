@@ -592,9 +592,55 @@ Validation.addAllThese([
     ['validate-zip', 'Please enter a valid zip code. For example 90602 or 90602-1234.', function(v) {
             return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(v);
             }],
-    ['validate-zip-international', 'Please enter a valid zip code.', function(v) {
-            //return Validation.get('IsEmpty').test(v) || /(^[A-z0-9]{2,10}([\s]{0,1}|[\-]{0,1})[A-z0-9]{2,10}$)/.test(v);
-            return true;
+    ['validate-zip-international', 'Please enter a valid zip code. For Example 90602 or 90602-1234 for United States or Mexico or A1B2C3 for Canada.', function(v) { // allows for US, MX and Canada zip codes
+            
+            if (document.getElementById("billing:country_id")) {
+                var country_id = document.getElementById("billing:country_id").value;
+                switch(country_id) {
+                    case "US":
+                        if (document.getElementById("advice-validate-zip-billing:postcode"))
+                            document.getElementById("advice-validate-zip-billing:postcode").innerHTML = "Please Enter a valid zip code. For example 90602 or 90602-1234";
+                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)$/.test(v);
+                        break;
+                    case "MX":
+                        if (document.getElementById("advice-validate-zip-billing:postcode"))
+                            document.getElementById("advice-validate-zip-billing:postcode").innerHTML = "Please enter a valid zip code. For example 90602";
+                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)$/.test(v);
+                        break;
+                    case "CA":
+                        if (document.getElementById("advice-validate-zip-billing:postcode"))
+                            document.getElementById("advice-validate-zip-billing:postcode").innerHTML = "Please enter a valid zip code. For example A1B2C3";
+                        return Validation.get('IsEmpty').test(v) || /^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
+                        break;
+                    default:
+                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)|^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
+                        break;
+                }
+            } else if (document.getElementById("shipping:country_id")) {
+                var country_id = document.getElementById("shipping:country_id").value;
+                switch(country_id) {
+                    case "US":
+                        if (document.getElementById("advice-validate-zip-billing:postcode"))
+                            document.getElementById("advice-validate-zip-billing:postcode").innerHTML = "Please Enter a valid zip code. For example 90602 or 90602-1234";
+                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)$/.test(v);
+                        break;
+                    case "MX":
+                        if (document.getElementById("advice-validate-zip-billing:postcode"))
+                            document.getElementById("advice-validate-zip-billing:postcode").innerHTML = "Please enter a valid zip code. For example 90602";
+                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)$/.test(v);
+                        break;
+                    case "CA":
+                        if (document.getElementById("advice-validate-zip-billing:postcode"))
+                            document.getElementById("advice-validate-zip-billing:postcode").innerHTML = "Please enter a valid zip code. For example A1B2C3";
+                        return Validation.get('IsEmpty').test(v) || /^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
+                        break;
+                    default:
+                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)|^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
+                        break;
+                }
+            }
+            //return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(v);
+            
             }],
     ['validate-date-au', 'Please use this date format: dd/mm/yyyy. For example 17/03/2006 for the 17th of March, 2006.', function(v) {
                 if(Validation.get('IsEmpty').test(v)) return true;
