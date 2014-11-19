@@ -8,4 +8,4 @@ require "../app/Mage.php";
 Mage::app('admin')->setUseSessionInUrl(false);
 
 
-Mage::getModel('ebizmarts_abandonedcart/cron')->abandoned();
+ Mage::getModel('enterprise_reminder/rule')->sendReminderEmails();

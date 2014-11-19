@@ -144,6 +144,7 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
      */
     public function sendReminderEmails()
     {
+    	echo "sending";
         /** @var $mail Mage_Core_Model_Email_Template */
         $mail = Mage::getModel('core/email_template');
 
