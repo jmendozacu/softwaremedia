@@ -639,7 +639,7 @@ Validation.addAllThese([
                         break;
                 }
             }
-            return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{6}$)|(^\d{5}-\d{4}$)/.test(v);
+            return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)|^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
             
             }],
     ['validate-date-au', 'Please use this date format: dd/mm/yyyy. For example 17/03/2006 for the 17th of March, 2006.', function(v) {
