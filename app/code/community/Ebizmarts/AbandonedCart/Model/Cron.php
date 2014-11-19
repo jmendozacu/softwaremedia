@@ -18,7 +18,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
      */
     public function abandoned()
     {
-    	echo "running"l
+    	echo "running";
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeid => $val)
         {
