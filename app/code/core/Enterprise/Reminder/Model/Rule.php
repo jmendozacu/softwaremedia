@@ -179,23 +179,20 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
 
             /* @var $coupon Mage_SalesRule_Model_Coupon */
             $coupon = Mage::getModel('salesrule/coupon')->load($recipient['coupon_id']);
-
+			
+			$quote = Mage::getModel('sales/quote')
+                ->setWebsite(Mage::app()->getWebsite($customer->getWebsiteId()))
+                ->loadByCustomer($customer->getId());
+                
             $templateVars = array(
                 'store'          => $store,
+                'quote'			 => $quote,
                 'coupon'         => $coupon,
                 'customer'       => $customer,
                 'promotion_name' => $storeData['label'],
                 'promotion_description' => $storeData['description']
             );
             
-            echo "loading quote";
-            
-
-			$quote = Mage::getModel('sales/quote')
-                ->setWebsite(Mage::app()->getWebsite($customer->getWebsiteId()))
-                ->loadByCustomer($customer->getId());
-             echo $quote->getId();
-             die();
             $mail->setDesignConfig(array('area' => 'frontend', 'store' => $store->getId()));
             $mail->sendTransactional($storeData['template_id'], $identity,
                 $customer->getEmail(), null, $templateVars, $store->getId()
