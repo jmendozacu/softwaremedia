@@ -635,7 +635,7 @@ Validation.addAllThese([
                         return Validation.get('IsEmpty').test(v) || /^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
                         break;
                     default:
-                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)|^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
+                        return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{6}$)|(^\d{5}-\d{4}$)|^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]{1}\d{1}[A-Za-z]{1}\d{1}[A-Za-z]{1}\d{1}$/.test(v);
                         break;
                 }
             }
