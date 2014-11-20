@@ -440,6 +440,24 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         return $this;
     }
 
+	public function getOrderComment() {
+		$oAitcheckoutfields  = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
+		
+		//$isInvoice = $this->getIsInvoice();
+        //if(!empty($isInvoice)) {
+        //    $aCustomAtrrList = $oAitcheckoutfields->getInvoiceCustomData($this->getOrderId(), $this->getStoreId());      
+        //} else {
+            $aCustomAtrrList = $oAitcheckoutfields->getOrderCustomData($this->getId(), $this->getStoreId(), true, true); 
+		//}
+
+		$data = Mage::app()->getRequest()->getParam('aitoc_checkout_fields');
+		if ($data) {
+			return $data['comment'];
+		}
+		$value = $aCustomAtrrList[1457]['value'];
+		return $value;
+		//die();
+	}
     /**
      * Retrieve can flag for action (edit, unhold, etc..)
      *

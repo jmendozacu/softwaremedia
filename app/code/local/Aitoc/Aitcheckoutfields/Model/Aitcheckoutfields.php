@@ -793,11 +793,12 @@ class Aitoc_Aitcheckoutfields_Model_Aitcheckoutfields extends Mage_Eav_Model_Ent
 		if (!$iOrderId || empty($iOrderId))
 			return false;
 		$oDb = Mage::getSingleton('core/resource')->getConnection('core_write');
+		$oResource = Mage::getResourceModel('eav/entity_attribute');
 		$select = $oDb->select()
 			->from(array('c' => $this->_sCustomAttrTable), '*')
 			->where('c.entity_id=?', $iOrderId)
-			->order('value_id ASC');
-
+			->joinLeft(array('additional_table' => 'catalog_eav_attribute'), 'additional_table.attribute_id=c.attribute_id')
+			->order('additional_table.position ASC');
 		return $oDb->fetchAll($select);
 	}
 
@@ -854,7 +855,8 @@ class Aitoc_Aitcheckoutfields_Model_Aitcheckoutfields extends Mage_Eav_Model_Ent
 		$select = $oDb->select()
 			->from(array('c' => $this->_sCustomerAttrTable), '*')
 			->where('c.entity_id=?', $customerId)
-			->order('value_id ASC');
+			->joinLeft(array('additional_table' => 'catalog_eav_attribute'), 'additional_table.attribute_id=c.attribute_id')
+			->order('additional_table.position ASC');
 		;
 		if ($attributeId) {
 			$select->where('c.attribute_id=?', $attributeId);
@@ -1368,6 +1370,7 @@ class Aitoc_Aitcheckoutfields_Model_Aitcheckoutfields extends Mage_Eav_Model_Ent
 		$collection->getSelect()->join(
 			array('additional_table' => $oResource->getTable('catalog/eav_attribute')), 'additional_table.attribute_id=main_table.attribute_id'
 		);
+		$collection->getSelect()->order('additional_table.position ASC');
 		return $collection;
 	}
 
