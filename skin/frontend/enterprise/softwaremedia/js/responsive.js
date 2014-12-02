@@ -210,16 +210,13 @@ jQuery(function() {
 	//jQuery(".product-shop").remove();
 
 	rInit();
-	window.dispatchEvent(new Event('resize'));
-	setTimeout(function() { testResize(); },500);
-	setTimeout(function() { testResize(); },1500);
+
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },500);
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },1500);
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },2500);
 	
 });
 
-function testResize() {
-console.log('resize');
-	window.dispatchEvent(new Event('resize'));
-}
 jQuery(window).resize(function() {
 	//jQuery(".product-shop").detach().insertAfter(".product-img-and-share");
 	rInit();
