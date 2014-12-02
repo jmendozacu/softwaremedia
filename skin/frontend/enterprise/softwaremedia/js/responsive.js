@@ -211,9 +211,9 @@ jQuery(function() {
 
 	rInit();
 
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },100);
 	setTimeout(function() { window.dispatchEvent(new Event('resize')); },500);
-	setTimeout(function() { window.dispatchEvent(new Event('resize')); },1500);
-	setTimeout(function() { window.dispatchEvent(new Event('resize')); },2500);
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },1800);
 	
 });
 
