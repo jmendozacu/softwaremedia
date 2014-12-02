@@ -210,6 +210,7 @@ jQuery(function() {
 	//jQuery(".product-shop").remove();
 
 	rInit();
+	console.log('loaded');
 	setTimeout(rInit(), 500);
 	setTimeout(rInit(), 1500);
 });
