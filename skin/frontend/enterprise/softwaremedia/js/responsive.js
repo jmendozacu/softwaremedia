@@ -211,11 +211,15 @@ jQuery(function() {
 
 	rInit();
 	window.dispatchEvent(new Event('resize'));
-	setTimeout(window.dispatchEvent(new Event('resize')),500);
-	setTimeout(window.dispatchEvent(new Event('resize')),1500);
-	console.log('resize');
+	setTimeout(testResize(),500);
+	setTimeout(testResize(),1500);
+	
 });
 
+function testResize() {
+console.log('resize');
+	window.dispatchEvent(new Event('resize'));
+}
 jQuery(window).resize(function() {
 	//jQuery(".product-shop").detach().insertAfter(".product-img-and-share");
 	rInit();
