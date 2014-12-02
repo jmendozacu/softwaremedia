@@ -211,8 +211,8 @@ jQuery(function() {
 
 	rInit();
 	window.dispatchEvent(new Event('resize'));
-	setTimeout(testResize(),500);
-	setTimeout(testResize(),5500);
+	setTimeout(function() { testResize(); },500);
+	setTimeout(function() { testResize(); },1500);
 	
 });
 
