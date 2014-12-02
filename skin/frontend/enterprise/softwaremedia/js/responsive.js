@@ -211,6 +211,7 @@ jQuery(function() {
 
 	rInit();
 	setTimeout(rInit(), 500);
+	setTimeout(rInit(), 1500);
 });
 
 jQuery(window).resize(function() {
