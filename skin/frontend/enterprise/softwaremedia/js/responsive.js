@@ -210,9 +210,9 @@ jQuery(function() {
 	//jQuery(".product-shop").remove();
 
 	rInit();
-	$(window).trigger('resize');
-	setTimeout($(window).trigger('resize'),500);
-	setTimeout($(window).trigger('resize'),1500);
+	window.dispatchEvent(new Event('resize'));
+	setTimeout(window.dispatchEvent(new Event('resize')),500);
+	setTimeout(window.dispatchEvent(new Event('resize')),1500);
 });
 
 jQuery(window).resize(function() {
