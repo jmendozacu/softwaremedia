@@ -213,6 +213,7 @@ jQuery(function() {
 	console.log('loaded');
 	setTimeout(rInit(), 500);
 	setTimeout(rInit(), 1500);
+	setTimeout(rInit(), 2500);
 });
 
 jQuery(window).resize(function() {
