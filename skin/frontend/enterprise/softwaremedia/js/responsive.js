@@ -210,9 +210,12 @@ jQuery(function() {
 	//jQuery(".product-shop").remove();
 
 	rInit();
+	$(window).trigger('resize');
+	setTimeout($(window).trigger('resize'),500);
+	setTimeout($(window).trigger('resize'),1500);
 });
 
 jQuery(window).resize(function() {
 	//jQuery(".product-shop").detach().insertAfter(".product-img-and-share");
-	//rInit();
+	rInit();
 });
