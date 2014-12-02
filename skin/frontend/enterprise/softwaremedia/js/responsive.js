@@ -213,6 +213,7 @@ jQuery(function() {
 	window.dispatchEvent(new Event('resize'));
 	setTimeout(window.dispatchEvent(new Event('resize')),500);
 	setTimeout(window.dispatchEvent(new Event('resize')),1500);
+	console.log('resize');
 });
 
 jQuery(window).resize(function() {
