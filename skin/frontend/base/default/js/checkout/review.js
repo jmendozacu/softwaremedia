@@ -199,7 +199,7 @@ OrderReviewController.prototype = {
             $(newId).value = el.value;
             $(newId).setAttribute('readOnly', 'readonly');
             $(newId).addClassName('local-validation');
-            $(newId).setStyle({opacity:.5});
+            //$(newId).setStyle({opacity:.5});
             $(newId).disable();
         }
     },

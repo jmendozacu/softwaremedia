@@ -29,9 +29,9 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			Mage::log('Sku: ' . $prod->getSku(), null, 'ubervis.log');
 
 			$product = Mage::getModel('catalog/product')
-            ->setStoreId(1)
-            ->load($prod->getId()); 
-            
+				->setStoreId(1)
+				->load($prod->getId());
+
 			$api = new SoftwareMedia_Ubervisibility_Helper_Api();
 			$ubervis_prod = $api->callApi(Zend_Http_Client::GET, 'product/sku/' . $prod->getSku() . '/100/0');
 			$data = array();
@@ -74,25 +74,25 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$data['minimumSalesQuantity'] = intval($updated_data['min_sale_qty']);
 			$data['manageStock'] = ($updated_data['manage_stock'] > 0);
 			$hasCat = false;
-            
-            
-            $cats = $product->getCategoryIds();
-            $catList = array();
+
+
+			$cats = $product->getCategoryIds();
+			$catList = array();
 			foreach ($cats as $category_id) {
-			    $_cat = Mage::getModel('catalog/category')->load($category_id);
-			    $catFeed =  $this->getCategoryPath($_cat);
-			    if ($catFeed) {
-			    	$catList[$catFeed[0]] = $catFeed[1];
-			    	$hasCat = true;
-			    }
-			} 
-			
+				$_cat = Mage::getModel('catalog/category')->load($category_id);
+				$catFeed = $this->getCategoryPath($_cat);
+				if ($catFeed) {
+					$catList[$catFeed[0]] = $catFeed[1];
+					$hasCat = true;
+				}
+			}
+
 			if ($hasCat) {
 				krsort($catList);
 				reset($catList);
 				$data['category'] = current($catList);
 			}
-            
+
 			$cats = $prod->getCategoryIds();
 			foreach ($cats as $category_id) {
 				$_cat = Mage::getModel('catalog/category')->load($category_id);
@@ -145,7 +145,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			}
 
 			if (substr_compare($mpn, 'DL', strlen($mpn) - 2, 2) === 0) {
-				$data['productCondition'] = 'Downloadable';
+				$data['productCondition'] = 'DOWNLOADABLE';
 			}
 
 			$prod_id = null;
@@ -230,7 +230,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$csv_content = array();
 
 		$ubervis_updated_site_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/site', array(), 999);
-		
+
 		$ubervis_updated_cpc_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/cpc', array(), 999);
 
 		$sku_list = array();
@@ -327,22 +327,20 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			}
 		}
 	}
-	
-    public function getCategoryPath($category) {
-    	if ($category->getFeedCategory()) {
-	    	return array($category->getLevel(),$category->getResource()->getAttribute('feed_category')->getFrontend()->getValue($category));
-    	}
-    	if($category->getLevel() == 2 || $category->getLevel() == 1) {
-	    	return false;
-    	} else {
-	    	$parentCategory = Mage::getModel('catalog/category')->load($category->getParentId());
-	    	return $this->getCategoryPath($parentCategory);
-    	}
-    		    
-	    
-    }
-    
-    private function generateCsv($data, $delimiter = ',', $enclosure = '"') {
+
+	public function getCategoryPath($category) {
+		if ($category->getFeedCategory()) {
+			return array($category->getLevel(), $category->getResource()->getAttribute('feed_category')->getFrontend()->getValue($category));
+		}
+		if ($category->getLevel() == 2 || $category->getLevel() == 1) {
+			return false;
+		} else {
+			$parentCategory = Mage::getModel('catalog/category')->load($category->getParentId());
+			return $this->getCategoryPath($parentCategory);
+		}
+	}
+
+	private function generateCsv($data, $delimiter = ',', $enclosure = '"') {
 		$csv = new Varien_Io_File();
 		$path = Mage::getBaseDir('var') . DS . 'export' . DS;
 		$file = $path . 'uber_to_magento_update.csv';

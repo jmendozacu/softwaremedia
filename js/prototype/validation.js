@@ -593,8 +593,13 @@ Validation.addAllThese([
             return Validation.get('IsEmpty').test(v) || /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(v);
             }],
     ['validate-zip-international', 'Please enter a valid zip code. For Example 90602 or 90602-1234 for United States or Mexico or A1B2C3 for Canada.', function(v) { // allows for US, MX and Canada zip codes
-            
-            if (document.getElementById("billing:country_id") && document.getElementById("opc-billing").classList.contains('active')) {
+            var hasBilling = false;
+            if (document.getElementById("opc-billing")) {
+            	if (document.getElementById("opc-billing").classList.contains('active')) {
+            		hasBilling = true;
+            	}
+            }
+            if (document.getElementById("billing:country_id") && hasBilling) {
                 var country_id = document.getElementById("billing:country_id").value;
                 switch(country_id) {
                     case "US":
