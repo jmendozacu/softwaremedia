@@ -8,11 +8,12 @@
  * @license     http://opensource.org/licenses/Apache-2.0  Apache License, Version 2.0
  */
 ?>
-<?php //if ($this->isAmazonPayButtonEnabled()): ?>
-Test
+<?php if ($this->isAmazonPayButtonEnabled()): ?>
+
   <div id="<?php echo $this->getAmazonPayButtonId(); ?>"></div>
 
   <script type="text/javascript">
+  	alert('test');
     var authRequest;
 
     var AmazonButtonOptions = {
@@ -37,6 +38,4 @@ Test
 
   </script>
 
-<?php //endif; ?>
-
-<!--<?php echo get_class($this); ?>button.phtml-->
+<?php endif; ?>
