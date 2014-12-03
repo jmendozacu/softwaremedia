@@ -398,7 +398,7 @@ OrderReviewController.prototype = {
             this._updateOrderSubmit(true);
             if (this._ubpdateOrderButton) {
                 this._ubpdateOrderButton.addClassName('no-checkout');
-                //this._ubpdateOrderButton.setStyle({opacity:.5});
+                this._ubpdateOrderButton.setStyle({opacity:.5});
             }
             if (this._pleaseWait) {
                 this._pleaseWait.show();
@@ -448,7 +448,7 @@ OrderReviewController.prototype = {
         button.setStyle({opacity:1});
         if (disable) {
             button.addClassName('no-checkout');
-            //button.setStyle({opacity:.5});
+            button.setStyle({opacity:.5});
         }
     }
 };
