@@ -596,7 +596,8 @@ Validation.addAllThese([
             var hasBilling = false;
             if (document.getElementById("opc-billing")) {
             	if (document.getElementById("opc-billing").classList.contains('active')) {
-            	hasBilling = true;
+            		hasBilling = true;
+            	}
             }
             if (document.getElementById("billing:country_id") && hasBilling) {
                 var country_id = document.getElementById("billing:country_id").value;
