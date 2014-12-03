@@ -109,6 +109,7 @@ class Amazon_Payments_Block_Button extends Mage_Core_Block_Template
     {
     	return true;
         // Viewing single product
+        /*
         if (Mage::registry('current_product')) {
              return $this->helper('amazon_payments')->isEnableProductPayments();
         }
@@ -116,6 +117,7 @@ class Amazon_Payments_Block_Button extends Mage_Core_Block_Template
         	return true;
             return ($this->helper('amazon_payments')->isEnableProductPayments() && (!Mage::getSingleton('amazon_payments/config')->isCheckoutOnepage() || Mage::getSingleton('amazon_payments/config')->showPayOnCart()));
         }
+        */
     }
 
     /**
