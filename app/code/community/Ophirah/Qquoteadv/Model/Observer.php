@@ -212,6 +212,8 @@ class Ophirah_Qquoteadv_Model_Observer
 			$pt = Mage::getModel('peachtree/referer')->loadByAttribute('order_id',$orderId);
 			if ($pt)
 				$pt->setRefererId($user->getUsername())->save();
+		} else {
+			Mage::log('No User Found. Quote ID: ' . $quoteId . ' Order ID: ' . $orderId . ' User ID: ' . $_quoteadv->getUserId(),NULL,'quote_error.log');
 		}
         try{
             $_quoteadv->save();
