@@ -20,7 +20,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->getSelect()->where('type_id != "bundle"');
 //		$collection->getSelect()->where('sku = "MS-T5D01575"');
 		$collection->setOrder('ubervis_updated', 'ASC');
-		$collection->setPageSize(100);
+		$collection->setPageSize(50);
 
 		foreach ($collection as $prod) {
 			$updated_data = $prod->getData();
