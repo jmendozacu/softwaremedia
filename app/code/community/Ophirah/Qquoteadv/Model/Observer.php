@@ -188,6 +188,8 @@ class Ophirah_Qquoteadv_Model_Observer
        $order = $observer->getOrder(); 
        if ($quoteId = Mage::getSingleton('core/session')->proposal_quote_id) {
         $order->setData('c2q_internal_quote_id', $quoteId);
+       }elseif(Mage::getSingleton('core/session')->getQuoteProposalId()) {
+	   	$order->setData('c2q_internal_quote_id', Mage::getSingleton('core/session')->getQuoteProposalId());
        }
        
        if ($quoteId = Mage::getSingleton('adminhtml/session')->getUpdateQuoteId()) {
@@ -204,6 +206,10 @@ class Ophirah_Qquoteadv_Model_Observer
         $quoteId = Mage::getSingleton('adminhtml/session')->getUpdateQuoteId(); 
       }
       
+      if (empty($quoteId)) {
+        $quoteId = Mage::getSingleton('core/session')->getQuoteProposalId(); 
+      }
+      
       if ($_quoteadv = Mage::getModel('qquoteadv/qqadvcustomer')->load($quoteId) ) {
         $_quoteadv->setStatus(Ophirah_Qquoteadv_Model_Status::STATUS_ORDERED);
 		$user = $_quoteadv->getSalesRepresentative();
@@ -212,8 +218,6 @@ class Ophirah_Qquoteadv_Model_Observer
 			$pt = Mage::getModel('peachtree/referer')->loadByAttribute('order_id',$orderId);
 			if ($pt)
 				$pt->setRefererId($user->getUsername())->save();
-		} else {
-			Mage::log('No User Found. Quote ID: ' . $quoteId . ' Order ID: ' . $orderId . ' User ID: ' . $_quoteadv->getUserId(),NULL,'quote_error.log');
 		}
         try{
             $_quoteadv->save();
@@ -221,6 +225,9 @@ class Ophirah_Qquoteadv_Model_Observer
             if (Mage::getSingleton('core/session')->proposal_quote_id) { 
               Mage::getSingleton('core/session')->proposal_quote_id = null; 
             }
+            if (Mage::getSingleton('core/session')->getQuoteProposalId())
+            	Mage::getSingleton('core/session')->setQuoteProposalId(null);
+            	
             if (Mage::getSingleton('adminhtml/session')->getUpdateQuoteId()) { 
               Mage::getSingleton('adminhtml/session')->setUpdateQuoteId(null); 
             }
