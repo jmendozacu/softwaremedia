@@ -314,15 +314,16 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 					if ($attributeValue == 'License Product') {
 						$hasLicensing = 1;
 						Mage::log($prod->getProductUrl(),NULL,'kktest.log');
-							die();
+						//die();
 						if (strpos($prod->getProductUrl(),'microsoft')) {
 							Mage::log('MS Licensing',NULL,'kktest.log');
-							die();
+							//die();
+							Mage::log($oItem->getQty(),NULL,'kktest.log');
 							$msLicensing += $oItem->getQty();
 							}
 					}
 				}
-					
+				die();
 				$aCart[] = new Kount_Ris_Data_CartItem(
 					$oItem->getSku(), $oItem->getName(), ($oItem->getDescription() ? $oItem->getDescription() : ''), round($oItem->getQtyOrdered()), ($baseCurrencyCode == 'USD' ? round($oItem->getBasePrice() * 100) :
 						round(Mage::helper('directory')->currencyConvert($oItem->getBasePrice(), $baseCurrencyCode, 'USD') * 100)));
