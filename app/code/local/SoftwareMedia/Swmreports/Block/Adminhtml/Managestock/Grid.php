@@ -27,8 +27,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Managestock_Grid extends Mage_Adm
 		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('name')
 			->addAttributeToSelect('brand')
+			->addAttributeToSelect('license_nonlicense_dropdown')
 			->addAttributeToSelect('attribute_set_id')
 			->addAttributeToFilter('status', array('eq' => '1'))
+			->addAttributeToFilter('sku', array('nlike' => '%FBA%'))
+			->addAttributeToFilter('sku', array('nlike' => '%HOME'))
 			->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.use_config_manage_stock=1 or {{table}}.manage_stock=0')
 		;
 
@@ -47,17 +50,14 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Managestock_Grid extends Mage_Adm
 			'index' => 'sku'
 		));
 
-		$sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
-			->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
-			->load()
-			->toOptionHash();
-
-		$this->addColumn('set_name', array(
-			'header' => Mage::helper('catalog')->__('Attrib. Set Name'),
+		$this->addColumn('license_nonlicense_dropdown', array(
+			'header' => Mage::helper('catalog')->__('License Product?'),
 			'width' => '100px',
-			'index' => 'attribute_set_id',
+			'index' => 'license_nonlicense_dropdown',
 			'type' => 'options',
-			'options' => $sets,
+			'options' => array(
+				1210 => 'Yes',
+				1211 => 'No')
 		));
 
 		$valuesCollection = Mage::getResourceModel('eav/entity_attribute_option_collection')

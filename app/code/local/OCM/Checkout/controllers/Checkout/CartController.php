@@ -274,7 +274,7 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController 
 		}
 
 		if ($msLicense >0 && $msLicense < 5)
-			Mage::getSingleton('core/session')->addError('Microsoft Licensing products require a minimum of 5 licenses purchased. Before checking out please verify your order contains 5 or more Microsoft Licensing products, unless you have a prior license agreement.');
+			Mage::getSingleton('core/session')->addError('Microsoft Licensing products require a minimum of 5 licenses purchased. Before checking out please verify your order contains 5 or more Microsoft Licensing products, unless you have a prior license agreement. <a href="/about">Contact</a> us for more information.');
 	}
 
 	public function estimatePostAction() {
