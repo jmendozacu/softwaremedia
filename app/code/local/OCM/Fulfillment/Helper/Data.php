@@ -74,9 +74,10 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		//Add up QTY 
 		foreach($links as $link) {
 			$item = Mage::getModel('catalog/product')->load($link->getLinkedProductId());
+			$subQty = $link->getQty();
 			$sub_model = Mage::getModel('cataloginventory/stock_item');
 			$sub_model->loadByProduct($item->getId());
-			$qty += $sub_model->getData('qty');
+			$qty += floor($sub_model->getData('qty') / $subQty);
 			
 			if ($sub_model->getData('manage_stock') == 0)
 				$qty = 9999;
