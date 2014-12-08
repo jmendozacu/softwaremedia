@@ -323,13 +323,13 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 							}
 					}
 				}
-				die();
+				
 				$aCart[] = new Kount_Ris_Data_CartItem(
 					$oItem->getSku(), $oItem->getName(), ($oItem->getDescription() ? $oItem->getDescription() : ''), round($oItem->getQtyOrdered()), ($baseCurrencyCode == 'USD' ? round($oItem->getBasePrice() * 100) :
 						round(Mage::helper('directory')->currencyConvert($oItem->getBasePrice(), $baseCurrencyCode, 'USD') * 100)));
 			}
 			$oInquiry->setCart($aCart);
-
+			die();
 			// Additional info
 			$oInquiry->setMack('N');
 			$oInquiry->setAuth('A');
