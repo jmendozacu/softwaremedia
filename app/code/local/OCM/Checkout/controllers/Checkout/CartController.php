@@ -267,14 +267,14 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController 
 				$product = $item->getProduct();
 				$product = Mage::getModel('catalog/product')->load($product->getId());
 
-				if ($product->getData('license_nonlicense_dropdown') == 1210)
+				if ($product->getData('license_nonlicense_dropdown') == 1210 && strpos($product->getProductUrl(),'microsoft'))
 					$msLicense += $item->getQty();
 				
 			}
 		}
 
 		if ($msLicense >0 && $msLicense < 5)
-			Mage::getSingleton('core/session')->addError('Warning: Microsoft Licensing products require a minimum of 5 licenses purchased. Please add additional Microsoft Licensing products, unless you have a prior license agreement.');
+			Mage::getSingleton('core/session')->addError('Microsoft Licensing products require a minimum of 5 licenses purchased. Please add additional Microsoft Licensing products, unless you have a prior license agreement.');
 	}
 
 	public function estimatePostAction() {

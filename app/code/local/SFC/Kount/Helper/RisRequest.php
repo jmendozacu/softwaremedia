@@ -304,15 +304,18 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 
 			$hasLicensing = 0;
 			$isSuspicious = 0;
-			
+			$msLicensing = 0;
 			// Cart
 			$aCart = array();
 			foreach ($oOrder->getAllVisibleItems() as $oItem) {
 				$prod = Mage::getModel('catalog/product')->load($oItem->getProductId(), array('license_nonlicense_dropdown'));
 				if ($prod->getResource()->getAttribute('license_nonlicense_dropdown')) {
 					$attributeValue = $prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod);
-					if ($attributeValue == 'License Product')
+					if ($attributeValue == 'License Product') {
 						$hasLicensing = 1;
+						if (strpos($product->getProductUrl(),'microsoft'))
+							$msLicensing += $oItem->getQty();
+					}
 				}
 					
 				$aCart[] = new Kount_Ris_Data_CartItem(
@@ -327,6 +330,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 			Mage::log('Setting Licensing: ' . $hasLicensing,NULL,'li.log');
 
 			$oInquiry->setUserDefinedField('LICENSING', $hasLicensing);
+			$oInquiry->setUserDefinedField('MSLICENSING', $msLicensing);
 			
 			$numOrders = 0;
 			$numClosedOrders = 0;
