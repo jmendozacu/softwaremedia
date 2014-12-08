@@ -318,7 +318,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 						if (strpos($prod->getProductUrl(),'microsoft')) {
 							Mage::log('MS Licensing',NULL,'kktest.log');
 							//die();
-							Mage::log($oItem->getQty(),NULL,'kktest.log');
+							Mage::log($oItem->getQtyOrdered(),NULL,'kktest.log');
 							$msLicensing += $oItem->getQty();
 							}
 					}
