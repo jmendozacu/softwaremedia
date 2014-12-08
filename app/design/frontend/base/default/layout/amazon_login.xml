@@ -22,11 +22,6 @@
             </action>
         </reference>
 
-        <reference name="content">
-            <action method="append" ifconfig="amazon_login/settings/enabled">
-                <block>amazon_login.button</block>
-            </action>
-        </reference>
     </customer_account_login>
 
 
