@@ -53,6 +53,58 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController 
 		$this->_goBack();
 	}
 
+    /**
+     * Shopping cart display action
+     */
+    public function indexAction()
+    {
+        $cart = $this->_getCart();
+        
+        if ($cart->getQuote()->getItemsCount()) {
+            $cart->init();
+            $cart->save();
+
+            if (!$this->_getQuote()->validateMinimumAmount()) {
+                $minimumAmount = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())
+                    ->toCurrency(Mage::getStoreConfig('sales/minimum_order/amount'));
+
+                $warning = Mage::getStoreConfig('sales/minimum_order/description')
+                    ? Mage::getStoreConfig('sales/minimum_order/description')
+                    : Mage::helper('checkout')->__('Minimum order amount is %s', $minimumAmount);
+
+                $cart->getCheckoutSession()->addNotice($warning);
+            }
+        }
+
+		$this->checkCartMicrosoft();
+		
+        // Compose array of messages to add
+        $messages = array();
+        foreach ($cart->getQuote()->getMessages() as $message) {
+            if ($message) {
+                // Escape HTML entities in quote message to prevent XSS
+                $message->setCode(Mage::helper('core')->escapeHtml($message->getCode()));
+                $messages[] = $message;
+            }
+        }
+        $cart->getCheckoutSession()->addUniqueMessages($messages);
+
+        /**
+         * if customer enteres shopping cart we should mark quote
+         * as modified bc he can has checkout page in another window.
+         */
+        $this->_getSession()->setCartWasUpdated(true);
+
+        Varien_Profiler::start(__METHOD__ . 'cart_display');
+        $this
+            ->loadLayout()
+            ->_initLayoutMessages('checkout/session')
+            ->_initLayoutMessages('catalog/session')
+            ->getLayout()->getBlock('head')->setTitle($this->__('Shopping Cart'));
+        $this->renderLayout();
+        Varien_Profiler::stop(__METHOD__ . 'cart_display');
+    }
+    
 	/**
 	 * Shopping cart display action
 	 */
@@ -174,7 +226,9 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController 
 			 */
 			Mage::dispatchEvent('checkout_cart_add_product_complete', array('product' => $product, 'request' => $this->getRequest(), 'response' => $this->getResponse())
 			);
-
+			
+			
+			
 			if (!$this->_getSession()->getNoCartRedirect(true)) {
 				if (!$cart->getQuote()->getHasError()) {
 					$message = $this->__('%s was added to your shopping cart.', Mage::helper('core')->escapeHtml($product->getName()));
@@ -203,6 +257,24 @@ class OCM_Checkout_Checkout_CartController extends Mage_Checkout_CartController 
 			Mage::logException($e);
 			$this->_goBack();
 		}
+	}
+	
+	public function checkCartMicrosoft() {
+		$msLicense = 0;
+		$cart = $this->_getCart();
+		if ($cart->getQuote()->getItemsCount()) {
+			foreach ($cart->getQuote()->getAllItems() as $item) {
+				$product = $item->getProduct();
+				$product = Mage::getModel('catalog/product')->load($product->getId());
+
+				if ($product->getData('license_nonlicense_dropdown') == 1210)
+					$msLicense += $item->getQty();
+				
+			}
+		}
+
+		if ($msLicense >0 && $msLicense < 5)
+			Mage::getSingleton('core/session')->addError('Warning: Microsoft Licensing products require a minimum of 5 licenses purchased. Please add additional Microsoft Licensing products, unless you have a prior license agreement.');
 	}
 
 	public function estimatePostAction() {
