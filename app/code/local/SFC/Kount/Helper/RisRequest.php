@@ -313,6 +313,8 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 					$attributeValue = $prod->getResource()->getAttribute('license_nonlicense_dropdown')->getFrontend()->getValue($prod);
 					if ($attributeValue == 'License Product') {
 						$hasLicensing = 1;
+						Mage::log($prod->getProductUrl(),NULL,'kktest.log');
+							die();
 						if (strpos($prod->getProductUrl(),'microsoft')) {
 							Mage::log('MS Licensing',NULL,'kktest.log');
 							die();
