@@ -100,7 +100,8 @@
             <input type="hidden" name="checkout_method" id="login:register" value="register" checked="checked" />
         <?php endif; ?>
         <div class="buttons-set">
-            <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?></span></span></button>
+            <button type="button" class="button" onclick="checkout.setMethod();"><span><span><?php echo 'Conintue'; ?></span></span></button>
+            <?php //echo ($this->getQuote()->isAllowedGuestCheckout() ? $this->__('Continue') : $this->__('Register')) ?>
         </div>
     </div>
     <?php endif; ?>

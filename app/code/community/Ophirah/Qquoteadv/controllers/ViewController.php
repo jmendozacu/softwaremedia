@@ -505,6 +505,8 @@ class Ophirah_Qquoteadv_ViewController extends Mage_Core_Controller_Front_Action
                     //# Set QUOTE comfirmation mode to avoid manipulation with qty/price
                     Mage::helper('qquoteadv')->setActiveConfirmMode(true);                    
                     Mage::getSingleton('core/session')->proposal_quote_id = $quoteId;
+                    Mage::getSingleton('core/session')->setQuoteProposalId($quoteId);
+                    
                     //# Allow Quoteshiprate shipping method
                     Mage::getSingleton('core/session')->proposal_showquoteship = true;
                     

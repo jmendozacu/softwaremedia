@@ -188,6 +188,8 @@ class Ophirah_Qquoteadv_Model_Observer
        $order = $observer->getOrder(); 
        if ($quoteId = Mage::getSingleton('core/session')->proposal_quote_id) {
         $order->setData('c2q_internal_quote_id', $quoteId);
+       }elseif(Mage::getSingleton('core/session')->getQuoteProposalId()) {
+	   	$order->setData('c2q_internal_quote_id', Mage::getSingleton('core/session')->getQuoteProposalId());
        }
        
        if ($quoteId = Mage::getSingleton('adminhtml/session')->getUpdateQuoteId()) {
@@ -202,6 +204,10 @@ class Ophirah_Qquoteadv_Model_Observer
 
       if (empty($quoteId)) {
         $quoteId = Mage::getSingleton('adminhtml/session')->getUpdateQuoteId(); 
+      }
+      
+      if (empty($quoteId)) {
+        $quoteId = Mage::getSingleton('core/session')->getQuoteProposalId(); 
       }
       
       if ($_quoteadv = Mage::getModel('qquoteadv/qqadvcustomer')->load($quoteId) ) {
@@ -219,6 +225,9 @@ class Ophirah_Qquoteadv_Model_Observer
             if (Mage::getSingleton('core/session')->proposal_quote_id) { 
               Mage::getSingleton('core/session')->proposal_quote_id = null; 
             }
+            if (Mage::getSingleton('core/session')->getQuoteProposalId())
+            	Mage::getSingleton('core/session')->setQuoteProposalId(null);
+            	
             if (Mage::getSingleton('adminhtml/session')->getUpdateQuoteId()) { 
               Mage::getSingleton('adminhtml/session')->setUpdateQuoteId(null); 
             }

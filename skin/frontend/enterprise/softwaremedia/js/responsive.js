@@ -210,6 +210,11 @@ jQuery(function() {
 	//jQuery(".product-shop").remove();
 
 	rInit();
+
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },100);
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },500);
+	setTimeout(function() { window.dispatchEvent(new Event('resize')); },1800);
+	
 });
 
 jQuery(window).resize(function() {

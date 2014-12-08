@@ -29,7 +29,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Managestock_Grid extends Mage_Adm
 			->addAttributeToSelect('brand')
 			->addAttributeToSelect('attribute_set_id')
 			->addAttributeToFilter('status', array('eq' => '1'))
-			->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.use_config_manage_stock=1 or {{table}}.manage_stock=1')
+			->joinField('manages_stock', 'cataloginventory/stock_item', 'use_config_manage_stock', 'product_id=entity_id', '{{table}}.use_config_manage_stock=1 or {{table}}.manage_stock=0')
 		;
 
 		$this->setCollection($collection);
