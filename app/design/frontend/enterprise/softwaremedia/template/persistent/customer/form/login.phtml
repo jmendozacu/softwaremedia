@@ -81,6 +81,19 @@
 							<button type="button" class="button" onclick="window.location = '<?php echo Mage::helper('persistent')->getCreateAccountUrl($this->getCreateAccountUrl()) ?>';"><span><span><?php echo $this->__('Register') ?></span></span></button>
 						</div>
 					</div>
+					
+					<div id="amazon-buttons-wrapper" class="col2-set">
+    <div class="col-1">
+        <div class="amazon-login-button-wrapper" style="text-align: right">
+            <strong>- <?php echo $this->__('OR'); ?> -</strong>
+            <br />
+
+            <button class="amazon-login-button" style="cursor:pointer; background:none; border:0;">
+              <img src="<?php echo $this->getButtonImage(); ?>" alt="Login with Amazon" border="0" />
+            </button>
+        </div>
+    </div>
+</div>
 				<?php endif; ?>
             </div>
         </div>
