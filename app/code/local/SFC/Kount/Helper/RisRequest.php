@@ -314,7 +314,7 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 					if ($attributeValue == 'License Product') {
 						$hasLicensing = 1;
 						if (strpos($prod->getProductUrl(),'microsoft')) 
-							$msLicensing += $oItem->getQty();
+							$msLicensing += $oItem->getQtyOrdered();
 					}
 				}
 				
