@@ -10,19 +10,6 @@
  */
 -->
 <layout version="0.1.0">
-    <customer_account_login translate="label">
-
-        <block type="amazon_login/script" name="amazon_login.script" template="amazon_login/script.phtml" />
-        
-
-        <!-- ifconfig only works with action -->
-        <reference name="before_body_end">
-            <action method="append" ifconfig="amazon_login/settings/enabled">
-                <block>amazon_login.script</block>
-            </action>
-        </reference>
-
-    </customer_account_login>
 
 
     <customer_account_logoutsuccess>
