@@ -35,7 +35,7 @@ class EmjaInteractive_Accountreceivable_Block_Adminhtml_Accountreceivable extend
     {
         $collection = Mage::getResourceModel('sales/order_grid_collection')
 				->addAttributeToFilter('main_table.payment_method', 'purchaseorder')
-				->addAttributeToFilter('main_table.status', array('nin' => array('complete', 'canceled')));	
+				->addAttributeToFilter('main_table.status', array('nin' => array('complete', 'closed', 'canceled')));	
 				
 		if($pt != NULL)
 			$collection->addFieldToFilter('peachtree.value', array('like' => '%' . $pt . '%'));
