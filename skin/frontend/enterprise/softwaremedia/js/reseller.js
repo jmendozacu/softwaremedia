@@ -853,7 +853,7 @@ var Injector = (function () {
                     rrInstantSurveyContainer,
                     EmailExtra = '',
                     i,
-                    postbackurl = 'http://www.resellerratings.com/instant/',
+                    postbackurl = 'https://www.resellerratings.com/instant/',
                     hashkey = '8ee0bdb9f15e865ce84c5ba0d2b9ae16',
                     questions
                     // import Questions 
