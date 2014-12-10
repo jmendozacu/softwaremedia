@@ -1,0 +1,437 @@
+/* ---------------------------------------- */
+/* CSS Reset inside rr instant survey block */
+/* ---------------------------------------- */
+#__rr_instant_survey_container div,
+#__rr_instant_survey_container span,
+#__rr_instant_survey_container applet,
+#__rr_instant_survey_container object,
+#__rr_instant_survey_container iframe,
+#__rr_instant_survey_container h1,
+#__rr_instant_survey_container h2,
+#__rr_instant_survey_container h3,
+#__rr_instant_survey_container h4,
+#__rr_instant_survey_container h5,
+#__rr_instant_survey_container h6,
+#__rr_instant_survey_container p,
+#__rr_instant_survey_container blockquote,
+#__rr_instant_survey_container pre,
+#__rr_instant_survey_container a,
+#__rr_instant_survey_container abbr,
+#__rr_instant_survey_container acronym,
+#__rr_instant_survey_container address,
+#__rr_instant_survey_container big,
+#__rr_instant_survey_container cite,
+#__rr_instant_survey_container code,
+#__rr_instant_survey_container del,
+#__rr_instant_survey_container dfn,
+#__rr_instant_survey_container em,
+#__rr_instant_survey_container img,
+#__rr_instant_survey_container ins,
+#__rr_instant_survey_container kbd,
+#__rr_instant_survey_container q,
+#__rr_instant_survey_container s,
+#__rr_instant_survey_container samp,
+#__rr_instant_survey_container small,
+#__rr_instant_survey_container strike,
+#__rr_instant_survey_container strong,
+#__rr_instant_survey_container sub,
+#__rr_instant_survey_container sup,
+#__rr_instant_survey_container tt,
+#__rr_instant_survey_container var,
+#__rr_instant_survey_container b,
+#__rr_instant_survey_container u,
+#__rr_instant_survey_container i,
+#__rr_instant_survey_container center,
+#__rr_instant_survey_container dl,
+#__rr_instant_survey_container dt,
+#__rr_instant_survey_container dd,
+#__rr_instant_survey_container ol,
+#__rr_instant_survey_container ul,
+#__rr_instant_survey_container li,
+#__rr_instant_survey_container fieldset,
+#__rr_instant_survey_container form,
+#__rr_instant_survey_container label,
+#__rr_instant_survey_container legend,
+#__rr_instant_survey_container table,
+#__rr_instant_survey_container caption,
+#__rr_instant_survey_container tbody,
+#__rr_instant_survey_container tfoot,
+#__rr_instant_survey_container thead,
+#__rr_instant_survey_container tr,
+#__rr_instant_survey_container th,
+#__rr_instant_survey_container td,
+#__rr_instant_survey_container article,
+#__rr_instant_survey_container aside,
+#__rr_instant_survey_container canvas,
+#__rr_instant_survey_container details,
+#__rr_instant_survey_container embed,
+#__rr_instant_survey_container figure,
+#__rr_instant_survey_container figcaption,
+#__rr_instant_survey_container footer,
+#__rr_instant_survey_container header,
+#__rr_instant_survey_container hgroup,
+#__rr_instant_survey_container menu,
+#__rr_instant_survey_container nav,
+#__rr_instant_survey_container output,
+#__rr_instant_survey_container ruby,
+#__rr_instant_survey_container section,
+#__rr_instant_survey_container summary,
+#__rr_instant_survey_container time,
+#__rr_instant_survey_container mark,
+#__rr_instant_survey_container audio,
+#__rr_instant_survey_container video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    line-height: 1;
+}
+
+/* HTML5 display-role reset for older browsers */
+#__rr_instant_survey_container article,
+#__rr_instant_survey_container aside,
+#__rr_instant_survey_container details,
+#__rr_instant_survey_container figcaption,
+#__rr_instant_survey_container figure,
+#__rr_instant_survey_container footer,
+#__rr_instant_survey_container header,
+#__rr_instant_survey_container hgroup,
+#__rr_instant_survey_container menu,
+#__rr_instant_survey_container nav,
+#__rr_instant_survey_container section {
+    display: block;
+}
+
+#__rr_instant_survey_container ol,
+#__rr_instant_survey_container ul {
+    list-style: none;
+}
+
+#__rr_instant_survey_container blockquote,
+#__rr_instant_survey_container q {
+    quotes: none;
+}
+
+#__rr_instant_survey_container blockquote:before,
+#__rr_instant_survey_container blockquote:after,
+#__rr_instant_survey_container q:before,
+#__rr_instant_survey_container q:after {
+    content: '';
+    content: none;
+}
+
+#__rr_instant_survey_container table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+/* ---------------------------------------- */
+
+#__rr_instant_survey_container, #__rr_instant_survey_container *,
+#__rr_instant_survey_container *:before, #__rr_instant_survey_container *:after
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 11px;
+    font: inherit;
+    vertical-align: baseline;
+    font-family: 'Open Sans', sans-serif;        
+    box-sizing: border-box;
+    z-index: 100000;
+}
+#__rr_instant_survey_container {
+    text-align: left;
+    padding: 1em 2em;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    background:url(../../../static/images/bg-clouds.jpg) no-repeat scroll 0 0 #FFF;
+    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.46);
+    -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.46);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.46);
+
+}
+#__rr_instant_survey_container .separator {
+    height: 20px;
+}
+
+
+#__rr_instant_survey_container .CloseButton {
+    float: right;
+    position: relative;
+    left: 3.05em;
+    top: -1.9em;
+}
+#__rr_instant_survey_container .Greeting {
+    text-align: center;
+    color: #58595b;
+	font-size: 22px;
+	line-height:1.2em;
+    margin-bottom: .5em;
+	padding-top:10px;
+	font-weight: 900;
+}
+
+#__rr_instant_survey_container .SubText {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: .5em;
+	line-height:1.4em;
+}
+
+#__rr_instant_survey_container .Terms {
+    margin-top: .2em;
+    margin-bottom: 1em;
+    font-size:10px;
+    color:#666;
+}
+
+#__rr_instant_survey_container .Footer {
+    margin-top: .2em;
+}
+
+#__rr_instant_survey_container .Footer img {
+    height: 40px;
+    margin-left: 1em;
+    float: right;
+}
+
+#__rr_instant_survey_container .QuestionBox {
+	color: #58595B;
+	font-size: 14px;
+	margin: .1em .1em;
+    font-weight: bold;
+}
+#__rr_instant_survey_container .Required {
+    border: 0px solid #f48f0c;
+}
+#__rr_instant_survey_container .Required .Question {
+	font-weight: bold;
+    padding-bottom: 10px;
+}
+
+#__rr_instant_survey_container .QuestionBox .Raty {
+    float: left;
+    margin: .2em .5em .3em .5em;
+}
+#__rr_instant_survey_container .QuestionBox .Star {
+    float: left;
+    margin: .7em .5em .2em .5em;
+    color: #F48F0C;
+    font-style: italic;
+    font-weight: bold;
+}
+#__rr_instant_survey_container .QuestionBox .Star .Star0{
+    color: #321d02;
+    font-style: normal;
+}
+#__rr_instant_survey_container .QuestionBox .Star .Star1{
+    color: #965807;
+    font-style: normal;
+}
+#__rr_instant_survey_container .QuestionBox .Star .Star2{
+    color: #f48f0c;
+    font-style: normal;
+}
+#__rr_instant_survey_container .QuestionBox .Star .Star3{
+    color: #258fe2;
+    font-style: normal;
+}
+#__rr_instant_survey_container .QuestionBox .Star .Star4{
+    color: #188f0c;
+    font-style: normal;
+}
+#__rr_instant_survey_container .Clear {
+    clear: both;
+    padding-bottom: 5px;
+}
+#__rr_instant_survey_container .Hidden {
+    visibility: hidden;
+}
+
+#__rr_instant_survey_container .FinalBlock {
+    font-size: 14px;
+    margin-bottom: .5em;
+    padding-top:20px;
+    border-top: 1px solid #F1F1F1;
+    position: relative;
+}
+#__rr_instant_survey_container .FinalBlock input[type="radio"] {
+    position: absolute;
+    top: -99em;
+    left: -99em;
+}
+#__rr_instant_survey_container .FinalBlock input[type="radio"] + label {
+    display:inline-block;
+    vertical-align:bottom;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:200;  
+    margin: .1em .5em .1em .1em;
+    padding-top:5px;
+}
+#__rr_instant_survey_container .FinalBlock input[type="radio"] ~ label span {
+    display:inline-block;
+    width:24px;
+    height:24px;
+    vertical-align:middle;
+    background:url(../../js/images/rr-box-check-off.png);
+    cursor:pointer;    
+}
+
+#__rr_instant_survey_container .FinalBlock input[type="radio"] ~ label span.is_checked {
+    background:url(../../js/images/rr-box-check-on.png);
+}
+
+#__rr_instant_survey_container .FinalBlock .Button[disabled]:hover, 
+#__rr_instant_survey_container .FinalBlock .Button[disabled] {
+    padding:6px;
+	float: right;
+	cursor: pointer;
+	cursor: hand;
+	border:1px solid #d7d7d7;
+	-webkit-border-radius: 1px;
+	-moz-border-radius: 1px;
+	border-radius: 1px;
+	font-size:14px;
+	color:#efefef;
+    padding: 10px 10px 10px 10px;
+	text-decoration:none;
+	display:inline-block;
+	font-weight:bold;
+	color: #FFFFFF;
+	background-color: #efefef;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#c2c2c2), to(#c2c2c2));
+	background-image: -webkit-linear-gradient(top, #efefef, #c2c2c2);
+	background-image: -moz-linear-gradient(top, #c2c2c2, #c2c2c2);
+	background-image: -ms-linear-gradient(top, #c2c2c2, #c2c2c2);
+	background-image: -o-linear-gradient(top, #c2c2c2, #c2c2c2);
+	background-image: linear-gradient(to bottom, #c2c2c2, #c2c2c2);
+	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#c2c2c2, endColorstr=#c2c2c2);
+}
+
+#__rr_instant_survey_container .FinalBlock .Button {
+    padding:6px;
+	float: right;
+	cursor: pointer;
+	cursor: hand;
+	border:1px solid #ffad41;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	font-size:12px;
+	padding: 10px 10px 10px 10px;
+	text-decoration:none;
+	display:inline-block;
+	font-weight:bold;
+	color: #FFFFFF;
+	background-color: #ffc579;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#fb9d23), to(#fb9d23));
+	background-image: -webkit-linear-gradient(top, #fb9d23, #fb9d23);
+	background-image: -moz-linear-gradient(top, #fb9d23, #fb9d23);
+	background-image: -ms-linear-gradient(top, #fb9d23, #fb9d23);
+	background-image: -o-linear-gradient(top, #fb9d23, #fb9d23);
+	background-image: linear-gradient(to bottom, #fb9d23, #fb9d23);
+	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#fb9d23, endColorstr=#fb9d23);
+}
+
+#__rr_instant_survey_container .FinalBlock .Button:hover {
+    border:1px solid #ff9913;
+    background-color: #ffaf46;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffaf46), to(#e78404));
+    background-image: -webkit-linear-gradient(top, #ffaf46, #e78404);
+    background-image: -moz-linear-gradient(top, #ffaf46, #e78404);
+    background-image: -ms-linear-gradient(top, #ffaf46, #e78404);
+    background-image: -o-linear-gradient(top, #ffaf46, #e78404);
+    background-image: linear-gradient(to bottom, #ffaf46, #e78404);
+    filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffaf46, endColorstr=#e78404);
+}
+
+#__rr_instant_survey_container .FinalBlock textarea ,
+#__rr_instant_survey_container .FinalBlock input[type="text"] {
+    resize: none;
+    overflow: auto;
+    background-color: white;
+    font-family: inherit;
+    border: 1px solid #cccccc;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.75);
+    display: block;
+    font-size: 14px;
+    margin: 0 0 12px 0;
+    width: 100%;
+    -webkit-transition: all 0.15s linear;
+    -moz-transition: all 0.15s linear;
+    -o-transition: all 0.15s linear;
+    transition: all 0.15s linear;
+}
+
+#__rr_instant_survey_container .LabelNote {
+    font-size:9pt;
+    color:#2c2c2c;
+    line-height:1.5em;
+}
+
+#__rr_instant_survey_container .FinalBlock textarea {
+	height: 130px;
+	padding: 6px;
+}
+#__rr_instant_survey_send_feedback {
+    padding-top:10px;
+}
+#__rr_instant_survey_container #__rr_instant_survey_review_feedback,
+#__rr_instant_survey_container #__rr_instant_survey_email_feedback {
+    float: right;
+    font-size: 10px;
+    padding:10px;
+}
+#__rr_instant_survey_container .Valid {
+    color: #69a364;
+}
+#__rr_instant_survey_container .Invalid {
+    color: #666;
+}
+
+#__rrThanksBanner *,
+#__rrThanksBanner {
+    z-index: 100000;
+}
+
+#__rrThanksBanner {
+    text-align: left;
+    padding: 1em 2em;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.46);
+    -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.46);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.46);
+}
+
+#__rrThanksBanner .Thanks { 
+    text-align: center;
+    color: #58595b;
+    font-size: 24px;
+    line-height:1.5em;
+    margin-bottom: .5em;
+}
+#__rrThanksBanner .SendingEmail { 
+    text-align: center;
+    color: #58595b;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: .5em;
+}
+
+#__rrThanksBanner img {
+    height: 40px;
+    margin-left: 1em;
+    float: left;
+}
