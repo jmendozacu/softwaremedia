@@ -160,7 +160,13 @@ var _rrES = {
     invoice: "<?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?>"};
 (function() {
     var s=document.createElement('script');s.type='text/javascript';s.async=true;
-    s.src="/skin/frontend/enterprise/softwaremedia/js/reseller.js";var ss=document.getElementsByTagName('script')[0];
-    ss.parentNode.insertBefore(s,ss);
+    s.src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js";
+
+	var ss=document.getElementsByTagName('script')[0];
+	ss.parentNode.insertBefore(s,ss);  
+	
+	var s1=document.createElement('script');s1.type='text/javascript';s1.async=true;
+    s1.src="https://www.resellerratings.com/popup/include/popup.js";
+    ss.parentNode.insertBefore(s1,ss);
 })();
 </script>

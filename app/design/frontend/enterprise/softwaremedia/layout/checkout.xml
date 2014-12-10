@@ -765,6 +765,12 @@
 				<template>page/1column.phtml</template>
 			</action>
 		</reference>
+		 <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/reseller.css</name>
+            </action>
+		 </reference>
 		<reference name="content">
 			<block type="checkout/onepage_success" name="checkout.success" template="checkout/success.phtml"/>
 		</reference>
