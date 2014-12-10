@@ -153,3 +153,14 @@ adroll_pix_id = "D666DQIFWFHETOUK4WQNMI";
 
 <?php endif; ?>
 
+<script type="text/javascript">
+var _rrES = {
+    seller_id: 3677,
+    email: "<?php echo $order->getCustomerEmail();?>",
+    invoice: "<?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?>"};
+(function() {
+    var s=document.createElement('script');s.type='text/javascript';s.async=true;
+    s.src="/skin/frontend/enterprise/softwaremedia/js/reseller.js";var ss=document.getElementsByTagName('script')[0];
+    ss.parentNode.insertBefore(s,ss);
+})();
+</script>
