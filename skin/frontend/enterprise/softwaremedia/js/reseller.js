@@ -1197,7 +1197,7 @@ var Injector = (function () {
                                       .append(jQuery('<div class="Email"><input type="text" id="__rr_instant_survey_email"></div>')
                                             .on('input',function(){
                                                 var feedback=jQuery('#__rr_instant_survey_email_feedback');
-                                                if(jQuery('#__rr_instant_survey_email').val().match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9._%+\-]+\.[a-zA-Z]{2,4}jQuery/)) {
+                                                if(jQuery('#__rr_instant_survey_email').val().match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9._%+\-]+\.[a-zA-Z]{2,4}$/)) {
                                                     feedback
                                                         .addClass('Valid')
                                                         .removeClass('Invalid')

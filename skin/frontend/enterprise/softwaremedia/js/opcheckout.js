@@ -895,7 +895,6 @@ Payment.prototype = {
 var Review = Class.create();
 Review.prototype = {
     initialize: function(saveUrl, successUrl, agreementsForm){
-    	successUrl = successUrl.replace('https','http');
         this.saveUrl = saveUrl;
         this.successUrl = successUrl;
         this.agreementsForm = agreementsForm;

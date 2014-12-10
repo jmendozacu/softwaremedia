@@ -110,8 +110,7 @@ class OCM_Checkout_Checkout_OnepageController extends Mage_Checkout_OnepageContr
             $result['redirect'] = $redirectUrl;
         }
 
-		$result['redirect'] = str_replace("https","http",$result['redirect']);
-		$this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
     }
     
 	public function savePaymentAction() {
