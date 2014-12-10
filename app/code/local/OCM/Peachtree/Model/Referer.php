@@ -14,7 +14,7 @@ class OCM_Peachtree_Model_Referer extends Mage_Core_Model_Abstract {
 		$referers = new Varien_Object(array(
 			'PGR' => 'PriceGrabber',
 			'FRO' => 'Froogle',
-			'CJ' => 'Commission Junction',
+			'CMJ' => 'Commission Junction',
 			'NXT' => 'Nextag',
 			'GGL' => 'Google Adwords',
 			'CMJ' => 'Commission Junction',
@@ -46,7 +46,7 @@ class OCM_Peachtree_Model_Referer extends Mage_Core_Model_Abstract {
 		$referers = new Varien_Object(array(
 			'PGR' => 'PriceGrabber',
 			'FRO' => 'Froogle',
-			'CJM' => 'Commission Junction',
+			'CMJ' => 'Commission Junction',
 			'NXT' => 'Nextag',
 			'GGL' => 'Google Adwords',
 			'Email' => 'Email Blast',
@@ -75,7 +75,7 @@ class OCM_Peachtree_Model_Referer extends Mage_Core_Model_Abstract {
 		return array(
 			'PGR' => 'PriceGrabber',
 			'FRO' => 'Froogle',
-			'CJM' => 'Commission Junction',
+			'CMJ' => 'Commission Junction',
 			'NXT' => 'Nextag',
 			'GGL' => 'Google Adwords',
 			'Email' => 'Email Blast',
