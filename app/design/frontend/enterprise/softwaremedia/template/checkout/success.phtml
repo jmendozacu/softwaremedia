@@ -76,7 +76,7 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 	$amount = number_format($order->getGrandTotal(), 2);
 	$shipping = number_format($order->getShippingAmount(), 2);
 	$tax = number_format($order->getTaxAmount(), 2);
-	$items = $order->getAllItems();
+	$items = $order->getAllVisibleItems();
 	?>
 	<script type="text/javascript"> if (!window.mstag)
 			mstag = {loadTag: function() {
@@ -103,7 +103,13 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 				'transactionTax': <?php echo $tax; ?>,
 				'transactionShipping': <?php echo $shipping; ?>,
 				'transactionProducts': [
-	<?php foreach ($items as $item) : ?>
+	<?php foreach ($items as $item) : 
+		$itemCount++;
+		$itemString .= '&ITEM' . $itemCount . '=' . $item->getSku();
+		$itemString .= '&AMT' . $itemCount . '=' . number_format($item->getPrice(),2);
+		$itemString .= '&QTY' . $itemCount . '=' . number_format($item->getQtyOrdered(),0);
+		
+	?>
 						{
 							'sku': '<?php echo $item->getSku(); ?>',
 							'name': '<?php echo $item->getName(); ?>',
@@ -143,13 +149,13 @@ adroll_pix_id = "D666DQIFWFHETOUK4WQNMI";
 	<?php 
 	
 		$cookie_value = Mage::getModel('core/cookie')->get('softwaremedia_ovchn');
-		//if ($cookie_value == 'CMJ'):
+		if ($cookie_value == 'CMJ'):
 ?>
 	<!-- BEGIN COMMISSION JUNCTION TRACKING CODE – DO NOT MODIFY -->
-	<iframe height="1" width="1" frameborder="0" scrolling="no" src="https://www.emjcd.com/tags/c?AMOUNT=<?php echo $amount; ?>&CID=1518640&OID=<?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?>&TYPE=338353&CURRENCY=USD" name="Conversion tag"> </iframe>
+	<iframe height="1" width="1" frameborder="0" scrolling="no" src="https://www.emjcd.com/tags/c?AMOUNT=<?php echo $amount; ?>&CID=1518640&OID=<?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?>&TYPE=338353&CURRENCY=USD<?php echo $itemString; ?>" name="Conversion tag"> </iframe>
 
 	<!-- END COMMISSION JUNCTION TRACKING CODE -->
-	<?php //endif; ?>
+	<?php endif; ?>
 
 <?php endif; ?>
 
