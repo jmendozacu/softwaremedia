@@ -276,7 +276,7 @@ class SFC_Kount_Helper_EnsHandler extends Mage_Core_Helper_Abstract
                     // Cancel & save order
                     $oOrder->cancel()->save();;
                     
-                    $sComment = "We’re sorry. Because we were unable to validate your payment information, our system detected your order as possible fraud.";
+                    $sComment = "We’re sorry. This order has been cancelled because we were unable to validate your payment information, or this product is out of stock or no longer available.";
 
 					
                 $oOrder->setCustomerComment($sComment);
