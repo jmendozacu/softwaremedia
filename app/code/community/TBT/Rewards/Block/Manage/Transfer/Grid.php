@@ -112,6 +112,8 @@ class TBT_Rewards_Block_Manage_Transfer_Grid extends Mage_Adminhtml_Block_Widget
 			$this->addColumn ( 'reason', array ('header' => Mage::helper ( 'rewards' )->__ ( 'Reason' ), 'align' => 'left', 'width' => '100px', 'index' => 'reason_id', 'type' => 'options', 'options' => $reasons ) );
 		}
 		
+		$this->addColumn ( 'issued_by', array ('header' => Mage::helper ( 'rewards' )->__ ( 'Issued by' ),'index' => 'issued_by' ) );
+		
 		$this->addColumn ( 'comments', array ('header' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 'width' => '250px', 'index' => 'comments' ) );
 		
 		$statuses = Mage::getSingleton ( 'rewards/transfer_status' )->getOptionArray ();
