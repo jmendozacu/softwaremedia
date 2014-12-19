@@ -157,7 +157,8 @@ class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Blo
 			'name' => 'comments', 'label' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'title' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'style' => 'width:88%; height:200px;', 
-			'class' => 'wikihints-justify' ) 
+			'required' => true,
+			'class' => 'wikihints-justify required-entry' ) 
 	    );
 		
 	    Mage::getSingleton('rewards/wikihints')->addWikiHint($comments_field, "21626273", "Edit Points Transfer - Transfer Comments" );
