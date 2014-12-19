@@ -137,8 +137,8 @@ class TBT_Rewards_Manage_TransferController extends TBT_Rewards_Admin_AbstractCo
 				$adminFirstname = Mage::getSingleton ( 'admin/session' )->getUser ()->getFirstname ();
 				$adminLastname = Mage::getSingleton ( 'admin/session' )->getUser ()->getLastname ();
 				$adminFullName = $adminFirstname . " " . $adminLastname;
-				if ($this->getRequest ()->getParam ( 'created_by' ) == NULL) {
-					$model->setCreatedBy ( $adminFullName );
+				if ($this->getRequest ()->getParam ( 'issued_by' ) == NULL) {
+					$model->setIssuedBy ( $adminFullName );
 				}
 				$model->setLastUpdateBy ( $adminFullName );
 				
