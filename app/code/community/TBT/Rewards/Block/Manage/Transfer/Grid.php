@@ -112,7 +112,7 @@ class TBT_Rewards_Block_Manage_Transfer_Grid extends Mage_Adminhtml_Block_Widget
 			$this->addColumn ( 'reason', array ('header' => Mage::helper ( 'rewards' )->__ ( 'Reason' ), 'align' => 'left', 'width' => '100px', 'index' => 'reason_id', 'type' => 'options', 'options' => $reasons ) );
 		}
 		
-		$this->addColumn ( 'last_updated_by', array ('header' => Mage::helper ( 'rewards' )->__ ( 'Issued by' ),'index' => 'last_updated_by' ) );
+		$this->addColumn ( 'last_update_by', array ('header' => Mage::helper ( 'rewards' )->__ ( 'Issued by' ),'index' => 'last_update_by' ) );
 		
 		$this->addColumn ( 'comments', array ('header' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 'width' => '250px', 'index' => 'comments' ) );
 		
