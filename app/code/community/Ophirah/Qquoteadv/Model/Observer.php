@@ -210,6 +210,10 @@ class Ophirah_Qquoteadv_Model_Observer
         $quoteId = Mage::getSingleton('core/session')->getQuoteProposalId(); 
       }
       
+      if (!$quoteId) {
+	      return false;
+      }
+      
       if ($_quoteadv = Mage::getModel('qquoteadv/qqadvcustomer')->load($quoteId) ) {
         $_quoteadv->setStatus(Ophirah_Qquoteadv_Model_Status::STATUS_ORDERED);
 		$user = $_quoteadv->getSalesRepresentative();
