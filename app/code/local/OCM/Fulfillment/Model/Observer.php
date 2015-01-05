@@ -9,7 +9,7 @@ class OCM_Fulfillment_Model_Observer {
 	const TAG_WAREHOUSE_ID = 1;
 	const TAG_LICENSING_ID = 2;
 	const TAG_DOWNLOAD_ID = 3;
-	const TAG_CS = 4;
+	const TAG_CS = 5;
 	const TAG_SUB = 29;
 
 	public function emptyTask() {

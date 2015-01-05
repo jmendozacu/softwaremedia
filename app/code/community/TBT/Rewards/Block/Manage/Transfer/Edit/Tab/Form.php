@@ -127,6 +127,15 @@ class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Blo
 			'required' => true
 	    ) );
 	    
+	    if (isset ( $formData ['last_update_by'] )) {
+	    $status_field = $fieldset->addField ( 'last_update_by', 'label', array (
+    			'label' => Mage::helper ( 'rewards' )->__ ( 'Issued By' ), 
+    			'title' => Mage::helper ( 'rewards' )->__ ( 'Issued By' ), 
+    			'name' => 'last_update_by',
+    			'class' => 'wikihints-justify'
+    	    ) );
+    	 }
+    	    
 		if (sizeof($availStatuses) == 1) {
 		    $availStatuses_copy = $availStatuses;
 		    $status_label_value =array_pop($availStatuses_copy);
@@ -157,7 +166,8 @@ class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Blo
 			'name' => 'comments', 'label' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'title' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'style' => 'width:88%; height:200px;', 
-			'class' => 'wikihints-justify' ) 
+			'required' => true,
+			'class' => 'wikihints-justify required-entry' ) 
 	    );
 		
 	    Mage::getSingleton('rewards/wikihints')->addWikiHint($comments_field, "21626273", "Edit Points Transfer - Transfer Comments" );
