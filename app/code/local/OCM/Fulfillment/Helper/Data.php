@@ -89,7 +89,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 					
 				$prod = Mage::getModel('catalog/product')->load($item->getId());
 				//$qty+=$prod->getData($warehouse_name.'_qty');
-				if (!$cost && $prod->getData('cost'))
+				if ((!$cost && $prod->getData('cost')) || ($cost && $prod->getData('cost') < $cost))
 					$cost = $prod->getData('cost') * $link->getQty();
 			}
 			//$qty+=$item->getData('pt_qty');
