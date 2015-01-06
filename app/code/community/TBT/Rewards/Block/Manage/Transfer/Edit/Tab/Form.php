@@ -163,6 +163,7 @@ class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Blo
 			'name' => 'comments', 'label' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'title' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'style' => 'width:88%; height:200px;', 
+			'required' => true,
 			'class' => 'wikihints-justify' ) 
 	    );
 		
