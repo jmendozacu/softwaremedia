@@ -209,7 +209,7 @@ class Mage_Sitemap_Model_Sitemap extends Mage_Core_Model_Abstract
 			            //Add an array to the $attributes array that contains the attribute ID at the current index and the attribute value at the current index
 			            $attributes[$i] =  $attributesId[$i] . "=" . $product->getData($attribute->getName());
 			        }
-					$attrList = implode('&',$attributes);
+					$attrList = implode('&amp;',$attributes);
 					
 					$url = $parentProduct->getUrlModel()->getUrl($parentProduct, $params) . "?" . $attrList;
 					//$row['url_config'] = $url;
