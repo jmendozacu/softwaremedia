@@ -223,7 +223,7 @@ class Mage_Sitemap_Model_Sitemap extends Mage_Core_Model_Abstract
 			}
 			
             $xml = sprintf(
-                '<url><loc>%s</loc><lastmod>%s</lastmod><changefreq>%s</changefreq><priority>%.1f</priority></url>',
+                '<url><loc>%s</loc><lastmod>%s</lastmod><changefreq>%s</changefreq><priority>%.1f</priority></url>' . PHP_EOL,
                 $url,
                 $date,
                 $changefreq,
