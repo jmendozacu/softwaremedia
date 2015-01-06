@@ -762,12 +762,8 @@
             </rewards_cfu>
             <!-- Rewards Points Summary Email on 1st of every month -->
             <rewards_customer_points_summary>
-                <schedule>
-                    <cron_expr>0 0 1 * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>rewards/customer_cron::sendPointNotifications</model>
-                </run>
+                <schedule><cron_expr>0 0 1-7 3,6,9,12 *</cron_expr></schedule>
+                <run><model>rewards/customer_cron::sendPointNotifications</model></run>
             </rewards_customer_points_summary>
             <rewards_importer>
             	<schedule><cron_expr>* * * * * *</cron_expr></schedule>

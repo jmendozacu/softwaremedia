@@ -17,6 +17,10 @@ class TBT_Rewards_Model_Customer_Cron extends Varien_Object
      */
     public function sendPointNotifications()
     {
+    	if (date('w') != 3) {
+	    	return $this;
+     	}
+     	
         if (!Mage::getStoreConfigFlag(self::XML_PATH_POINT_SEND_EMAILS)) {
             return $this;
         }

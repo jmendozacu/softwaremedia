@@ -135,6 +135,13 @@ class TBT_Rewards_Model_Sales_Quote_Address_Total_Rewards extends Mage_Sales_Mod
                 continue;
             }
 
+			//This is ghetto but if they are in the quotes module don't do any of this stuff
+			//Rewards are not utilized in the backend anyways and this is breaking stuff
+			$url = Mage::helper('core/url')->getCurrentUrl();
+			$save = Mage::getSingleton('core/session')->getSavePoints();
+			if (strpos($url, 'qquoteadv') || ($save !== null && !$save))
+				continue;
+				
             if (Mage::helper('rewards')->isBaseMageVersionAtLeast('1.4.0.0')
                 && $item->getRowTotalBeforeRedemptions() != null
             ) {
