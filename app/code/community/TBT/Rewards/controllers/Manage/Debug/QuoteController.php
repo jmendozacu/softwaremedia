@@ -5,7 +5,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  *
  */
 class TBT_Rewards_Manage_Debug_QuoteController extends Mage_Adminhtml_Controller_Action {

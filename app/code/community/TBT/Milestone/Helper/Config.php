@@ -16,6 +16,11 @@ class TBT_Milestone_Helper_Config extends Mage_Core_Helper_Abstract
 
     public function isTriggerOnOrderPayment($milestoneType, $storeId)
     {
+        if ($milestoneType == 'revenue') {
+            // Revenue milestone is currently only triggered by payment... but someday, maybe not!
+            return true;
+        }
+
         $configPath = "rewards/milestone/{$milestoneType}_trigger";
         return Mage::getStoreConfig($configPath, $storeId) == 'payment';
     }

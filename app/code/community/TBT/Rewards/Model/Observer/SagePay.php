@@ -8,7 +8,7 @@
  * This source file is subject to the SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL:
- * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+ * https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *

@@ -7,7 +7,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL:
- * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+ * https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
@@ -26,12 +26,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy
  * immediately.
  *
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -40,7 +40,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Model_Sales_Quote extends Mage_Sales_Model_Quote {
     /**
@@ -117,7 +117,7 @@ class TBT_Rewards_Model_Sales_Quote extends Mage_Sales_Model_Quote {
                 //@nelkaake Thursday April 22, 2010 02:28:43 AM : check for variable usable rules
                 $rr_model = Mage::helper ( 'rewards/rule' )->getSalesRule ( $rr );
                 if ($rr_model->getPointsAction () == TBT_Rewards_Model_Salesrule_Actions::ACTION_DISCOUNT_BY_POINTS_SPENT) {
-                    if (Mage::getSingleton ( 'rewards/session' )->getPointsSpending () > 0) {
+                    if ($this->getPointsSpending() > 0) {
                         return true;
                     }
                 } else {
@@ -387,7 +387,7 @@ class TBT_Rewards_Model_Sales_Quote extends Mage_Sales_Model_Quote {
             }
         }
 
-        if (!empty($spent_points) && !$this->_getRewardsSession ()->isCustomerLoggedIn ()) {
+        if (!empty($spent_points) && !$this->_getRewardsSession()->isCustomerLoggedIn() && !$this->_getRewardsSession()->isAdminMode()) {
             throw new Mage_Core_Exception ( $this->_getRH ()->__ ( 'You must be logged in to spend points.  Please return to your cart and remove the applied point redemptions.' ) );
         }
 
@@ -687,7 +687,7 @@ class TBT_Rewards_Model_Sales_Quote extends Mage_Sales_Model_Quote {
             if ($max_points_spent) {
                 $max = min($max, $max_points_spent);
             }
-            $customer_balance = Mage::getSingleton('rewards/session')->getCustomer()->getUsablePointsBalance($salesrule->getPointsCurrencyId());
+            $customer_balance = $this->_getRewardsSession()->getCustomer()->getUsablePointsBalance($salesrule->getPointsCurrencyId());
             $max = min($max, $customer_balance);
 
             // truncate the overflow on the max usages to be a divisible step size
@@ -723,7 +723,7 @@ class TBT_Rewards_Model_Sales_Quote extends Mage_Sales_Model_Quote {
             return $this;
         }
 
-        $pointsSpending = $this->_getRewardsSession()->getPointsSpending();
+        $pointsSpending = $this->getPointsSpending();
 
         if (!$pointsSpending) {
             return $this;
@@ -731,7 +731,7 @@ class TBT_Rewards_Model_Sales_Quote extends Mage_Sales_Model_Quote {
 
         $multiplier = floor($pointsSpending / $pointsStep);
         $pointsSpending = $multiplier * $pointsStep;
-        $this->_getRewardsSession()->setPointsSpending($pointsSpending);
+        $this->setPointsSpending($pointsSpending);
 
         return $this;
     }
@@ -755,6 +755,34 @@ class TBT_Rewards_Model_Sales_Quote extends Mage_Sales_Model_Quote {
             $total += $address->getTotalBaseRewardsSpendingDiscount ();
         }
         return $total;
+    }
+
+    public function getPointsSpending()
+    {
+        $session = $this->_getRedemptionSession();
+
+        if (!$session->hasPointsSpending()) {
+            $session->setPointsSpending(0);
+        }
+
+        return (int) $session->getPointsSpending();
+    }
+
+    public function setPointsSpending($pointsQuantity)
+    {
+        $session = $this->_getRedemptionSession();
+        $session->setPointsSpending($pointsQuantity);
+        return $this;
+    }
+
+    protected function _getRedemptionSession()
+    {
+        $isAdminMode = Mage::app()->getStore()->isAdmin();
+        if ($isAdminMode) {
+            return Mage::getSingleton('adminhtml/session_quote');
+        }
+
+        return Mage::getSingleton('rewards/session');
     }
 
     /*

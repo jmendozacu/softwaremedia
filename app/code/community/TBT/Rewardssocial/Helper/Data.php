@@ -7,7 +7,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL:
- *      http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+ *      https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL:
  *      http://opensource.org/licenses/osl-3.0.php
  *
@@ -26,12 +26,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy
  * immediately.
  *
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2011 WDCA (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com
  */
 
 /**
@@ -39,7 +39,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewardssocial
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewardssocial_Helper_Data extends Mage_Core_Helper_Abstract {
 
@@ -106,38 +106,30 @@ class TBT_Rewardssocial_Helper_Data extends Mage_Core_Helper_Abstract {
 
     /**
      * Returns product's URL as configured in Magento admin.
+     * 
+     * @param Mage_Catalog_Model_Product|int
      * @return string Product URL
      */
     public function getProductUrl($product)
     {
-        if (!$product) {
-            return null;
+        if (empty($product)) return null;
+        
+        // Need to reload the product because odds are that it's been modified and can affect our query 
+        $productId = is_numeric($product) ? $product : $product->getId();
+        $product = Mage::getModel('catalog/product')->load($productId);
+        if (!$product->getId()) return null;
+        
+        $options = array ('_use_rewrite' => true);
+        if (!$product->getCategoryId() || !Mage::getStoreConfig('catalog/seo/product_use_categories')) {
+        	// Very strange behaviour between MCE and MEE in reading this value
+        	$options['_ignore_category'] = false;
         }
-        $url = Mage::getBaseUrl();
-
-        $rewrite = Mage::getModel('core/url_rewrite');
-
-        if ($product->getStoreId()) {
-            $rewrite->setStoreId($product->getStoreId());
-        } else {
-            $rewrite->setStoreId(Mage::app()->getStore()->getId());
-        }
-
-        $idPath = 'product/' . $product->getId();
-        if ($product->getCategoryId() && Mage::getStoreConfig('catalog/seo/product_use_categories')) {
-            $idPath .= '/' . $product->getCategoryId();
-        }
-
-        $rewrite->loadByIdPath($idPath);
-
-        if ($rewrite->getId()) {
-            $url .= $rewrite->getRequestPath();
-            return $url;
-        }
-
-        $url .= $product->getUrlKey() . Mage::helper('catalog/product')->getProductUrlSuffix();
-
-        return $url;
+        
+        // Url Model is also different between MCE and MEE        
+        $urlModel = $product->getUrlModel();
+        $url = $urlModel->getUrl($product, $options);
+                
+		return $url;
     }
 
 }

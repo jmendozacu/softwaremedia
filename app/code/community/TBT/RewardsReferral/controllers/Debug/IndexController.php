@@ -5,7 +5,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 
 require_once("AbstractController.php");

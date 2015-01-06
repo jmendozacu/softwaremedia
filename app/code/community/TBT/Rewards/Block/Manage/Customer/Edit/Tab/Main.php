@@ -30,7 +30,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Block_Manage_Customer_Edit_Tab_Main extends Mage_Adminhtml_Block_Template implements Mage_Adminhtml_Block_Widget_Tab_Interface {
 	

@@ -6,7 +6,7 @@
  * @nelkaake Added on Saturday June 26, 2010:  
  * @category   TBT
  * @package    TBT_RewardsReferral
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_RewardsReferral_Helper_Shortcode extends Mage_Core_Helper_Abstract {
     const SHORT_CODE_KEY_MULTIPLIER = 77;

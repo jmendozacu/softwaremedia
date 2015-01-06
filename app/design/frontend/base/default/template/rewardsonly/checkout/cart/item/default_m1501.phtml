@@ -27,24 +27,6 @@
 <?php
 $_item = $this->getItem();
 $isVisibleProduct = $_item->getProduct()->isVisibleInSiteVisibility();
-
-/* ST REWARDSONLY BEGIN */
-$item_id = $_item->getId();
-
-// Fetch points redemption data
-$hasRedeemed = $this->hasRedemptions();
-$redeem_list_id = 'points-list-redeemed-'. $item_id;
-$redeemed_points_data = $this->getRedemptionData();
-$is_points_only = false;
-if ($hasRedeemed) {
-    $points_only = Mage::getModel('rewardsonly/catalog_product')->wrap2($this->getProduct())
-        ->getSimplePointsCost(Mage::getSingleton('rewards/session')->getCustomer());
-
-    if (!empty($points_only)) {
-        $is_points_only = true;
-    }
-}
-/* ST REWARDSONLY END */
 ?>
 <tr>
     <td><?php if ($this->hasProductUrl()):?><a href="<?php echo $this->getProductUrl() ?>" title="<?php echo $this->htmlEscape($this->getProductName()) ?>" class="product-image"><?php endif;?><img src="<?php echo $this->getProductThumbnail()->resize(75); ?>" width="75" height="75" alt="<?php echo $this->htmlEscape($this->getProductName()) ?>" /><?php if ($this->hasProductUrl()):?></a><?php endif;?></td>

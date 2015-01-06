@@ -8,7 +8,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL: 
- *      http://www.wdca.ca/solutions_page_sweettooth/Sweet_Tooth_License.php
+ *     https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL: 
  *      http://opensource.org/licenses/osl-3.0.php
  * 
@@ -27,12 +27,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy 
  * immediately.
  * 
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 -->
@@ -65,25 +65,33 @@
     </review_product_list>
     <!-- @nelkaake END Points Amount in Review Listing Page -->
     
-    <!-- @nelkaake BEGIN Points Amount in Product Info Page for Product Points -->
-    <catalog_product_view>           
+    <!-- @nelkaake BEGIN Points Amount in Product Info Page for Product Points -->    
+    <catalog_product_view>        
         <reference name="product.info.extrahint">
-            <block type="rewards/integrated_product_view_points" name="rewards.integrated.product.view.points" as="rewards_points" 
-                   template="rewards/product/view/points.phtml" >
-                <block type="rewards/product_view_points_earned" name="rewards.product.view.points.earned" as="points_earned" 
-                    template="rewards/product/view/points_earned.phtml" />
-            </block>
-        </reference>
-        <reference name="product.info">
-            <block type="rewards/product_view_points" name="rewards.product.view.points" as="points" 
-                   template="rewards/product/view/points.phtml" >
-                <block type="rewards/product_view_points_earned" name="rewards.product.view.points.earned" as="points_earned" 
-                    template="rewards/product/view/points_earned.phtml" />
-            </block>
+	        <block type="rewards/integrated_product_view_points" name="rewards.integrated.product.view.points" as="rewards_points" 
+	               template="rewards/product/view/points.phtml">
+	            <block type="rewards/product_view_points_earned" name="rewards.product.view.points.earned" as="points_earned" 
+	                template="rewards/product/view/points_earned.phtml" />
+	        </block>   
         </reference> 
+                                            
+        <reference name="product.info">
+            <!-- Compatibility with MC 1.9+ -->
+            <block type="rewards/integrated_product_view_points" name="rewards.integrated.product.view.points" as="rewards_points" 
+                   template="rewards/product/view/points.phtml" after="-">
+                <block type="rewards/product_view_points_earned" name="rewards.product.view.points.earned" as="points_earned" 
+                    template="rewards/product/view/points_earned.phtml" />
+            </block>                  
+            <!--  Used for manual integration:  -->
+            <block type="rewards/product_view_points" name="rewards.product.view.points" as="points" 
+                   template="rewards/product/view/points.phtml">
+                <block type="rewards/product_view_points_earned" name="rewards.product.view.points.earned" as="points_earned" 
+                    template="rewards/product/view/points_earned.phtml" />
+            </block>            
+        </reference>
     </catalog_product_view>
+
     <!-- @nelkaake END Points Amount in Product Info Page for Product Points -->
-    
     
     <catalog_product_view>
         <reference name="product.info.additional">
@@ -112,39 +120,6 @@
                 <script>tbt/rewards/util.js</script>                            
             </action>
         </reference>
-        <!-- these template rewrites are still required until we don't support 1.4.1 anymore -->
-        <reference name="checkout.cart">
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>default</type>
-                <block>rewards/checkout_cart_item_renderer</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>simple</type>
-                <block>rewards/checkout_cart_item_renderer</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>grouped</type>
-                <block>rewards/checkout_cart_item_renderer_grouped</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>configurable</type>
-                <block>rewards/checkout_cart_item_renderer_configurable</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>bundle</type>
-                <block>rewards/checkout_cart_item_renderer_bundle</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>downloadable</type>
-                <block>rewards/checkout_cart_item_renderer_downloadable</block>
-                <template>rewards/checkout/cart/item/downloadable.phtml</template>
-            </action>
-        </reference>
         <reference name="additional.product.info">
             <block type="rewards/checkout_cart_item_points" name="checkout_cart_item_points" 
                     template="rewards/checkout/cart/item/points.phtml" >
@@ -157,62 +132,6 @@
             </block>
         </reference>
     </checkout_cart_index>
-    
-    <checkout_cart_new>
-        <!-- Mage_Checkout -->
-        <reference name="content">
-            <block type="core/template" name="js_points_captions" template="rewards/js/captions.phtml" />
-        </reference> 
-        <reference name="head">
-            <action method="addJs" ifconfig="rewards/general/layoutsactive">        
-                <script>tbt/rewards/util.js</script>                            
-            </action>
-        </reference>
-        <!-- these template rewrites are still required until we don't support 1.4.1 anymore -->
-        <reference name="checkout.cart">
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>default</type>
-                <block>rewards/checkout_cart_item_renderer</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>simple</type>
-                <block>rewards/checkout_cart_item_renderer</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>grouped</type>
-                <block>rewards/checkout_cart_item_renderer_grouped</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>configurable</type>
-                <block>rewards/checkout_cart_item_renderer_configurable</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>bundle</type>
-                <block>rewards/checkout_cart_item_renderer_bundle</block>
-                <template>rewards/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>downloadable</type>
-                <block>rewards/checkout_cart_item_renderer_downloadable</block>
-                <template>rewards/checkout/cart/item/downloadable.phtml</template>
-            </action>
-        </reference>
-        <reference name="additional.product.info">
-            <block type="rewards/checkout_cart_item_points" name="checkout_cart_item_points" 
-                    template="rewards/checkout/cart/item/points.phtml" >
-	            <block type="rewards/checkout_cart_item_points_earning" name="checkout_cart_item_points_earning" 
-	                    template="rewards/checkout/cart/item/points/earning.phtml">
-	                <action method="setPriority">
-	                    <value>20</value>
-	                </action>
-                </block>
-            </block>
-        </reference>
-    </checkout_cart_new>
     
     
     <!-- Displays a warning if the csutomer is using the multishipping interface since multishipping points earning/spending are not currently supported. -->

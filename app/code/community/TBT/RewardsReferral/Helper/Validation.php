@@ -5,7 +5,7 @@
  *
  * @category   TBT
  * @package    TBT_RewardsReferral
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_RewardsReferral_Helper_Validation extends Mage_Core_Helper_Abstract {
 

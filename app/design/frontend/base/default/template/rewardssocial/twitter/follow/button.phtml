@@ -20,8 +20,20 @@
             if (typeof TwitterFollowReward === 'undefined') {
                 return this;
             }
+
+            //For bundle products the bundle variable seems to conflict with twttr.events.bind method ,
+            //after the method is called the bundle variables becomes undefined.
+            if (typeof bundle !== 'undefined') {
+                var mybundle = bundle;
+            }
+
             var followReward = new TwitterFollowReward('<?php echo $this->getFollowProcessingUrl(); ?>');
-            eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('4.6.1(\'2\',3(a){5(!a.0.7(\'8-9\')){b}c.d()});',14,14,'target|bind|follow|function|twttr|if|events|hasClassName|rewardssocial|rewardable||return|followReward|onFollow'.split('|'),0,{}));
+            eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('5.6.4(\'3\',1(0){2(!0.7.c(\'b-a\')){8}9.d()});',14,14,'event|function|if|follow|bind|twttr|events|target|return|followReward|rewardable|rewardssocial|hasClassName|onFollow'.split('|'),0,{}))
+
+            //restore the bundle
+            if (typeof mybundle !== 'undefined') {
+                bundle = mybundle;
+            }
         });
     });
 </script>

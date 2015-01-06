@@ -7,8 +7,7 @@
  * 
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
  * License, which extends the Open Software License (OSL 3.0).
- * The Sweet Tooth License is available at this URL: 
- * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+
  * The Open Software License is available at this URL: 
  * http://opensource.org/licenses/osl-3.0.php
  * 
@@ -27,12 +26,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy 
  * immediately.
  * 
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41,10 +40,38 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Block_Integrated_Product_View_Points extends TBT_Rewards_Block_Product_View_Points {
 
+
+    
+    protected function _prepareLayout()
+    {   
+        /*
+         * For compatibility with MC 1.9+ and third party modules,
+         * 
+         * Look for the product.info block & search for one of it's children aliased as "other".
+         * If such a child doesn't exist, create it, then re-parent and prepend this block under "other".
+         * If it does exist, make sure it's one that can output our block ('core/text_list').
+         * If the product.info template doesn't output the "other" block, then we fall back on the default way this block was supposed to render.
+         * */  
+        $productInfoBlock = $this->getLayout()->getBlock('product.info');
+        if ($productInfoBlock) {
+            $otherBlock = $productInfoBlock->getChild('other');
+            if (!$otherBlock){
+                $otherBlock = $this->getLayout()->createBlock('core/text_list', 'other')->append($this);
+                $productInfoBlock->append($otherBlock);
+                
+            } else if ($otherBlock instanceof Mage_Core_Block_Text_List) {               
+                $newBlock = $this->getLayout()->createBlock('core/text_list', 'rewards.integrated.product.view.points.output')->append($this);
+                $otherBlock->insert($newBlock, '', false);
+            }
+        }
+        
+        return parent::_prepareLayout();;    
+    }
+    
     protected function _toHtml() {
         if(Mage::getStoreConfigFlag('rewards/autointegration/product_view_page_product_points')) {
             return parent::_toHtml();

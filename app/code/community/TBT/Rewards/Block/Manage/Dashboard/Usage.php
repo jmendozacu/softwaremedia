@@ -168,6 +168,14 @@ class TBT_Rewards_Block_Manage_Dashboard_Usage extends Mage_Adminhtml_Block_Temp
             );
         }
 
+        if ($this->displayConnectNotification() && $this->_displayDisableNotification()) {
+            $notificationsBlock->setNotification(
+                $this->__("Sweet Tooth will automatically stop rewarding your customers, if your account is disconnected for longer than 24 hours."),
+                "https://support.sweettoothrewards.com/entries/21376743-connecting-a-magento-store-to-your-sweet-tooth-account",
+                $this->__("Learn More")
+            );
+        }
+
         if ($this->isDevMode()) {
             $notificationsBlock->setNotification(
                 $this->__("Your account is in <strong>Developer Mode</strong>."),
@@ -192,6 +200,39 @@ class TBT_Rewards_Block_Manage_Dashboard_Usage extends Mage_Adminhtml_Block_Temp
         $account = $this->getAccountData();
 
         if ($account === false) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether or not there are any earning rules. These will be disabled if account is not connected
+     * for more than 24 hours.
+     *
+     * @return bool     True, if there are earning rules, false otherwise.
+     */
+    protected function _displayDisableNotification()
+    {
+        $behaviourRulesCount = Mage::getResourceModel('rewards/special_collection')
+            ->getSize();
+        if ($behaviourRulesCount > 0) {
+            return true;
+        }
+
+        $catalogRulesCount = Mage::getResourceModel('catalogrule/rule_collection')
+            ->addFieldToFilter('points_action', array('notnull' => true))
+            ->addFieldToFilter('points_catalogrule_simple_action', array('null' => true))
+            ->getSize();
+        if ($catalogRulesCount > 0) {
+            return true;
+        }
+
+        $salesRulesCount = Mage::getResourceModel('salesrule/rule_collection')
+            ->addFieldToFilter('points_action', array('notnull' => true))
+            ->addFieldToFilter('points_discount_action', array('null' => true))
+            ->getSize();
+        if ($salesRulesCount > 0) {
             return true;
         }
 

@@ -1,3 +1,6 @@
+<?php
+      $isRwdTheme = Mage::helper('rewards/theme')->getPackageName() === "rwd"; 
+?>
 <script type="text/javascript">
     var showReferralFieldForGuests = '<?php echo json_encode($this->getShowGuestReferralField()); ?>' === 'true';
 </script>
@@ -5,7 +8,7 @@
 <?php if ($this->getShowReferralBlock()) : ?>
     <script type="text/javascript" src="<?php echo $this->getSkinUrl('js/rewardsref/rewardsReferralCheckout.js') ?>"></script>
 
-    <div class="input-box rewards_referral_information" id="rewards_referral_information">
+    <div class="input-box rewards_referral_information <?php echo $isRwdTheme? "rwd" : ""; ?>" id="rewards_referral_information">
         <label for="rewards_referral">
         <?php
             if ($this->showReferralEmail() && !($this->showReferralCode())) {

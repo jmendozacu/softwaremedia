@@ -1,12 +1,21 @@
 
-.rewardssocial-widget {
-    display: inline-block;
-    margin-right: 15px;
-    vertical-align: top;
+.rewardssocial-widgets {
+	margin-bottom: 15px;
 }
 
-.rewardssocial-facebook-like {
+.rewardssocial-widget {
+    display: inline-block;   
     vertical-align: top;
+    margin: 10px 15px 0px 0px; 
+}
+
+.rewardssocial-widgets .points-notification {
+	height: 25px;
+    margin-right: 0px;
+}
+
+
+.rewardssocial-facebook-like {
 }
 
 .rewardssocial-pinterest-pin {
@@ -18,8 +27,8 @@
 .rewardssocial-twitter-tweet {
 }
 
-.rewardssocial-twitter-follow {
-    margin: 0px;
+.rewardssocial-twitter-follow {  
+  margin-right: 0px;
 }
 
 .facebook-share-button {
@@ -37,6 +46,8 @@ span#rewardssocial-notification-loading {
  * Social sharing button: used for 'Facebook Share' and 'Refer a Friend';
  */
 .btn {
+	font-size: 11px;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -ms-box-sizing: border-box;
@@ -96,10 +107,7 @@ span#rewardssocial-notification-loading {
     display: inline-block;
     vertical-align: top;
     zoom: 1;
-}
-
-.btn .label {
-    padding: 0px 4px 0 23px;
+    padding: 1px 4px 0 23px;
     white-space: nowrap;
 }
 
@@ -143,12 +151,36 @@ span#rewardssocial-notification-loading {
     z-index: 2001;
     left: 50%;
     top: 50%;
-    width: 550px;
+    max-width: 550px; 
+    width: 90%;
+    -ms-transform: translate(-50%, -50%); /* IE 9 */
+    -webkit-transform: translate(-50%, -50%); /* Chrome, Safari, Opera */
+    transform: translate(-50%, -50%);   
     background: white;
-    margin-left: -275px;
-    margin-top: -150px;
     border: darkgrey 2px solid;
 }
+ 
+/* MCE1.9+ Fixes */
+.rewards-modal .block-title {	
+	border-bottom: 1px solid #ddd;
+    padding: 2px 9px;
+    overflow: auto;
+}
+	body:not(.customer-account) .rewards-modal.block:first-child .block-title {
+	    padding-top: 3px;
+	}
+
+.rewards-modal .block-title .btn-remove {
+    float: right;
+    height: 16px;
+}
+	.rewards-modal .block-title .btn-remove:after {
+		height: 16px;
+		line-height: 16px;
+		margin-top: -1px;
+        display: block;	
+	}
+/* End of MCE1.9+ Fixes */
 
 .rewards-modal .content {
     padding: 10px;

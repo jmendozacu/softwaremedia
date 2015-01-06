@@ -135,7 +135,8 @@ class TBT_RewardsReferral_Model_Observer_Createaccount extends Varien_Object
 
 
             // Let's make sure the referral entry is valid.
-            $referral_email = Mage::helper('rewardsref/code')->parseEmailFromReferralString($referral_code_or_email);
+            $referral_email     = Mage::helper('rewardsref/code')->parseEmailFromReferralString($referral_code_or_email);
+            $new_customer_email = Mage::helper('rewardsref/code')->parseEmailFromReferralString($new_customer_email);
             if ($referral_email == $new_customer_email) {
                 throw new Exception("Customer with e-mail {$new_customer_email} tried to refer his/her self {$referral_email}.", 1);
             }

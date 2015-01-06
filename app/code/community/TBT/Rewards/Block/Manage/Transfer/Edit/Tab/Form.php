@@ -7,8 +7,7 @@
  * 
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
  * License, which extends the Open Software License (OSL 3.0).
- * The Sweet Tooth License is available at this URL: 
- * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+
  * The Open Software License is available at this URL: 
  * http://opensource.org/licenses/osl-3.0.php
  * 
@@ -27,12 +26,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy 
  * immediately.
  * 
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41,7 +40,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Block_Widget_Form {
 	
@@ -127,15 +126,6 @@ class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Blo
 			'required' => true
 	    ) );
 	    
-	    if (isset ( $formData ['last_update_by'] )) {
-	    $status_field = $fieldset->addField ( 'last_update_by', 'label', array (
-    			'label' => Mage::helper ( 'rewards' )->__ ( 'Issued By' ), 
-    			'title' => Mage::helper ( 'rewards' )->__ ( 'Issued By' ), 
-    			'name' => 'last_update_by',
-    			'class' => 'wikihints-justify'
-    	    ) );
-    	 }
-    	    
 		if (sizeof($availStatuses) == 1) {
 		    $availStatuses_copy = $availStatuses;
 		    $status_label_value =array_pop($availStatuses_copy);
@@ -166,8 +156,7 @@ class TBT_Rewards_Block_Manage_Transfer_Edit_Tab_Form extends Mage_Adminhtml_Blo
 			'name' => 'comments', 'label' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'title' => Mage::helper ( 'rewards' )->__ ( 'Comments/Notes' ), 
 			'style' => 'width:88%; height:200px;', 
-			'required' => true,
-			'class' => 'wikihints-justify required-entry' ) 
+			'class' => 'wikihints-justify' ) 
 	    );
 		
 	    Mage::getSingleton('rewards/wikihints')->addWikiHint($comments_field, "21626273", "Edit Points Transfer - Transfer Comments" );

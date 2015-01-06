@@ -21,17 +21,17 @@ class TBT_Rewards_Model_Test_Salesrule_Redemption_Bypointsspent_Fixeddiscount ex
     	
     	
     	$this->o("<BR />&gt; 3. Spending 1 point: <BR />\n");
-    	Mage::getSingleton('rewards/session')->setPointsSpending(1);
+    	$this->getQuote()->setPointsSpending(1);
     	$this->refreshQuote();
     	$this->printCart();
     	
     	$this->o("<BR />&gt; 4. Spending 10 points: <BR />\n");
-    	Mage::getSingleton('rewards/session')->setPointsSpending(10);
+    	$this->getQuote()->setPointsSpending(10);
     	$this->refreshQuote();
     	$this->printCart();
     	
     	$this->o("<BR />&gt; 5. Spending 1000 points: <BR />\n");
-    	Mage::getSingleton('rewards/session')->setPointsSpending(1000);
+    	$this->getQuote()->setPointsSpending(1000);
     	$this->refreshQuote();
     	$this->printCart();
     	
@@ -72,7 +72,7 @@ DATAFEED;
 
 
     public function cleanup() {
-    	Mage::getSingleton('rewards/session')->setPointsSpending(0);
+    	$this->getQuote()->setPointsSpending(0);
     	return parent::cleanup();
     }
 }

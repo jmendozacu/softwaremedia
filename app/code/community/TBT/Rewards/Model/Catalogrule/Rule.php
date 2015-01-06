@@ -2,37 +2,36 @@
 
 /**
  * WDCA - Sweet Tooth
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
+ *
+ * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
- * The Sweet Tooth License is available at this URL: 
- * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
- * The Open Software License is available at this URL: 
+
+ * The Open Software License is available at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
+ *
  * DISCLAIMER
- * 
- * By adding to, editing, or in any way modifying this code, WDCA is 
- * not held liable for any inconsistencies or abnormalities in the 
- * behaviour of this code. 
+ *
+ * By adding to, editing, or in any way modifying this code, WDCA is
+ * not held liable for any inconsistencies or abnormalities in the
+ * behaviour of this code.
  * By adding to, editing, or in any way modifying this code, the Licensee
- * terminates any agreement of support offered by WDCA, outlined in the 
- * provided Sweet Tooth License. 
- * Upon discovery of modified code in the process of support, the Licensee 
- * is still held accountable for any and all billable time WDCA spent 
+ * terminates any agreement of support offered by WDCA, outlined in the
+ * provided Sweet Tooth License.
+ * Upon discovery of modified code in the process of support, the Licensee
+ * is still held accountable for any and all billable time WDCA spent
  * during the support process.
- * WDCA does not guarantee compatibility with any other framework extension. 
+ * WDCA does not guarantee compatibility with any other framework extension.
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
- * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * If you did not receive a copy of the license, please send an email to
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy
  * immediately.
- * 
+ *
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41,7 +40,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule implements TBT_Rewards_Model_Migration_Importable {
 	const POINTS_CURRENCY_ID = 'points_currency_id';
@@ -51,15 +50,15 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 	const POINTS_APPLICABLE_QTY = 'applicable_qty';
 	const POINTS_USES = 'uses';
 	const POINTS_INST_ID = 'redemption_inst_id';
-	
+
 	const CACHE_TAG = 'rewards_catalogrule';
 	protected $_cacheTag = 'rewards_catalogrule';
-	
+
 	public function _construct() {
 		parent::_construct ();
 		$this->_init ( 'rewards/catalogrule_rule' );
 	}
-	
+
 	/**
 	 * Clear cache related with rule_id
 	 *
@@ -69,12 +68,12 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		Mage::app ()->cleanCache ( self::CACHE_TAG . '_' . $this->getId () );
                 //TODO: review this call to cleanCache... might be invalid because keys are more complex.
                 //$key = "rewards_product_view_points_{$nameInLayout}_{$blockType}_{$product_id}_{$website_id}_{$customer_group_id}";
-                //$key = "rewards_product_predictpoints_{$nameInLayout}_{$blockType}_{$product_id}_{$website_id}_{$customer_group_id}";                
+                //$key = "rewards_product_predictpoints_{$nameInLayout}_{$blockType}_{$product_id}_{$website_id}_{$customer_group_id}";
 		Mage::app ()->cleanCache ( 'rewards_product_predictpoints' );
 		Mage::app ()->cleanCache ( 'rewards_product_view_points' );
 		return $this;
 	}
-	
+
 	/**
 	 * Clear chache related with product
 	 *
@@ -84,7 +83,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		$this->cleanCache ();
 		return parent::_beforeDelete ();
 	}
-	
+
 	/**
 	 * Check clean cache before save
 	 */
@@ -92,7 +91,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		$this->cleanCache ();
 		return parent::_beforeSave ();
 	}
-	
+
 	/**
 	 * Change label for current store
 	 */
@@ -112,11 +111,11 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		}
 		return parent::_afterLoad ();
 	}
-	
+
 	public function getResourceCollection() {
 		return Mage::getResourceModel ( 'rewards/catalogrule_rule_collection' );
 	}
-	
+
 	/**
 	 * Returns true if this a redemption rule
 	 *
@@ -126,7 +125,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		$ruleActionSing = Mage::getSingleton ( 'rewards/catalogrule_actions' );
 		return $ruleActionSing->isRedemptionAction ( $this->getPointsAction () );
 	}
-	
+
 	/**
 	 * Returns true if this a distribution rule
 	 *
@@ -136,7 +135,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		$ruleActionSing = Mage::getSingleton ( 'rewards/catalogrule_actions' );
 		return $ruleActionSing->isDistributionAction ( $this->getPointsAction () );
 	}
-	
+
 	/**
 	 * Returns true if this a redemption rule
 	 *
@@ -145,7 +144,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 	public function isRedemptionAction() {
 		return $this->isRedemptionRule ();
 	}
-	
+
 	/**
 	 * Returns true if this a distribution rule
 	 *
@@ -154,7 +153,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 	public function isDistributionAction() {
 		return $this->isDistributionRule ();
 	}
-	
+
 	/**
 	 * Returns the rule time id
 	 *
@@ -164,7 +163,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		$ruleActionSing = Mage::getSingleton ( 'rewards/catalogrule_actions' );
 		return $ruleActionSing->getRuleTypeId ( $this->getPointsAction () );
 	}
-	
+
 	/**
 	 * Fetches a list of all CATALOGRULE rules that
 	 * have a points action
@@ -175,7 +174,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		$col = $this->getCollection ()->addFieldToFilter ( "points_action", array ('neq' => '' ) );
 		return $col;
 	}
-	
+
 	/**
 	 * Checks to see if the customer group id is applicable to this rule
 	 * TODO WDCA: any way to optimize this array_search? perhaps a map?
@@ -185,7 +184,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 	public function isApplicableToCustomerGroup($customer_group_id) {
 		return array_search ( $customer_group_id, $this->getCustomerGroupIds () ) !== false;
 	}
-	
+
 	/**
 	 * Checks to see if the website id is applicable to this rule
 	 * TODO WDCA: any way to optimize this array_search? perhaps a map?
@@ -195,9 +194,9 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 	public function isApplicableToWebsite($website_id) {
 		return array_search ( $website_id, $this->getWebsiteIds () ) !== false;
 	}
-	
+
 	/**
-	 * Generates and returns the effect code for this catalogrule 
+         * Generates and returns the effect code for this catalogrule
 	 *
 	 * @return string
 	 */
@@ -215,39 +214,39 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		}
 		return $effect;
 	}
-	
+
 	/**
-	 * 
+         *
 	 * @param Mage_Core_Model_Store $store
 	 * @param TBT_Rewards_Model_Catalog_Product $product
 	 * @param TBT_Rewards_Model_Customer $customer
 	 * @param float $redeemable_price
-	 * 
+         *
 	 */
 	public function getPointSliderSettings($store, $product, $customer, $price) {
-		
+
 		try {
 			if (! $this->getId ())
 				throw new Exception ( "Bad rule ID" );
 			if (! $product->getId ())
 				throw new Exception ( "Product ID provided does not exist" );
-			
+
 			$redeem_price_per_usage = $price - Mage::helper ( 'rewards' )->priceAdjuster ( $price, $this->getEffect (), false, false );
-			
+
 			$redeemable_price = $price;
-			
+
 			// limit $redeemable_price to the redeem_percentage_price limit
 			if ($this ['points_max_redeem_percentage_price'])
 				$redeemable_price = $price * (min ( $this ['points_max_redeem_percentage_price'], 100 ) / 100);
-			
+
 		// find the number of redeem_usages needed to get the full product free
 			$max_redeem_usage = ($redeemable_price / $redeem_price_per_usage);
-			
+
 			// HACK: to keep none hole usage percent
 			$max_redeem_usage_part = $max_redeem_usage;
 			if ($max_redeem_usage > ( int ) ($max_redeem_usage))
 				$max_redeem_usage = ( int ) ($max_redeem_usage) + 1;
-			
+
 		// set of max points that can be used
 			$points_max_set = array ();
 			$points_max_set [] = $this ['points_amount'] * $max_redeem_usage;
@@ -257,36 +256,36 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 				$points_max_set [] = $customer->getUsablePointsBalance ( $this->getPointsCurrencyId () );
 			if (Mage::helper ( 'rewards/config' )->canUseRedemptionsIfNotLoggedIn () == false && Mage::getSingleton ( 'rewards/session' )->isCustomerLoggedIn () == false)
 				$points_max_set [] = 0;
-			
+
 		// set of max usage that can be used
 			$usage_max_set = array ();
 			$usage_max_set [] = $max_redeem_usage;
 			$usage_max_set [] = ( int ) (min ( $points_max_set ) / $this ['points_amount']);
 			if ($this ['points_uses_per_product'] > 0)
 				$usage_max_set [] = $this ['points_uses_per_product'];
-			
+
 		// set of max redeem price
 			$redeem_price_max_set = array ();
 			$redeem_price_max_set [] = $redeemable_price;
 			$redeem_price_max_set [] = max ( $usage_max_set ) * $redeem_price_per_usage;
-			
+
 			// --------- min
-			
+
 
 			$usage_min_set = array ();
 			$usage_min_set [] = 0;
-			
+
 			$rRule = array ();
-			
+
 			// HACK: to keep none hole usage percent
 			$rRule ['on_price'] = $price;
 			$rRule ['max_redeem_usage_part'] = $max_redeem_usage_part;
-			
+
 			// TODO - admin option to change redeemer type
 			$rRule ['redeam_type'] = 'slider';
 			if ($this ['points_uses_per_product'] == 1)
 				$rRule ['redeam_type'] = 'once_per_product';
-			
+
 		//$rRule['effect_type'] = $rule->getPointsCatalogruleSimpleAction();
 			//$rRule['effect'] = $rule->getEffect();
 			//$rRule['can_use_rule'] = Mage::getSingleton('rewards/session')->isCustomerLoggedIn() || Mage::helper('rewards/config')->canUseRedemptionsIfNotLoggedIn();
@@ -307,7 +306,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 			//  $rRule['points_caption'] = Mage::helper('rewards')->getPointsString(array(
 			//            $rRule['currency_id'] => $rRule['points_per_usage']
 			//      ));
-			
+
 
 			return $rRule;
 		} catch ( Exception $e ) {
@@ -317,7 +316,7 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Generates and returns a hash that contains:
 	 * - the Points amount
@@ -332,32 +331,32 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
 		$item_rule = array (self::POINTS_AMT => $this->getPointsAmount (), self::POINTS_CURRENCY_ID => $this->getPointsCurrencyId (), self::POINTS_RULE_ID => $this->getId (), self::POINTS_APPLICABLE_QTY => $applicable_quantity, self::POINTS_EFFECT => $this->getEffect () );
 		return $item_rule;
 	}
-	
+
 	/**
 	 * Forcefully Save object data even if ID does not exist
-	 * Used for migrating data and ST campaigns.     
+         * Used for migrating data and ST campaigns.
 	 *
 	 * @return Mage_Core_Model_Abstract
 	 */
 	public function saveWithId() {
 		$real_id = $this->getId ();
 		$exists = Mage::getModel ( $this->_resourceName )->setId ( null )->load ( $real_id )->getId ();
-		
+
 		if (! $exists) {
 			$this->setId ( null );
 		}
-		
+
 		$this->save ();
-		
+
 		if (! $exists) {
 			$write = Mage::getSingleton ( 'core/resource' )->getConnection ( 'core_write' );
 			$write->update ( $this->_getResource ()->getMainTable (), array ($this->_getResource ()->getIdFieldName () => $real_id ), array ("`{$this->_getResource()->getIdFieldName()}` = {$this->getId()}" ) );
 			$write->commit ();
 		}
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Returns true if this a distribution rule
 	 *
@@ -380,6 +379,54 @@ class TBT_Rewards_Model_Catalogrule_Rule extends Mage_CatalogRule_Model_Rule imp
         if (Mage::helper('rewards/version')->isBaseMageVersionAtLeast('1.4.1.1')) {
             $this->_invalidateCache();
         }
+
+        return $this;
+    }
+
+    /**
+     * Unserializes conditions.
+     *
+     * @return self
+     */
+    public function unserializeConditions()
+    {
+        // Load rule conditions if it is applicable
+        if (!$this->hasConditionsSerialized()) {
+            return $this;
+        }
+
+        $conditions = $this->getConditionsSerialized();
+        if (!empty($conditions)) {
+            $conditions = unserialize($conditions);
+            if (is_array($conditions) && !empty($conditions)) {
+                $this->getConditions()->loadArray($conditions);
+            }
+        }
+        $this->unsConditionsSerialized();
+
+        return $this;
+    }
+
+    /**
+     * Unserializes actions.
+     *
+     * @return self
+     */
+    public function unserializeActions()
+    {
+        // Load rule actions if it is applicable
+        if (!$this->hasActionsSerialized()) {
+            return $this;
+        }
+
+        $actions = $this->getActionsSerialized();
+        if (!empty($actions)) {
+            $actions = unserialize($actions);
+            if (is_array($actions) && !empty($actions)) {
+                $this->getActions()->loadArray($actions);
+            }
+        }
+        $this->unsActionsSerialized();
 
         return $this;
     }

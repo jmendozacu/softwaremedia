@@ -8,7 +8,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL:
- *      http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+ *      https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL:
  *      http://opensource.org/licenses/osl-3.0.php
  *
@@ -27,12 +27,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy
  * immediately.
  *
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
@@ -41,7 +41,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 -->
 
@@ -676,46 +676,82 @@
                     <label>Migration Utilities</label>
                     <sort_order>350</sort_order>
                     <show_in_default>1</show_in_default>
-                    <show_in_website>0</show_in_website>
-                    <show_in_store>0</show_in_store>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
                     <comment><![CDATA[<i>Please Note: You should only run these functions if you really know what you're doing or you are advised by a Sweet Tooth representative.</i>]]></comment>
                     <fields>
-                        <exportcampaign translate="label comment">
+                        <export_campaign translate="label comment">
                             <label>Export Campaign</label>
                             <comment>This will export point currencies, rules and Sweet Tooth configuration.</comment>
                             <frontend_type>export</frontend_type>
-                            <frontend_model>rewards/system_config_exportall</frontend_model>
+                            <frontend_model>rewards/system_config_exportCampaign</frontend_model>
+                            <config_path>rewards/migration/export_campaign</config_path>
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </exportcampaign>
-                        <importcampaign translate="label comment">
+                        </export_campaign>
+                        <delete_campaign translate="label comment">
+                            <label>Delete Campaign</label>
+                            <comment><![CDATA[Deletes all Sweet Tooth rules]]></comment>
+                            <frontend_type>export</frontend_type>
+                            <frontend_model>rewards/system_config_deleteCampaign</frontend_model>
+                            <config_path>rewards/migration/delete_campaign</config_path>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </delete_campaign>
+                        <import_campaign translate="label comment">
                             <label>Import Campaign</label>
-                            <comment>WARNING: THIS WILL ALSO DELETE ALL YOUR SWEET TOOTH RULES! - Select a .stcampaign file and click 'Save Config' to import.</comment>
+                            <comment><![CDATA[<strong>WARNING:</strong> THIS WILL ALSO DELETE ALL YOUR CURRENT SWEET TOOTH RULES!<br/>Select a .stcampaign file and click 'Save Config' to import.]]></comment>
                             <frontend_type>file</frontend_type>
                             <backend_model>rewards/system_config_backend_import</backend_model>
+                            <config_path>rewards/migration/import_campaign</config_path>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </importcampaign>
-                        <deleteall translate="label comment">
-                            <label>Delete Campaign</label>
-                            <comment>Deletes all Sweet Tooth rules</comment>
+                        </import_campaign>
+                        <export_settings translate="label comment">
+                            <label>Export Sweet Tooth Settings</label>
+                            <comment>This will export your current Sweet Tooth settings.</comment>
                             <frontend_type>export</frontend_type>
-                            <frontend_model>rewards/system_config_deleteall</frontend_model>
+                            <frontend_model>rewards/system_config_exportSettings</frontend_model>
+                            <config_path>rewards/migration/export_settings</config_path>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </export_settings>
+                        <reset_settings translate="label comment">
+                            <label>Reset Sweet Tooth Settings</label>
+                            <comment></comment>
+                            <frontend_type>export</frontend_type>
+                            <frontend_model>rewards/system_config_resetSettings</frontend_model>
+                            <config_path>rewards/migration/reset_settings</config_path>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </deleteall>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </reset_settings>
+                        <import_settings translate="label comment">
+                            <label>Import Sweet Tooth Settings</label>
+                            <comment><![CDATA[<strong>WARNING:</strong> THIS WILL ALSO DELETE ALL YOUR CURRENT SWEET TOOTH SETTINGS!<br/>Select a .stsettings file and click 'Save Config' to import.]]></comment>
+                            <frontend_type>file</frontend_type>
+                            <backend_model>rewards/system_config_backend_import</backend_model>
+                            <config_path>rewards/migration/import_settings</config_path>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </import_settings>
                         <importpoints translate="label comment">
                             <label>Import Points</label>
                             <comment><![CDATA[Select a .csv file and click 'Save Config' to import. <br/> See guide on importing points from a CSV file <a href="https://support.sweettoothrewards.com/entries/21128548-import-points-from-csv-file" target="_blank" title="Import points from CSV file">here</a>]]></comment>
                             <frontend_type>file</frontend_type>
                             <backend_model>rewards/system_config_backend_import</backend_model>
-                            <sort_order>60</sort_order>
+                            <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>

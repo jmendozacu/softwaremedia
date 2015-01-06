@@ -108,10 +108,11 @@ class TBT_Rewardssocial_Block_Widgets extends TBT_Rewardssocial_Block_Abstract
 
     /**
      * This styling is applied to the points notification elements (rewardssocial/widgets/points.phtml)
+     * @deprecated. Moved to widget.css
      * @return string
      */
     public function getInlineStyling()
     {
-        return 'display: inline-block; vertical-align: top; padding-top: 2px;';
+        return '';
     }
 }

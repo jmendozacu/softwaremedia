@@ -8,7 +8,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL:
- * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+ * https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
@@ -27,12 +27,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy
  * immediately.
  *
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41,7 +41,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Helper_Rule extends Mage_Core_Helper_Abstract
 {
@@ -131,14 +131,19 @@ class TBT_Rewards_Helper_Rule extends Mage_Core_Helper_Abstract
      *
      * @return boolean
      */
-    public function storeHasAnyPointsShoppingCartRules()
+    public function storeHasAnyPointsShoppingCartRules($storeId = null)
     {
         $all_srules = Mage::getModel ( 'rewards/salesrule_rule' )->getPointsRuleCollection ( true );
 
+        $websiteId = $this->_getWebsiteId();
+        if ($storeId !== null) {
+            $websiteId = Mage::app()->getStore($storeId)->getWebsiteId();
+        }
+
         if (Mage::helper ( 'rewards/version' )->isMageVersionBetween ( '1.3.0.0', '1.3.1.0' )) {
-            $this->filterOutRulesByWebsiteId ( $all_srules, $this->_getWebsiteId () );
+            $this->filterOutRulesByWebsiteId ( $all_srules, $websiteId );
         } else {
-            $all_srules->addWebsiteFilter ( $this->_getWebsiteId () );
+            $all_srules->addWebsiteFilter ( $websiteId );
         }
 
         $has_srules = sizeof ( $all_srules ) > 0;

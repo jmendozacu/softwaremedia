@@ -74,6 +74,11 @@ EOT;
 		return $this->redemption_data;
 	}
 	
+	public function getQuote()
+	{
+		return Mage::getSingleton('rewards/session')->getQuote();
+	}
+	
 	/**
 	 * Fetches cart distirbution data.
 	 *

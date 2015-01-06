@@ -67,7 +67,7 @@ class TBT_Milestone_Model_Rule_Action extends Varien_Object
                     $emailSent = $this->_sendEmail($customer, $template, $successMessage);
                     if (!$emailSent){
                         throw new Exception("Was not able to send milestone email to customer #{$this->getCustomerId()}");
-                    }                    
+                    }
                 }
             }
         }
@@ -100,21 +100,28 @@ class TBT_Milestone_Model_Rule_Action extends Varien_Object
                 'area' => 'frontend',
                 'store' => $customer->getStoreId())
         );
+        $rewardsCustomer = Mage::getModel('rewards/customer')->getRewardsCustomer($customer);
 
         $vars = array(
-                'logo_url'              => Mage::getDesign()->getSkinUrl(Mage::getStoreConfig('design/header/logo_src')),
-                'logo_alt'              => Mage::getStoreConfig('design/header/logo_alt'),
-                'customer_name'         => $customer->getName(),
-                'customer_firstname'    => $customer->getFirstname(),
-                'customer_email'        => $customer->getEmail(),
-                'store_name'            => $customer->getStore()->getName(),
-                'milestone_description' => $this->getRuleCondition()->getMilestoneDescription(),
-                'milestone_message'     => !empty($message) ? $message : "",
-                'milestone_target'      => $this->getRule()->getCondition()->getThreshold(),
-                'milestone_details_condition'     => $this->getRule()->getConditionType(),
-                'milestone_details_action'        => $this->getRule()->getActionType(),
-                'milestone_details_points_amount' => $this->getPointsAmount(),
-                'milestone_details_points_string' => $this->getPointsObject(),
+                'logo_url'                            => Mage::getDesign()->getSkinUrl(Mage::getStoreConfig('design/header/logo_src')),
+                'logo_alt'                            => Mage::getStoreConfig('design/header/logo_alt'),
+                'customer_name'                       => $customer->getName(),
+                'customer_firstname'                  => $customer->getFirstname(),
+                'customer_email'                      => $customer->getEmail(),
+                'customer_points_balance'             => (string) $rewardsCustomer->getPointsSummary(),
+                'customer_pending_points'             => (string) $rewardsCustomer->getPendingPointsSummary(),
+                'customer_has_pending_points'         => $rewardsCustomer->hasPendingPoints(),
+                'customer_affiliate_url'              => (string) Mage::helper('rewardsref/url')->getUrl($rewardsCustomer),
+                'customer_referral_code'              => (string) Mage::helper('rewardsref/code')->getCode($rewardsCustomer->getEmail()),
+                'customer_referral_shortcode'         => (string) Mage::helper('rewardsref/shortcode')->getCode($rewardsCustomer->getId()),
+                'store_name'                          => $customer->getStore()->getName(),
+                'milestone_description'               => $this->getRuleCondition()->getMilestoneDescription(),
+                'milestone_message'                   => !empty($message) ? $message : "",
+                'milestone_target'                    => $this->getRule()->getCondition()->getThreshold(),
+                'milestone_details_condition'         => $this->getRule()->getConditionType(),
+                'milestone_details_action'            => $this->getRule()->getActionType(),
+                'milestone_details_points_amount'     => $this->getPointsAmount(),
+                'milestone_details_points_string'     => $this->getPointsObject(),
                 'milestone_details_customer_group_id' => $this->getCustomerGroupId(),
         );
 

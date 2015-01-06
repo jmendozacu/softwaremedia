@@ -2,11 +2,16 @@
 
 class TBT_RewardsReferral_Model_Referral_Guestorder extends TBT_RewardsReferral_Model_Referral_Abstract
 {
+    const REFERRAL_STATUS = 1;
+
+    /**
+     * @deprecated  user self::REFERRAL_STATUS
+     */
     const REFERRAL_STATUS_ID = 4;
 
     public function getReferralStatusId()
     {
-        return self::REFERRAL_STATUS_ID;
+        return self::REFERRAL_STATUS;
     }
 
     public function getReferralTransferMessage($newCustomer)
@@ -16,7 +21,7 @@ class TBT_RewardsReferral_Model_Referral_Guestorder extends TBT_RewardsReferral_
 
     public function getReferralPointsForOrder($ro_rule, $order)
     {
-        $simpleAction = $ro_rule->getSimpleAction();
+        $simpleAction    = $ro_rule->getSimpleAction();
         $partial_earning = 0;
 
         if ($simpleAction == 'by_fixed') {
@@ -25,10 +30,9 @@ class TBT_RewardsReferral_Model_Referral_Guestorder extends TBT_RewardsReferral_
             ));
         } else {
             // Prior to Sweet Tooth Ref 3.1, there was nothing but by_percent, so default to by_percent if nothing is specified
-            $simpleAction == 'by_percent';
-
-            $percent = $ro_rule->getPointsAmount();
-            $full_earning = Mage::getModel('rewards/points')->set($order->getTotalEarnedPoints());
+            $simpleAction    == 'by_percent';
+            $percent         = $ro_rule->getPointsAmount();
+            $full_earning    = Mage::getModel('rewards/points')->set($order->getTotalEarnedPoints());
             $partial_earning = $full_earning->getPercent($percent);
         }
 
@@ -61,7 +65,8 @@ class TBT_RewardsReferral_Model_Referral_Guestorder extends TBT_RewardsReferral_
     protected function _getApplicableReferralOrderRules()
     {
         $applicable_rules = Mage::getSingleton('rewardsref/validator')
-                            ->getApplicableRules(TBT_RewardsReferral_Model_Special_Order::ACTION_REFERRAL_ORDER);
+            ->getApplicableRules(TBT_RewardsReferral_Model_Special_Order::ACTION_REFERRAL_ORDER);
+
         return $applicable_rules;
     }
 
@@ -84,19 +89,18 @@ class TBT_RewardsReferral_Model_Referral_Guestorder extends TBT_RewardsReferral_
      */
     public function triggerEvent(Mage_Customer_Model_Customer $customer, $orderId = null)
     {
-        if(!$affiliate = $this->getReferrerDetails()) {
+        $affiliate = $this->getReferrerDetails();
+        if(!$affiliate) {
             return $this;
         }
 
         $points = $this->getTotalReferralPoints();
-
         if ($points->isEmpty()) {
             return $this;
         }
 
         $order = $this->getOrder();
-
-        if($order) {
+        if ($order) {
             $order = Mage::getModel('rewards/sales_order')->load($orderId);
         }
 
@@ -105,13 +109,29 @@ class TBT_RewardsReferral_Model_Referral_Guestorder extends TBT_RewardsReferral_
         }
 
         $this->loadGuestDetails($order); // Set information for email
+        $this->loadByEmail($this->getReferralEmail());
+
+        // update referral
+        // if customer is already registered but placing order as guest, make sure we don't overwrite it's ID
+        $childId = is_null($this->getReferralChildId()) ? null : $this->getReferralChildId();
+        $this->setReferralChildId($childId);
+        $this->_updateReferralStatus($this->getReferralStatusId());
+        $this->save();
 
         try {
-
             foreach ($points->getPoints() as $currencyId => $points_amount) {
-                $transfer = Mage::getModel('rewardsref/transfer');
+                $transfer       = Mage::getModel('rewardsref/transfer');
                 $transferStatus = Mage::getStoreConfig('rewards/InitialTransferStatus/ReferralOrder');
-                $transfer->create($points_amount, $currencyId, $affiliate->getId(), -2, $this->getReferralTransferMessage(null), $this->getTransferReasonId(), $transferStatus, $orderId);
+                $transfer->create(
+                    $points_amount,
+                    $currencyId,
+                    $affiliate->getId(),
+                    -2,
+                    $this->getReferralTransferMessage(null),
+                    $this->getTransferReasonId(),
+                    $transferStatus,
+                    $orderId
+                );
             }
 
             if ($affiliate->getRewardsrefNotifyOnReferral()) {
@@ -146,14 +166,14 @@ class TBT_RewardsReferral_Model_Referral_Guestorder extends TBT_RewardsReferral_
     {
         // get referrer email from customer session
         $referrerEmail = Mage::getSingleton('core/session')->getReferrerEmail();
-
         if (!$referrerEmail) {
             return false;
         }
 
         // get referrer details
         $referrer = Mage::getModel('rewards/customer')->setWebsiteId(Mage::app()->getStore()->getWebsiteId())
-                                                      ->loadByEmail($referrerEmail);
+            ->loadByEmail($referrerEmail);
+
         if (!$referrer) {
             return false;
         }

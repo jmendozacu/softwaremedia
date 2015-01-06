@@ -17,7 +17,7 @@ $this->attemptQuery("
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains rule execution records' AUTO_INCREMENT=1 ;
 ");
 
-$this->addColumns($this->getTable('tbtmilestone/rule'), "`rewards_special_id` INT(11) NULL DEFAULT NULL COMMENT  'For backwards compatibility with rewards_special rules' AFTER  `rule_id");
+$this->addColumns($this->getTable('tbtmilestone/rule'), "`rewards_special_id` INT(11) UNSIGNED NULL DEFAULT NULL COMMENT  'For backwards compatibility with rewards_special rules' AFTER  `rule_id`");
 $this->addForeignKey('FK_REWARDS_SPECIAL_ID', $this->getTable('tbtmilestone/rule'), "rewards_special_id", $this->getTable('rewards/special'), "rewards_special_id", "CASCADE", "CASCADE");
 
 // clear cache

@@ -75,7 +75,7 @@ class TBT_Rewards_Model_Observer_Checkout_Onepage extends Varien_Object {
             $quote = Mage::getSingleton ( 'rewards/session' )->getQuote ();
             $shipaddr = $quote->getShippingAddress ();
             $total_shipping_value = $shipaddr->getShippingAmount ();
-            $current_points_spending = Mage::getSingleton ( 'rewards/session' )->getPointsSpending ();
+            $current_points_spending = $quote->getPointsSpending();
             Mage::log ( "Paying for shipping with points..." );
 
             $rule_ids = explode ( ',', $quote->getAppliedRedemptions () );
@@ -88,7 +88,7 @@ class TBT_Rewards_Model_Observer_Checkout_Onepage extends Varien_Object {
                 Mage::log ( "Points step according to quote is {$quote->getPointsStep()}" );
                 if ($salesrule->getPointsAmount () == $quote->getPointsStep ()) {
                     $uses_to_zero_shipping = ceil ( $total_shipping_value / $salesrule->getPointsDiscountAmount () );
-                    Mage::getSingleton ( 'rewards/session' )->setPointsSpending ( $uses_to_zero_shipping + $current_points_spending );
+                    $quote->setPointsSpending($uses_to_zero_shipping + $current_points_spending);
                     Mage::log ( "Added {$uses_to_zero_shipping} to existing points uage of {$current_points_spending}" );
                     break;
                 }

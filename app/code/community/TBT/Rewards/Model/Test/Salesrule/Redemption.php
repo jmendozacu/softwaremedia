@@ -15,7 +15,7 @@ class TBT_Rewards_Model_Test_Salesrule_Redemption extends TBT_Rewards_Model_Test
     	$testCase = __METHOD__;
     	$this->o("&nbsp;&nbsp; BEGIN {$testCase}<BR />");
     	
-        Mage::getSingleton('rewards/session')->setPointsSpending(0);
+        $this->getQuote()->setPointsSpending(0);
         $this->_refreshQuote();
        	$this->o("&nbsp;&nbsp; &nbsp;&nbsp; {$this->getQuote()->getGrandTotal()} == 149.99:  ");
         if($this->getQuote()->getGrandTotal() == 149.99) {

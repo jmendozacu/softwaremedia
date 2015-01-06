@@ -101,8 +101,6 @@
 	width: 100%;
 }
 .mypoints-sendfriend {
-	float: left;
-	width: 45%;
 	min-height: 280px;
 }
 .shopping-cart-collaterals .rewards-cart-box H4 {
@@ -142,8 +140,6 @@
 }
 .mypoints-redeemcatalog {
 	vertical-align: middle;
-	float: right;
-	width: 45%;
 	min-height: 280px;
 }
 /*@nelkaake Thursday May 27, 2010 : Added*/
@@ -152,7 +148,8 @@
 }
 .mypoints-redeemcatalog .listing {
 	font-size: 8pt;
-	height: 230px;
+	height: 100%;
+	margin-top: 10px;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -231,6 +228,7 @@
 	font-size: 8pt;
 	width: 100%;
 }
+    
 .points-prediction .as_low_as {
 	width: 100%;
 }
@@ -255,6 +253,7 @@
 }
 .points-special-header {
 	color: #FFFFFF;
+	display: block;
 }
 .points-special-header-ee {
     position: absolute;
@@ -263,6 +262,15 @@
     width: 160px;
     text-align: right;
 }
+
+.points-special-header.rwd,
+.points-special-header-ee.rwd {
+	color: #FFFFFF;
+	display: inline;
+	position: static;
+	text-align: left;
+}
+
 .points-multishipping-warning {
 }
 .points-checkout-onepage-sidebox .change-points-usage {
@@ -316,6 +324,104 @@
     text-align:right;
 }
 
+/* Start Magento 1.9 Compatibility */
+
+/** Making sure the slideshow feature in Magento 1.9 does not overlay social buttons **/
+.slideshow-container {
+	z-index: 19;   
+}
+
+.customer-account-create .scaffold-form .rewards_referral_information label:first-child {
+    width: initial;
+}
+
+.mypoints-summary .box-content {
+	padding-top: 5px;
+}
+
+.product-view .product-shop .price-info.new-price-info {
+	max-width: initial;
+	clear: right;
+	overflow: auto;
+}
+
+.product-view .price .using-points {
+	font-weight: bold;
+    font-size: 13px;
+}
+
+.cart .item-points-undername {
+	white-space: nowrap;
+	overflow: visible;
+}
+    .cart .item-points-undername img {
+        display: inline;
+        padding-left: 4px;
+    }
+
+.cart-forms .rewards-box-spend-minicart h2 {
+	font-size: 12px;
+	font-weight: bold;
+	margin: 0 0 5px;
+}
+
+.rewards-box-spend-minicart .slider table {
+	margin: auto;
+}
+
+.points-prediction table {
+    font-size: 8pt;
+    font-weight: 300;
+    margin-bottom: 20px;
+}
+	.points-prediction.rwd table {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+.rewards-special-review-summary {
+	clear: both;
+	margin-bottom: 20px;
+}
+
+.rewards_referral_information.rwd label {
+	display: block;
+}
+
+.mypoints-sendfriend .form-list textarea {
+	max-height: 11em;
+}
+    .mypoints-sendfriend .form-list > li {
+        margin-bottom: 10px;
+    }
+    
+/** Only where needed **/
+.mypoints-transfers-earnings .arrow,
+.mypoints-transfers-spendings .arrow
+{
+	display: inline;
+}
+
+/** Only use divider when we need to **/
+.rewards-product-view-points .divider {
+	clear: both;
+	display: block;
+	height: 1px;
+	margin: 10px 0;
+}
+
+/** Only clear what we know should be cleared **/
+.mypoints-page .clearer:after {
+	display: block;
+	content: ".";
+	clear: both;
+	font-size: 0;
+	line-height: 0;
+	height: 0;
+	overflow: hidden;
+}
+/* End Magento 1.9 Compatibility */
+
 /* Start Enterprise theme styles */
 .info-box { 
 	margin-bottom: 10px;
@@ -330,11 +436,15 @@
 	text-align: left; 
 }
 .info-box.mypoints-sendfriend, .info-box.mypoints-redeemcatalog {
-	width: 49%;
 	min-height: 355px;
 } 
 .info-box.mypoints-redeemcatalog .noproducts {
 	margin-top: 130px;
+}
+.rewards-special-signup-birthday,
+.rewards-special-signup-birthday-ee {
+	margin-bottom: 20px;
+	font-size: 12px;
 }
 .rewards-special-signup-birthday-ee {
     margin-left:240px;

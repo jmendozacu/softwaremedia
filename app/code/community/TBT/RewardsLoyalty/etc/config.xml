@@ -6,7 +6,7 @@
             <version>0.2.0.0</version>
         </TBT_RewardsLoyalty>
     </modules>
-    
+
     <frontend>
         <routers>
             <rewardsloyalty>
@@ -21,7 +21,7 @@
             <rewardsloyalty>/rewardsloyalty/</rewardsloyalty>
         </secure_url>
     </frontend>
-    
+
     <global>
         <blocks>
             <rewardsloyalty>
@@ -48,9 +48,18 @@
                     </rewardsloyalty_rewards_controller_manage_config_platform_connect_postdispatch>
                 </observers>
             </controller_action_postdispatch_rewardsadmin_manage_config_platform_connect>
+            <controller_action_postdispatch_rewardsadmin_manage_config_platform_disconnect>
+                <observers>
+                    <rewardsloyalty_rewards_controller_manage_config_platform_disconnect_postdispatch>
+                        <type>singleton</type>
+                        <class>rewardsloyalty/rewards_controller_manage_config_platform_observer</class>
+                        <method>disconnectPostDispatch</method>
+                    </rewardsloyalty_rewards_controller_manage_config_platform_disconnect_postdispatch>
+                </observers>
+            </controller_action_postdispatch_rewardsadmin_manage_config_platform_disconnect>
         </events>
     </global>
-    
+
     <tbtcommon>
         <loyalty>
             <rewards>

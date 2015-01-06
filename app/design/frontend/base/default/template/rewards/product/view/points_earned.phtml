@@ -28,7 +28,7 @@
             </div>
         <?php endif ?>
 
-        <!-- $reward_currency is almost always '1' and $reward_amount is an integer amount of points to display. -->
+        <?php /* $reward_currency is almost always '1' and $reward_amount is an integer amount of points to display. */ ?>
         <?php $img_url = $this->getPointsImgUrl($reward_amount, $reward_currency); ?>
         <?php $imgPath = Mage::getSingleton('rewards/currency')->load($reward_currency)->getImage(); ?>
         <?php if (!empty($imgPath)): ?>

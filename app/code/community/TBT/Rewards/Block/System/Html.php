@@ -21,7 +21,7 @@
  *
  * @category   WDCA
  * @package    TBT_Enhancedgrid
- * @copyright  Copyright (c) 2008-2010 WDCA (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class TBT_Rewards_Block_System_Html extends Mage_Adminhtml_Block_System_Config_Form_Field {

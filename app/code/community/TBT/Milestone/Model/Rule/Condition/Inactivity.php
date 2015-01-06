@@ -2,6 +2,7 @@
 
 class TBT_Milestone_Model_Rule_Condition_Inactivity extends TBT_Milestone_Model_Rule_Condition
 {
+    // @deprecated use TBT_Milestone_Model_Rule_Condition_Inactivity_Reference::REFERENCE_TYPE_ID
     const POINTS_REFERENCE_TYPE_ID = 603;
 
     protected $_notification_email = true;
@@ -46,6 +47,6 @@ class TBT_Milestone_Model_Rule_Condition_Inactivity extends TBT_Milestone_Model_
      */
     public function getPointsReferenceTypeId()
     {
-        return self::POINTS_REFERENCE_TYPE_ID;
+        return TBT_Milestone_Model_Rule_Condition_Inactivity_Reference::REFERENCE_TYPE_ID;
     }
 }

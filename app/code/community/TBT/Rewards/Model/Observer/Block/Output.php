@@ -8,7 +8,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL:
- * http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+ * https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  *
@@ -27,19 +27,19 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy
  * immediately.
  *
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Model_Observer_Block_Output extends Varien_Object
 {
@@ -72,6 +72,7 @@ class TBT_Rewards_Model_Observer_Block_Output extends Varien_Object
         $this->appendPointsBalanceToAdminOrderInfo($block, $transport);
         $this->overwriteOrderCancelPopup($block, $transport);
         $this->appendProductViewPoints($block, $transport);
+        $this->appendRedemptionInBackend($block, $transport);
 
         if ($block instanceof Mage_Adminhtml_Block_Dashboard_Sales) {
             $html = $transport->getHtml ();
@@ -394,6 +395,26 @@ class TBT_Rewards_Model_Observer_Block_Output extends Varien_Object
     }
 
     /**
+     * @param Mage_Core_Block_Abstract $block
+     * @return self
+     */
+    public function appendRedemptionInBackend($block, $transport)
+    {
+        if (!($block instanceof Mage_Adminhtml_Block_Sales_Order_Create_Coupons)) {
+            return $this;
+        }
+
+        // This was causing a nesting error if it was forced to happen deep inside the block tree, so get it out of the way now.
+        $this->_getRewardsSession()->refreshSessionCustomer();
+
+        $html = $transport->getHtml();
+        $html .= $block->getChild('rewards_redemption')->toHtml();
+        $transport->setHtml($html);
+
+        return $this;
+    }
+
+    /**
      * Overwrites the cart's checkout button with a "not enough points" message if the customer
      * doesn't have enough points to checkout with their specified redemptions, or a "you must login to
      * spend points" message if the customer is trying to spend points as a guest.
@@ -465,6 +486,7 @@ class TBT_Rewards_Model_Observer_Block_Output extends Varien_Object
             $block->insert($predict_points_block);
             $predict_points_block->setProduct($_product);
             $st_html = $predict_points_block->toHtml();
+            $isRwdTheme = Mage::helper('rewards/theme')->getPackageName() === "rwd";
 
             //  If no content, dont integrate
             if(empty($st_html)) {
@@ -478,7 +500,7 @@ class TBT_Rewards_Model_Observer_Block_Output extends Varien_Object
 
 
             $replaced_html = null;
-            if(Mage::helper('rewards/version')->isMageEnterprise()){
+            if(Mage::helper('rewards/version')->isMageEnterprise() && !$isRwdTheme){
                 $pattern = '/(<button )[^>]*(product\/'.  $product_id  .'\/)(.*)(<\/button>)/isU';
             } else {
                 if($is_list_mode_display) {
@@ -498,7 +520,7 @@ class TBT_Rewards_Model_Observer_Block_Output extends Varien_Object
                 $productUrl = str_replace("/", "\/", $productUrl);
                 $pattern = '/(<div class="actions">)((\s)*)(<button )[^>]*('.$productUrl.')(.*)(<\/button>)(.*)(<\/div>)/isU';
 
-                if ( Mage::helper('rewards/version')->isMageEnterprise() ) {
+                if ( Mage::helper('rewards/version')->isMageEnterprise() && !$isRwdTheme) {
                     $pattern = '/(<button )[^>]*('.  $productUrl  .')(.*)(<\/button>)/isU';
                 }
 

@@ -7,7 +7,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL: 
- *      http://www.wdca.ca/solutions_page_sweettooth/Sweet_Tooth_License.php
+ *     https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL: 
  *      http://opensource.org/licenses/osl-3.0.php
  * 
@@ -26,12 +26,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy 
  * immediately.
  * 
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
@@ -40,45 +40,46 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 ?>
 <div class="box-account box-info mypoints-summary">
     <div class="box-head">
         <h2><?php echo $this->__('Points Summary'); ?></h2>
     </div>
-    
-    <div class="usable-points">
-        <?php echo $this->__('You have %s in your account.', $this->getCustomerPointsSummary()); ?>
-        <?php if($this->getDaysUntilExpiry()): ?>
-           <div class="expiry-points"><?php echo $this->__('Your points balance will expire in %s days.', $this->getDaysUntilExpiry()); ?></div>
+    <div class="box-content">
+        <div class="usable-points">
+            <?php echo $this->__('You have %s in your account.', $this->getCustomerPointsSummary()); ?>
+            <?php if($this->getDaysUntilExpiry()): ?>
+               <div class="expiry-points"><?php echo $this->__('Your points balance will expire in %s days.', $this->getDaysUntilExpiry()); ?></div>
+            <?php endif; ?>
+        </div>
+        <div class="pending-points">
+            <?php if($this->hasPendingPoints()): ?>
+                <div class="pendingevent-points">
+                    <?php echo $this->__('%s are pending approval.', $this->getCustomerPendingPointsSummary()); ?>
+                </div>
+            <?php endif; ?>
+            <?php if($this->hasPendingTimePoints()): ?>
+                <div class="pendingtime-points">
+                    <?php echo $this->__('%s are pending time.', $this->getCustomerPendingTimePointsSummary()); ?>
+                </div>
+            <?php endif; ?>
+            <?php if($this->hasOnHoldPoints()): ?>
+                <div class="pendingapproval-points">
+                    <?php echo $this->__('%s are on hold.', $this->getCustomerOnHoldPointsSummary()); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <div class="msg">
+            <?php echo $this->getSummaryMsg() /* this can be customized completely by modifying the display config option or by just removing this line and adding your own content.*/ ?>
+        </div>
+        
+        <?php if ($this->doShowRewardsLink()): ?>
+            <a href="<?php echo $this->getUrl('rewards/customer'); ?>">
+                <?php echo $this->__('Visit My Points & Rewards Section') ?>
+            </a>
         <?php endif; ?>
     </div>
-    <div class="pending-points">
-        <?php if($this->hasPendingPoints()): ?>
-            <div class="pendingevent-points">
-                <?php echo $this->__('%s are pending approval.', $this->getCustomerPendingPointsSummary()); ?>
-            </div>
-        <?php endif; ?>
-        <?php if($this->hasPendingTimePoints()): ?>
-            <div class="pendingtime-points">
-                <?php echo $this->__('%s are pending time.', $this->getCustomerPendingTimePointsSummary()); ?>
-            </div>
-        <?php endif; ?>
-        <?php if($this->hasOnHoldPoints()): ?>
-            <div class="pendingapproval-points">
-                <?php echo $this->__('%s are on hold.', $this->getCustomerOnHoldPointsSummary()); ?>
-            </div>
-        <?php endif; ?>
-    </div>
-    
-    <div class="msg">
-        <?php echo $this->getSummaryMsg() /* this can be customized completely by modifying the display config option or by just removing this line and adding your own content.*/ ?>
-    </div>
-    
-    <?php if ($this->doShowRewardsLink()): ?>
-        <a href="<?php echo $this->getUrl('rewards/customer'); ?>">
-            <?php echo $this->__('Visit My Points & Rewards Section') ?>
-        </a>
-    <?php endif; ?>
 </div>

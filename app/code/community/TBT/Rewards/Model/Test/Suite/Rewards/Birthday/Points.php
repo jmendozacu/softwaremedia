@@ -19,7 +19,7 @@ class TBT_Rewards_Model_Test_Suite_Rewards_Birthday_Points extends TBT_Testsweet
         // get all the active birthday rules
         $rules = Mage::getModel('rewards/special')->getCollection()
             ->addFieldToFilter('is_active', '1');
-        
+
         $birthdayRules = array();
         $actionType = TBT_Rewards_Model_Birthday_Action::ACTION_CODE;
         foreach ($rules as $rule) {
@@ -33,12 +33,12 @@ class TBT_Rewards_Model_Test_Suite_Rewards_Birthday_Points extends TBT_Testsweet
                 $birthdayRules[] = $rule;
             }
         }
-        
+
         // get all the customers with birthdays
         $customers = Mage::getResourceModel('customer/customer_collection')
             ->addAttributeToSelect('dob', 'inner');
         $customersMissed = array();
-        
+
         $now = date("Y-m-d", strtotime(Mage::getModel('core/date')->gmtDate()));
         foreach ($customers as $customer) {
             // this is their year-agnostic birthday
@@ -48,13 +48,16 @@ class TBT_Rewards_Model_Test_Suite_Rewards_Birthday_Points extends TBT_Testsweet
                 if (array_search($customer->getGroupId(), $customerGroupIds) === false) {
                     continue;
                 }
-                
+                if (!$rule->isApplicableToWebsite($customer->getWebsiteId())) {
+                    continue;
+                }
+
                 // the effective end is either end-date of the rule, or NOW if the rule ends in the future
                 $effectiveEnd = $rule->getToDate() ? min($rule->getToDate(), $now) : $now;
                 $yearStart = date("Y", strtotime($rule->getFromDate()));
                 $yearEnd = date("Y", strtotime($effectiveEnd));
                 $yearDiff = $yearEnd - $yearStart; // roughly how many years the rule has lasted
-                
+
                 $birthdays = 0;
                 // loop through each year the rule was supposedly active
                 for ($i = 0; $i <= $yearDiff; $i++) {
@@ -63,13 +66,13 @@ class TBT_Rewards_Model_Test_Suite_Rewards_Birthday_Points extends TBT_Testsweet
                     $start = max("{$year}-01-01", $rule->getFromDate());
                     $end = min("{$year}-12-31", $effectiveEnd);
                     $tempBd = "{$year}-{$birthday}";
-                    
+
                     // check if the customer's birthday fell within the span (could be bounded by rule start or end)
                     if ($tempBd >= $start && $tempBd <= $end) {
                         $birthdays++; // increment the number of birthdays the customer was SUPPOSED to have
                     }
                 }
-                
+
                 // fetch all the birthday transfers the customer HAS received (hopefully for this rule).
                 // it's not a sure thing, matching transfer with rule based on quantity and currency,
                 // but we don't have much of a better method
@@ -80,7 +83,7 @@ class TBT_Rewards_Model_Test_Suite_Rewards_Birthday_Points extends TBT_Testsweet
                     ->addFieldToFilter('quantity', $rule->getPointsAmount());
                 $missedBirthdays = $birthdays - count($bdTransfers); // how many birthday rewards have we missed?
                 $missedPoints = $rule->getPointsAmount() * $missedBirthdays;
-                
+
                 // add a FAIL for each customer that has not earned deserved points for at least one birthday
                 if ($missedBirthdays > 0) {
                     $customersMissed[] = $customer->getId();
@@ -90,7 +93,7 @@ class TBT_Rewards_Model_Test_Suite_Rewards_Birthday_Points extends TBT_Testsweet
                 }
             }
         }
-        
+
         $customersMissed = array_unique($customersMissed);
         if (count($customersMissed) == 0) {
             $this->addPass("No birthdays have been missed on any of the active rules.");
@@ -101,7 +104,7 @@ class TBT_Rewards_Model_Test_Suite_Rewards_Birthday_Points extends TBT_Testsweet
                 "Click <a href='{$url}'>here</a> to automatically reward all these customers now, what they " .
                 "should have received on their birthday.");
         }
-        
+
         return $this;
     }
 

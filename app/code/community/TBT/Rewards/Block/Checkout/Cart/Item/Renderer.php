@@ -121,7 +121,8 @@ class TBT_Rewards_Block_Checkout_Cart_Item_Renderer extends Mage_Checkout_Block_
             $points_applic_qty = $point [TBT_Rewards_Model_Catalogrule_Rule::POINTS_APPLICABLE_QTY];
 
             $base_item_price = $_item->getBaseCalculationPrice ();
-            if ($this->helper ( 'tax' )->priceIncludesTax () && Mage::helper ( 'tax' )->displayPriceIncludingTax ()) {
+            if ($this->helper ( 'tax' )->priceIncludesTax () && (Mage::helper ( 'tax' )->displayPriceIncludingTax ()
+                || Mage::helper('tax')->displayBothPrices())) {
                 $base_item_price *= (1 + $_item->getTaxPercent () / 100);
             }
 
@@ -134,7 +135,7 @@ class TBT_Rewards_Block_Checkout_Cart_Item_Renderer extends Mage_Checkout_Block_
             $discount = ($base_item_price - $adjusted_price) * $points_applic_qty;
 
             $discount = Mage::app ()->getStore ()->convertPrice ( $discount );
-            $discount = Mage::app ()->getStore ()->formatPrice ( $discount );
+            $discount = Mage::app ()->getStore ()->formatPrice ( $discount, false );
 
             $rule_id = $point [TBT_Rewards_Model_Catalogrule_Rule::POINTS_RULE_ID];
             $inst_id = $point [TBT_Rewards_Model_Catalogrule_Rule::POINTS_INST_ID];

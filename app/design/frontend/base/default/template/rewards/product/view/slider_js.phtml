@@ -25,13 +25,22 @@
             var oldPriceInclTax = $(old_price_incl_tax_dom_id);
         }
 
-        if(!isShowingTwoPrices && oldPrice == null) {
+        if(!isShowingTwoPrices && oldPrice == null) {        	
             oldPrice = newPrice.cloneNode(true);
             newPrice.up().insertBefore(oldPrice, newPrice);
             oldPrice.id = old_price_dom_id;
             oldPrice.removeClassName('price');
             oldPrice.addClassName('old-price');
-
+			
+			// For MC 1.9+ support,
+            var extraInfoBlocks = $$('.product-view .product-shop .extra-info');
+            if (extraInfoBlocks.length === 1){
+            	extraInfo = extraInfoBlocks[0];
+            	var newParent = new Element('div', {'class': 'price-info new-price-info'});
+            	newParent.appendChild(new Element('div', {'class': 'price-box'})).appendChild(newPrice);
+            	extraInfo.up().insertBefore(newParent, extraInfo.nextSibling);            	
+            }
+            
             do_hide_old_price = true;
         } else if (isShowingTwoPrices && oldPriceExclTax == null) {
             oldPriceExclTax = newPriceExclTax.cloneNode(true);
@@ -176,22 +185,25 @@
         }
 
         if (!isShowingTwoPrices) {
-            if(newPrice.down() != null) {
-                newPrice.down().innerHTML = formattedPrice + points_with;
-            } else if(newPrice.down() == null && newPrice != null) {
-                newPrice.innerHTML = formattedPrice + points_with;
+            var priceString = '&nbsp;' + formattedPrice + '<span class="using-points">' + points_with + '</span>';
+            if(newPrice.down() != null && !newPrice.down().hasClassName("using-points")) {
+                newPrice.down().innerHTML = priceString;
+            } else if((newPrice.down() == null || newPrice.down().hasClassName("using-points")) && newPrice != null) {
+                newPrice.innerHTML = priceString;
             } else { /*don't know where it is so just don't show the points thing.*/ }
         } else {
-            if(newPriceExclTax.down() != null) {
-                newPriceExclTax.down().innerHTML = formattedPriceExcl + points_with;
-            } else if(newPriceExclTax.down() == null && newPriceExclTax != null) {
-                newPriceExclTax.innerHTML = formattedPriceExcl + points_with;
+        	var priceString = '&nbsp;' + formattedPriceExcl + '<span class="using-points">' + points_with + '</span>';
+            if(newPriceExclTax.down() != null && !newPriceExclTax.down().hasClassName("using-points")) {
+                newPriceExclTax.down().innerHTML = priceString;
+            } else if((newPriceExclTax.down() == null || newPriceExclTax.down().hasClassName("using-points")) && newPriceExclTax != null) {
+                newPriceExclTax.innerHTML = priceString;
             } else { /*don't know where it is so just don't show the points thing.*/ }
 
-            if(newPriceInclTax.down() != null) {
-                newPriceInclTax.down().innerHTML = formattedPriceIncl + points_with;
-            } else if(newPriceInclTax.down() == null && newPriceInclTax != null) {
-                newPriceInclTax.innerHTML = formattedPriceIncl + points_with;
+            var priceString = '&nbsp;' + formattedPriceIncl + '<span class="using-points">' + points_with + '</span>';
+            if(newPriceInclTax.down() != null && !newPriceInclTax.down().hasClassName("using-points")) {
+                newPriceInclTax.down().innerHTML = priceString;
+            } else if((newPriceInclTax.down() == null ||newPriceInclTax.down().hasClassName("using-points")) && newPriceInclTax != null) {
+                newPriceInclTax.innerHTML = priceString;
             } else { /*don't know where it is so just don't show the points thing.*/ }
         }
 

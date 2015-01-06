@@ -11,6 +11,7 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
     protected $_condition = null;
     protected $_action = null;
 
+
     protected function _construct()
     {
         parent::_construct();
@@ -39,13 +40,13 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
 
         $currentTimestamp = Mage::helper('tbtmilestone')->getUtcTimestamp();
         Mage::getModel('tbtmilestone/rule_log')->setRuleId($this->getId())
-                                               ->setRuleName($this->getName())
-                                               ->setConditionType($this->getConditionType())
-                                               ->setActionType($this->getActionType())
-                                               ->setMilestoneDetails($this->getMilestoneDetails())
-                                               ->setCustomerId($customerId)
-                                               ->setExecutedDate($currentTimestamp)
-                                               ->save();
+            ->setRuleName($this->getName())
+            ->setConditionType($this->getConditionType())
+            ->setActionType($this->getActionType())
+            ->setMilestoneDetails($this->getMilestoneDetails())
+            ->setCustomerId($customerId)
+            ->setExecutedDate($currentTimestamp)
+            ->save();
 
         return $this;
     }
@@ -57,8 +58,9 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
         }
 
         $rules = $this->getCollection()
-            ->addFieldToFilter('is_enabled', 1)
-            ->addFieldToFilter('condition_type', array('in' => $conditionTypes));
+                      ->addFieldToFilter('is_enabled', 1)
+                      ->addFieldToFilter('condition_type', array('in' => $conditionTypes));
+
         return $rules;
     }
 
@@ -67,22 +69,22 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
         parent::_afterLoad();
 
         // Explode the CSV strings into arrays so they're easier to manage in code.
-        $this->setWebsiteIds(strlen($this->getWebsiteIds()) > 0 ? explode(',', $this->getWebsiteIds()) : array());
-        $this->setCustomerGroupIds(strlen($this->getCustomerGroupIds()) > 0 ? explode(',', $this->getCustomerGroupIds()) : array());
-
-        // Build an assoc array out of the condition details JSON.
-        $conditionDetailsJson = $this->getConditionDetailsJson();
-        $conditionDetails = json_decode($conditionDetailsJson, true);
-        if ($conditionDetails && is_array($conditionDetails)) {
-            $this->setConditionDetails($conditionDetails);
+        if ($this->hasWebsiteIds()) {
+            $websiteIds = $this->getWebsiteIds();
+            if (is_string($websiteIds) && !empty($websiteIds)) {
+                $this->setWebsiteIds(explode(',', $websiteIds));
+            }
         }
 
-        // Build an assoc array out of the action details JSON.
-        $actionDetailsJson = $this->getActionDetailsJson();
-        $actionDetails = json_decode($actionDetailsJson, true);
-        if ($actionDetails && is_array($actionDetails)) {
-            $this->setActionDetails($actionDetails);
+        if ($this->hasCustomerGroupIds()) {
+            $customerGroupIds = $this->getCustomerGroupIds();
+            if (is_string($customerGroupIds) && !empty($customerGroupIds)) {
+                $this->setCustomerGroupIds(explode(',', $customerGroupIds));
+            }
         }
+
+        $this->unserializeConditions();
+        $this->unserializeActions();
 
         return $this;
     }
@@ -99,19 +101,101 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
         $this->setUpdatedAt(now());
 
         // Implode the arrays into CSV strings so they can be saved.
-        $this->setWebsiteIds(count($this->getWebsiteIds()) > 0 ? implode(',', $this->getWebsiteIds()) : null);
-        $this->setCustomerGroupIds(count($this->getCustomerGroupIds()) > 0 ? implode(',', $this->getCustomerGroupIds()) : null);
+        if ($this->hasWebsiteIds()) {
+            $websiteIds = $this->getWebsiteIds();
+            if (is_array($websiteIds) && !empty($websiteIds)) {
+                $this->setWebsiteIds(implode(',', $websiteIds));
+            }
+        }
 
-        // Serialize the condition details array into JSON.
+        if ($this->hasCustomerGroupIds()) {
+            $customerGroupIds = $this->getCustomerGroupIds();
+            if (is_array($customerGroupIds) && !empty($customerGroupIds)) {
+                $this->setCustomerGroupIds(implode(',', $customerGroupIds));
+            }
+        }
+
+        $this->serializeConditions();
+        $this->serializeActions();
+
+        return $this;
+    }
+
+    /**
+     * Processes this rule and unserializes the conditions json, which is how conditions are saved in the DB, into an
+     * associative array.
+     *
+     * @return self
+     */
+    public function unserializeConditions()
+    {
+        $conditionDetailsJson = $this->getConditionDetailsJson();
+        if (!$conditionDetailsJson) {
+            return $this;
+        }
+
+        $conditionDetails = json_decode($conditionDetailsJson, true);
+        if ($conditionDetails && is_array($conditionDetails)) {
+            $this->setConditionDetails($conditionDetails);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Processes this rule and unserializes the actions json, which is how actions are saved in the DB, into an
+     * associative array.
+     *
+     * @return self
+     */
+    public function unserializeActions()
+    {
+        $actionDetailsJson = $this->getActionDetailsJson();
+        if (!$actionDetailsJson) {
+            return $this;
+        }
+
+        $actionDetails = json_decode($actionDetailsJson, true);
+        if ($actionDetails && is_array($actionDetails)) {
+            $this->setActionDetails($actionDetails);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Serializes the conditions array into JSON, as it's stored in the DB.
+     *
+     * @return self
+     */
+    public function serializeConditions()
+    {
         $conditionDetails = $this->getConditionDetails();
+        if (!$conditionDetails) {
+            return $this;
+        }
+
         $conditionDetailsJson = json_encode($conditionDetails);
         if (json_last_error() == JSON_ERROR_NONE) {
             // TODO: log error if one occurred
             $this->setConditionDetailsJson($conditionDetailsJson);
         }
 
-        // Serialize the action details array into JSON.
+        return $this;
+    }
+
+    /**
+     * Serializes the actions array into JSON, as it's stored in the DB.
+     *
+     * @return self
+     */
+    public function serializeActions()
+    {
         $actionDetails = $this->getActionDetails();
+        if (!$actionDetails) {
+            return $this;
+        }
+
         $actionDetailsJson = json_encode($actionDetails);
         if (json_last_error() == JSON_ERROR_NONE) {
             // TODO: log error if one occurred
@@ -121,14 +205,16 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
         return $this;
     }
 
+
     /**
-     * Based on the Website Ids supported by this rule, generates and returns a list of Store Ids which this rule also applies to.
+     * Based on the Website Ids supported by this rule, generates and returns a list of Store Ids which this rule also
+     * applies to.
      * @see TBT_Milestone_Helper_Data::getStoreIdsFromWebsites()
      * @return array
      */
     public function getStoreIds()
     {
-        if (!isset($this->_storeIds)){
+        if (!isset($this->_storeIds)) {
             $this->_storeIds = Mage::helper('tbtmilestone')->getStoreIdsFromWebsites($this->getWebsiteIds());
         }
 
@@ -143,8 +229,8 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
     {
         if (!$this->hasLoadedCondition()) {
             $this->_condition = $this->_getConditionFactory()->create($this->getConditionType())
-                ->setData($this->getConditionDetails())
-                ->setRule($this);
+                                     ->setData($this->getConditionDetails())
+                                     ->setRule($this);
         }
 
         return $this->_condition;
@@ -157,8 +243,8 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
     {
         if (!$this->hasLoadedAction()) {
             $this->_action = $this->_getActionFactory()->create($this->getActionType())
-                ->setData($this->getActionDetails())
-                ->setRule($this);
+                                  ->setData($this->getActionDetails())
+                                  ->setRule($this);
         }
 
         return $this->_action;
@@ -207,7 +293,9 @@ class TBT_Milestone_Model_Rule extends Mage_Core_Model_Abstract
 
     /**
      * Whether or not this rule was ever executed for the specified customer
+     *
      * @param int $customerId
+     *
      * @return boolean
      */
     public function wasEverExecuted($customerId)

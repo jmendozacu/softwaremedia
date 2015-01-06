@@ -5,7 +5,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_RewardsReferral_Model_Referral extends Mage_Core_Model_Abstract
 {
@@ -242,6 +242,9 @@ class TBT_RewardsReferral_Model_Referral extends Mage_Core_Model_Abstract
             'msg'                => $message,
             'referral_customer'  => $customer,
             'points_earned'      => $pointsSummary,
+            'points_balance'     => (string) $affiliate->getPointsSummary(),
+            'pending_points'     => (string) $affiliate->getPendingPointsSummary(),
+            'has_pending_points' => $affiliate->hasPendingPoints(),
             'affiliate_url'      => (string) Mage::helper('rewardsref/url')->getUrl($affiliate),
             'referral_code'      => (string) Mage::helper('rewardsref/code')->getCode($affiliate->getEmail()),
             'referral_shortcode' => (string) Mage::helper('rewardsref/shortcode')->getCode($affiliate->getId()),
@@ -301,10 +304,11 @@ class TBT_RewardsReferral_Model_Referral extends Mage_Core_Model_Abstract
         if ($affiliate->getEmail() == $email) {
             throw new Exception(Mage::helper('rewardsref')->__("%s is your own e-mail address.", $email));
         }
-        if (!$this->getId() && ($this->isSubscribed($email))) {
-            throw new Exception(Mage::helper('rewardsref')->__('You or sombody else has already invited %s.', $email));
+        if (!$this->getId() && ($this->isSubscribed($email)) &&
+            $this->getReferralStatus() != TBT_RewardsReferral_Model_Referral_Guestorder::REFERRAL_STATUS) {
+            throw new Exception(Mage::helper('rewardsref')->__('You or somebody else has already invited %s.', $email));
         }
-        if (!$this->getId() && ($customer->getEmail() == $email)) {
+        if (!$this->getId() && ($customer->getEmail() == $email && !$this->getOverrideSignupRestriction())) {
             throw new Exception(Mage::helper('rewardsref')->__("%s is already signed up to the store.", $email));
         }
         // Referral is model is okay because it passed all checks         '

@@ -117,14 +117,14 @@
         </default>
         <billboard>
             <default>
-                <message><![CDATA[An unknown error has occurred. Please contact WDCA for more information at contact@wdca.ca.]]></message>
+                <message><![CDATA[An unknown error has occurred. Please contact WDCA for more information at support@sweettoothrewards.com.]]></message>
             </default>
             <noLicenseFiles>
-                <message><![CDATA[The license files for the '%s' module cannot be found. Please contact WDCA for more information at contact@wdca.ca.]]></message>
+                <message><![CDATA[The license files for the '%s' module cannot be found. Please contact WDCA for more information at support@sweettoothrewards.com.]]></message>
             </noLicenseFiles>
             <noLicense>
                 <block><![CDATA[tbtcommon/billboard_noLicense]]></block>
-                <message><![CDATA[Please verify the %s license is correct in the <a href='%s'>Magento Configuration</a>. For more help please contact WDCA at contact@wdca.ca.]]></message>
+                <message><![CDATA[Please verify the %s license is correct in the <a href='%s'>Magento Configuration</a>. For more help please contact WDCA at support@sweettoothrewards.com.]]></message>
             </noLicense>
         </billboard>
     </tbtcommon>

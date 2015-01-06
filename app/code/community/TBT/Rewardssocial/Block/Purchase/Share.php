@@ -17,6 +17,7 @@ class TBT_Rewardssocial_Block_Purchase_Share extends TBT_Rewardssocial_Block_Abs
      */
     public function getProcessingUrl()
     {
-        return $this->getUrl('rewardssocial/index/processPurchaseShare');
+        $isSecure = Mage::app()->getStore()->isCurrentlySecure();
+        return $this->getUrl('rewardssocial/index/processPurchaseShare', array('_secure' => $isSecure));
     }
 }

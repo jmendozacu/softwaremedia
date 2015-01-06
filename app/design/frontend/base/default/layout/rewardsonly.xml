@@ -34,40 +34,7 @@ Customer account pages, rendered for all tabs in dashboard
 -->
 
        
-	<checkout_cart_new>
-        <reference name="checkout.cart">
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>default</type>
-                <block>rewards/checkout_cart_item_renderer</block>
-                <template>rewardsonly/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>simple</type>
-                <block>rewards/checkout_cart_item_renderer</block>
-                <template>rewardsonly/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>grouped</type>
-                <block>rewards/checkout_cart_item_renderer_grouped</block>
-                <template>rewardsonly/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>configurable</type>
-                <block>rewards/checkout_cart_item_renderer_configurable</block>
-                <template>rewardsonly/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>bundle</type>
-                <block>rewards/checkout_cart_item_renderer_bundle</block>
-                <template>rewardsonly/checkout/cart/item/default.phtml</template>
-            </action>
-            <action method="addItemRender" ifconfig="rewards/general/layoutsactive">
-                <type>downloadable</type>
-                <block>rewards/checkout_cart_item_renderer_downloadable</block>
-                <template>rewardsonly/checkout/cart/item/downloadable.phtml</template>
-            </action>
-        </reference>
-    </checkout_cart_new>
+	
     <checkout_cart_index>
         <reference name="checkout.cart">
             <action method="addItemRender" ifconfig="rewards/general/layoutsactive">

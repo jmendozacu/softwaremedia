@@ -6,7 +6,6 @@ A.sliderHandle
 	position: absolute;
 	cursor: pointer;
 	border: none;
-	z-index: 100;
 }
 .sliderRail
 {

@@ -8,7 +8,7 @@
  * This source file is subject to the WDCA SWEET TOOTH POINTS AND REWARDS 
  * License, which extends the Open Software License (OSL 3.0).
  * The Sweet Tooth License is available at this URL: 
- *      http://www.wdca.ca/sweet_tooth/sweet_tooth_license.txt
+ *      https://www.sweettoothrewards.com/terms-of-service
  * The Open Software License is available at this URL: 
  *      http://opensource.org/licenses/osl-3.0.php
  * 
@@ -27,12 +27,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy 
  * immediately.
  * 
  * @category   [TBT]
  * @package    [TBT_Rewards]
- * @copyright  Copyright (c) 2009 Web Development Canada (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41,7 +41,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_RewardsReferral_Model_Transfer_Reason_Signup extends TBT_Rewards_Model_Transfer_Reason_Abstract {
     const REASON_TYPE_ID = 20;

@@ -18,12 +18,12 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to 
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy 
  * immediately.
  * 
  * @category   [TBT]
  * @package    [TBT_Bss]
- * @copyright  Copyright (c) 2011 WDCA (http://www.wdca.ca)
+ * @copyright  Copyright (c) 2014 Sweet Tooth Inc. (http://www.sweettoothrewards.com
  * @license    http://www.betterstoresearch.com/docs/bss_license.txt
 */
 
@@ -31,7 +31,7 @@
  *
  * @category   TBT
  * @package    TBT_Bss
- * @author     WDCA Better Store Search Team <contact@wdca.ca>
+ * @author     WDCA Better Store Search Team <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Block_Debug_Profiler extends Mage_Core_Block_Abstract
 {

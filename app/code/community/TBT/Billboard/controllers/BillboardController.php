@@ -26,7 +26,7 @@
  * WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension.
  * If you did not receive a copy of the license, please send an email to 
- * support@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy 
+ \* support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy 
  * immediately.
  * 
  * @category   [TBT]
@@ -40,7 +40,7 @@
  *
  * @category   TBT
  * @package    TBT_Rewardsinstore
- * @author     Sweet Tooth Instore Team <support@wdca.ca>
+ * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Billboard_BillboardController extends Mage_Adminhtml_Controller_Action
 {

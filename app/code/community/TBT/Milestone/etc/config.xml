@@ -34,32 +34,14 @@
                     </tbtmilestone_sales_order_shipment_save_commit_after>
                 </observers>
             </sales_order_shipment_save_commit_after>
-	        <rewards_referral_save_commit_after>
+            <rewards_referral_save_commit_after>
                 <observers>
                     <tbtmilestone_rewards_referral_save_commit_after>
                         <class>tbtmilestone/rule_observer</class>
                         <method>referralSaveAfter</method>
                     </tbtmilestone_rewards_referral_save_commit_after>
                 </observers>
-	        </rewards_referral_save_commit_after>
-
-            <!-- Special Adapter Events -->
-            <tbtrewards_special_controller_save_after>
-                <observers>
-                    <tbtmilestone_adapter_special_save>
-	                    <class>tbtmilestone/adapter_special</class>
-	                    <method>afterSaveAction</method>
-                    </tbtmilestone_adapter_special_save>
-                </observers>
-             </tbtrewards_special_controller_save_after>
-             <tbtrewards_special_controller_edit_before>
-                <observers>
-                    <tbtmilestone_adapter_special_edit>
-                        <class>tbtmilestone/adapter_special</class>
-                        <method>beforeEditAction</method>
-                    </tbtmilestone_adapter_special_edit>
-                </observers>
-             </tbtrewards_special_controller_edit_before>
+            </rewards_referral_save_commit_after>
         </events>
         <template>
             <email>
@@ -80,8 +62,12 @@
     <crontab>
         <jobs>
             <tbtmilestone_dailyCron>
-                <schedule><cron_expr>0 0 * * *</cron_expr></schedule>
-                <run><model>tbtmilestone/rule_observer::dailyCronTrigger</model></run>
+                <schedule>
+                    <cron_expr>0 0 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>tbtmilestone/rule_observer::dailyCronTrigger</model>
+                </run>
             </tbtmilestone_dailyCron>
         </jobs>
     </crontab>
@@ -92,6 +78,9 @@
                 <orders>
                     <class>tbtmilestone/rule_condition_orders</class>
                 </orders>
+                <revenue>
+                    <class>tbtmilestone/rule_condition_revenue</class>
+                </revenue>
                 <referrals>
                     <class>tbtmilestone/rule_condition_referrals</class>
                 </referrals>
@@ -120,6 +109,9 @@
             <tbtmilestone_orders>
                 <config>tbtmilestone/adapter_special_orders</config>
             </tbtmilestone_orders>
+            <tbtmilestone_revenue>
+                <config>tbtmilestone/adapter_special_revenue</config>
+            </tbtmilestone_revenue>
             <tbtmilestone_referrals>
                 <config>tbtmilestone/adapter_special_referrals</config>
             </tbtmilestone_referrals>
@@ -130,6 +122,15 @@
                 <config>tbtmilestone/adapter_special_membership</config>
             </tbtmilestone_membership>
         </special>
+        <transfer>
+            <reference>
+                <inactivity_milestone>tbtmilestone/rule_condition_inactivity_reference</inactivity_milestone>
+                <membership_milestone>tbtmilestone/rule_condition_membership_reference</membership_milestone>
+                <orders_milestone>tbtmilestone/rule_condition_orders_reference</orders_milestone>
+                <referrals_milestone>tbtmilestone/rule_condition_referrals_reference</referrals_milestone>
+                <revenue_milestone>tbtmilestone/rule_condition_revenue_reference</revenue_milestone>
+            </reference>
+        </transfer>
     </rewards>
 
 
@@ -145,6 +146,7 @@
                 <orders_trigger>payment</orders_trigger>
                 <referrals_trigger>order</referrals_trigger>
                 <orders_email_template_default>milestone_generic_notification</orders_email_template_default>
+                <revenue_email_template_default>milestone_generic_notification</revenue_email_template_default>
                 <referrals_email_template_default>milestone_generic_notification</referrals_email_template_default>
                 <membership_email_template_default>milestone_generic_notification</membership_email_template_default>
                 <inactivity_email_template_default>milestone_inactivity_notification</inactivity_email_template_default>
@@ -271,7 +273,7 @@
                 </all>
                 <admin>
                     <children>
-                         <rewards>
+                        <rewards>
                             <children>
                                 <social module="tbtmilestone" translate="title">
                                     <title>Milestone History</title>
@@ -283,5 +285,32 @@
                 </admin>
             </resources>
         </acl>
+        <events>
+            <!-- Special Adapter Events -->
+            <tbtrewards_special_controller_save_after>
+                <observers>
+                    <tbtmilestone_adapter_special_save>
+                        <class>tbtmilestone/adapter_special</class>
+                        <method>afterSaveAction</method>
+                    </tbtmilestone_adapter_special_save>
+                </observers>
+            </tbtrewards_special_controller_save_after>
+            <tbtrewards_special_controller_edit_before>
+                <observers>
+                    <tbtmilestone_adapter_special_edit>
+                        <class>tbtmilestone/adapter_special</class>
+                        <method>beforeEditAction</method>
+                    </tbtmilestone_adapter_special_edit>
+                </observers>
+            </tbtrewards_special_controller_edit_before>
+            <rewards_special_rule_save_after>
+                <observers>
+                    <tbtmilestone_adapter_rewards_special_rule_save_after>
+                        <class>tbtmilestone/adapter_special</class>
+                        <method>specialRuleSaveAfter</method>
+                    </tbtmilestone_adapter_rewards_special_rule_save_after>
+                </observers>
+            </rewards_special_rule_save_after>
+        </events>
     </adminhtml>
 </config>

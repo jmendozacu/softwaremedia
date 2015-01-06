@@ -3,7 +3,7 @@
  * Pretty much this is a wrapper for Varien_Profiler
  * @category   TBT
  * @package    TBT_Rewards
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 class TBT_Rewards_Helper_Debug_Profiler extends TBT_Rewards_Helper_Debug {
 	/**

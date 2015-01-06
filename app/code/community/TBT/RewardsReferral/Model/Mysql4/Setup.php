@@ -11,7 +11,7 @@
  * is still held accountable for any and all billable time WDCA spent  during the support process.
  * WDCA does not guarantee compatibility with any other framework extension. WDCA is not responsbile for any inconsistencies or abnormalities in the
  * behaviour of this code if caused by other framework extension. If you did not receive a copy of the license, please send an email to
- * contact@wdca.ca or call 1-888-699-WDCA(9322), so we can send you a copy immediately.
+ * support@sweettoothrewards.com or call 1.855.699.9322, so we can send you a copy immediately.
  *
  * @category   [TBT]
  * @package    [TBT_RewardsReferral]
@@ -22,7 +22,7 @@
 /**
  *
  * @category   TBT
- * @author     WDCA Sweet Tooth Team <contact@wdca.ca>
+ * * @author     Sweet Tooth Inc. <support@sweettoothrewards.com>
  */
 
 class TBT_RewardsReferral_Model_Mysql4_Setup extends TBT_Common_Model_Resource_Mysql4_Setup

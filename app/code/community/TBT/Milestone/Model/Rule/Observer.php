@@ -39,7 +39,7 @@ class TBT_Milestone_Model_Rule_Observer extends Varien_Object
         foreach ($conditionsToTest as $conditionType){           
             $doTrigger = Mage::helper('tbtmilestone/config')->isTriggerOnOrderCreate($conditionType, $storeId);            
             if (!$doTrigger) {
-                return $this;
+                continue;
             }
             
             $this->_testRules($conditionType, $customerId, $customerGroupId);
@@ -51,13 +51,13 @@ class TBT_Milestone_Model_Rule_Observer extends Varien_Object
 
     /**
      * Observes the sales_order_invoice_save_commit_after event.
-     * Triggers any 'orders' milestones if they are set to be triggered upon order payment.
+     * Triggers any 'orders' or 'revenue' milestones if they are set to be triggered upon order payment.
      * @param Varien_Event_Observer $observer
      * @return self
      */
     public function invoiceSaveCommitAfter($observer)
     {
-        $conditionsToTest = array('orders');
+        $conditionsToTest = array('orders', 'revenue');
         
         $event = $observer->getEvent();
         if (!$event) {
@@ -91,7 +91,7 @@ class TBT_Milestone_Model_Rule_Observer extends Varien_Object
         foreach ($conditionsToTest as $conditionType) {
             $doTrigger = Mage::helper('tbtmilestone/config')->isTriggerOnOrderPayment($conditionType, $storeId);
             if (!$doTrigger) {
-                return $this;
+                continue;
             }
             
             $this->_testRules($conditionType, $customerId, $customerGroupId);
@@ -140,7 +140,7 @@ class TBT_Milestone_Model_Rule_Observer extends Varien_Object
         foreach ($conditionsToTest as $conditionType){
             $doTrigger = Mage::helper('tbtmilestone/config')->isTriggerOnOrderShipment($conditionType, $store->getId());
             if (!$doTrigger) {
-                return $this;
+                continue;
             }
             
             $this->_testRules($conditionType, $customerId, $customerGroupId);
