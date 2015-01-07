@@ -55,7 +55,11 @@
                         <span class="separator">|</span>
                         <strong>
                             <?php if ($_item->getIsAdmin()): ?>
-                                <?php echo $this->__('Customer Service')?>
+                            	<?php if ($_item->getAdmin()): ?>
+                            		<?php echo $_item->getAdmin()?>
+                            	<?php else: ?>
+                                	<?php echo $this->__('Customer Service')?>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <?php echo $this->escapeHtml($this->getCustomerName())?>
                             <?php endif; ?>

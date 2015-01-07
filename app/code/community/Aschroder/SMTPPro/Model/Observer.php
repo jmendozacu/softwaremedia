@@ -17,14 +17,25 @@ class Aschroder_SMTPPro_Model_Observer {
 		foreach($queueItems as $queueItem) {
 			if (!$queueItem->getParams())
 				continue;
-			Mage::log('Resending queue item ' . $queueItem->getId(),NULL,'queue.log');
+			//Mage::log('Resending queue item ' . $queueItem->getId(),NULL,'queue.log');
+			
+			//Check if e-mail recipient has additional e-mails associated with it
 			$params = json_decode($queueItem->getParams(), true);
-			if (Mage::helper('smtppro/mail')->sendMailObject($params['mail_object'], $params['website_model_id'], $params['transport'])) {
+			$mail = unserialize($params['mail_object']);
+			
+			$recip = $mail->getRecipients();
+			$customer = Mage::getModel('customer/customer')->loadByEmail($recip[0]);
+			if ($customer->getData('additional_email')) {
+				foreach(explode(',',$customer->getData('additional_email')) as $toCC) {
+					//Add all additional e-mails to CC
+					$mail->addCc(trim($toCC));
+				}
+			}
+			$mail = serialize($mail);
+			if (Mage::helper('smtppro/mail')->sendMailObject($mail, $params['website_model_id'], $params['transport'])) {
 				$queueItem->delete();
-				Mage::log('Success',NULL,'queue.log');
 			} else {
 				$queueItem->setStatus('resend_failed')->save();
-				Mage::log('Failed',NULL,'queue.log');
 			}
 		}	
 	}
