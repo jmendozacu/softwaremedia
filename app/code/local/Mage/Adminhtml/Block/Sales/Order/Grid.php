@@ -215,7 +215,7 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 
 		$referer_arr = OCM_Peachtree_Model_Referer::getReferers();
 		$adminUserModel = Mage::getModel('admin/user');
-		$userCollection = $adminUserModel->getCollection(); 
+		$userCollection = $adminUserModel->getCollection()->addFieldToFilter('is_active',1); 
 		
 		foreach($userCollection as $user) {
 			$referer_arr[$user->getUsername()] = $user->getFirstname() . " " . $user->getLastname();
