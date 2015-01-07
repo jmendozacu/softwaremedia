@@ -35,6 +35,91 @@ require_once('Mage/Adminhtml/controllers/Sales/OrderController.php');
 
 class SoftwareMedia_Sales_Adminhtml_Sales_OrderController extends Mage_Adminhtml_Sales_OrderController {
 
+
+    public function exportLicensingAction()
+    {
+        $fileName   = 'licensing.csv';
+        $grid       = $this->getLayout()->createBlock('adminhtml/sales_order_grid');
+        $grid->getCsvFile();
+        $grid->getCollection()->setPageSize(200);
+        
+        $csv = '';
+        
+        $headers = array(
+        	'company_name',
+        	'contact_name',
+        	'company_email_address',
+        	'phone_number',
+        	'address', 
+        	'city',
+        	'state',
+        	'zip',
+        	'country'
+        );
+        
+       
+        foreach($grid->getCollection() as $order) {
+        	$item = array();
+        	$custom = $this->getOrderData($order);
+        	//var_dump($custom);
+        	$item['order_id'] = $order->getIncrementId();
+        	foreach($headers as $header) {
+        		$item[$header] = '';
+	        	foreach($custom as $cData) {
+		        	if ($cData['code'] != $header)
+		        		continue;
+		        		
+		        	$item[$header] = $cData['value'];
+	        	}
+        	}
+        	
+        	foreach($order->getAllVisibleItems() as $orderItem) {
+	        	$product = Mage::getModel('catalog/product')->load($orderItem->getProductId());
+	        	if ($product->getLicenseNonlicenseDropdown() != 1210)
+	        		continue;
+	        		
+	        	$item['sku'] = $orderItem->getSku();
+	        	$item['qty'] = $orderItem->getQtyOrdered();
+	        	
+	        	$csv .= '"' . implode('","', $item) . '"' . "\r\n";
+        	}
+			
+        }
+        
+        $this->_sendUploadResponse($fileName, $csv);
+    }
+    
+    public function getOrderData($order) {
+        $iStoreId = $order->getStoreId();
+
+        $oFront = Mage::app()->getFrontController();
+        $params = $oFront->getRequest()->getParams();
+       
+        $iOrderId = $order->getId();  
+        $oAitcheckoutfields  = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
+
+        $aCustomAtrrList = $oAitcheckoutfields->getOrderCustomData($iOrderId, $iStoreId, true, true);   
+                
+        !$aCustomAtrrList ? $aCustomAtrrList = array() : false;
+        
+        return $aCustomAtrrList;
+    }
+    
+	protected function _sendUploadResponse($fileName, $content, $contentType = 'application/octet-stream') {
+		$response = $this->getResponse();
+		$response->setHeader('HTTP/1.1 200 OK', '');
+		$response->setHeader('Pragma', 'public', true);
+		$response->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		$response->setHeader('Content-Disposition', 'attachment; filename=' . $fileName);
+		$response->setHeader('Last-Modified', date('r'));
+		$response->setHeader('Accept-Ranges', 'bytes');
+		$response->setHeader('Content-Length', strlen($content));
+		$response->setHeader('Content-type', $contentType);
+		$response->setBody($content);
+		$response->sendResponse();
+		die;
+	}
+	
 	/**
 	 * Cancel order
 	 */
