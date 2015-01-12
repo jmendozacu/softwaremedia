@@ -20,7 +20,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		$this->setDefaultDir('DESC');
 		$this->setSaveParametersInSession(true);
 		$this->setSubReportSize(false);
-		$this->setCustomHeader('Detailed Customer Notes Report');
+		$this->setCustomHeader('CSSR Detailed Stats');
 	}
 
 	protected function _prepareCollection() {
