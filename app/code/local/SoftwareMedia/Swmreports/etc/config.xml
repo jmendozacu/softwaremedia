@@ -52,11 +52,11 @@
 								<action>swmreports/adminhtml_coupon</action>
 							</coupon>
 							<customernote>
-								<title>Customer Notes - Detailed</title>
+								<title>CSSR Detailed Stats</title>
 								<action>swmreports/adminhtml_customernote</action>
 							</customernote>
 							<noteoverview>
-								<title>Customer Notes - Overview</title>
+								<title>CSSR Overview Stats</title>
 								<action>swmreports/adminhtml_customernote</action>
 							</noteoverview>
 
