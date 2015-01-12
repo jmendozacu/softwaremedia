@@ -55,11 +55,6 @@
 								<title>CSSR Detailed Stats</title>
 								<action>swmreports/adminhtml_customernote</action>
 							</customernote>
-							<noteoverview>
-								<title>CSSR Overview Stats</title>
-								<action>swmreports/adminhtml_customernote</action>
-							</noteoverview>
-
 							
 						</children>
 					</swmreports>
