@@ -97,7 +97,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		));
 		*/
 		$this->addColumn('created_time', array(
-			'header' => Mage::helper('coupon')->__('Created Date'),
+			'header' => Mage::helper('coupon')->__('Contact Date'),
 			'sortable' => true,
 			'type' => 'datetime',
 			'index' => 'created_time',
