@@ -22,7 +22,7 @@ class Magecon_CustomerNotes_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	public function getOptions() {
 		
-		return array('','Phone - Hung Up','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
+		return array('N/A','Phone - Hung Up','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
 	}
     public function isEnabled() {
         return Mage::getStoreConfig(self::XML_PATH_ENABLED);

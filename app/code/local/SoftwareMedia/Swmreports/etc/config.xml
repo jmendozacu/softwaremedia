@@ -51,6 +51,16 @@
 								<title>Coupon</title>
 								<action>swmreports/adminhtml_coupon</action>
 							</coupon>
+							<customernote>
+								<title>Customer Notes - Detailed</title>
+								<action>swmreports/adminhtml_customernote</action>
+							</customernote>
+							<noteoverview>
+								<title>Customer Notes - Overview</title>
+								<action>swmreports/adminhtml_customernote</action>
+							</noteoverview>
+
+							
 						</children>
 					</swmreports>
 				</children>
@@ -80,6 +90,10 @@
 											<title>Out of Stock</title>
 											<action>swmreports/adminhtml_outofstock</action>
 										</outofstock>
+										<customernote>
+											<title>Customer Notes</title>
+											<action>swmreports/adminhtml_customernote</action>
+										</customernote>
 										<coupon>
 											<title>Coupon</title>
 											<action>swmreports/adminhtml_coupon</action>
@@ -103,6 +117,9 @@
 				<outofstock>
 					<file>swmreports/outofstock.xml</file>
 				</outofstock>
+				<customernote>
+					<file>swmreports/customernote.xml</file>
+				</customernote>
 				<coupon>
 					<file>swmreports/coupon.xml</file>
 				</coupon>
@@ -143,6 +160,9 @@
 			<outofstock>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</outofstock>
+			<customernote>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</customernote>
 			<coupon>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</coupon>
@@ -160,6 +180,9 @@
 			<outofstock>
 				<class>SoftwareMedia_Swmreports_Helper</class>
 			</outofstock>
+			<customernote>
+				<class>SoftwareMedia_Swmreports_Helper</class>
+			</customernote>
 			<coupon>
 				<class>SoftwareMedia_Swmreports_Helper</class>
 			</coupon>

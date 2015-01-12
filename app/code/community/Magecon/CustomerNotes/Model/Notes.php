@@ -18,6 +18,10 @@
  */
 class Magecon_CustomerNotes_Model_Notes extends Mage_Core_Model_Abstract {
 
+	public function getOptions() {
+		return array('','Phone - Hung Up','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
+	}
+	
     public function _construct() {
         parent::_construct();
         $this->_init('customernotes/notes');
