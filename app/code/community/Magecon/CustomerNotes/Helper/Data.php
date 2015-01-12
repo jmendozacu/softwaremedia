@@ -20,6 +20,10 @@ class Magecon_CustomerNotes_Helper_Data extends Mage_Core_Helper_Abstract {
 
     const XML_PATH_ENABLED = 'customernotes/settings/enabled';
 
+	public function getOptions() {
+		
+		return array('','Phone - Hung Up','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
+	}
     public function isEnabled() {
         return Mage::getStoreConfig(self::XML_PATH_ENABLED);
     }

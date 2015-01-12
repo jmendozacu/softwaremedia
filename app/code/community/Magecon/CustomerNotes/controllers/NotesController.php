@@ -54,15 +54,18 @@ class Magecon_CustomerNotes_NotesController extends Mage_Adminhtml_Controller_Ac
             if ($this->getRequest()->isPost()) {
                 $customer_id = $this->getRequest()->getPost('customer_id');
                 $customer_name = $this->getRequest()->getPost('customer_name');
+                $contact_method = $this->getRequest()->getPost('contact_method');
                 $data = array("user_id" => Mage::getSingleton('admin/session')->getUser()->getId(),
                     "username" => Mage::getSingleton('admin/session')->getUser()->getUsername(),
                     "customer_id" => $customer_id,
                     "customer_name" => $customer_name,
+                    "contact_method" => $contact_method,
                     "note" => $this->getRequest()->getPost('note'),
                     "created_time" => now());
                 $model = Mage::getModel('customernotes/notes');
                 $model->setData($data);
                 $model->save();
+                Mage::getSingleton('adminhtml/session')->addSuccess('Added Customer Note');
             } else {
                 throw new Exception('No data submited');
             }

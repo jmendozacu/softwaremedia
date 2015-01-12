@@ -10,6 +10,17 @@
                         <input type="hidden" name="customer_id" value="<?php echo $this->getCustomerId(); ?>" />
                         <input type="hidden" name="customer_name" value="<?php echo $this->getCustomerName(); ?>" />
                         <span class="field-row">
+                            <label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Disposition') ?></label>
+                            <select name="contact_method">
+                            
+                            	<?php foreach(Mage::helper('customernotes')->getOptions() as $option) {
+	                            	
+	                            	echo "<option value=\"" . $option . "\">" . $option . "</option>";
+                            	}
+                            	?>
+                            </select>
+                        </span>
+                        <span class="field-row">
                             <label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Note') ?></label>
                             <textarea name="note" rows="3" cols="5" style="height:6em; width:99%;" id="history_note"></textarea>
                         </span>
@@ -33,11 +44,15 @@
                             <input type="hidden" name="customer_id" value="<?php echo $this->getCustomerId() ?>" />
                             <input type="hidden" name="note_id" value="<?php echo $note['note_id']; ?>" />
                             <strong><?php echo $this->helper('core')->formatDate($note['created_time'], 'medium') ?></strong>
-                            <small><?php echo $this->helper('core')->formatTime($note['created_time'], 'medium') ?>
-                            </small>
-    <?php echo "posted by: " . $note['username']; ?>
+                            <?php echo $this->helper('core')->formatTime($note['created_time'], 'medium') ?>
+                             <span class="separator">|</span>
+                             <?php if ($note['contact_method']): ?>
+                             <strong><?php echo $note['contact_method']; ?></strong>
+                             <span class="separator">|</span> 
+                             <?php endif; ?>
+    <strong><?php echo $note['username']; ?></strong>
                             <div class="f-right">
-                                <input type="submit" class="form-button" value="<?php echo Mage::helper('customernotes')->__('Delete Note') ?>" onclick="return confirm('Are you sure you want to delete the note?')"/>
+                                <!--input type="submit" class="form-button" value="<?php echo Mage::helper('customernotes')->__('Delete Note') ?>" onclick="return confirm('Are you sure you want to delete the note?')"/-->
                             </div>
                             <br/><?php echo $this->htmlEscape($note['note'], array('b', 'br', 'strong', 'i', 'u')) ?>
                         </li>
