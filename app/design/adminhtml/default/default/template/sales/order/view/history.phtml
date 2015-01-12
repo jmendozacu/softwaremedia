@@ -53,6 +53,13 @@
                 <option value="<?php echo $_code ?>"<?php if($_code==$this->getOrder()->getStatus()): ?> selected="selected"<?php endif; ?>><?php echo $_label ?></option>
             <?php endforeach; ?>
             </select>
+            
+            <select name="history[priority]" class="select" id="history_priority">
+            
+            <?php foreach (array('Low' => 1,'Medium' => 2, 'High' => 3) as $_label => $_code): ?>
+                <option value="<?php echo $_code ?>"><?php echo $_label ?></option>
+            <?php endforeach; ?>
+            </select>
         </span>
         <span class="field-row">
          
@@ -73,7 +80,14 @@
     <?php endif;?>
     <ul class="note-list">
     <?php foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item): ?>
-        <li>
+    	<?php $class = ''; ?>
+    	<?php if ($_item->getAdmin())
+			$class .= ' note_admin';
+		?>
+		<?php if ($_item->getAdmin())
+			$class .= ' note_priority_' . $_item->getPriority();
+		?>
+        <li<?php if ($class): ?> class="<?php echo $class; ?>"<?php endif;?>>
             <strong><?php echo $this->helper('core')->formatDate($_item->getCreatedAtDate(), 'medium') ?></strong>
             <?php echo $this->helper('core')->formatTime($_item->getCreatedAtDate(), 'medium') ?><span class="separator">|</span><strong><?php echo $_item->getStatusLabel() ?></strong><?php if ($_item->getAdmin()): ?><span class="separator">|</span><strong><?php echo $_item->getAdmin() ?></strong><?php endif; ?><br/><small><?php echo $this->helper('sales')->__('Customer') ?>
             <strong class="subdue">

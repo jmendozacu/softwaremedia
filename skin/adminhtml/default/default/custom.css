@@ -23,3 +23,22 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+
+.note_admin {
+	background-image: url('images/icon_note_list_1.gif') !important;
+}
+
+.note_priority_1 {
+	background-color: #f0f0f0 ;
+	background-image: url('images/icon_note_list_1.gif') !important;
+}
+
+.note_priority_2 {
+	background-color: #fcfac9 ;
+	background-image: url('images/icon_note_list_2.gif') !important;
+}
+
+.note_priority_4, .note_priority_3 {
+	background-color: #faebe7 !important;
+	background-image: url('images/icon_note_list_3.gif') !important;
+}
