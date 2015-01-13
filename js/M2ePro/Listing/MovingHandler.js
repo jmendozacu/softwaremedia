@@ -2,8 +2,6 @@ ListingMovingHandler = Class.create(ActionHandler, {
 
     //----------------------------------
 
-    // todo next (temp solution)
-
     options: {},
 
     setOptions: function(options)
@@ -47,11 +45,11 @@ ListingMovingHandler = Class.create(ActionHandler, {
 
     getGridHtml: function(selectedProducts)
     {
-        this.selectedProducts = selectedProducts;
-
         var self = this;
+
         MagentoMessageObj.clearAll();
 
+        self.selectedProducts = selectedProducts;
         self.gridHandler.unselectAll();
 
         var callback = function(response) {
@@ -183,7 +181,7 @@ ListingMovingHandler = Class.create(ActionHandler, {
                     self.gridHandler.unselectAllAndReload();
                 }
 
-                MagentoMessageObj.addError(str_replace('%s', self.options.url.logViewUrl, message));
+                MagentoMessageObj.addError(str_replace('%url%', self.options.url.logViewUrl, message));
             }
         });
     },
@@ -207,8 +205,23 @@ ListingMovingHandler = Class.create(ActionHandler, {
                 callback.call(this);
             }).bind(this)
         });
-    }
+    },
 
     //----------------------------------
+
+    startEbayListingCreation: function(url, response){
+        var self = this;
+        var win = window.open(url);
+
+        var intervalId = setInterval(function(){
+            if (!win.closed) {
+                return;
+            }
+
+            clearInterval(intervalId);
+
+            listingMovingGridJsObject.reload();
+        }, 1000);
+    }
 
 });

@@ -44,6 +44,10 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
             return true;
         }
 
+        if ($this->isComponentModeEbay() && $this->getAccount()->getChildObject()->isModeSandbox()) {
+            return false;
+        }
+
         return (bool)Mage::getModel('M2ePro/Listing_Product')
                             ->getCollection()
                             ->addFieldToFilter('listing_id', $this->getId())
@@ -78,7 +82,8 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                                      Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                      NULL,
                                      Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_LISTING,
-                                     // Parser hack -> Mage::helper('M2ePro')->__('Listing was successfully deleted');
+                                     // M2ePro_TRANSLATIONS
+                                     // Listing was successfully deleted
                                      'Listing was successfully deleted',
                                      Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
                                      Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH );
@@ -366,7 +371,8 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                                      Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN,
                                      NULL,
                                      Ess_M2ePro_Model_Listing_Log::ACTION_ADD_PRODUCT_TO_LISTING,
-                                     // Parser hack -> Mage::helper('M2ePro')->__('Item was successfully added');
+                                     // M2ePro_TRANSLATIONS
+                                     // Item was successfully added
                                      'Item was successfully added',
                                      Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
                                      Ess_M2ePro_Model_Log_Abstract::PRIORITY_LOW);
@@ -532,7 +538,8 @@ class Ess_M2ePro_Model_Listing extends Ess_M2ePro_Model_Component_Parent_Abstrac
                                     Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
                                     NULL,
                                     Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_PRODUCT_FROM_MAGENTO,
-                                    // ->__('Variation option was deleted. Item was reset.');
+                                    // M2ePro_TRANSLATIONS
+                                    // Variation option was deleted. Item was reset.
                                     'Variation option was deleted. Item was reset.',
                                     Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING,
                                     Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH);

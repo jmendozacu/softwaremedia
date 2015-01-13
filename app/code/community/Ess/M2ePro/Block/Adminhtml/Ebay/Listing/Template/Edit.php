@@ -29,7 +29,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
         // Set header text
         //------------------------------
         if ($listing) {
-            $this->_headerText = sprintf(Mage::helper('M2ePro')->__('Edit Listing Settings "%s"'), $listing->getTitle());
+            $this->_headerText = Mage::helper('M2ePro')->__('Edit Listing Settings "%listing_title%"',
+                                                            $listing->getTitle());
         } else {
             $this->_headerText = Mage::helper('M2ePro')->__('Creating A New M2E Listing');
         }
@@ -117,13 +118,22 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Edit extends Mage_Adminht
                 //------------------------------
             }
 
+            $nextStepBtnText = 'Next Step';
+
+            $sessionKey = 'ebay_listing_create';
+            $sessionData = Mage::helper('M2ePro/Data_Session')->getValue($sessionKey);
+            if ($currentStep == 4 && isset($sessionData['creation_mode']) && $sessionData['creation_mode'] ===
+                Ess_M2ePro_Helper_Component_Ebay::LISTING_CREATION_MODE_LISTING_ONLY) {
+
+                $nextStepBtnText = 'Complete';
+            }
             //------------------------------
             $url = $this->getUrl(
                 '*/adminhtml_ebay_listing_create/index', array('_current' => true, 'step' => $currentStep)
             );
             $callback = 'function(params) { CommonHandlerObj.postForm(\''.$url.'\', params); }';
             $this->_addButton('save', array(
-                'label'     => Mage::helper('M2ePro')->__('Next Step'),
+                'label'     => Mage::helper('M2ePro')->__($nextStepBtnText),
                 'onclick'   => 'EbayListingTemplateSwitcherHandlerObj.saveSwitchers(' . $callback . ')',
                 'class'     => 'next'
             ));

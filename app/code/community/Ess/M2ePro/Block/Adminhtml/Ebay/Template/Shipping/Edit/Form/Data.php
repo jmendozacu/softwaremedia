@@ -69,8 +69,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
     {
         $template = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_shipping');
 
-        $localDiscount = $template->getData('local_shipping_combined_discount_profile_id');
-        $internationalDiscount = $template->getData('international_shipping_combined_discount_profile_id');
+        $localDiscount = $template->getData('local_shipping_discount_profile_id');
+        $internationalDiscount = $template->getData('international_shipping_discount_profile_id');
 
         !is_null($localDiscount) && $localDiscount = json_decode($localDiscount, true);
         !is_null($internationalDiscount) && $internationalDiscount = json_decode($internationalDiscount, true);
@@ -219,8 +219,35 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             'packages' => $this->getMarketplace()->getChildObject()->getPackageInfo(),
             'dispatch' => $this->getSortedDispatchInfo(),
             'locations' => $this->getMarketplace()->getChildObject()->getShippingLocationInfo(),
-            'locations_exclude' => $this->getSortedLocationExcludeInfo()
+            'locations_exclude' => $this->getSortedLocationExcludeInfo(),
+            'origin_country' => $this->getMarketplace()->getChildObject()->getOriginCountry(),
         );
+
+        $policyLocalization = $this->getData('policy_localization');
+
+        if(!empty($policyLocalization)) {
+            /** @var Ess_M2ePro_Model_Magento_Translate $translator */
+            $translator = Mage::getModel('M2ePro/Magento_Translate');
+            $translator->setLocale($policyLocalization);
+            $translator->init();
+
+            foreach ($data['services'] as $serviceKey => $service) {
+                $data['services'][$serviceKey]['title'] = $translator->__($service['title']);
+                foreach ($service['methods'] as $methodKey => $method) {
+                    $data['services'][$serviceKey]['methods'][$methodKey]['title'] = $translator->__($method['title']);
+                }
+            }
+
+            foreach ($data['locations'] as $key => $item) {
+                $data['locations'][$key]['title'] =  $translator->__($item['title']);
+            }
+
+            foreach ($data['locations_exclude'] as $regionKey => $region) {
+                foreach ($region as $locationKey => $location) {
+                    $data['locations_exclude'][$regionKey][$locationKey] = $translator->__($location);
+                }
+            }
+        }
 
         return $data;
     }
@@ -316,21 +343,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
 
         $attributes = array();
 
-        // m2epro_ebay_template_shipping
-        //------------------------------
-        $code = 'dispatch_time_attribute';
-        if (!$this->isExistInAttributesArray($formData[$code])) {
-            $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($formData[$code]);
-            $attributes[$code] = $label;
-        }
-
-        $code = 'local_shipping_cash_on_delivery_cost_attribute';
-        if (!$this->isExistInAttributesArray($formData[$code])) {
-            $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($formData[$code]);
-            $attributes[$code] = $label;
-        }
-        //------------------------------
-
         // m2epro_ebay_template_shipping_service
         //------------------------------
         $attributes['services'] = array();
@@ -348,6 +360,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
 
             $mode = 'cost_mode';
             $code = 'cost_additional_value';
+
+            if ($service[$mode] == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_ATTRIBUTE) {
+                if (!$this->isExistInAttributesArray($service[$code])) {
+                    $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($service[$code]);
+                    $attributes['services'][$i][$code] = $label;
+                }
+            }
+
+            $mode = 'cost_mode';
+            $code = 'cost_surcharge_value';
 
             if ($service[$mode] == Ess_M2ePro_Model_Ebay_Template_Shipping_Service::COST_MODE_CUSTOM_ATTRIBUTE) {
                 if (!$this->isExistInAttributesArray($service[$code])) {
@@ -373,7 +395,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
                 $attributes['calculated'][$code] = $label;
             }
 
-            $code = 'dimension_height_attribute';
+            $code = 'dimension_length_attribute';
             if (!$this->isExistInAttributesArray($formData['calculated'][$code])) {
                 $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($formData['calculated'][$code]);
                 $attributes['calculated'][$code] = $label;
@@ -386,18 +408,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             }
 
             $code = 'weight_attribute';
-            if (!$this->isExistInAttributesArray($formData['calculated'][$code])) {
-                $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($formData['calculated'][$code]);
-                $attributes['calculated'][$code] = $label;
-            }
-
-            $code = 'local_handling_cost_attribute';
-            if (!$this->isExistInAttributesArray($formData['calculated'][$code])) {
-                $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($formData['calculated'][$code]);
-                $attributes['calculated'][$code] = $label;
-            }
-
-            $code = 'international_handling_cost_attribute';
             if (!$this->isExistInAttributesArray($formData['calculated'][$code])) {
                 $label = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($formData['calculated'][$code]);
                 $attributes['calculated'][$code] = $label;
@@ -424,6 +434,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
     public function canDisplayLocalShippingRateTable()
     {
         return $this->getMarketplace()->getChildObject()->isLocalShippingRateTableEnabled();
+    }
+
+    public function canDisplayClickAndCollectOption()
+    {
+        return $this->getMarketplace()->getId() == Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_UK;
     }
 
     public function canDisplayFreightShippingType()
@@ -463,12 +478,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
         return $this->getMarketplace()->getChildObject()->isInternationalShippingRateTableEnabled();
     }
 
-    public function canDisplayGetItFast()
-    {
-        return $this->getMarketplace()->getChildObject()->isGetItFastEnabled();
-    }
-
-    public function canDisplayCashOnDelivery()
+    public function canDisplayCashOnDeliveryCost()
     {
         return $this->getMarketplace()->getChildObject()->isCashOnDeliveryEnabled();
     }

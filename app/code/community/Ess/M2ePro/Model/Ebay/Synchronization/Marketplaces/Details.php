@@ -43,7 +43,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
 
         $this->getActualOperationHistory()->addText('Starting marketplace "'.$marketplace->getTitle().'"');
 
-        $this->getActualOperationHistory()->addTimePoint(__METHOD__.'get'.$marketplace->getId(),'Get details from eBay');
+        $this->getActualOperationHistory()->addTimePoint(__METHOD__.'get'.$marketplace->getId(),
+                                                         'Get details from eBay');
         $details = $this->receiveFromEbay($marketplace);
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'get'.$marketplace->getId());
 
@@ -145,7 +146,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Details
 
     protected function logSuccessfulOperation(Ess_M2ePro_Model_Marketplace $marketplace)
     {
-        // ->__('The "Details" action for eBay Site: "%mrk%" has been successfully completed.');
+        // M2ePro_TRANSLATIONS
+        // The "Details" action for eBay Site: "%mrk%" has been successfully completed.
 
         $tempString = Mage::getModel('M2ePro/Log_Abstract')->encodeDescription(
             'The "Details" action for eBay Site: "%mrk%" has been successfully completed.',

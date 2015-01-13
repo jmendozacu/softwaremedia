@@ -96,8 +96,8 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
                          $fatalErrors = array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
 
                          if (in_array((int)$error[\'type\'], $fatalErrors)) {
-                             $stackTrace = @debug_backtrace(false);
-                             $traceInfo = Mage::helper(\'M2ePro/Module_Exception\')->getFatalStackTraceInfo($stackTrace);
+                             $trace = @debug_backtrace(false);
+                             $traceInfo = Mage::helper(\'M2ePro/Module_Exception\')->getFatalStackTraceInfo($trace);
                              Mage::helper(\'M2ePro/Module_Exception\')->processFatal($error,$traceInfo);
                          }';
 
@@ -107,7 +107,7 @@ class Ess_M2ePro_Helper_Module_Exception extends Mage_Core_Helper_Abstract
 
     public function getUserMessage(Exception $exception)
     {
-        return $this->__('Fatal error occurred').': "'.$exception->getMessage().'".';
+        return Mage::helper('M2ePro')->__('Fatal error occurred').': "'.$exception->getMessage().'".';
     }
 
     // ########################################

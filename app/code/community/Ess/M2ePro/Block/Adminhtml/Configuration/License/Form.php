@@ -52,6 +52,8 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         /** @var Ess_M2ePro_Helper_Module_License $licenseHelper */
         $licenseHelper = Mage::helper('M2ePro/Module_License');
 
+        $cacheConfig = Mage::helper('M2ePro/Module')->getCacheConfig();
+
         // Set data for form
         //----------------------------
         $this->key = Mage::helper('M2ePro')->escapeHtml($licenseHelper->getKey());
@@ -64,6 +66,11 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
                 'domain' => $licenseHelper->isValidDomain(),
                 'ip' => $licenseHelper->isValidIp(),
                 'directory' => $licenseHelper->isValidDirectory()
+            ),
+            'connection' => array(
+                'domain' => $cacheConfig->getGroupValue('/license/connection/', 'domain'),
+                'ip' => $cacheConfig->getGroupValue('/license/connection/', 'ip'),
+                'directory' => $cacheConfig->getGroupValue('/license/connection/', 'directory')
             )
         );
 
@@ -82,7 +89,7 @@ class Ess_M2ePro_Block_Adminhtml_Configuration_License_Form extends Ess_M2ePro_B
         //-------------------------------
         $data = array(
             'label'   => Mage::helper('M2ePro')->__('Refresh'),
-            'onclick' => 'setLocation(\'' . $this->getUrl('M2ePro/adminhtml_configuration_license/refreshStatus') . '\');',
+            'onclick' => 'setLocation(\''.$this->getUrl('M2ePro/adminhtml_configuration_license/refreshStatus').'\');',
             'class'   => 'refresh_status'
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);

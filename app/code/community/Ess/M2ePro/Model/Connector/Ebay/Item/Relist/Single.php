@@ -31,8 +31,26 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Relist_Single
         if (!$this->listingProduct->isRelistable()) {
 
             $message = array(
-                // ->__('The item either is listed, or not listed yet or not available');
+                // M2ePro_TRANSLATIONS
+                // The item either is listed, or not listed yet or not available
                 parent::MESSAGE_TEXT_KEY => 'The item either is listed, or not listed yet or not available',
+                parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
+            );
+
+            $this->getLogger()->logListingProductMessage($this->listingProduct, $message,
+                                                         Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
+
+            return false;
+        }
+
+        if ($this->listingProduct->isLockedObject(NULL) ||
+            $this->listingProduct->isLockedObject('in_action')) {
+
+            $message = array(
+                // M2ePro_TRANSLATIONS
+                // Another action is being processed. Try again when the action is completed.
+                parent::MESSAGE_TEXT_KEY => 'Another action is being processed. '
+                                           .'Try again when the action is completed.',
                 parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
             );
 
@@ -45,7 +63,8 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Relist_Single
         if(!$this->listingProduct->getChildObject()->isSetCategoryTemplate()) {
 
             $message = array(
-                // Parser hack -> Mage::helper('M2ePro')->__('Categories settings are not set');
+                // M2ePro_TRANSLATIONS
+                // Categories settings are not set
                 parent::MESSAGE_TEXT_KEY => 'Categories settings are not set',
                 parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
             );
@@ -90,7 +109,8 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Relist_Single
             $this->getResponseObject()->processAlreadyActive($response, $params);
 
             $message = array(
-                // Parser hack -> Mage::helper('M2ePro')->__('Item was already started on eBay');
+                // M2ePro_TRANSLATIONS
+                // Item was already started on eBay
                 parent::MESSAGE_TEXT_KEY => 'Item was already started on eBay',
                 parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
             );
@@ -100,7 +120,8 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Relist_Single
             $this->getResponseObject()->processSuccess($response, $params);
 
             $message = array(
-                // Parser hack -> Mage::helper('M2ePro')->__('Item was successfully relisted');
+                // M2ePro_TRANSLATIONS
+                // Item was successfully relisted
                 parent::MESSAGE_TEXT_KEY => 'Item was successfully relisted',
                 parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_SUCCESS
             );
@@ -154,7 +175,8 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_Relist_Single
         $this->getResponseObject()->markAsNotListedItem();
 
         $message = array(
-            // ->__('This item cannot be accessed on eBay. M2E set Not Listed status.');
+            // M2ePro_TRANSLATIONS
+            // This item cannot be accessed on eBay. M2E set Not Listed status.
             parent::MESSAGE_TEXT_KEY => 'This item cannot be accessed on eBay. M2E set Not Listed status.',
             parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_WARNING
         );

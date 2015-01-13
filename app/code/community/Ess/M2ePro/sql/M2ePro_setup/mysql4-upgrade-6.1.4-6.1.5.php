@@ -106,7 +106,9 @@ SQL
 
     $indexList = $connection->getIndexList($motorsNewTableName);
     foreach ($newIndexes as $newIndex) {
-        if (!isset($indexList[strtoupper($newIndex)])) {
+        if (!isset($indexList[strtoupper($newIndex)]) &&
+            $connection->tableColumnExists($motorsNewTableName, $newIndex) !== false) {
+
             $connection->addKey($motorsNewTableName, $newIndex, $newIndex);
         }
     }
@@ -150,7 +152,7 @@ SQL
     }
 
     if ($connection->tableColumnExists($dictionaryCategoryTableName, 'parent_id') !== false &&
-        $connection->tableColumnExists($dictionaryCategoryTableName, 'parent_category_id') == false) {
+        $connection->tableColumnExists($dictionaryCategoryTableName, 'parent_category_id') === false) {
         $connection->changeColumn(
                    $dictionaryCategoryTableName,
                        'parent_id',

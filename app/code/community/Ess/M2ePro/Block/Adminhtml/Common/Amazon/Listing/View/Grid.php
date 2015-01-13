@@ -201,11 +201,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Grid extends Mage_Ad
             'frame_callback' => array($this, 'callbackColumnStatus')
         ));
 
-        if (Mage::helper('M2ePro/Magento')->isDeveloper()) {
+        if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
             $this->addColumn('developer_action', array(
                 'header'     => Mage::helper('M2ePro')->__('Actions'),
                 'align'      => 'left',
-                'width'      => '100px',
+                'width'      => '120px',
                 'type'       => 'text',
                 'renderer'   => 'M2ePro/adminhtml_listing_view_grid_column_renderer_developerAction',
                 'index'      => 'value',
@@ -374,7 +374,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Grid extends Mage_Ad
         if (!$row->getChildObject()->isVariationMatched()) {
 
             $popupTitle = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml(
-                Mage::helper('M2ePro')->__('Manage "%s" Options', $productTitle))
+                Mage::helper('M2ePro')->__('Manage "%product_title%" Options', $productTitle))
             );
             $linkTitle = Mage::helper('M2ePro')->__('Manage Options');
             $linkContent = '<img height="12" width="12" src="'.$this->getSkinUrl('M2ePro').'/images/add.png'.'">';
@@ -413,7 +413,7 @@ HTML;
         if (!$hasInActionLock) {
 
             $popupTitle = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml(
-                Mage::helper('M2ePro')->__('Edit "%s" Variation', $productTitle))
+                Mage::helper('M2ePro')->__('Edit "%product_title%" Variation', $productTitle))
             );
             $linkTitle  = Mage::helper('M2ePro')->__('Edit');
             $linkContent = '<img width="12" height="12" src="'.$this->getSkinUrl('M2ePro').'/images/pencil.png'.'">';
@@ -431,7 +431,7 @@ HTML;
         }
 
         $popupTitle = Mage::helper('M2ePro')->escapeJs(Mage::helper('M2ePro')->escapeHtml(
-            Mage::helper('M2ePro')->__('Add Another "%s" Variations', $productTitle))
+            Mage::helper('M2ePro')->__('Add Another "%product_title%" Variations', $productTitle))
         );
         $linkTitle  = Mage::helper('M2ePro')->__('Add Another Variation');
         $linkContent = '<img width="12" height="12" src="'.$this->getSkinUrl('M2ePro').'/images/add.png'.'">';
@@ -661,8 +661,7 @@ HTML;
 
         foreach ($logRows as $row) {
 
-            $row['description'] = Mage::helper('M2ePro')->escapeHtml($row['description']);
-            $row['description'] = Mage::getModel('M2ePro/Log_Abstract')->decodeDescription($row['description']);
+            $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
                 if (count($tempActionRows) > 0) {

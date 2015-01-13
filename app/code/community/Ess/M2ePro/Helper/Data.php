@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @copyright  Copyright (c) 2013 by  ESS-UA.
+ * @copyright  Copyright (c) 2014 by  ESS-UA.
  */
 
 class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
@@ -16,6 +16,14 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     const INITIATOR_DEVELOPER = 3;
 
     const CUSTOM_IDENTIFIER = 'm2epro_extension';
+
+    // ########################################
+
+    public function __()
+    {
+        $args = func_get_args();
+        return Mage::helper('M2ePro/Module_Translation')->translate($args);
+    }
 
     // ########################################
 
@@ -57,7 +65,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getCachedObject($modelName, $value, $field = NULL, array $tags = array())
     {
-        if (Mage::helper('M2ePro/Magento')->isDeveloper()) {
+        if (Mage::helper('M2ePro/Module')->isDevelopmentEnvironment()) {
             return $this->getObject($modelName,$value,$field);
         }
 
@@ -69,11 +77,27 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $tags[] = $modelName;
+
+        if (strpos($modelName,'_') !== false) {
+
+            $allComponents = Mage::helper('M2ePro/Component')->getComponents();
+            $modelNameComponent = substr($modelName,0,strpos($modelName,'_'));
+
+            if (in_array(strtolower($modelNameComponent),array_map('strtolower',$allComponents))) {
+                $modelNameOnlyModel = substr($modelName,strpos($modelName,'_')+1);
+                $tags[] = $modelNameComponent;
+                $tags[] = $modelNameOnlyModel;
+            }
+        }
+
         $tags = array_unique($tags);
         $tags = array_map('strtolower',$tags);
 
         $cacheData = $this->getObject($modelName,$value,$field);
-        Mage::helper('M2ePro/Data_Cache')->setValue($cacheKey,$cacheData,$tags,60*60*24);
+
+        if (!empty($cacheData)) {
+            Mage::helper('M2ePro/Data_Cache')->setValue($cacheKey,$cacheData,$tags,60*60*24);
+        }
 
         return $cacheData;
     }
@@ -146,12 +170,12 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                            $string);
     }
 
-    public function escapeHtml($data, $allowedTags = null)
+    public function escapeHtml($data, $allowedTags = null, $flags = ENT_COMPAT)
     {
         if (is_array($data)) {
             $result = array();
             foreach ($data as $item) {
-                $result[] = $this->escapeHtml($item);
+                $result[] = $this->escapeHtml($item, $allowedTags, $flags);
             }
         } else {
             // process single item
@@ -159,10 +183,10 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                 if (is_array($allowedTags) and !empty($allowedTags)) {
                     $allowed = implode('|', $allowedTags);
                     $result = preg_replace('/<([\/\s\r\n]*)(' . $allowed . ')([\/\s\r\n]*)>/si', '##$1$2$3##', $data);
-                    $result = htmlspecialchars($result);
+                    $result = htmlspecialchars($result, $flags);
                     $result = preg_replace('/##([\/\s\r\n]*)(' . $allowed . ')([\/\s\r\n]*)##/si', '<$1$2$3>', $result);
                 } else {
-                    $result = htmlspecialchars($data);
+                    $result = htmlspecialchars($data, $flags);
                 }
             } else {
                 $result = $data;
@@ -172,6 +196,46 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     // ########################################
+
+    public function reduceWordsInString($string, $neededLength, $longWord = 6, $minWordLen = 2, $atEndOfWord = '.')
+    {
+        if (strlen($string) <= $neededLength) {
+            return $string;
+        }
+
+        $longWords = array();
+        foreach (explode(' ', $string) as $word) {
+            if (strlen($word) >= $longWord && !preg_match('/[0-9]/', $word)) {
+                $longWords[$word] = strlen($word) - $minWordLen;
+            }
+        }
+
+        $canBeReduced = 0;
+        foreach ($longWords as $canBeReducedForWord) {
+            $canBeReduced += $canBeReducedForWord;
+        }
+
+        $needToBeReduced = strlen($string) - $neededLength + (count($longWords) * strlen($atEndOfWord));
+
+        if ($canBeReduced < $needToBeReduced) {
+            return $string;
+        }
+
+        $weightOfOneLetter = $needToBeReduced / $canBeReduced;
+        foreach($longWords as $word => $canBeReducedForWord) {
+
+            $willReduced = ceil($weightOfOneLetter * $canBeReducedForWord);
+            $reducedWord = substr($word, 0, strlen($word) - $willReduced) . $atEndOfWord;
+
+            $string = str_replace($word, $reducedWord, $string);
+
+            if (strlen($string) <= $neededLength) {
+                break;
+            }
+        }
+
+        return $string;
+    }
 
     public function convertStringToSku($title)
     {
@@ -482,7 +546,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
         return $check % 10 == 0;
     }
 
-    //-----------------------------------------
+    // ########################################
 
     public function isUPC($upc)
     {
@@ -491,10 +555,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isEAN($ean)
     {
-        if (substr($ean,0,3) == '978') {
-            return false;
-        }
-
         return $this->isWorldWideId($ean,'EAN');
     }
 
@@ -519,10 +579,12 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
 
         try {
             $validator = new Zend_Validate_Barcode($adapters[$type][$length]);
-            return $validator->isValid($worldWideId);
+            $result = $validator->isValid($worldWideId);
         } catch (Zend_Validate_Exception $e) {
-            return true;
+            return false;
         }
+
+        return $result;
     }
 
     // ########################################

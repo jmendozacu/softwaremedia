@@ -84,7 +84,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
         //--------------------------------
         // Get collection
         //----------------------------
-        /** @var Mage_Core_Model_Mysql4_Collection_Abstract $collection */
+        /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
         $collection = Mage::getModel('catalog/product')->getCollection();
         $collection->addAttributeToSelect('sku');
         $collection->addAttributeToSelect('name');
@@ -98,6 +98,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             array(
                 'id' => 'id',
                 'status' => 'status',
+                'component_mode' => 'component_mode',
                 'additional_data' => 'additional_data'
             ),
             '{{table}}.listing_id='.(int)$listingData['id']
@@ -173,6 +174,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
             'width'     => '50px',
             'type'      => 'number',
             'index'     => 'available_qty',
+            'sortable'  => (bool)version_compare(Mage::helper('M2ePro/Magento')->getVersion(), '1.4.2'),
             'filter'    => false,
             'frame_callback' => array($this, 'callbackColumnOnlineAvailableQty')
         ));
@@ -237,11 +239,11 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
 ////            'frame_callback' => array($this, 'callbackColumnAdviser')
 //        ));
 
-        if (Mage::helper('M2ePro/Magento')->isDeveloper()) {
+        if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
             $this->addColumn('developer_action', array(
                 'header'    => Mage::helper('M2ePro')->__('Actions'),
                 'align'     => 'left',
-                'width'     => '100px',
+                'width'     => '150px',
                 'type'      => 'text',
                 'renderer'  => 'M2ePro/adminhtml_listing_view_grid_column_renderer_developerAction',
                 'index'     => 'value',
@@ -295,12 +297,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_View_Ebay_Grid
 
         $this->getMassactionBlock()->addItem('stopAndRemove', array(
             'label'    => Mage::helper('M2ePro')->__('Stop on eBay / Remove From Listing'),
-            'url'      => '',
-            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
-
-        $this->getMassactionBlock()->addItem('moving', array(
-            'label'    => Mage::helper('M2ePro')->__('Move Item(s) to Another Listing'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
         ));
@@ -590,8 +586,7 @@ HTML;
 
         foreach ($logRows as $row) {
 
-            $row['description'] = Mage::helper('M2ePro')->escapeHtml($row['description']);
-            $row['description'] = Mage::getModel('M2ePro/Log_Abstract')->decodeDescription($row['description']);
+            $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
                 if (count($tempActionRows) > 0) {
@@ -669,6 +664,9 @@ HTML;
                 break;
             case Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_STATUS_ON_CHANNEL:
                 $string = Mage::helper('M2ePro')->__('Status Change');
+                break;
+            case Ess_M2ePro_Model_Listing_Log::ACTION_TRANSLATE_PRODUCT:
+                $string = Mage::helper('M2ePro')->__('Translation');
                 break;
         }
 
@@ -794,9 +792,6 @@ HTML;
             'id'=>$listingData['id'],
             'back'=>$helper->makeBackUrlParam('*/adminhtml_ebay_listing/view',array('id'=>$listingData['id']))
         ));
-        $checkLockListing = $this->getUrl('*/adminhtml_listing/checkLockListing',array('component'=>$component));
-        $lockListingNow = $this->getUrl('*/adminhtml_listing/lockListingNow',array('component'=>$component));
-        $unlockListingNow = $this->getUrl('*/adminhtml_listing/unlockListingNow',array('component'=>$component));
         $getErrorsSummary = $this->getUrl('*/adminhtml_listing/getErrorsSummary');
 
         $runListProducts = $this->getUrl('*/adminhtml_ebay_listing/runListProducts');
@@ -806,17 +801,23 @@ HTML;
         $runStopAndRemoveProducts = $this->getUrl('*/adminhtml_ebay_listing/runStopAndRemoveProducts');
 
         $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
-        $taskCompletedSuccessMessage = $helper->escapeJs($helper->__('"%s" task has successfully completed.'));
+        $taskCompletedSuccessMessage = $helper->escapeJs($helper->__(
+            '"%task_title%" task has successfully completed.'
+        ));
 
-        // ->__('"%s" task has completed with warnings. <a target="_blank" href="%s">View log</a> for details.')
-        $tempString = '"%s" task has completed with warnings. <a target="_blank" href="%s">View log</a> for details.';
+        // M2ePro_TRANSLATIONS
+        // %task_title%" task has completed with warnings. <a target="_blank" href="%url%">View log</a> for details.
+        $tempString = '"%task_title%" task has completed with warnings. ';
+        $tempString .= '<a target="_blank" href="%url%">View log</a> for details.';
         $taskCompletedWarningMessage = $helper->escapeJs($helper->__($tempString));
 
-        // ->__('"%s" task has completed with errors. <a target="_blank" href="%s">View log</a> for details.')
-        $tempString = '"%s" task has completed with errors. <a target="_blank" href="%s">View log</a> for details.';
+        // M2ePro_TRANSLATIONS
+        // "%task_title%" task has completed with errors. <a target="_blank" href="%url%">View log</a> for details.
+        $tempString = '"%task_title%" task has completed with errors. ';
+        $tempString .= '<a target="_blank" href="%url%">View log</a> for details.';
         $taskCompletedErrorMessage = $helper->escapeJs($helper->__($tempString));
 
-        $sendingDataToEbayMessage = $helper->escapeJs($helper->__('Sending %s product(s) data on eBay.'));
+        $sendingDataToEbayMessage = $helper->escapeJs($helper->__('Sending %product_title% product(s) data on eBay.'));
         $viewAllProductLogMessage = $helper->escapeJs($helper->__('View All Product Log.'));
 
         $listingLockedMessage = Mage::helper('M2ePro')->escapeJs(
@@ -844,7 +845,9 @@ HTML;
             Mage::helper('M2ePro')->__('Stopping On eBay And Removing From Listing Selected Items')
         );
 
-        $selectItemsMessage = $helper->escapeJs($helper->__('Please select items.'));
+        $selectItemsMessage = $helper->escapeJs(
+            $helper->__('Please select the products you want to perform the action on.')
+        );
         $selectActionMessage = $helper->escapeJs($helper->__('Please select action.'));
 
         $successWord = $helper->escapeJs($helper->__('Success'));
@@ -861,28 +864,31 @@ HTML;
 
         $successfullyMovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully moved.'));
         $productsWereNotMovedMessage = $helper->escapeJs(
-            $helper->__('Product(s) was not moved. <a target="_blank" href="%s">View log</a> for details.')
+            $helper->__('Product(s) was not moved. <a target="_blank" href="%url%">View log</a> for details.')
         );
         $someProductsWereNotMovedMessage = $helper->escapeJs(
-            $helper->__('Some product(s) was not moved. <a target="_blank" href="%s">View log</a> for details.')
+            $helper->__('Some product(s) was not moved. <a target="_blank" href="%url%">View log</a> for details.')
         );
 
         $popupTitle = $helper->escapeJs($helper->__('Moving eBay Items.'));
         $failedProductsPopupTitle = $helper->escapeJs($helper->__('Products failed to move'));
 
         $translations = json_encode(array(
-            'eBay Categories' => $this->__('eBay Categories'),
-            'Specifics' => $this->__('Specifics'),
-            'Estimated Fee Details' => $this->__('Estimated Fee Details'),
+            'eBay Categories' => Mage::helper('M2ePro')->__('eBay Categories'),
+            'Specifics' => Mage::helper('M2ePro')->__('Specifics'),
+            'Estimated Fee Details' => Mage::helper('M2ePro')->__('Estimated Fee Details'),
         ));
 
         $isSimpleViewMode = json_encode(Mage::helper('M2ePro/View_Ebay')->isSimpleMode());
         $showAutoAction   = json_encode((bool)$this->getRequest()->getParam('auto_actions'));
 
         $showMotorNotification= json_encode((bool)$this->isShowMotorNotification());
+
+        // M2ePro_TRANSLATIONS
+        // Please check eBay Motors compatibility attribute.You can find it in %menu_label% > Configuration > <a target="_blank" href="%url%">General</a>.
         $motorNotification = $helper->escapeJs($helper->__(
-            'Please check eBay Motors compatibility attribute.
-            You can find it in %s > Configuration > <a target="_blank" href="%s">General</a>.',
+            'Please check eBay Motors compatibility attribute.'.
+            'You can find it in %menu_label% > Configuration > <a target="_blank" href="%url%">General</a>.',
             Mage::helper('M2ePro/View_Ebay')->getMenuRootNodeLabel(),
             $this->getUrl('*/adminhtml_ebay_configuration')
         ));
@@ -897,9 +903,6 @@ HTML;
     M2ePro.productsIdsForList = '{$productsIdsForList}';
 
     M2ePro.url.logViewUrl = '{$logViewUrl}';
-    M2ePro.url.checkLockListing = '{$checkLockListing}';
-    M2ePro.url.lockListingNow = '{$lockListingNow}';
-    M2ePro.url.unlockListingNow = '{$unlockListingNow}';
     M2ePro.url.getErrorsSummary = '{$getErrorsSummary}';
 
     M2ePro.url.runListProducts = '{$runListProducts}';
@@ -961,9 +964,7 @@ HTML;
         EbayListingEbayGridHandlerObj.afterInitPage();
         EbayListingEbayGridHandlerObj.getGridMassActionObj().setGridIds('{$this->getGridIdsJson()}');
 
-        // todo next (temp solution)
         EbayListingEbayGridHandlerObj.actionHandler.setOptions(M2ePro);
-        EbayListingEbayGridHandlerObj.movingHandler.setOptions(M2ePro);
 
         ListingProgressBarObj = new ProgressBar('listing_view_progress_bar');
         GridWrapperObj = new AreaWrapper('listing_view_content_container');

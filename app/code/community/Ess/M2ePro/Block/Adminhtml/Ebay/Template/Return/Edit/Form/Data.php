@@ -81,7 +81,41 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Return_Edit_Form_Data extends Mag
             'info' => $marketplace->getChildObject()->getReturnPolicyInfo()
         );
 
+        $policyLocalization = $this->getData('policy_localization');
+
+        if(!empty($policyLocalization)) {
+            /** @var Ess_M2ePro_Model_Magento_Translate $translator */
+            $translator = Mage::getModel('M2ePro/Magento_Translate');
+            $translator->setLocale($policyLocalization);
+            $translator->init();
+
+            foreach ($data['info']['returns_within'] as $key => $item) {
+                $data['info']['returns_within'][$key]['title'] = $translator->__($item['title']);
+            }
+
+            foreach ($data['info']['returns_accepted'] as $key => $item) {
+                $data['info']['returns_accepted'][$key]['title'] = $translator->__($item['title']);
+            }
+
+            foreach ($data['info']['shipping_cost_paid_by'] as $key => $item) {
+                $data['info']['shipping_cost_paid_by'][$key]['title'] = $translator->__($item['title']);
+            }
+        }
+
         return $data;
+    }
+
+    // ####################################
+
+    public function canShowHolidayReturnOption()
+    {
+        $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
+
+        if (!$marketplace instanceof Ess_M2ePro_Model_Marketplace) {
+            throw new LogicException('Marketplace is required for editing return template.');
+        }
+
+        return $marketplace->getChildObject()->isHolidayReturnEnabled();
     }
 
     // ####################################

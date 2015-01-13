@@ -24,25 +24,27 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Module extends Mage_Admi
 
     public function getInfoTables()
     {
-        $tablesData = array_merge(
-            $this->getConfigTables(),
-            $this->getLocksAndChangeTables(),
-            $this->getAdditionalTables()
-        );
+        $tablesData = array_merge($this->getConfigTables(),
+                                  $this->getLocksAndChangeTables(),
+                                  $this->getAdditionalTables());
+
+        $helper = Mage::helper('M2ePro/Module_Database_Structure');
 
         $tablesInfo = array();
+        foreach ($tablesData as $category => $tables) {
+            foreach ($tables as $tableName) {
 
-        /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
-        $connRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-        foreach ($tablesData as $category=>$tables) {
-            foreach ($tables as $table) {
-                $moduleTable = Mage::getSingleton('core/resource')->getTableName($table);
-                $dbSelect = $connRead->select()->from($moduleTable,new Zend_Db_Expr('COUNT(*)'));
+                $tablesInfo[$category][$tableName] = array(
+                    'count' => 0, 'url'   => '#'
+                );
 
-                $tablesInfo[$category][$table]['count'] = $connRead->fetchOne($dbSelect);
-                $tablesInfo[$category][$table]['url'] = $this->getUrl(
-                    '*/adminhtml_development_database/manageTable',
-                    array('table' => $table)
+                if (!$helper->isTableReady($tableName)) {
+                    continue;
+                }
+
+                $tablesInfo[$category][$tableName]['count'] = $helper->getCountOfRecords($tableName);
+                $tablesInfo[$category][$tableName]['url'] = $this->getUrl(
+                    '*/adminhtml_development_database/manageTable', array('table' => $tableName)
                 );
             }
         }
@@ -56,9 +58,9 @@ class Ess_M2ePro_Block_Adminhtml_Development_Info_Mysql_Module extends Mage_Admi
     {
         return array(
             'Config' => array(
-            'm2epro_primary_config',
-            'm2epro_config',
-            'm2epro_synchronization_config'
+                'm2epro_primary_config',
+                'm2epro_config',
+                'm2epro_synchronization_config'
             )
         );
     }

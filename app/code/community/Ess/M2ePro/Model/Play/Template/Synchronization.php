@@ -6,6 +6,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Template_Synchronization getParentObject()
+ * @method Ess_M2ePro_Model_Mysql4_Play_Template_Synchronization getResource()
  */
 class Ess_M2ePro_Model_Play_Template_Synchronization extends Ess_M2ePro_Model_Component_Child_Play_Abstract
 {
@@ -117,9 +118,14 @@ class Ess_M2ePro_Model_Play_Template_Synchronization extends Ess_M2ePro_Model_Co
         return $this->getData('list_is_in_stock') != self::LIST_IS_IN_STOCK_NONE;
     }
 
-    public function isListWhenQtyHasValue()
+    public function isListWhenQtyMagentoHasValue()
     {
-        return $this->getData('list_qty') != self::LIST_QTY_NONE;
+        return $this->getData('list_qty_magento') != self::LIST_QTY_NONE;
+    }
+
+    public function isListWhenQtyCalculatedHasValue()
+    {
+        return $this->getData('list_qty_calculated') != self::LIST_QTY_NONE;
     }
 
     //------------------------
@@ -180,9 +186,14 @@ class Ess_M2ePro_Model_Play_Template_Synchronization extends Ess_M2ePro_Model_Co
         return $this->getData('relist_is_in_stock') != self::RELIST_IS_IN_STOCK_NONE;
     }
 
-    public function isRelistWhenQtyHasValue()
+    public function isRelistWhenQtyMagentoHasValue()
     {
-        return $this->getData('relist_qty') != self::RELIST_QTY_NONE;
+        return $this->getData('relist_qty_magento') != self::RELIST_QTY_NONE;
+    }
+
+    public function isRelistWhenQtyCalculatedHasValue()
+    {
+        return $this->getData('relist_qty_calculated') != self::RELIST_QTY_NONE;
     }
 
     //------------------------
@@ -197,70 +208,126 @@ class Ess_M2ePro_Model_Play_Template_Synchronization extends Ess_M2ePro_Model_Co
         return $this->getData('stop_out_off_stock') != self::STOP_OUT_OFF_STOCK_NONE;
     }
 
-    public function isStopWhenQtyHasValue()
+    public function isStopWhenQtyMagentoHasValue()
     {
-        return $this->getData('stop_qty') != self::STOP_QTY_NONE;
+        return $this->getData('stop_qty_magento') != self::STOP_QTY_NONE;
+    }
+
+    public function isStopWhenQtyCalculatedHasValue()
+    {
+        return $this->getData('stop_qty_calculated') != self::STOP_QTY_NONE;
     }
 
     // ########################################
 
-    public function getListWhenQtyHasValueType()
+    public function getListWhenQtyMagentoHasValueType()
     {
-        return $this->getData('list_qty');
+        return $this->getData('list_qty_magento');
     }
 
-    public function getListWhenQtyHasValueMin()
+    public function getListWhenQtyMagentoHasValueMin()
     {
-        return $this->getData('list_qty_value');
+        return $this->getData('list_qty_magento_value');
     }
 
-    public function getListWhenQtyHasValueMax()
+    public function getListWhenQtyMagentoHasValueMax()
     {
-        return $this->getData('list_qty_value_max');
+        return $this->getData('list_qty_magento_value_max');
     }
 
     // ---------------------
 
-    public function getRelistWhenQtyHasValueType()
+    public function getListWhenQtyCalculatedHasValueType()
     {
-        return $this->getData('relist_qty');
+        return $this->getData('list_qty_calculated');
     }
 
-    public function getRelistWhenQtyHasValueMin()
+    public function getListWhenQtyCalculatedHasValueMin()
     {
-        return $this->getData('relist_qty_value');
+        return $this->getData('list_qty_calculated_value');
     }
 
-    public function getRelistWhenQtyHasValueMax()
+    public function getListWhenQtyCalculatedHasValueMax()
     {
-        return $this->getData('relist_qty_value_max');
+        return $this->getData('list_qty_calculated_value_max');
+    }
+
+    // ---------------------
+
+    public function getRelistWhenQtyMagentoHasValueType()
+    {
+        return $this->getData('relist_qty_magento');
+    }
+
+    public function getRelistWhenQtyMagentoHasValueMin()
+    {
+        return $this->getData('relist_qty_magento_value');
+    }
+
+    public function getRelistWhenQtyMagentoHasValueMax()
+    {
+        return $this->getData('relist_qty_magento_value_max');
     }
 
     //------------------------
 
-    public function getStopWhenQtyHasValueType()
+    public function getRelistWhenQtyCalculatedHasValueType()
     {
-        return $this->getData('stop_qty');
+        return $this->getData('relist_qty_calculated');
     }
 
-    public function getStopWhenQtyHasValueMin()
+    public function getRelistWhenQtyCalculatedHasValueMin()
     {
-        return $this->getData('stop_qty_value');
+        return $this->getData('relist_qty_calculated_value');
     }
 
-    public function getStopWhenQtyHasValueMax()
+    public function getRelistWhenQtyCalculatedHasValueMax()
     {
-        return $this->getData('stop_qty_value_max');
+        return $this->getData('relist_qty_calculated_value_max');
+    }
+
+    //------------------------
+
+    public function getStopWhenQtyMagentoHasValueType()
+    {
+        return $this->getData('stop_qty_magento');
+    }
+
+    public function getStopWhenQtyMagentoHasValueMin()
+    {
+        return $this->getData('stop_qty_magento_value');
+    }
+
+    public function getStopWhenQtyMagentoHasValueMax()
+    {
+        return $this->getData('stop_qty_magento_value_max');
+    }
+
+    //------------------------
+
+    public function getStopWhenQtyCalculatedHasValueType()
+    {
+        return $this->getData('stop_qty_calculated');
+    }
+
+    public function getStopWhenQtyCalculatedHasValueMin()
+    {
+        return $this->getData('stop_qty_calculated_value');
+    }
+
+    public function getStopWhenQtyCalculatedHasValueMax()
+    {
+        return $this->getData('stop_qty_calculated_value_max');
     }
 
     // #######################################
 
-    public function getAffectedListingProducts($asObjects = false, $key = NULL)
+    /**
+     * @param bool|array $asArrays
+     * @return array
+     */
+    public function getAffectedListingsProducts($asArrays = true)
     {
-        if (is_null($this->getId())) {
-            throw new LogicException('Method require loaded instance first');
-        }
-
         $listingCollection = Mage::helper('M2ePro/Component_Play')->getCollection('Listing');
         $listingCollection->addFieldToFilter('template_synchronization_id', $this->getId());
         $listingCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
@@ -269,42 +336,28 @@ class Ess_M2ePro_Model_Play_Template_Synchronization extends Ess_M2ePro_Model_Co
         $listingProductCollection = Mage::helper('M2ePro/Component_Play')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('listing_id',array('in' => $listingCollection->getSelect()));
 
-        if (!is_null($key)) {
-            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS)->columns($key);
+        if ($asArrays === false) {
+            return (array)$listingProductCollection->getItems();
         }
 
-        $listingProducts = $asObjects ? $listingProductCollection->getItems() : $listingProductCollection->getData();
-
-        if (is_null($key)) {
-            return $listingProducts;
+        if (is_array($asArrays) && !empty($asArrays)) {
+            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+            $listingProductCollection->getSelect()->columns($asArrays);
         }
 
-        $return = array();
-        foreach ($listingProducts as $listingProduct) {
-            isset($listingProduct[$key]) && $return[] = $listingProduct[$key];
-        }
-
-        return $return;
+        return (array)$listingProductCollection->getData();
     }
-
-    // #######################################
 
     public function setSynchStatusNeed($newData, $oldData)
     {
-        $this->getParentObject()->setSynchStatusNeed(
-            $newData, $oldData,
-            array('listing'               => 'revise_change_listing',
-                  'sellingFormatTemplate' => 'revise_change_selling_format_template')
-        );
-    }
+        $neededColumns = array('id', 'synch_status', 'synch_reasons');
+        $listingsProducts = $this->getAffectedListingsProducts($neededColumns);
 
-    public function getFullReviseSettingWhichWereEnabled($newData, $oldData)
-    {
-        return $this->getParentObject()->getFullReviseSettingWhichWereEnabled(
-            $newData, $oldData,
-            array('listing'               => 'revise_change_listing',
-                  'sellingFormatTemplate' => 'revise_change_selling_format_template')
-        );
+        if (!$listingsProducts) {
+            return;
+        }
+
+        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     // #######################################

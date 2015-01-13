@@ -24,6 +24,15 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         return Ess_M2ePro_Model_Listing_Product::ACTION_LIST;
     }
 
+    // ----------------------------------------
+
+    protected function getRequestTimeout()
+    {
+        $requestDataObject = $this->getRequestDataObject($this->listingProduct);
+        $imagesTimeout = self::TIMEOUT_INCREMENT_FOR_ONE_IMAGE * $requestDataObject->getTotalImagesCount();
+        return parent::getRequestTimeout() + $imagesTimeout;
+    }
+
     // ########################################
 
     protected function isNeedSendRequest()
@@ -31,8 +40,26 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         if (!$this->listingProduct->isListable()) {
 
             $message = array(
-                // Parser hack -> Mage::helper('M2ePro')->__('Item is listed or not available');
+                // M2ePro_TRANSLATIONS
+                // Item is listed or not available
                 parent::MESSAGE_TEXT_KEY => 'Item is listed or not available',
+                parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
+            );
+
+            $this->getLogger()->logListingProductMessage($this->listingProduct, $message,
+                                                         Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
+
+            return false;
+        }
+
+        if ($this->listingProduct->isLockedObject(NULL) ||
+            $this->listingProduct->isLockedObject('in_action')) {
+
+            $message = array(
+                // M2ePro_TRANSLATIONS
+                // Another action is being processed. Try again when the action is completed.
+                parent::MESSAGE_TEXT_KEY => 'Another action is being processed. '
+                                           .'Try again when the action is completed.',
                 parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
             );
 
@@ -45,7 +72,8 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         if(!$this->listingProduct->getChildObject()->isSetCategoryTemplate()) {
 
             $message = array(
-                // Parser hack -> Mage::helper('M2ePro')->__('Categories settings are not set');
+                // M2ePro_TRANSLATIONS
+                // Categories settings are not set
                 parent::MESSAGE_TEXT_KEY => 'Categories settings are not set',
                 parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_ERROR
             );
@@ -59,10 +87,12 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         if ($this->params['status_changer'] != Ess_M2ePro_Model_Listing_Product::STATUS_CHANGER_USER &&
             $theSameListingProduct = $this->getRequestObject()->getTheSameProductAlreadyListed()) {
 
+            // M2ePro_TRANSLATIONS
+            // There is another item with the same eBay user ID, product ID and marketplace presented in "%listing_title%" (%listing_id%) Listing.
             $message = array(
                 parent::MESSAGE_TEXT_KEY => Mage::helper('M2ePro')->__(
-                    'There is another item with the same eBay user ID,
-                    product ID and marketplace presented in "%s" (%d) Listing.',
+                    'There is another item with the same eBay user ID, '.
+                    'product ID and marketplace presented in "%listing_title%" (%listing_id%) Listing.',
                     $theSameListingProduct->getListing()->getTitle(),
                     $theSameListingProduct->getListing()->getId()
                 ),
@@ -101,7 +131,8 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Single
         ));
 
         $message = array(
-            // Parser hack -> Mage::helper('M2ePro')->__('Item was successfully listed');
+            // M2ePro_TRANSLATIONS
+            // Item was successfully listed
             parent::MESSAGE_TEXT_KEY => 'Item was successfully listed',
             parent::MESSAGE_TYPE_KEY => parent::MESSAGE_TYPE_SUCCESS
         );

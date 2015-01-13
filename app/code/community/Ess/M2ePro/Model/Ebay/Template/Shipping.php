@@ -4,6 +4,9 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
+/**
+ * @method Ess_M2ePro_Model_Mysql4_Ebay_Template_Shipping getResource()
+ */
 class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component_Abstract
 {
     const SHIPPING_TYPE_FLAT                = 0;
@@ -12,16 +15,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
     const SHIPPING_TYPE_LOCAL               = 3;
     const SHIPPING_TYPE_NO_INTERNATIONAL    = 4;
 
-    const CASH_ON_DELIVERY_COST_MODE_NONE             = 0;
-    const CASH_ON_DELIVERY_COST_MODE_CUSTOM_VALUE     = 1;
-    const CASH_ON_DELIVERY_COST_MODE_CUSTOM_ATTRIBUTE = 2;
-
-    const INTERNATIONAL_TRADE_NONE           = 0;
-    const INTERNATIONAL_TRADE_NORTH_AMERICA  = 1;
-    const INTERNATIONAL_TRADE_UNITED_KINGDOM = 2;
-
-    const DISPATCH_TIME_CUSTOM_VALUE     = 0;
-    const DISPATCH_TIME_CUSTOM_ATTRIBUTE = 1;
+    const CROSS_BORDER_TRADE_NONE           = 0;
+    const CROSS_BORDER_TRADE_NORTH_AMERICA  = 1;
+    const CROSS_BORDER_TRADE_UNITED_KINGDOM = 2;
 
     // ########################################
 
@@ -242,11 +238,6 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
     //---------------------------------------
 
-    public function isGetItFastEnabled()
-    {
-        return (bool)$this->getData('get_it_fast');
-    }
-
     public function isGlobalShippingProgramEnabled()
     {
         return (bool)$this->getData('global_shipping_program');
@@ -268,22 +259,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
     public function getDispatchTime()
     {
-        $src = $this->getDispatchTimeSource();
-
-        if ($src['mode'] == self::DISPATCH_TIME_CUSTOM_ATTRIBUTE) {
-            return $this->getMagentoProduct()->getAttributeValue($src['attribute']);
-        }
-
-        return (int)$src['value'];
-    }
-
-    public function getDispatchTimeSource()
-    {
-        return array(
-            'mode'      => $this->getData('dispatch_time_mode'),
-            'value'     => $this->getData('dispatch_time_value'),
-            'attribute' => $this->getData('dispatch_time_attribute')
-        );
+        return (int)$this->getData('dispatch_time');
     }
 
     // #######################################
@@ -315,9 +291,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return (bool)$this->getData('local_shipping_discount_mode');
     }
 
-    public function getLocalShippingCombinedDiscountProfileId($accountId)
+    public function getLocalShippingDiscountProfileId($accountId)
     {
-        $data = $this->getData('local_shipping_combined_discount_profile_id');
+        $data = $this->getData('local_shipping_discount_profile_id');
 
         if (is_null($data)) {
             return NULL;
@@ -328,35 +304,11 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return !isset($data[$accountId]) ? NULL : $data[$accountId];
     }
 
-    // #######################################
+    //---------------------------------------
 
-    public function isLocalShippingCashOnDeliveryEnabled()
+    public function isClickAndCollectEnabled()
     {
-        $tempData = (int)$this->getData('local_shipping_cash_on_delivery_cost_mode');
-
-        return $tempData == self::CASH_ON_DELIVERY_COST_MODE_CUSTOM_VALUE ||
-               $tempData == self::CASH_ON_DELIVERY_COST_MODE_CUSTOM_ATTRIBUTE;
-    }
-
-    public function getLocalShippingCashOnDeliverySource()
-    {
-        return array(
-            'mode'      => (int)$this->getData('local_shipping_cash_on_delivery_cost_mode'),
-            'value'     => $this->getData('local_shipping_cash_on_delivery_cost_value'),
-            'attribute' => $this->getData('local_shipping_cash_on_delivery_cost_attribute')
-        );
-    }
-
-    public function getLocalShippingCashOnDeliveryAttributes()
-    {
-        $attributes = array();
-        $src = $this->getLocalShippingCashOnDeliverySource();
-
-        if ($src['mode'] == self::CASH_ON_DELIVERY_COST_MODE_CUSTOM_ATTRIBUTE) {
-            $attributes[] = $src['attribute'];
-        }
-
-        return $attributes;
+        return (bool)$this->getData('click_and_collect_mode');
     }
 
     // #######################################
@@ -383,9 +335,9 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return (bool)$this->getData('international_shipping_discount_mode');
     }
 
-    public function getInternationalShippingCombinedDiscountProfileId($accountId)
+    public function getInternationalShippingDiscountProfileId($accountId)
     {
-        $data = $this->getData('international_shipping_combined_discount_profile_id');
+        $data = $this->getData('international_shipping_discount_profile_id');
 
         if (is_null($data)) {
             return NULL;
@@ -405,46 +357,40 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
         return is_array($excludedLocations) ? $excludedLocations : array();
     }
 
-    //---------------------------------------
-
-    public function getInternationalTrade()
+    public function getCashOnDeliveryCost()
     {
-        return (int)$this->getData('international_trade');
-    }
+        $tempData = $this->getData('cash_on_delivery_cost');
 
-    public function isInternationalTradeNone()
-    {
-        return $this->getInternationalTrade() == self::INTERNATIONAL_TRADE_NONE;
-    }
-
-    public function isInternationalTradeNorthAmerica()
-    {
-        return $this->getInternationalTrade() == self::INTERNATIONAL_TRADE_NORTH_AMERICA;
-    }
-
-    public function isInternationalTradeUnitedKingdom()
-    {
-        return $this->getInternationalTrade() == self::INTERNATIONAL_TRADE_UNITED_KINGDOM;
-    }
-
-    // #######################################
-
-    public function getLocalShippingCashOnDeliveryCost()
-    {
-        $src = $this->getLocalShippingCashOnDeliverySource();
-
-        if ($src['mode'] == self::CASH_ON_DELIVERY_COST_MODE_CUSTOM_VALUE) {
-            return (float)$src['value'];
-        }
-
-        if ($src['mode'] == self::CASH_ON_DELIVERY_COST_MODE_CUSTOM_ATTRIBUTE) {
-            return (float)$this->getMagentoProduct()->getAttributeValue($src['attribute']);
+        if (!empty($tempData)) {
+            return (float)$tempData;
         }
 
         return NULL;
     }
 
     //---------------------------------------
+
+    public function getCrossBorderTrade()
+    {
+        return (int)$this->getData('cross_border_trade');
+    }
+
+    public function isCrossBorderTradeNone()
+    {
+        return $this->getCrossBorderTrade() == self::CROSS_BORDER_TRADE_NONE;
+    }
+
+    public function isCrossBorderTradeNorthAmerica()
+    {
+        return $this->getCrossBorderTrade() == self::CROSS_BORDER_TRADE_NORTH_AMERICA;
+    }
+
+    public function isCrossBorderTradeUnitedKingdom()
+    {
+        return $this->getCrossBorderTrade() == self::CROSS_BORDER_TRADE_UNITED_KINGDOM;
+    }
+
+    // #######################################
 
     /**
      * @return Ess_M2ePro_Model_Ebay_Template_Shipping_Service[]
@@ -507,7 +453,7 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
     public function getUsedAttributes()
     {
-        $attributes = $this->getLocalShippingCashOnDeliveryAttributes();
+        $attributes = array();
 
         $calculatedShippingObject = $this->getCalculatedShipping();
         if (!is_null($calculatedShippingObject)) {
@@ -557,31 +503,26 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             'postal_code' => '',
             'address' => '',
 
-            'local_shipping_rate_table_mode' => 0,
-            'international_shipping_rate_table_mode' => 0,
-
-            'get_it_fast' => 0,
-            'dispatch_time_mode' => self::DISPATCH_TIME_CUSTOM_VALUE,
-            'dispatch_time_value' => 1,
-            'dispatch_time_attribute' => '',
-
+            'dispatch_time' => 1,
+            'cash_on_delivery_cost' => NULL,
             'global_shipping_program' => 0,
+            'cross_border_trade' => self::CROSS_BORDER_TRADE_NONE,
+            'excluded_locations' => json_encode(array()),
+
             'local_shipping_mode' =>  self::SHIPPING_TYPE_FLAT,
             'local_shipping_discount_mode' => 0,
-            'local_shipping_combined_discount_profile_id' => json_encode(array()),
-
-            'local_shipping_cash_on_delivery_cost_mode' => self::CASH_ON_DELIVERY_COST_MODE_NONE,
-            'local_shipping_cash_on_delivery_cost_value' => '',
-            'local_shipping_cash_on_delivery_cost_attribute' => '',
+            'local_shipping_discount_profile_id' => json_encode(array()),
+            'local_shipping_rate_table_mode' => 0,
+            'click_and_collect_mode' => 1,
 
             'international_shipping_mode' => self::SHIPPING_TYPE_NO_INTERNATIONAL,
             'international_shipping_discount_mode' => 0,
-            'international_shipping_combined_discount_profile_id' => json_encode(array()),
+            'international_shipping_discount_profile_id' => json_encode(array()),
+            'international_shipping_rate_table_mode' => 0,
 
             // CALCULATED SHIPPING
             //----------------------------------
             'measurement_system' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::MEASUREMENT_SYSTEM_ENGLISH,
-            'originating_postal_code' => '',
 
             'package_size_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::PACKAGE_SIZE_CUSTOM_VALUE,
             'package_size_value' => 'None',
@@ -589,10 +530,10 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
             'dimension_mode'   => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::DIMENSION_NONE,
             'dimension_width_value'  => '',
-            'dimension_height_value' => '',
+            'dimension_length_value' => '',
             'dimension_depth_value'  => '',
             'dimension_width_attribute'  => '',
-            'dimension_height_attribute' => '',
+            'dimension_length_attribute' => '',
             'dimension_depth_attribute'  => '',
 
             'weight_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::WEIGHT_NONE,
@@ -600,17 +541,8 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
             'weight_major' => '',
             'weight_attribute' => '',
 
-            'local_handling_cost_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::HANDLING_NONE,
-            'local_handling_cost_value' => '',
-            'local_handling_cost_attribute' => '',
-
-            'international_handling_cost_mode' => Ess_M2ePro_Model_Ebay_Template_Shipping_Calculated::HANDLING_NONE,
-            'international_handling_cost_value' => '',
-            'international_handling_cost_attribute' => '',
-
-            'excluded_locations' => json_encode(array()),
-
-            'international_trade' => self::INTERNATIONAL_TRADE_NONE,
+            'local_handling_cost' => NULL,
+            'international_handling_cost' => NULL,
             //----------------------------------
 
             //----------------------------------
@@ -621,75 +553,51 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping extends Ess_M2ePro_Model_Component
 
     // #######################################
 
-    public function getAffectedListingProducts($asObjects = false, $key = NULL)
+    /**
+     * @param bool|array $asArrays
+     * @return array
+     */
+    public function getAffectedListingsProducts($asArrays = true)
     {
-        if (is_null($this->getId())) {
-            throw new LogicException('Method require loaded instance first');
-        }
-
-        $template = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING;
-
         $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
-        $templateManager->setTemplate($template);
+        $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING);
 
-        $listingProducts = $templateManager->getAffectedItems(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT,
-            $this->getId(), array(), $asObjects, $key
+        $listingsProducts = $templateManager->getAffectedOwnerObjects(
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->getId(), $asArrays
         );
 
-        $ids = array();
-        foreach ($listingProducts as $listingProduct) {
-            $ids[] = is_null($key) ? $listingProduct['id'] : $listingProduct;
-        }
-
-        $listingProducts && $listingProducts = array_combine($ids, $listingProducts);
-
-        $listings = $templateManager->getAffectedItems(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING,
-            $this->getId()
+        $listings = $templateManager->getAffectedOwnerObjects(
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->getId(), false
         );
 
         foreach ($listings as $listing) {
 
-            $tempListingProducts = $listing->getChildObject()
-                                           ->getAffectedListingProducts($template,$asObjects,$key);
+            $tempListingsProducts = $listing->getChildObject()
+                                            ->getAffectedListingsProductsByTemplate(
+                                                Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SHIPPING,
+                                                $asArrays
+                                            );
 
-            foreach ($tempListingProducts as $listingProduct) {
-                $id = is_null($key) ? $listingProduct['id'] : $listingProduct;
-                !isset($listingProducts[$id]) && $listingProducts[$id] = $listingProduct;
+            foreach ($tempListingsProducts as $listingProduct) {
+                if (!isset($listingsProducts[$listingProduct['id']])) {
+                    $listingsProducts[$listingProduct['id']] = $listingProduct;
+                }
             }
         }
 
-        return array_values($listingProducts);
+        return $listingsProducts;
     }
 
     public function setSynchStatusNeed($newData, $oldData)
     {
-        if (!$this->getResource()->isDifferent($newData,$oldData)) {
+        $neededColumns = array('id');
+        $listingsProducts = $this->getAffectedListingsProducts($neededColumns);
+
+        if (!$listingsProducts) {
             return;
         }
 
-        $ids = $this->getAffectedListingProducts(false, 'id');
-
-        if (empty($ids)) {
-            return;
-        }
-
-        $templates = array('shippingTemplate');
-
-        Mage::getSingleton('core/resource')->getConnection('core_read')->update(
-            Mage::getSingleton('core/resource')->getTableName('M2ePro/Listing_Product'),
-            array(
-                'synch_status' => Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_NEED,
-                'synch_reasons' => new Zend_Db_Expr(
-                    "IF(synch_reasons IS NULL,
-                        '".implode(',',$templates)."',
-                        CONCAT(synch_reasons,'".','.implode(',',$templates)."')
-                    )"
-                )
-            ),
-            array('id IN ('.implode(',', $ids).')')
-        );
+        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     // #######################################

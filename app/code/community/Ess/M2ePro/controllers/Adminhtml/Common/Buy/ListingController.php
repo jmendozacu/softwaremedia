@@ -165,7 +165,8 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
             Ess_M2ePro_Helper_Data::INITIATOR_USER,
             NULL,
             Ess_M2ePro_Model_Listing_Log::ACTION_ADD_LISTING,
-            // Parser hack -> Mage::helper('M2ePro')->__('Listing was successfully added');
+            // M2ePro_TRANSLATIONS
+            // Listing was successfully added
             'Listing was successfully added',
             Ess_M2ePro_Model_Log_Abstract::TYPE_NOTICE,
             Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
@@ -455,7 +456,9 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
         }
         //----------------------------
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', Mage::helper('M2ePro/Data_Session')->getValue('temp_data'));
+        Mage::helper('M2ePro/Data_Global')->setValue(
+            'temp_data', Mage::helper('M2ePro/Data_Session')->getValue('temp_data')
+        );
 
         $this->_initAction()
             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_buy_listing_add_stepTwo'))
@@ -495,7 +498,9 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
         }
         //----------------------------
 
-        Mage::helper('M2ePro/Data_Global')->setValue('temp_data', Mage::helper('M2ePro/Data_Session')->getValue('temp_data'));
+        Mage::helper('M2ePro/Data_Global')->setValue(
+            'temp_data', Mage::helper('M2ePro/Data_Session')->getValue('temp_data')
+        );
 
         $this->_initAction()
             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_buy_listing_add_stepThree'))
@@ -644,18 +649,6 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
             $this->_getSession()->addError(Mage::helper('M2ePro')->__('Listing does not exist.'));
             return $this->_redirect('*/adminhtml_common_listing/index');
         }
-
-        // Check listing lock item
-        //----------------------------
-        $lockItem = Mage::getModel(
-            'M2ePro/Listing_LockItem',array('id' => $id, 'component' => Ess_M2ePro_Helper_Component_Buy::NICK)
-        );
-        if ($lockItem->isExist()) {
-            $this->_getSession()->addWarning(
-                Mage::helper('M2ePro')->__('The listing is locked by another process. Please try again later.')
-            );
-        }
-        //----------------------------
 
         // Check listing lock object
         //----------------------------
@@ -897,10 +890,12 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
             }
         }
 
-        $tempString = Mage::helper('M2ePro')->__('%s listing(s) were successfully deleted', $deleted);
+        $tempString = Mage::helper('M2ePro')->__('%amount% listing(s) were successfully deleted', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
-        $tempString = Mage::helper('M2ePro')->__('%s listing(s) have listed items and can not be deleted', $locked);
+        $tempString = Mage::helper('M2ePro')->__(
+            '%amount% listing(s) have listed items and can not be deleted', $locked
+        );
         $locked && $this->_getSession()->addError($tempString);
 
         $this->_redirect('*/adminhtml_common_listing/index');

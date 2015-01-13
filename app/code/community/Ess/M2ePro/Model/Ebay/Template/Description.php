@@ -4,6 +4,9 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
+/**
+ * @method Ess_M2ePro_Model_Mysql4_Ebay_Template_Description getResource()
+ */
 class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Component_Abstract
 {
     const TITLE_MODE_PRODUCT = 0;
@@ -363,7 +366,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
     public function getProductDetailAttribute($type)
     {
-        if (!in_array($type, array('isbn', 'epid', 'upc', 'ean'))) {
+        if (!in_array($type, array('isbn', 'epid', 'upc', 'ean', 'gtin', 'brand', 'mpn'))) {
             throw new InvalidArgumentException('Unknown product details name');
         }
 
@@ -373,7 +376,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
             return NULL;
         }
 
-        $tempProductsDetails = json_decode($this->getData('product_details'),true);
+        $tempProductsDetails = $this->getProductDetails();
 
         if (!isset($tempProductsDetails[$type])) {
             return NULL;
@@ -396,6 +399,15 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
         $temp && $attributes[] = $temp;
 
         $temp = $this->getProductDetailAttribute('ean');
+        $temp && $attributes[] = $temp;
+
+        $temp = $this->getProductDetailAttribute('gtin');
+        $temp && $attributes[] = $temp;
+
+        $temp = $this->getProductDetailAttribute('brand');
+        $temp && $attributes[] = $temp;
+
+        $temp = $this->getProductDetailAttribute('mpn');
         $temp && $attributes[] = $temp;
 
         return $attributes;
@@ -806,7 +818,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
         $imageLink = str_replace('%20', ' ', $imageLink);
 
         $baseMediaUrl = Mage::app()->getStore($this->getMagentoProduct()->getStoreId())
-                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).
+                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
                                         'catalog/product';
         $baseMediaUrl = str_replace('https://', 'http://', $baseMediaUrl);
 
@@ -822,7 +834,7 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
     public function pathToImageLink($path)
     {
         $baseMediaUrl = Mage::app()->getStore($this->getMagentoProduct()->getStoreId())
-                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).
+                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
                                         'catalog/product';
         $baseMediaPath = Mage::getSingleton('catalog/product_media_config')->getBaseMediaPath();
 
@@ -971,6 +983,11 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
     // #######################################
 
+    public function getProductDetails()
+    {
+        return $this->getSettings('product_details');
+    }
+
     public function getProductDetail($type)
     {
         $attribute = $this->getProductDetailAttribute($type);
@@ -980,6 +997,24 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
         }
 
         return $this->getMagentoProduct()->getAttributeValue($attribute);
+    }
+
+    public function isProductDetailsIncludeDescription()
+    {
+        $productDetails = $this->getProductDetails();
+        return isset($productDetails['include_description']) ? (bool)$productDetails['include_description'] : true;
+    }
+
+    public function isProductDetailsIncludeImage()
+    {
+        $productDetails = $this->getProductDetails();
+        return isset($productDetails['include_image']) ? (bool)$productDetails['include_image'] : true;
+    }
+
+    public function isProductDetailsListIfNoProduct()
+    {
+        $productDetails = $this->getProductDetails();
+        return isset($productDetails['list_if_no_product']) ? (bool)$productDetails['list_if_no_product'] : true;
     }
 
     // #######################################
@@ -1117,10 +1152,16 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
             'condition_note_template' => '',
 
             'product_details' => json_encode(array(
-                'isbn' => '',
-                'epid' => '',
-                'upc'  => '',
-                'ean'  => ''
+                'isbn'  => '',
+                'epid'  => '',
+                'upc'   => '',
+                'ean'   => '',
+                'gtin'  => '',
+                'brand' => '',
+                'mpn'   => '',
+                'include_description' => 1,
+                'include_image'       => 1,
+                'list_if_no_product'  => 1,
             )),
 
             'editor_type' => self::EDITOR_TYPE_SIMPLE,
@@ -1166,75 +1207,51 @@ class Ess_M2ePro_Model_Ebay_Template_Description extends Ess_M2ePro_Model_Compon
 
     // #######################################
 
-    public function getAffectedListingProducts($asObjects = false, $key = NULL)
+    /**
+     * @param bool|array $asArrays
+     * @return array
+     */
+    public function getAffectedListingsProducts($asArrays = true)
     {
-        if (is_null($this->getId())) {
-            throw new LogicException('Method require loaded instance first');
-        }
-
-        $template = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION;
-
         $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
-        $templateManager->setTemplate($template);
+        $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION);
 
-        $listingProducts = $templateManager->getAffectedItems(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT,
-            $this->getId(), array(), $asObjects, $key
+        $listingsProducts = $templateManager->getAffectedOwnerObjects(
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->getId(), $asArrays
         );
 
-        $ids = array();
-        foreach ($listingProducts as $listingProduct) {
-            $ids[] = is_null($key) ? $listingProduct['id'] : $listingProduct;
-        }
-
-        $listingProducts && $listingProducts = array_combine($ids, $listingProducts);
-
-        $listings = $templateManager->getAffectedItems(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING,
-            $this->getId()
+        $listings = $templateManager->getAffectedOwnerObjects(
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->getId(), false
         );
 
         foreach ($listings as $listing) {
 
-            $tempListingProducts = $listing->getChildObject()
-                                           ->getAffectedListingProducts($template,$asObjects,$key);
+            $tempListingsProducts = $listing->getChildObject()
+                                            ->getAffectedListingsProductsByTemplate(
+                                                Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_DESCRIPTION,
+                                                $asArrays
+                                            );
 
-            foreach ($tempListingProducts as $listingProduct) {
-                $id = is_null($key) ? $listingProduct['id'] : $listingProduct;
-                !isset($listingProducts[$id]) && $listingProducts[$id] = $listingProduct;
+            foreach ($tempListingsProducts as $listingProduct) {
+                if (!isset($listingsProducts[$listingProduct['id']])) {
+                    $listingsProducts[$listingProduct['id']] = $listingProduct;
+                }
             }
         }
 
-        return array_values($listingProducts);
+        return $listingsProducts;
     }
 
     public function setSynchStatusNeed($newData, $oldData)
     {
-        if (!$this->getResource()->isDifferent($newData,$oldData)) {
+        $neededColumns = array('id');
+        $listingsProducts = $this->getAffectedListingsProducts($neededColumns);
+
+        if (!$listingsProducts) {
             return;
         }
 
-        $ids = $this->getAffectedListingProducts(false,'id');
-
-        if (empty($ids)) {
-            return;
-        }
-
-        $templates = array('descriptionTemplate');
-
-        Mage::getSingleton('core/resource')->getConnection('core_read')->update(
-            Mage::getSingleton('core/resource')->getTableName('M2ePro/Listing_Product'),
-            array(
-                'synch_status' => Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_NEED,
-                'synch_reasons' => new Zend_Db_Expr(
-                    "IF(synch_reasons IS NULL,
-                        '".implode(',',$templates)."',
-                        CONCAT(synch_reasons,'".','.implode(',',$templates)."')
-                    )"
-                )
-            ),
-            array('id IN ('.implode(',', $ids).')')
-        );
+        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     // #######################################

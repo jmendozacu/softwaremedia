@@ -25,7 +25,7 @@ CommonAmazonTemplateNewProductHandler.prototype = Object.extend(new CommonHandle
                                                 M2ePro.formData.category.id);
 
         self.initPopUp('search_category',850,550, M2ePro.translator.translate('Search For Category'));
-        self.initPopUp('browse_category',600,500, M2ePro.translator.translate('Search For Category'));
+        self.initPopUp('browse_category',600,500, M2ePro.translator.translate('Browse Category'));
 
         self.xsdsTr = $('xsds_tr');
         self.categoriesTr  = $('categories_tr');
@@ -55,6 +55,22 @@ CommonAmazonTemplateNewProductHandler.prototype = Object.extend(new CommonHandle
             self.showSpanWithCategoryPath(M2ePro.formData.category.category_path);
             self.specificHandler.run(M2ePro.formData.category.xsd_hash);
         }
+
+        $('window_browse_category_close').observe(
+            'click',
+            function()
+            {
+                self.closeBrowseCategoryPopup();
+            }
+        );
+
+        $('window_search_category_close').observe(
+            'click',
+            function()
+            {
+                self.closeSearchCategoryPopup();
+            }
+        );
     },
 
     //----------------------------------
@@ -536,6 +552,22 @@ CommonAmazonTemplateNewProductHandler.prototype = Object.extend(new CommonHandle
         };
 
         handlers[element.value] && handlers[element.value].call(this);
+    },
+
+    //----------------------------------
+
+    closeBrowseCategoryPopup: function()
+    {
+        this.browse_category.close();
+        this.categoriesTr.hide();
+        this.nodeTitleEl.value = '';
+        this.confirmButton.hide();
+    },
+
+    closeSearchCategoryPopup: function()
+    {
+        this.search_category.close();
+        this.resetSearchClick();
     }
 
     //----------------------------------

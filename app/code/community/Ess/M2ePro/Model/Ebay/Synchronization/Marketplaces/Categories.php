@@ -50,14 +50,16 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Categories
 
         $this->getActualOperationHistory()->addText('Starting marketplace "'.$marketplace->getTitle().'"');
 
-        $this->getActualOperationHistory()->addTimePoint(__METHOD__.'get'.$marketplace->getId(),'Get categories from eBay');
+        $this->getActualOperationHistory()->addTimePoint(__METHOD__.'get'.$marketplace->getId(),
+                                                         'Get categories from eBay');
         $categories = $this->receiveFromEbay($marketplace);
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'get'.$marketplace->getId());
 
         $this->getActualLockItem()->setPercents($this->getPercentsStart() + $this->getPercentsInterval()/2);
         $this->getActualLockItem()->activate();
 
-        $this->getActualOperationHistory()->addTimePoint(__METHOD__.'save'.$marketplace->getId(),'Save categories to DB');
+        $this->getActualOperationHistory()->addTimePoint(__METHOD__.'save'.$marketplace->getId(),
+                                                         'Save categories to DB');
         $this->saveCategoriesToDb($marketplace,$categories);
         $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'save'.$marketplace->getId());
 
@@ -121,7 +123,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Marketplaces_Categories
 
     protected function logSuccessfulOperation(Ess_M2ePro_Model_Marketplace $marketplace)
     {
-        // ->__('The "Categories" action for eBay Site: "%mrk%" has been successfully completed.');
+        // M2ePro_TRANSLATIONS
+        // The "Categories" action for eBay Site: "%mrk%" has been successfully completed.
 
         $tempString = Mage::getModel('M2ePro/Log_Abstract')->encodeDescription(
             'The "Categories" action for eBay Site: "%mrk%" has been successfully completed.',

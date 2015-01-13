@@ -39,6 +39,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
 
     protected function performActions()
     {
+        $this->deleteNotActualChanges();
+
         $permittedAccounts = $this->getPermittedAccounts();
 
         if (count($permittedAccounts) <= 0) {
@@ -53,17 +55,18 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
 
             // ----------------------------------------------------------
             $this->getActualOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
-
-            // ->__('The "Update" action for eBay account: "%s" is started. Please wait...')
-            $status = 'The "Update" action for eBay account: "%s" is started. Please wait...';
+            // M2ePro_TRANSLATIONS
+            // The "Update" action for eBay account: "%account_title%" is started. Please wait...
+            $status = 'The "Update" action for eBay account: "%account_title%" is started. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             // ----------------------------------------------------------
 
             $this->processAccount($account);
 
             // ----------------------------------------------------------
-            // ->__('The "Update" action for eBay account: "%s" is finished. Please wait...')
-            $status = 'The "Update" action for eBay account: "%s" is finished. Please wait...';
+            // M2ePro_TRANSLATIONS
+            // The "Update" action for eBay account: "%account_title%" is finished. Please wait...
+            $status = 'The "Update" action for eBay account: "%account_title%" is finished. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep);
             $this->getActualLockItem()->activate();
@@ -147,6 +150,16 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Update
                 $order->getId() && $order->getChildObject()->updateShippingStatus($params);
             }
         }
+    }
+
+    // ##########################################################
+
+    private function deleteNotActualChanges()
+    {
+        Mage::getResourceModel('M2ePro/Order_Change')->deleteByProcessingAttemptCount(
+            Ess_M2ePro_Model_Order_Change::MAX_ALLOWED_PROCESSING_ATTEMPTS,
+            Ess_M2ePro_Helper_Component_Ebay::NICK
+        );
     }
 
     // ##########################################################

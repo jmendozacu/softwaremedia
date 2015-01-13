@@ -278,7 +278,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
                                         (int)$row->getId().
                                     ');">' . Mage::helper('M2ePro')->__('Map') . '</a>';
 
-            if (Mage::helper('M2ePro/Magento')->isDeveloper()) {
+            if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
                 $htmlValue .= '<br>' . $row->getId();
             }
             return $htmlValue;
@@ -298,7 +298,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
             .Mage::helper('M2ePro')->__('Move')
             .'</a>';
 
-        if (Mage::helper('M2ePro/Magento')->isDeveloper()) {
+        if (Mage::helper('M2ePro/Module')->isDevelopmentMode()) {
             $htmlValue .= '<br>' . $row->getId();
         }
 
@@ -483,8 +483,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Other_View_Grid extends Mage_Admin
 
         foreach ($logRows as $row) {
 
-            $row['description'] = Mage::helper('M2ePro')->escapeHtml($row['description']);
-            $row['description'] = Mage::getModel('M2ePro/Log_Abstract')->decodeDescription($row['description']);
+            $row['description'] = Mage::helper('M2ePro/View')->getModifiedLogMessage($row['description']);
 
             if ($row['action_id'] !== $lastActionId) {
                 if (count($tempActionRows) > 0) {

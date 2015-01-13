@@ -86,6 +86,10 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
             $prepared['qty_custom_attribute'] = $data['qty_custom_attribute'];
         }
 
+        if (isset($data['qty_percentage'])) {
+            $prepared['qty_percentage'] = (int)$data['qty_percentage'];
+        }
+
         if (isset($data['qty_max_posted_value_mode'])) {
             $prepared['qty_max_posted_value_mode'] = (int)$data['qty_max_posted_value_mode'];
         }
@@ -95,7 +99,7 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
         }
 
         if (isset($data['vat_percent'])) {
-            $prepared['vat_percent'] = (float)str_replace(',', '.', $data['vat_percent']);
+            $prepared['vat_percent'] = (float)$data['vat_percent'];
         }
 
         if (isset($data['tax_table_mode'])) {
@@ -199,6 +203,10 @@ class Ess_M2ePro_Model_Ebay_Template_SellingFormat_Builder
 
         if (isset($data['price_discount_map_exposure_type'])) {
             $prepared['price_discount_map_exposure_type'] = (int)$data['price_discount_map_exposure_type'];
+        }
+
+        if (isset($data['restricted_to_business'])) {
+            $prepared['restricted_to_business'] = (int)$data['restricted_to_business'];
         }
 
         //------------------------------

@@ -21,20 +21,24 @@ class Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_Synchronization_Edit
 
         // Set header text
         //------------------------------
+        $helper = Mage::helper('M2ePro');
         if (!Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()) {
-            $componentName = ' ' . Mage::helper('M2ePro')->__(Ess_M2ePro_Helper_Component_Buy::TITLE);
+            $componentName = $helper->__(Ess_M2ePro_Helper_Component_Buy::TITLE);
+            $headerTextEdit = $helper->__("Edit %component_name% Synchronization Template", $componentName);
+            $headerTextAdd = $helper->__("Add %component_name% Synchronization Template", $componentName);
         } else {
-            $componentName = '';
+            $headerTextEdit = $helper->__("Edit Synchronization Template");
+            $headerTextAdd = $helper->__("Add Synchronization Template");
         }
 
         if (Mage::helper('M2ePro/Data_Global')->getValue('temp_data')
             && Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getId()
         ) {
-            $this->_headerText = Mage::helper('M2ePro')->__("Edit%s Synchronization Template", $componentName);
+            $this->_headerText = $headerTextEdit;
             $this->_headerText .= ' "'.$this->escapeHtml(
                 Mage::helper('M2ePro/Data_Global')->getValue('temp_data')->getTitle()).'"';
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__("Add%s Synchronization Template", $componentName);
+            $this->_headerText = $headerTextAdd;
         }
         //------------------------------
 

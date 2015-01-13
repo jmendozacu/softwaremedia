@@ -97,7 +97,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
             'header' => Mage::helper('M2ePro')->__('Magento Order #'),
             'align'  => 'left',
             'index'  => 'so.increment_id',
-            'width'  => '110px',
+            'width'  => '200px',
             'frame_callback' => array($this, 'callbackColumnMagentoOrder')
         ));
 
@@ -326,7 +326,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Order_Grid extends Mage_Adminhtml_Block_Wi
         foreach ($orderLogsCollection as $log) {
             $logRows[] = array(
                 'type' => $log->getData('type'),
-                'text' => Mage::getSingleton('M2ePro/Log_Abstract')->decodeDescription($log->getData('message')),
+                'text' => Mage::helper('M2ePro/View')->getModifiedLogMessage($log->getData('message')),
                 'initiator' => $this->getInitiatorForAction($log->getData('initiator')),
                 'date' => Mage::app()->getLocale()->date(strtotime($log->getData('create_date')))->toString($format)
             );

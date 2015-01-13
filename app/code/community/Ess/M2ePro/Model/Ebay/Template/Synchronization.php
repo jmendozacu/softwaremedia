@@ -6,6 +6,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Template_Synchronization getParentObject()
+ * @method Ess_M2ePro_Model_Mysql4_Ebay_Template_Synchronization getResource()
  */
 class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
@@ -144,9 +145,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
         return $this->getData('list_is_in_stock') != self::LIST_IS_IN_STOCK_NONE;
     }
 
-    public function isListWhenQtyHasValue()
+    public function isListWhenQtyMagentoHasValue()
     {
-        return $this->getData('list_qty') != self::LIST_QTY_NONE;
+        return $this->getData('list_qty_magento') != self::LIST_QTY_NONE;
+    }
+
+    public function isListWhenQtyCalculatedHasValue()
+    {
+        return $this->getData('list_qty_calculated') != self::LIST_QTY_NONE;
     }
 
     //------------------------
@@ -264,9 +270,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
         return $this->getData('relist_is_in_stock') != self::RELIST_IS_IN_STOCK_NONE;
     }
 
-    public function isRelistWhenQtyHasValue()
+    public function isRelistWhenQtyMagentoHasValue()
     {
-        return $this->getData('relist_qty') != self::RELIST_QTY_NONE;
+        return $this->getData('relist_qty_magento') != self::RELIST_QTY_NONE;
+    }
+
+    public function isRelistWhenQtyCalculatedHasValue()
+    {
+        return $this->getData('relist_qty_calculated') != self::RELIST_QTY_NONE;
     }
 
     //------------------------
@@ -281,60 +292,116 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
         return $this->getData('stop_out_off_stock') != self::STOP_OUT_OFF_STOCK_NONE;
     }
 
-    public function isStopWhenQtyHasValue()
+    public function isStopWhenQtyMagentoHasValue()
     {
-        return $this->getData('stop_qty') != self::STOP_QTY_NONE;
+        return $this->getData('stop_qty_magento') != self::STOP_QTY_NONE;
+    }
+
+    public function isStopWhenQtyCalculatedHasValue()
+    {
+        return $this->getData('stop_qty_calculated') != self::STOP_QTY_NONE;
     }
 
     // ########################################
 
-    public function getListWhenQtyHasValueType()
+    public function getListWhenQtyMagentoHasValueType()
     {
-        return $this->getData('list_qty');
+        return $this->getData('list_qty_magento');
     }
 
-    public function getListWhenQtyHasValueMin()
+    public function getListWhenQtyMagentoHasValueMin()
     {
-        return $this->getData('list_qty_value');
+        return $this->getData('list_qty_magento_value');
     }
 
-    public function getListWhenQtyHasValueMax()
+    public function getListWhenQtyMagentoHasValueMax()
     {
-        return $this->getData('list_qty_value_max');
+        return $this->getData('list_qty_magento_value_max');
+    }
+
+    // ---------------------
+
+    public function getListWhenQtyCalculatedHasValueType()
+    {
+        return $this->getData('list_qty_calculated');
+    }
+
+    public function getListWhenQtyCalculatedHasValueMin()
+    {
+        return $this->getData('list_qty_calculated_value');
+    }
+
+    public function getListWhenQtyCalculatedHasValueMax()
+    {
+        return $this->getData('list_qty_calculated_value_max');
     }
 
     //------------------------
 
-    public function getRelistWhenQtyHasValueType()
+    public function getRelistWhenQtyMagentoHasValueType()
     {
-        return $this->getData('relist_qty');
+        return $this->getData('relist_qty_magento');
     }
 
-    public function getRelistWhenQtyHasValueMin()
+    public function getRelistWhenQtyMagentoHasValueMin()
     {
-        return $this->getData('relist_qty_value');
+        return $this->getData('relist_qty_magento_value');
     }
 
-    public function getRelistWhenQtyHasValueMax()
+    public function getRelistWhenQtyMagentoHasValueMax()
     {
-        return $this->getData('relist_qty_value_max');
+        return $this->getData('relist_qty_magento_value_max');
     }
 
     //------------------------
 
-    public function getStopWhenQtyHasValueType()
+    public function getRelistWhenQtyCalculatedHasValueType()
     {
-        return $this->getData('stop_qty');
+        return $this->getData('relist_qty_calculated');
     }
 
-    public function getStopWhenQtyHasValueMin()
+    public function getRelistWhenQtyCalculatedHasValueMin()
     {
-        return $this->getData('stop_qty_value');
+        return $this->getData('relist_qty_calculated_value');
     }
 
-    public function getStopWhenQtyHasValueMax()
+    public function getRelistWhenQtyCalculatedHasValueMax()
     {
-        return $this->getData('stop_qty_value_max');
+        return $this->getData('relist_qty_calculated_value_max');
+    }
+
+    //------------------------
+
+    public function getStopWhenQtyMagentoHasValueType()
+    {
+        return $this->getData('stop_qty_magento');
+    }
+
+    public function getStopWhenQtyMagentoHasValueMin()
+    {
+        return $this->getData('stop_qty_magento_value');
+    }
+
+    public function getStopWhenQtyMagentoHasValueMax()
+    {
+        return $this->getData('stop_qty_magento_value_max');
+    }
+
+    //------------------------
+
+    public function getStopWhenQtyCalculatedHasValueType()
+    {
+        return $this->getData('stop_qty_calculated');
+    }
+
+    public function getStopWhenQtyCalculatedHasValueMin()
+    {
+        return $this->getData('stop_qty_calculated_value');
+    }
+
+    public function getStopWhenQtyCalculatedHasValueMax()
+    {
+        return $this->getData('stop_qty_calculated_value_max');
     }
 
     //------------------------
@@ -429,9 +496,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
             'list_mode'           => self::LIST_MODE_NONE,
             'list_status_enabled' => self::LIST_STATUS_ENABLED_YES,
             'list_is_in_stock'    => self::LIST_IS_IN_STOCK_YES,
-            'list_qty'            => self::LIST_QTY_NONE,
-            'list_qty_value'      => '1',
-            'list_qty_value_max'  => '10',
+
+            'list_qty_magento'           => self::LIST_QTY_NONE,
+            'list_qty_magento_value'     => '1',
+            'list_qty_magento_value_max' => '10',
+
+            'list_qty_calculated'           => self::LIST_QTY_NONE,
+            'list_qty_calculated_value'     => '1',
+            'list_qty_calculated_value_max' => '10',
         );
     }
 
@@ -465,9 +537,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
             'relist_send_data'        => self::RELIST_SEND_DATA_YES,
             'relist_status_enabled'   => self::RELIST_STATUS_ENABLED_YES,
             'relist_is_in_stock'      => self::RELIST_IS_IN_STOCK_YES,
-            'relist_qty'              => self::RELIST_QTY_NONE,
-            'relist_qty_value'        => '1',
-            'relist_qty_value_max'    => '10',
+
+            'relist_qty_magento'           => self::RELIST_QTY_NONE,
+            'relist_qty_magento_value'     => '1',
+            'relist_qty_magento_value_max' => '10',
+
+            'relist_qty_calculated'           => self::RELIST_QTY_NONE,
+            'relist_qty_calculated_value'     => '1',
+            'relist_qty_calculated_value_max' => '10'
         );
     }
 
@@ -476,9 +553,14 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
         return array(
             'stop_status_disabled' => self::STOP_STATUS_DISABLED_YES,
             'stop_out_off_stock'   => self::STOP_OUT_OFF_STOCK_YES,
-            'stop_qty'             => self::STOP_QTY_NONE,
-            'stop_qty_value'       => '0',
-            'stop_qty_value_max'   => '10'
+
+            'stop_qty_magento'           => self::STOP_QTY_NONE,
+            'stop_qty_magento_value'     => '0',
+            'stop_qty_magento_value_max' => '10',
+
+            'stop_qty_calculated'           => self::STOP_QTY_NONE,
+            'stop_qty_calculated_value'     => '0',
+            'stop_qty_calculated_value_max' => '10'
         );
     }
 
@@ -534,74 +616,51 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization extends Ess_M2ePro_Model_Co
 
     // #######################################
 
-    public function getAffectedListingProducts($asObjects = false, $key = NULL)
+    /**
+     * @param bool|array $asArrays
+     * @return array
+     */
+    public function getAffectedListingsProducts($asArrays = true)
     {
-        if (is_null($this->getId())) {
-            throw new LogicException('Method require loaded instance first');
-        }
-
-        $template = Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION;
-
         $templateManager = Mage::getModel('M2ePro/Ebay_Template_Manager');
-        $templateManager->setTemplate($template);
+        $templateManager->setTemplate(Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION);
 
-        $listingProducts = $templateManager->getAffectedItems(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT,
-            $this->getId(), array(), $asObjects, $key
+        $listingsProducts = $templateManager->getAffectedOwnerObjects(
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING_PRODUCT, $this->getId(), $asArrays
         );
 
-        $ids = array();
-        foreach ($listingProducts as $listingProduct) {
-            $ids[] = is_null($key) ? $listingProduct['id'] : $listingProduct;
-        }
-
-        $listingProducts && $listingProducts = array_combine($ids, $listingProducts);
-
-        $listings = $templateManager->getAffectedItems(
-            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING,
-            $this->getId()
+        $listings = $templateManager->getAffectedOwnerObjects(
+            Ess_M2ePro_Model_Ebay_Template_Manager::OWNER_LISTING, $this->getId(), false
         );
 
         foreach ($listings as $listing) {
 
-            $tempListingProducts = $listing->getChildObject()
-                                           ->getAffectedListingProducts($template,$asObjects,$key);
+            $tempListingsProducts = $listing->getChildObject()
+                                            ->getAffectedListingsProductsByTemplate(
+                                                Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION,
+                                                $asArrays
+                                            );
 
-            foreach ($tempListingProducts as $listingProduct) {
-                $id = is_null($key) ? $listingProduct['id'] : $listingProduct;
-                !isset($listingProducts[$id]) && $listingProducts[$id] = $listingProduct;
+            foreach ($tempListingsProducts as $listingProduct) {
+                if (!isset($listingsProducts[$listingProduct['id']])) {
+                    $listingsProducts[$listingProduct['id']] = $listingProduct;
+                }
             }
         }
 
-        return array_values($listingProducts);
+        return $listingsProducts;
     }
-
-    // #######################################
 
     public function setSynchStatusNeed($newData, $oldData)
     {
-        $this->getParentObject()->setSynchStatusNeed(
-            $newData, $oldData,
-            array('sellingFormatTemplate' => 'revise_change_selling_format_template',
-                  'descriptionTemplate'   => 'revise_change_description_template',
-                  'categoryTemplate'      => 'revise_change_category_template',
-                  'paymentTemplate'       => 'revise_change_payment_template',
-                  'shippingTemplate'      => 'revise_change_shipping_template',
-                  'returnTemplate'        => 'revise_change_return_template')
-        );
-    }
+        $neededColumns = array('id', 'synch_status', 'synch_reasons');
+        $listingsProducts = $this->getAffectedListingsProducts($neededColumns);
 
-    public function getFullReviseSettingWhichWereEnabled($newData, $oldData)
-    {
-        return $this->getParentObject()->getFullReviseSettingWhichWereEnabled(
-            $newData, $oldData,
-            array('sellingFormatTemplate' => 'revise_change_selling_format_template',
-                  'descriptionTemplate'   => 'revise_change_description_template',
-                  'categoryTemplate'      => 'revise_change_category_template',
-                  'paymentTemplate'       => 'revise_change_payment_template',
-                  'shippingTemplate'      => 'revise_change_shipping_template',
-                  'returnTemplate'        => 'revise_change_return_template')
-        );
+        if (!$listingsProducts) {
+            return;
+        }
+
+        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     // #######################################

@@ -75,7 +75,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
         }
         //--------------------
 
-        $productsIdsForEachVariation = NULL;
+        $variationResource = Mage::getResourceModel('M2ePro/Listing_Product_Variation');
 
         // Check filters
         //--------------------
@@ -85,18 +85,13 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
                 return false;
             } else if ($listingProduct->getChildObject()->isVariationsReady()) {
 
-                if (is_null($productsIdsForEachVariation)) {
-                    $productsIdsForEachVariation = $listingProduct->getProductsIdsForEachVariation();
-                }
+                $temp = $variationResource->isAllStatusesDisabled(
+                    $listingProduct->getId(),
+                    $listingProduct->getListing()->getStoreId()
+                );
 
-                if (count($productsIdsForEachVariation) > 0) {
-
-                    $tempStatuses = $listingProduct->getVariationsStatuses($productsIdsForEachVariation);
-
-                    // all variations are disabled
-                    if ((int)min($tempStatuses) == Mage_Catalog_Model_Product_Status::STATUS_DISABLED) {
-                        return false;
-                    }
+                if (!is_null($temp) && $temp) {
+                    return false;
                 }
             }
         }
@@ -107,30 +102,54 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
                 return false;
             } else if ($listingProduct->getChildObject()->isVariationsReady()) {
 
-                if (is_null($productsIdsForEachVariation)) {
-                    $productsIdsForEachVariation = $listingProduct->getProductsIdsForEachVariation();
-                }
+                $temp = $variationResource->isAllDoNotHaveStockAvailabilities(
+                    $listingProduct->getId(),
+                    $listingProduct->getListing()->getStoreId()
+                );
 
-                if (count($productsIdsForEachVariation) > 0) {
-
-                    $tempStocks = $listingProduct->getVariationsStockAvailabilities($productsIdsForEachVariation);
-
-                    // all variations are out of stock
-                    if (!(int)max($tempStocks)) {
-                        return false;
-                    }
+                if (!is_null($temp) && $temp) {
+                    return false;
                 }
             }
         }
 
-        if($buySynchronizationTemplate->isListWhenQtyHasValue()) {
+        if($buySynchronizationTemplate->isListWhenQtyMagentoHasValue()) {
 
             $result = false;
             $productQty = (int)$listingProduct->getChildObject()->getQty(true);
 
-            $typeQty = (int)$buySynchronizationTemplate->getListWhenQtyHasValueType();
-            $minQty = (int)$buySynchronizationTemplate->getListWhenQtyHasValueMin();
-            $maxQty = (int)$buySynchronizationTemplate->getListWhenQtyHasValueMax();
+            $typeQty = (int)$buySynchronizationTemplate->getListWhenQtyMagentoHasValueType();
+            $minQty = (int)$buySynchronizationTemplate->getListWhenQtyMagentoHasValueMin();
+            $maxQty = (int)$buySynchronizationTemplate->getListWhenQtyMagentoHasValueMax();
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::LIST_QTY_LESS &&
+                $productQty <= $minQty) {
+                $result = true;
+            }
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::LIST_QTY_MORE &&
+                $productQty >= $minQty) {
+                $result = true;
+            }
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::LIST_QTY_BETWEEN &&
+                $productQty >= $minQty && $productQty <= $maxQty) {
+                $result = true;
+            }
+
+            if (!$result) {
+                return false;
+            }
+        }
+
+        if($buySynchronizationTemplate->isListWhenQtyCalculatedHasValue()) {
+
+            $result = false;
+            $productQty = (int)$listingProduct->getChildObject()->getQty(false);
+
+            $typeQty = (int)$buySynchronizationTemplate->getListWhenQtyCalculatedHasValueType();
+            $minQty = (int)$buySynchronizationTemplate->getListWhenQtyCalculatedHasValueMin();
+            $maxQty = (int)$buySynchronizationTemplate->getListWhenQtyCalculatedHasValueMax();
 
             if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::LIST_QTY_LESS &&
                 $productQty <= $minQty) {
@@ -210,7 +229,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
         }
         //--------------------
 
-        $productsIdsForEachVariation = NULL;
+        $variationResource = Mage::getResourceModel('M2ePro/Listing_Product_Variation');
 
         // Check filters
         //--------------------
@@ -220,18 +239,13 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
                 return false;
             } else if ($listingProduct->getChildObject()->isVariationsReady()) {
 
-                if (is_null($productsIdsForEachVariation)) {
-                    $productsIdsForEachVariation = $listingProduct->getProductsIdsForEachVariation();
-                }
+                $temp = $variationResource->isAllStatusesDisabled(
+                    $listingProduct->getId(),
+                    $listingProduct->getListing()->getStoreId()
+                );
 
-                if (count($productsIdsForEachVariation) > 0) {
-
-                    $tempStatuses = $listingProduct->getVariationsStatuses($productsIdsForEachVariation);
-
-                    // all variations are disabled
-                    if ((int)min($tempStatuses) == Mage_Catalog_Model_Product_Status::STATUS_DISABLED) {
-                        return false;
-                    }
+                if (!is_null($temp) && $temp) {
+                    return false;
                 }
             }
         }
@@ -242,30 +256,54 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
                 return false;
             } else if ($listingProduct->getChildObject()->isVariationsReady()) {
 
-                if (is_null($productsIdsForEachVariation)) {
-                    $productsIdsForEachVariation = $listingProduct->getProductsIdsForEachVariation();
-                }
+                $temp = $variationResource->isAllDoNotHaveStockAvailabilities(
+                    $listingProduct->getId(),
+                    $listingProduct->getListing()->getStoreId()
+                );
 
-                if (count($productsIdsForEachVariation) > 0) {
-
-                    $tempStocks = $listingProduct->getVariationsStockAvailabilities($productsIdsForEachVariation);
-
-                    // all variations are out of stock
-                    if (!(int)max($tempStocks)) {
-                        return false;
-                    }
+                if (!is_null($temp) && $temp) {
+                    return false;
                 }
             }
         }
 
-        if($buySynchronizationTemplate->isRelistWhenQtyHasValue()) {
+        if($buySynchronizationTemplate->isRelistWhenQtyMagentoHasValue()) {
 
             $result = false;
             $productQty = (int)$listingProduct->getChildObject()->getQty(true);
 
-            $typeQty = (int)$buySynchronizationTemplate->getRelistWhenQtyHasValueType();
-            $minQty = (int)$buySynchronizationTemplate->getRelistWhenQtyHasValueMin();
-            $maxQty = (int)$buySynchronizationTemplate->getRelistWhenQtyHasValueMax();
+            $typeQty = (int)$buySynchronizationTemplate->getRelistWhenQtyMagentoHasValueType();
+            $minQty = (int)$buySynchronizationTemplate->getRelistWhenQtyMagentoHasValueMin();
+            $maxQty = (int)$buySynchronizationTemplate->getRelistWhenQtyMagentoHasValueMax();
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::RELIST_QTY_LESS &&
+                $productQty <= $minQty) {
+                $result = true;
+            }
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::RELIST_QTY_MORE &&
+                $productQty >= $minQty) {
+                $result = true;
+            }
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::RELIST_QTY_BETWEEN &&
+                $productQty >= $minQty && $productQty <= $maxQty) {
+                $result = true;
+            }
+
+            if (!$result) {
+                return false;
+            }
+        }
+
+        if($buySynchronizationTemplate->isRelistWhenQtyCalculatedHasValue()) {
+
+            $result = false;
+            $productQty = (int)$listingProduct->getChildObject()->getQty(false);
+
+            $typeQty = (int)$buySynchronizationTemplate->getRelistWhenQtyCalculatedHasValueType();
+            $minQty = (int)$buySynchronizationTemplate->getRelistWhenQtyCalculatedHasValueMin();
+            $maxQty = (int)$buySynchronizationTemplate->getRelistWhenQtyCalculatedHasValueMax();
 
             if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::RELIST_QTY_LESS &&
                 $productQty <= $minQty) {
@@ -336,7 +374,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
         }
         //--------------------
 
-        $productsIdsForEachVariation = NULL;
+        $variationResource = Mage::getResourceModel('M2ePro/Listing_Product_Variation');
 
         // Check filters
         //--------------------
@@ -346,18 +384,13 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
                 return true;
             } else if ($listingProduct->getChildObject()->isVariationsReady()) {
 
-                if (is_null($productsIdsForEachVariation)) {
-                    $productsIdsForEachVariation = $listingProduct->getProductsIdsForEachVariation();
-                }
+                $temp = $variationResource->isAllStatusesDisabled(
+                    $listingProduct->getId(),
+                    $listingProduct->getListing()->getStoreId()
+                );
 
-                if (count($productsIdsForEachVariation) > 0) {
-
-                    $tempStatuses = $listingProduct->getVariationsStatuses($productsIdsForEachVariation);
-
-                    // all variations are disabled
-                    if ((int)min($tempStatuses) == Mage_Catalog_Model_Product_Status::STATUS_DISABLED) {
-                        return true;
-                    }
+                if (!is_null($temp) && $temp) {
+                    return true;
                 }
             }
         }
@@ -368,29 +401,48 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
                 return true;
             } else if ($listingProduct->getChildObject()->isVariationsReady()) {
 
-                if (is_null($productsIdsForEachVariation)) {
-                    $productsIdsForEachVariation = $listingProduct->getProductsIdsForEachVariation();
-                }
+                $temp = $variationResource->isAllDoNotHaveStockAvailabilities(
+                    $listingProduct->getId(),
+                    $listingProduct->getListing()->getStoreId()
+                );
 
-                if (count($productsIdsForEachVariation) > 0) {
-
-                    $tempStocks = $listingProduct->getVariationsStockAvailabilities($productsIdsForEachVariation);
-
-                    // all variations are out of stock
-                    if (!(int)max($tempStocks)) {
-                        return true;
-                    }
+                if (!is_null($temp) && $temp) {
+                    return true;
                 }
             }
         }
 
-        if ($buySynchronizationTemplate->isStopWhenQtyHasValue()) {
+        if ($buySynchronizationTemplate->isStopWhenQtyMagentoHasValue()) {
 
             $productQty = (int)$listingProduct->getChildObject()->getQty(true);
 
-            $typeQty = (int)$buySynchronizationTemplate->getStopWhenQtyHasValueType();
-            $minQty = (int)$buySynchronizationTemplate->getStopWhenQtyHasValueMin();
-            $maxQty = (int)$buySynchronizationTemplate->getStopWhenQtyHasValueMax();
+            $typeQty = (int)$buySynchronizationTemplate->getStopWhenQtyMagentoHasValueType();
+            $minQty = (int)$buySynchronizationTemplate->getStopWhenQtyMagentoHasValueMin();
+            $maxQty = (int)$buySynchronizationTemplate->getStopWhenQtyMagentoHasValueMax();
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::STOP_QTY_LESS &&
+                $productQty <= $minQty) {
+                return true;
+            }
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::STOP_QTY_MORE &&
+                $productQty >= $minQty) {
+                return true;
+            }
+
+            if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::STOP_QTY_BETWEEN &&
+                $productQty >= $minQty && $productQty <= $maxQty) {
+                return true;
+            }
+        }
+
+        if ($buySynchronizationTemplate->isStopWhenQtyCalculatedHasValue()) {
+
+            $productQty = (int)$listingProduct->getChildObject()->getQty(false);
+
+            $typeQty = (int)$buySynchronizationTemplate->getStopWhenQtyCalculatedHasValueType();
+            $minQty = (int)$buySynchronizationTemplate->getStopWhenQtyCalculatedHasValueMin();
+            $maxQty = (int)$buySynchronizationTemplate->getStopWhenQtyCalculatedHasValueMax();
 
             if ($typeQty == Ess_M2ePro_Model_Buy_Template_Synchronization::STOP_QTY_LESS &&
                 $productQty <= $minQty) {
@@ -531,7 +583,7 @@ class Ess_M2ePro_Model_Buy_Synchronization_Templates_Inspector
         }
         //--------------------
 
-        /* @var $amazonSynchronizationTemplate Ess_M2ePro_Model_Buy_Template_Synchronization */
+        /* @var $buySynchronizationTemplate Ess_M2ePro_Model_Buy_Template_Synchronization */
         $buySynchronizationTemplate = $listingProduct->getChildObject()->getBuySynchronizationTemplate();
 
         // Correct synchronization

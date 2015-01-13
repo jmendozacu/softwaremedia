@@ -19,9 +19,10 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
 
     // ##########################################################
 
-    // ->__('Product import is disabled in eBay Account settings.');
-    // ->__('Data obtaining for eBay Item failed. Please try again later.');
-    // ->__('Product for eBay Item #%id% was created in Magento catalog.');
+    // M2ePro_TRANSLATIONS
+    // Product import is disabled in eBay Account settings.
+    // Data obtaining for eBay Item failed. Please try again later.
+    // Product for eBay Item #%id% was created in Magento catalog.
 
     // ########################################
 
@@ -241,8 +242,13 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         // 3rd party Item
         // ----------------
         $sku = $this->getSku();
+        if (strlen($this->getVariationSku()) > 0) {
+            $sku = $this->getVariationSku();
+        }
+
         if ($sku != '' && strlen($sku) <= 64) {
             $product = Mage::getModel('catalog/product')
+                ->setStoreId($this->getEbayOrder()->getAssociatedStoreId())
                 ->getCollection()
                     ->addAttributeToSelect('sku')
                     ->addAttributeToFilter('sku', $sku)
@@ -259,6 +265,11 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         $this->associateWithProduct($product);
 
         return $product->getId();
+    }
+
+    public function prepareMagentoOptions($options)
+    {
+        return Mage::helper('M2ePro/Component_Ebay')->reduceOptionsForOrders($options);
     }
 
     private function validate()
@@ -300,6 +311,7 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         // Try to find exist product with sku from eBay
         // ----------------
         $product = Mage::getModel('catalog/product')
+            ->setStoreId($this->getEbayOrder()->getAssociatedStoreId())
             ->getCollection()
                 ->addAttributeToSelect('sku')
                 ->addAttributeToFilter('sku', $productData['sku'])
@@ -353,6 +365,9 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
             $params['carrier_code'] = Mage::helper('M2ePro/Component_Ebay')->getCarrierTitle(
                 $trackingDetails['carrier_code'], $trackingDetails['carrier_title']
             );
+
+            // remove unsupported by eBay symbols
+            $params['carrier_code'] = str_replace(array('\'', '"', '+', '(', ')'), array(), $params['carrier_code']);
         }
 
         /** @var $dispatcher Ess_M2ePro_Model_Connector_Ebay_OrderItem_Dispatcher */

@@ -12,17 +12,17 @@
     M2ePro.url.add(<?php echo json_encode(Mage::helper('M2ePro')->getControllerActions('adminhtml_ebay_category')) ?>);
 
     M2ePro.translator.add(<?php echo json_encode(array(
-        'Marketplaces settings have been saved.' => $this->__('Marketplaces settings have been saved.'),
-        'You must select at least one marketplace you will work with.' => $this->__('You must select at least one marketplace you will work with.'),
+        'Marketplaces settings have been saved.' => Mage::helper('M2ePro')->__('Marketplaces settings have been saved.'),
+        'You must select at least one marketplace you will work with.' => Mage::helper('M2ePro')->__('You must select at least one marketplace you will work with.'),
 
-        'Another Synchronization Is Already Running.' => $this->__('Another Synchronization Is Already Running.'),
-        'Getting information. Please wait ...' => $this->__('Getting information. Please wait ...'),
-        'Preparing to start. Please wait ...' => $this->__('Preparing to start. Please wait ...'),
+        'Another Synchronization Is Already Running.' => Mage::helper('M2ePro')->__('Another Synchronization Is Already Running.'),
+        'Getting information. Please wait ...' => Mage::helper('M2ePro')->__('Getting information. Please wait ...'),
+        'Preparing to start. Please wait ...' => Mage::helper('M2ePro')->__('Preparing to start. Please wait ...'),
 
-        'Synchronization has successfully ended.' => $this->__('Synchronization has successfully ended.'),
-        'Synchronization ended with warnings. <a target="_blank" href="%url%">View log</a> for details.' => $this->__('Synchronization ended with warnings. <a target="_blank" href="%url%">View log</a> for details.'),
-        'Synchronization ended with errors. <a target="_blank" href="%url%">View log</a> for details.' => $this->__('Synchronization ended with errors. <a target="_blank" href="%url%">View log</a> for details.'),
-        'Some eBay categories were deleted from eBay. Click <a target="_blank" href="%url%">here</a> to check.' => $this->__('Some eBay categories were deleted from eBay. Click <a target="_blank" href="%url%">here</a> to check.')
+        'Synchronization has successfully ended.' => Mage::helper('M2ePro')->__('Synchronization has successfully ended.'),
+        'Synchronization ended with warnings. <a target="_blank" href="%url%">View log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with warnings. <a target="_blank" href="%url%">View log</a> for details.'),
+        'Synchronization ended with errors. <a target="_blank" href="%url%">View log</a> for details.' => Mage::helper('M2ePro')->__('Synchronization ended with errors. <a target="_blank" href="%url%">View log</a> for details.'),
+        'Some eBay categories were deleted from eBay. Click <a target="_blank" href="%url%">here</a> to check.' => Mage::helper('M2ePro')->__('Some eBay categories were deleted from eBay. Click <a target="_blank" href="%url%">here</a> to check.')
     )); ?>);
 
     Event.observe(window, 'load', function() {
@@ -32,7 +32,7 @@
         MarketplaceWrapperObj = new AreaWrapper('marketplaces_content_container');
 
         MarketplaceProgressHandlerObj = new EbayMarketplaceSynchProgressHandler(MarketplaceProgressBarObj, MarketplaceWrapperObj );
-        MarketplaceHandlerObj = new MarketplaceHandler(MarketplaceProgressHandlerObj);
+        MarketplaceHandlerObj = new MarketplaceHandler(MarketplaceProgressHandlerObj, <?php echo json_encode($this->storedStatuses)?>);
         MarketplaceProgressHandlerObj.initPageCheckState();
 
         <?php if (!is_null($this->getChildBlockId())) { ?>
@@ -107,7 +107,7 @@
                                     </select>
                                 <?php } else { ?>
 
-                                    <select id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>" onchange="MarketplaceHandlerObj.changeStatus(this, '<?php echo $marketplace['instance']->getId(); ?>');" <?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' class="hightlight_selected marketplace_status_select"'; else echo ' class="lacklustre_selected marketplace_status_select"'; ?>>
+                                    <select id="status_<?php echo $marketplace['instance']->getId(); ?>" name="status_<?php echo $marketplace['instance']->getId(); ?>" marketplace_id="<?php echo $marketplace['instance']->getId(); ?>" markeptlace_component_name="<?php echo $componentName; ?>" onchange="MarketplaceHandlerObj.changeStatus(this);" <?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' class="hightlight_selected marketplace_status_select"'; else echo ' class="lacklustre_selected marketplace_status_select"'; ?>>
                                         <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_DISABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_DISABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Disabled'); ?></option>
                                         <option value="<?php echo Ess_M2ePro_Model_Marketplace::STATUS_ENABLE; ?>"<?php if (Ess_M2ePro_Model_Marketplace::STATUS_ENABLE == $marketplace['instance']->getStatus()) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Enabled'); ?></option>
                                     </select>
@@ -120,6 +120,9 @@
                             </td>
                             <td id="run_single_button_<?php echo $marketplace['instance']->getId(); ?>" class="value" <?php if($marketplace['instance']->getStatus() == Ess_M2ePro_Model_Marketplace::STATUS_DISABLE): ?>style="display: none;"<?php endif; ?>>
                                 <?php echo $this->getChildHtml('run_single_button'); ?>
+                            </td>
+                            <td id="changed_<?php echo $marketplace['instance']->getId(); ?>" class="changed">
+                                <span></span>
                             </td>
                             <td id="synch_info_wait_<?php echo $marketplace['instance']->getId(); ?>" class="value" style="display: none; color: gray;">
                                 &nbsp; <?php echo Mage::helper('M2ePro')->__('Waiting'); ?>

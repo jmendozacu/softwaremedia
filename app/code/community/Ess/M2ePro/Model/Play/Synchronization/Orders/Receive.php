@@ -61,7 +61,7 @@ class Ess_M2ePro_Model_Play_Synchronization_Orders_Receive extends Ess_M2ePro_Mo
         }
 
         $iteration = 0;
-        $percentsForOneStep = $this->getPercentsInterval() / count($permittedAccounts);
+        $percentsForOneAccount = $this->getPercentsInterval() / count($permittedAccounts);
 
         foreach ($permittedAccounts as $account) {
 
@@ -69,8 +69,9 @@ class Ess_M2ePro_Model_Play_Synchronization_Orders_Receive extends Ess_M2ePro_Mo
 
             // ----------------------------------------------------------
             $this->getActualOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
-            // ->__('The "Receive" action for Play.com account: "%s" is started. Please wait...')
-            $status = 'The "Receive" action for Play.com account: "%s" is started. Please wait...';
+            // M2ePro_TRANSLATIONS
+            // The "Receive" action for Play.com account: "%account_title%" is started. Please wait...
+            $status = 'The "Receive" action for Play.com account: "%account_title%" is started. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             // ----------------------------------------------------------
 
@@ -91,10 +92,11 @@ class Ess_M2ePro_Model_Play_Synchronization_Orders_Receive extends Ess_M2ePro_Mo
             }
 
             // ----------------------------------------------------------
-            // ->__('The "Receive" action for Play.com account: "%s" is finished. Please wait...')
-            $status = 'The "Receive" action for Play.com account: "%s" is finished. Please wait...';
+            // M2ePro_TRANSLATIONS
+            // The "Receive" action for Play.com account: "%account_title%" is finished. Please wait...
+            $status = 'The "Receive" action for Play.com account: "%account_title%" is finished. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
-            $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep);
+            $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneAccount);
             $this->getActualLockItem()->activate();
             // ----------------------------------------------------------
 

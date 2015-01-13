@@ -600,16 +600,20 @@ HTML;
 
     protected function _toHtml()
     {
-        $urls = json_encode(array(
-            'adminhtml_ebay_template/editListingProduct' => $this->getUrl('*/adminhtml_ebay_template/editListingProduct'),
-            'adminhtml_ebay_template/saveListingProduct' => $this->getUrl('*/adminhtml_ebay_template/saveListingProduct'),
-        ));
+        $key = 'adminhtml_ebay_template/editListingProduct';
+        $urls[$key] = $this->getUrl("*/{$key}");
+
+        $key = 'adminhtml_ebay_template/saveListingProduct';
+        $urls[$key] = $this->getUrl("*/{$key}");
+
+        $urls = json_encode($urls);
+
         $translations = json_encode(array(
-            'Edit Payment and Shipping Settings' => $this->__('Edit Payment and Shipping Settings'),
-            'Edit Selling Settings' => $this->__('Edit Selling Settings'),
-            'Edit Synchronization Settings' => $this->__('Edit Synchronization Settings'),
-            'Edit Settings' => $this->__('Edit Settings'),
-            'for' => $this->__('for')
+            'Edit Payment and Shipping Settings' => Mage::helper('M2ePro')->__('Edit Payment and Shipping Settings'),
+            'Edit Selling Settings' => Mage::helper('M2ePro')->__('Edit Selling Settings'),
+            'Edit Synchronization Settings' => Mage::helper('M2ePro')->__('Edit Synchronization Settings'),
+            'Edit Settings' => Mage::helper('M2ePro')->__('Edit Settings'),
+            'for' => Mage::helper('M2ePro')->__('for')
         ));
 
         $commonJs = <<<HTML

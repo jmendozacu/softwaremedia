@@ -41,7 +41,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         }
 
         $iteration = 1;
-        $percentsForOneStep = $this->getPercentsInterval() / count($permittedAccounts);
+        $percentsForOneAccount = $this->getPercentsInterval() / count($permittedAccounts);
 
         foreach ($permittedAccounts as $account) {
             /** @var $account Ess_M2ePro_Model_Account **/
@@ -50,15 +50,18 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
             $this->getActualOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
             $this->getActualOperationHistory()->addTimePoint(__METHOD__.'get'.$account->getId(),'Get orders from eBay');
 
-            // ->__('The "Receive" action for eBay account "%s" is in data receiving state...')
-            $status = 'The "Receive" action for eBay account "%s" is in data receiving state...';
+            // M2ePro_TRANSLATIONS
+            // The "Receive" action for eBay account "%account_title%" is in data receiving state...
+            $status = 'The "Receive" action for eBay account "%account_title%" is in data receiving state...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             // ----------------------------------------------------------
 
             $ebayOrders = $this->processEbayOrders($account);
 
             // ----------------------------------------------------------
-            $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep * 0.3);
+            $this->getActualLockItem()->setPercents(
+                $this->getPercentsStart() + $iteration * $percentsForOneAccount * 0.3
+            );
 
             $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'get'.$account->getId());
             $this->getActualOperationHistory()->addTimePoint(
@@ -66,17 +69,23 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
                 'Create magento orders'
             );
 
-            // ->__('The "Receive" action for eBay account "%s" is in order creation state...')
-            $status = 'The "Receive" action for eBay account "%s" is in order creation state...';
+            // M2ePro_TRANSLATIONS
+            // The "Receive" action for eBay account "%account_title%" is in order creation state...
+            $status = 'The "Receive" action for eBay account "%account_title%" is in order creation state...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             // ----------------------------------------------------------
 
-            $this->createMagentoOrders($ebayOrders);
+            if (count($ebayOrders) > 0) {
+                $percentsForOneOrder = (int)(($this->getPercentsStart() + $iteration * $percentsForOneAccount * 0.7)
+                    / count($ebayOrders));
+
+                $this->createMagentoOrders($ebayOrders, $percentsForOneOrder);
+            }
 
             // ----------------------------------------------------------
             $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'create_magento_orders'.$account->getId());
 
-            $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep);
+            $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneAccount);
             $this->getActualLockItem()->activate();
             // ----------------------------------------------------------
 
@@ -123,6 +132,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         }
 
         if (empty($ebayOrders)) {
+            $this->saveLastUpdateTime($account, $toTime);
             return array();
         }
 
@@ -141,10 +151,14 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
         return array_filter($orders);
     }
 
-    private function createMagentoOrders($ebayOrders)
+    private function createMagentoOrders($ebayOrders, $percentsForOneOrder)
     {
+        $iteration = 1;
+        $currentPercents = $this->getActualLockItem()->getPercents();
+
         foreach ($ebayOrders as $order) {
             /** @var $order Ess_M2ePro_Model_Order */
+
             if ($order->canCreateMagentoOrder()) {
                 try {
                     $order->createMagentoOrder();
@@ -172,6 +186,13 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
             if ($order->getStatusUpdateRequired()) {
                 $order->updateMagentoOrderStatus();
             }
+
+            $currentPercents = $currentPercents + $percentsForOneOrder * $iteration;
+            $this->getActualLockItem()->setPercents($currentPercents);
+
+            if ($iteration % 5 == 0) {
+                $this->getActualLockItem()->activate();
+            }
         }
     }
 
@@ -183,15 +204,28 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
 
         if (is_null($lastSynchronizationDate)) {
             $sinceTime = new DateTime('now', new DateTimeZone('UTC'));
-            $sinceTime->modify('-10 days');
-
             $sinceTime = Ess_M2ePro_Model_Connector_Ebay_Abstract::ebayTimeToString($sinceTime);
+
             $this->saveLastUpdateTime($account, $sinceTime);
 
             return $sinceTime;
         }
 
         $sinceTime = new DateTime($lastSynchronizationDate, new DateTimeZone('UTC'));
+
+        // Get min date for synch
+        //------------------------
+        $minDate = new DateTime('now',new DateTimeZone('UTC'));
+        $minDate->modify('-90 days');
+        //------------------------
+
+        // Prepare last date
+        //------------------------
+        if ((int)$sinceTime->format('U') < (int)$minDate->format('U')) {
+            $sinceTime = $minDate;
+        }
+        //------------------------
+
         return Ess_M2ePro_Model_Connector_Ebay_Abstract::ebayTimeToString($sinceTime);
     }
 

@@ -47,7 +47,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
             if (!$listingProduct->isNotListed()) {
 
-                // Parser hack -> Mage::helper('M2ePro')->__('Item is already on Amazon, or not available.');
+                // M2ePro_TRANSLATIONS
+                // Item is already on Amazon, or not available.
                 $this->addListingsProductsLogsMessage($listingProduct, 'Item is already on Amazon, or not available.',
                                                       Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
                                                       Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
@@ -90,7 +91,7 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
             $listingProduct->setData('sku',$addingSku);
         }
 
-        $this->checkSkuExistance($listingProducts);
+        $this->checkSkuExistence($listingProducts);
 
         foreach ($listingProducts as $key => $listingProduct) {
 
@@ -174,6 +175,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
             $requestData['items'][] = $sendedData;
         }
 
+        $this->checkQtyWarnings();
+
         $this->addSkusToQueue($tempSkus);
 
         return $requestData;
@@ -187,7 +190,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
         if (!empty($generalId)) {
             if (!$this->validateGeneralId($generalId)) {
-                // ->__('ASIN/ISBN has a wrong format.');
+                // M2ePro_TRANSLATIONS
+                // ASIN/ISBN has a wrong format.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
                     'ASIN/ISBN has a wrong format.',
@@ -203,7 +207,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
         if (!empty($worldWideId)) {
             if (!$this->validateWorldWideId($worldWideId)) {
-                // ->__('UPC/EAN has a wrong format.');
+                // M2ePro_TRANSLATIONS
+                // UPC/EAN has a wrong format.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
                     'UPC/EAN has a wrong format.',
@@ -218,7 +223,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
         $templateNewProductId = $listingProduct->getChildObject()->getTemplateNewProductId();
 
         if (empty($templateNewProductId)) {
-            // ->__('ASIN/ISBN or New ASIN template is required.');
+            // M2ePro_TRANSLATIONS
+            // ASIN/ISBN or New ASIN template is required.
             $this->addListingsProductsLogsMessage(
                 $listingProduct,
                 'ASIN/ISBN or New ASIN template is required.',
@@ -238,7 +244,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
         $registeredParameter = $listingProduct->getChildObject()->getTemplateNewProduct()->getRegisteredParameter();
 
         if (!$registeredParameter && !$isWorldWideIdValid) {
-    // ->__('Valid EAN/UPC or Product ID Override is required for adding new ASIN. Please check Template Settings.');
+            // M2ePro_TRANSLATIONS
+            // Valid EAN/UPC or Product ID Override is required for adding new ASIN. Please check Template Settings.
             $this->addListingsProductsLogsMessage(
                 $listingProduct,
             'Valid EAN/UPC or Product ID Override is required for adding new ASIN. Please check Template Settings.',
@@ -249,7 +256,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
         }
 
         if (!empty($worldWideId) && !$isWorldWideIdValid) {
-            // ->__('UPC/EAN has a wrong format. Please check New ASIN Template Settings.');
+            // M2ePro_TRANSLATIONS
+            // UPC/EAN has a wrong format. Please check New ASIN Template Settings.
             $this->addListingsProductsLogsMessage(
                 $listingProduct,
                 'UPC/EAN has a wrong format. Please check New ASIN Template Settings.',
@@ -268,7 +276,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
         if (!empty($generalId)) {
             if (!$this->validateGeneralId($generalId)) {
-                // ->__('ASIN/ISBN has a wrong format.');
+                // M2ePro_TRANSLATIONS
+                // ASIN/ISBN has a wrong format.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
                     'ASIN/ISBN has a wrong format.',
@@ -284,7 +293,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
         if (!empty($worldWideId)) {
             if (!$this->validateWorldWideId($worldWideId)) {
-                // ->__('UPC/EAN has a wrong format.');
+                // M2ePro_TRANSLATIONS
+                // UPC/EAN has a wrong format.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
                     'UPC/EAN has a wrong format.',
@@ -310,7 +320,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
             $registeredParameter = $listingProduct->getChildObject()->getTemplateNewProduct()->getRegisteredParameter();
 
             if (!$registeredParameter && !$isWorldWideIdValid) {
-    // ->__('Valid EAN/UPC or Product ID Override is required for adding new ASIN. Please check Template Settings.');
+                // M2ePro_TRANSLATIONS
+    // Valid EAN/UPC or Product ID Override is required for adding new ASIN. Please check Template Settings.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
             'Valid EAN/UPC or Product ID Override is required for adding new ASIN. Please check Template Settings.',
@@ -321,7 +332,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
             }
 
             if (!empty($worldWideId) && !$isWorldWideIdValid) {
-                // ->__('UPC/EAN has a wrong format. Please check New ASIN Template Settings.');
+                // M2ePro_TRANSLATIONS
+                // UPC/EAN has a wrong format. Please check New ASIN Template Settings.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
                     'UPC/EAN has a wrong format. Please check New ASIN Template Settings.',
@@ -338,7 +350,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
         if (!empty($generalId)) {
             if (!$this->validateGeneralId($generalId)) {
-// ->__('ASIN/ISBN has a wrong format. Please check Search Settings for ASIN / ISBN  in Listing -> Channel Settings.');
+        // M2ePro_TRANSLATIONS
+        // ASIN/ISBN has a wrong format. Please check Search Settings for ASIN / ISBN  in Listing -> Channel Settings.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
         'ASIN/ISBN has a wrong format. Please check Search Settings for ASIN / ISBN  in Listing -> Channel Settings.',
@@ -354,7 +367,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
         if (!empty($worldWideId)) {
             if (!$this->validateWorldWideId($worldWideId)) {
-// ->__('UPC/EAN has a wrong format. Please check Search Settings for ASIN / ISBN  in Listing -> Channel Settings.');
+        // M2ePro_TRANSLATIONS
+        // UPC/EAN has a wrong format. Please check Search Settings for ASIN / ISBN  in Listing -> Channel Settings.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
             'UPC/EAN has a wrong format. Please check Search Settings for ASIN / ISBN  in Listing -> Channel Settings.',
@@ -366,7 +380,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
             return Ess_M2ePro_Model_Connector_Amazon_Product_Helper::LIST_TYPE_WORLDWIDE_ID;
         }
 
-        // ->__('ASIN/ISBN or New ASIN template is required.');
+        // M2ePro_TRANSLATIONS
+        // ASIN/ISBN or New ASIN template is required.
         $this->addListingsProductsLogsMessage(
             $listingProduct,
             'ASIN/ISBN or UPC/EAN or New ASIN template is required.',
@@ -417,8 +432,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
         $validConditions = $listingProduct->getListing()->getChildObject()->getConditionValues();
 
         if (empty($addingCondition) || !in_array($addingCondition,$validConditions)) {
-
-            // ->__('Condition is invalid or missed. Please, check Listing Channel and product settings.');
+            // M2ePro_TRANSLATIONS
+            // Condition is invalid or missed. Please, check Listing Channel and product settings.
             $this->addListingsProductsLogsMessage(
                 $listingProduct, 'Condition is invalid or missed. Please, check Listing Channel and product settings.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -431,8 +446,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
         $addingConditionNote = $listingProduct->getChildObject()->getConditionNote();
 
         if (is_null($addingConditionNote)) {
-
-            // ->__('Condition note is invalid or missed. Please, check Listing Channel and product settings.');
+            // M2ePro_TRANSLATIONS
+            // Condition note is invalid or missed. Please, check Listing Channel and product settings.
             $this->addListingsProductsLogsMessage(
             $listingProduct, 'Condition note is invalid or missed. Please, check Listing Channel and product settings.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -443,8 +458,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
         }
 
         if (!empty($addingConditionNote) && strlen($addingConditionNote) > 2000) {
-
-            // ->__('The length of condition note must be less than 2000 characters.');
+            // M2ePro_TRANSLATIONS
+            // The length of condition note must be less than 2000 characters.
             $this->addListingsProductsLogsMessage(
                 $listingProduct, 'The length of condition note must be less than 2000 characters.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -494,7 +509,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
         if (strlen($sku) > Ess_M2ePro_Model_Amazon_Listing_Product::SKU_MAX_LENGTH) {
 
-            // Parser hack -> Mage::helper('M2ePro')->__('The length of sku must be less than 40 characters.');
+            // M2ePro_TRANSLATIONS
+            // The length of sku must be less than 40 characters.
             $this->addListingsProductsLogsMessage(
                 $listingProduct, 'The length of sku must be less than 40 characters.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -509,7 +525,7 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
 
     // ########################################
 
-    private function checkSkuExistance($listingProducts)
+    private function checkSkuExistence($listingProducts)
     {
         $listingProductsPacks = array_chunk($listingProducts,20,true);
 
@@ -642,7 +658,8 @@ class Ess_M2ePro_Model_Connector_Amazon_Product_List_Multiple
         if (in_array($sku,$queue,true) || isset($this->skusToCheck[$sku])) {
 
             if ($listingProduct->getChildObject()->getAmazonListing()->isGenerateSkuModeNo()) {
-    // ->__('The product with the same Merchant SKU is being listed now. SKU must be unique for each Amazon item.');
+                // M2ePro_TRANSLATIONS
+                // The product with the same Merchant SKU is being listed now. SKU must be unique for each Amazon item.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
             'The product with the same Merchant SKU is being listed now. SKU must be unique for each Amazon item.',

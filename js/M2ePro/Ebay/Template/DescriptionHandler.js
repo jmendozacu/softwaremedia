@@ -259,6 +259,7 @@ EbayTemplateDescriptionHandler.prototype = Object.extend(new CommonHandler(), {
     select_attributes_image_change: function()
     {
         $$('.all-products-images').invoke(this.value == 'media_gallery' ? 'show' : 'hide');
+        $$('.all-products-image').invoke(this.value == 'image' ? 'show' : 'hide');
         if (this.value == 'image') {
             $('display_products_images').value = 'custom_settings';
         }
@@ -275,6 +276,38 @@ EbayTemplateDescriptionHandler.prototype = Object.extend(new CommonHandler(), {
         } else {
             $$('.products-images-custom-settings').invoke('show');
         }
+    },
+
+    product_details_specification_visibility_change: function()
+    {
+        if ($('product_details_ean').value == ''
+            && $('product_details_upc').value == ''
+            && $('product_details_gtin').value == ''
+            && $('product_details_epid').value == ''
+            && $('product_details_isbn').value == ''
+            && $('product_details_brand').value == ''
+        ) {
+            $$('.product-details-specification').each(function (element) {
+                element.hide();
+                element.down('.value').down().selectedIndex = 1;
+            });
+        } else {
+            $$('.product-details-specification').invoke('show');
+        }
+    },
+
+    product_details_brand_change: function()
+    {
+        var self = EbayTemplateDescriptionHandlerObj;
+
+        if (this.value != '') {
+            $('product_details_mpn_tr').show();
+        } else {
+            $('product_details_mpn_tr').hide();
+            $('product_details_mpn').selectedIndex = 0;
+        }
+
+        self.product_details_specification_visibility_change();
     },
 
     insertGallery: function()
@@ -322,6 +355,10 @@ EbayTemplateDescriptionHandler.prototype = Object.extend(new CommonHandler(), {
             template += ',1';
         } else {
             template += ',';
+        }
+
+        if ($('select_attributes_image').value == 'image') {
+            template += ',' + $('select_attributes_image_order_position').value;
         }
 
         template += ']#';

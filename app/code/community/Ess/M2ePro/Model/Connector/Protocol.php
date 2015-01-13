@@ -94,8 +94,11 @@ abstract class Ess_M2ePro_Model_Connector_Protocol
         }
 
         if ($internalServerErrorMessage != '') {
-            // Parser hack -> Mage::helper('M2ePro')->__('Internal server error(s) [%errors%]');
-            throw new Exception("Internal server error(s) [{$internalServerErrorMessage}]");
+
+            throw new Exception(Mage::helper('M2ePro')->__(
+                "Internal server error(s) [%error_message%]",
+                $internalServerErrorMessage
+            ));
         }
     }
 
@@ -146,7 +149,7 @@ abstract class Ess_M2ePro_Model_Connector_Protocol
         }
 
         $request = array(
-            'mode' => Mage::helper('M2ePro/Magento')->isDeveloper() ? 'development' : 'production',
+            'mode' => Mage::helper('M2ePro/Module')->isDevelopmentEnvironment() ? 'development' : 'production',
             'client' => array(
                 'platform' => array(
                     'name' => Mage::helper('M2ePro/Magento')->getName().
@@ -236,7 +239,7 @@ abstract class Ess_M2ePro_Model_Connector_Protocol
 
     protected function printDebugData()
     {
-        if (!Mage::helper('M2ePro/Magento')->isDeveloper()) {
+        if (Mage::helper('M2ePro/Module')->isProductionEnvironment()) {
             return;
         }
 

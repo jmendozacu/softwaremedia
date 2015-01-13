@@ -157,7 +157,7 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
     // ----------------------------------------
 
     /**
-     * @return Ess_M2ePro_Model_Magento_Product
+     * @return Ess_M2ePro_Model_Magento_Product_Cache
      */
     protected function getMagentoProduct()
     {
@@ -388,13 +388,15 @@ abstract class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Type_Response
                 $imagesData = $this->getRequestData()->getImagesData();
 
                 if (isset($imagesData['images'])) {
-                    $data['additional_data']['ebay_product_images_hash'] = sha1(json_encode($imagesData['images']));
+                    $data['additional_data']['ebay_product_images_hash'] =
+                        Mage::helper('M2ePro/Component_Ebay')->getImagesHash($imagesData['images']);
                 }
             }
 
             if ($this->getRequestData()->hasVariationsImagesData()) {
                 $imagesData = $this->getRequestData()->getVariationsImagesData();
-                $data['additional_data']['ebay_product_variation_images_hash'] = sha1(json_encode($imagesData));
+                $data['additional_data']['ebay_product_variation_images_hash'] =
+                    Mage::helper('M2ePro/Component_Ebay')->getImagesHash($imagesData);
             }
         }
 

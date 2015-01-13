@@ -114,15 +114,15 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product extends Mage_Adminhtml_Blo
         return <<<HTML
 <div id="video_tutorial_pop_up" style="display: none;">
     <div class="player_container" style="margin: 20px 5px; ">
-        <object width="853" height="480">
-            <param name="movie" value="http://www.youtube.com/v/{$videoId}?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"/>
-            <param name="allowFullScreen" value="true"/>
-            <param name="allowscriptaccess" value="always"/>
-            <embed src="http://www.youtube.com/v/{$videoId}?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"
-                   type="application/x-shockwave-flash" width="853" height="480"
-                   allowscriptaccess="always" allowfullscreen="true">
-            </embed>
-       </object>
+    <object width="853" height="480">
+        <param name="movie" value="http://www.youtube.com/v/{$videoId}?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"/>
+        <param name="allowFullScreen" value="true"/>
+        <param name="allowscriptaccess" value="always"/>
+        <embed src="http://www.youtube.com/v/{$videoId}?version=3&amp;hl=ru_RU&amp;rel=0&amp;vq=hd720"
+               type="application/x-shockwave-flash" width="853" height="480"
+               allowscriptaccess="always" allowfullscreen="true">
+        </embed>
+    </object>
     </div>
 </div>
 HTML;
@@ -180,7 +180,7 @@ HTML;
 ListingProductAddHandlerObj.settingsPopupYesClick();
 JS;
         $data = array(
-            'label'   => Mage::helper('M2ePro')->__('Yes, I Want'),
+            'label'   => Mage::helper('M2ePro')->__('Yes'),
             'onclick' => $onclick
         );
         $yesButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
@@ -191,19 +191,21 @@ JS;
 ListingProductAddHandlerObj.settingsPopupNoClick();
 JS;
         $data = array(
-            'label'   => Mage::helper('M2ePro')->__('No, Skip It'),
+            'label'   => Mage::helper('M2ePro')->__('No'),
             'onclick' => $onclick
         );
         $noButton = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         // -------------------------------------
 
+        // M2ePro_TRANSLATIONS
+        // Choose <b>Yes</b> if you want to override the default settings for this M2E Pro listing and to choose different settings for certain products.
         return <<<HTML
 <div id="settings_popup_content" style="display: none">
     <div style="margin: 10px; height: 150px">
-        <h3>{$helper->__('Do you want to customise M2E Listing settings for the necessary products?')}</h3>
+        <h3>{$helper->__('Do you want to customize the M2E Pro listing settings for some products?')}</h3>
         <br/>
-        <p>{$helper->__('It is possible to override default settings you set on the previous steps and set different
-        settings for the group of products.')}</p>
+        <p>{$helper->__('Choose <b>Yes</b> if you want to override the default settings for this M2E Pro listing '.
+                        'and to choose different settings for certain products.')}</p>
     </div>
 
     <div class="clear"></div>

@@ -45,7 +45,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
 
             if (!$listingProduct->isNotListed()) {
 
-                // Parser hack -> Mage::helper('M2ePro')->__('Item is already on Rakuten.com, or not available.');
+                // M2ePro_TRANSLATIONS
+                // Item is already on Rakuten.com, or not available.
                 $this->addListingsProductsLogsMessage($listingProduct,
                                                       'Item is already on Rakuten.com, or not available.',
                                                       Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -151,6 +152,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
             $requestData['items'][] = $sendedData;
         }
 
+        $this->checkQtyWarnings();
+
         $this->addSkusToQueue($tempSkus);
 
         return $requestData;
@@ -181,7 +184,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
 
         if (empty($addingGeneralId)) {
 
-            // Parser hack -> Mage::helper('M2ePro')->__('Identifier is not provided. Please, check Listing settings.');
+            // M2ePro_TRANSLATIONS
+            // Identifier is not provided. Please, check Listing settings.
             $this->addListingsProductsLogsMessage(
                 $listingProduct, 'Identifier is not provided. Please, check Listing settings.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -197,8 +201,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
         $validConditions = $listingProduct->getListing()->getChildObject()->getConditionValues();
 
         if (empty($addingCondition) || !in_array($addingCondition,$validConditions)) {
-
-            // ->__('Condition is invalid or missed. Please, check Listing Channel and product settings.');
+            // M2ePro_TRANSLATIONS
+            // Condition is invalid or missed. Please, check Listing Channel and product settings.
             $this->addListingsProductsLogsMessage(
                 $listingProduct, 'Condition is invalid or missed. Please, check Listing Channel and product settings.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -214,8 +218,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
         }
 
         if (is_null($addingConditionNote)) {
-
-            // ->__('Comment is invalid or missed. Please, check Listing Channel and product settings.');
+            // M2ePro_TRANSLATIONS
+            // Comment is invalid or missed. Please, check Listing Channel and product settings.
             $this->addListingsProductsLogsMessage(
             $listingProduct, 'Comment is invalid or missed. Please, check Listing Channel and product settings.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -226,8 +230,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
         }
 
         if (!empty($addingConditionNote) && strlen($addingConditionNote) > 250) {
-
-            // ->__('The length of condition note must be less than 250 characters.');
+            // M2ePro_TRANSLATIONS
+            // -The length of condition note must be less than 250 characters.
             $this->addListingsProductsLogsMessage(
                 $listingProduct, 'The length of condition note must be less than 250 characters.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -243,8 +247,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
         }
 
         if (is_null($addingShippingExpeditedMode)) {
-
-        // ->__('Offer expedited shipping is invalid or missed. Please, check Listing Channel and product settings.');
+        // M2ePro_TRANSLATIONS
+        // Offer expedited shipping is invalid or missed. Please, check Listing Channel and product settings.
             $this->addListingsProductsLogsMessage(
                 $listingProduct,
                 'Offer expedited shipping is invalid or missed. Please, check Listing Channel and product settings.',
@@ -258,8 +262,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
         $price = $listingProduct->getChildObject()->getPrice();
 
         if ($price <= 0) {
-
-        // ->__('The price must be greater than 0. Please, check the Selling Format Template and Product settings.');
+        // M2ePro_TRANSLATIONS
+        // The price must be greater than 0. Please, check the Selling Format Template and Product settings.
             $this->addListingsProductsLogsMessage(
                 $listingProduct,
                 'The price must be greater than 0. Please, check the Selling Format Template and Product settings.',
@@ -291,7 +295,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
 
         if (strlen($sku) > Ess_M2ePro_Model_Buy_Listing_Product::SKU_MAX_LENGTH) {
 
-       // Parser hack -> Mage::helper('M2ePro')->__('The length of reference ID must be less than 30 characters.');
+       // M2ePro_TRANSLATIONS
+       // The length of reference ID must be less than 30 characters.
             $this->addListingsProductsLogsMessage(
                 $listingProduct, 'The length of reference ID must be less than 30 characters.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
@@ -331,11 +336,14 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
 
                 Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-                $this->addListingsLogsMessage(
-                    reset($listingProductsPack), Mage::helper('M2ePro')->__($exception->getMessage()),
-                    Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                    Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
-                );
+                foreach ($listingProductsPack as $listingProduct) {
+
+                    $this->addListingsProductsLogsMessage(
+                        $listingProduct, Mage::helper('M2ePro')->__($exception->getMessage()),
+                        Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                        Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM
+                    );
+                }
 
                 continue;
             }
@@ -398,7 +406,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_List_Multiple
         if ($listingProductCollection->getSize() > 0) {
 
             if ($listingProduct->getChildObject()->getBuyListing()->isGenerateSkuModeNo()) {
-// ->__('The same Reference ID was found among M2E Listings. Reference ID must be unique the product to be listed.');
+        // M2ePro_TRANSLATIONS
+        // The same Reference ID was found among M2E Listings. Reference ID must be unique the product to be listed.
                 $this->addListingsProductsLogsMessage(
                     $listingProduct,
         'The same Reference ID was found among M2E Listings. Reference ID must be unique the product to be listed.',

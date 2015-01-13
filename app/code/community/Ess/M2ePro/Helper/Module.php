@@ -16,6 +16,8 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     const WIZARD_MIGRATION_NICK = 'migrationToV6';
 
+    const DEVELOPMENT_MODE_COOKIE_KEY = 'm2epro_development_mode';
+
     // ########################################
 
     /**
@@ -66,7 +68,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
 
     public function getRevision()
     {
-        $revision = '6329';
+        $revision = '7568';
 
         if ($revision == str_replace('|','#','|REVISION|')) {
             $revision = (int)exec('svnversion');
@@ -152,8 +154,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
             'app/code/community/Ess/',
             'app/code/community/Ess/M2ePro/*',
 
-            // todo uncomment when translations will be available
-            //'app/locale/*/Ess_M2ePro.csv',
+            'app/locale/*/Ess_M2ePro.csv',
             'app/etc/modules/Ess_M2ePro.xml',
             'app/design/adminhtml/default/default/layout/M2ePro.xml',
 
@@ -173,7 +174,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         $requirements = array (
 
             'php_version' => array(
-                'title' => $this->__('PHP Version'),
+                'title' => Mage::helper('M2ePro')->__('PHP Version'),
                 'condition' => array(
                     'sign' => '>=',
                     'value' => '5.3.0'
@@ -185,7 +186,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
             ),
 
             'memory_limit' => array(
-                'title' => $this->__('Memory Limit'),
+                'title' => Mage::helper('M2ePro')->__('Memory Limit'),
                 'condition' => array(
                     'sign' => '>=',
                     'value' => '256 MB'
@@ -197,7 +198,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
             ),
 
             'magento_version' => array(
-                'title' => $this->__('Magento Version'),
+                'title' => Mage::helper('M2ePro')->__('Magento Version'),
                 'condition' => array(
                     'sign' => '>=',
                     'value' => (Mage::helper('M2ePro/Magento')->isGoEdition()           ? '1.9.0.0' :
@@ -211,7 +212,7 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
             ),
 
             'max_execution_time' => array(
-                'title' => $this->__('Max Execution Time'),
+                'title' => Mage::helper('M2ePro')->__('Max Execution Time'),
                 'condition' => array(
                     'sign' => '>=',
                     'value' => '360 sec'
@@ -223,7 +224,13 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
             )
         );
 
-        foreach ($requirements as &$requirement) {
+        foreach ($requirements as $key => &$requirement) {
+
+            // max execution time is unlimited
+            if ($key == 'max_execution_time' && $clientPhpData['max_execution_time'] == 0) {
+                continue;
+            }
+
             $requirement['current']['status'] = version_compare(
                 $requirement['current']['value'],
                 $requirement['condition']['value'],
@@ -272,6 +279,41 @@ class Ess_M2ePro_Helper_Module extends Mage_Core_Helper_Abstract
         }
 
         return $directories;
+    }
+
+    // ########################################
+
+    public function isDevelopmentMode()
+    {
+        if (isset($_SERVER['REMOTE_ADDR']) &&
+            sha1($_SERVER['REMOTE_ADDR']) == 'e4c431597cf909cf228fcf9287b3ace0924e573c') {
+            return true;
+        }
+
+        return Mage::app()->getCookie()->get(self::DEVELOPMENT_MODE_COOKIE_KEY);
+    }
+
+    public function isProductionMode()
+    {
+        return !$this->isDevelopmentMode();
+    }
+
+    public function setDevelopmentModeMode($value)
+    {
+        $value ? Mage::app()->getCookie()->set(self::DEVELOPMENT_MODE_COOKIE_KEY, 'true', 60*60*24*31)
+               : Mage::app()->getCookie()->set(self::DEVELOPMENT_MODE_COOKIE_KEY, '', 0);
+    }
+
+    // ----------------------------------------
+
+    public function isDevelopmentEnvironment()
+    {
+        return (bool)getenv('DEVELOPMENT_ENV');
+    }
+
+    public function isProductionEnvironment()
+    {
+        return !$this->isDevelopmentEnvironment();
     }
 
     // ########################################

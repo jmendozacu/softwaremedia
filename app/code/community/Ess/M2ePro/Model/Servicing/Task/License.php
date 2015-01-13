@@ -4,7 +4,7 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_Model_Servicing_Task_License implements Ess_M2ePro_Model_Servicing_Task
+class Ess_M2ePro_Model_Servicing_Task_License extends Ess_M2ePro_Model_Servicing_Task
 {
     // ########################################
 
@@ -34,6 +34,10 @@ class Ess_M2ePro_Model_Servicing_Task_License implements Ess_M2ePro_Model_Servic
         if (isset($data['components']) && is_array($data['components'])) {
             $this->updateComponentsData($data['components']);
         }
+
+        if (isset($data['connection']) && is_array($data['connection'])) {
+            $this->updateConnectionData($data['connection']);
+        }
     }
 
     // ########################################
@@ -54,7 +58,8 @@ class Ess_M2ePro_Model_Servicing_Task_License implements Ess_M2ePro_Model_Servic
 
         if (isset($validationData['directory'])) {
             Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/'.Mage::helper('M2ePro/Module')->getName().'/license/','directory',(string)$validationData['directory']
+                '/'.Mage::helper('M2ePro/Module')->getName().'/license/',
+                'directory',(string)$validationData['directory']
             );
         }
     }
@@ -63,19 +68,22 @@ class Ess_M2ePro_Model_Servicing_Task_License implements Ess_M2ePro_Model_Servic
     {
         if (isset($validationValidData['domain'])) {
             Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/','domain',(int)$validationValidData['domain']
+                '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/',
+                'domain',(int)$validationValidData['domain']
             );
         }
 
         if (isset($validationValidData['ip'])) {
             Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/','ip',(int)$validationValidData['ip']
+                '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/',
+                'ip',(int)$validationValidData['ip']
             );
         }
 
         if (isset($validationValidData['directory'])) {
             Mage::helper('M2ePro/Primary')->getConfig()->setGroupValue(
-                '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/','directory',(int)$validationValidData['directory']
+                '/'.Mage::helper('M2ePro/Module')->getName().'/license/valid/',
+                'directory',(int)$validationValidData['directory']
             );
         }
     }
@@ -116,6 +124,24 @@ class Ess_M2ePro_Model_Servicing_Task_License implements Ess_M2ePro_Model_Servic
                     $componentConfigGroup, 'is_free', (int)$componentData['is_free']
                 );
             }
+        }
+    }
+
+    private function updateConnectionData($data)
+    {
+        if (isset($data['domain'])) {
+            Mage::helper('M2ePro/Module')->getCacheConfig()
+                ->setGroupValue('/license/connection/', 'domain', $data['domain']);
+        }
+
+        if (isset($data['ip'])) {
+            Mage::helper('M2ePro/Module')->getCacheConfig()
+                ->setGroupValue('/license/connection/', 'ip', $data['ip']);
+        }
+
+        if (isset($data['directory'])) {
+            Mage::helper('M2ePro/Module')->getCacheConfig()
+                ->setGroupValue('/license/connection/', 'directory', $data['directory']);
         }
     }
 

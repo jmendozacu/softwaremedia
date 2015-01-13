@@ -4,15 +4,21 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_CronController extends Mage_Core_Controller_Front_Action
+class Ess_M2ePro_CronController extends Mage_Core_Controller_Varien_Action
 {
+    //#############################################
+
+    public function preDispatch()
+    {
+        $this->getLayout()->setArea('frontend');
+        parent::preDispatch();
+    }
+
     //#############################################
 
     public function indexAction()
     {
-        header('Connection: Close');
-        header('Content-Length: 0');
-        flush();
+        $this->closeConnection();
 
         $cron = Mage::getModel('M2ePro/Cron_Type_Service');
         $cron->setInitiator(Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION);
@@ -55,6 +61,21 @@ class Ess_M2ePro_CronController extends Mage_Core_Controller_Front_Action
     }
 
     //#############################################
+
+    private function closeConnection()
+    {
+        header('Connection: Close');
+        header('Content-Length: 13');
+        echo 'processing...';
+
+        while(ob_get_level()) {
+            if (!$result = @ob_end_flush()) {
+                break;
+            }
+        }
+
+        flush();
+    }
 
     private function getConnectionsReports($connectionIds)
     {

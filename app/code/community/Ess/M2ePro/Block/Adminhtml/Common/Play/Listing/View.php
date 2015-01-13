@@ -19,16 +19,21 @@ class Ess_M2ePro_Block_Adminhtml_Common_Play_Listing_View extends Mage_Adminhtml
 
         // Set header text
         //------------------------------
+        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
+
         if (!Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()) {
-            $componentName = ' ' . Mage::helper('M2ePro')->__(Ess_M2ePro_Helper_Component_Play::TITLE);
+            $headerText = Mage::helper('M2ePro')->__(
+                'View %component_name% Listing "%listing_title%"',
+                Mage::helper('M2ePro')->__(Ess_M2ePro_Helper_Component_Play::TITLE),
+                $this->escapeHtml($listingData['title'])
+            );
         } else {
-            $componentName = '';
+             $headerText = Mage::helper('M2ePro')->__(
+                 'View Listing "%listing_title%"', $this->escapeHtml($listingData['title'])
+             );
         }
 
-        $listingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
-        $this->_headerText = Mage::helper('M2ePro')->__('View%s Listing "%s"',
-                                                 $componentName,
-                                                 $this->escapeHtml($listingData['title']));
+        $this->_headerText = $headerText;
         //------------------------------
 
         // Set buttons actions
@@ -205,9 +210,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Play_Listing_View extends Mage_Adminhtml
             'id' =>$listingData['id'],
             'back'=>$helper->makeBackUrlParam('*/adminhtml_common_play_listing/view', array('id' =>$listingData['id']))
         ));
-        $checkLockListing = $this->getUrl('*/adminhtml_listing/checkLockListing', array('component' => $component));
-        $lockListingNow = $this->getUrl('*/adminhtml_listing/lockListingNow', array('component' => $component));
-        $unlockListingNow = $this->getUrl('*/adminhtml_listing/unlockListingNow', array('component' => $component));
         $getErrorsSummary = $this->getUrl('*/adminhtml_listing/getErrorsSummary');
 
         $runListProducts = $this->getUrl('*/adminhtml_common_play_listing/runListProducts');
@@ -234,19 +236,21 @@ class Ess_M2ePro_Block_Adminhtml_Common_Play_Listing_View extends Mage_Adminhtml
 
         $taskCompletedMessage = $helper->escapeJs($helper->__('Task completed. Please wait ...'));
         $taskCompletedSuccessMessage = $helper->escapeJs(
-            $helper->__('"%s" task has successfully submitted to be processed.')
+            $helper->__('"%task_title%" task has successfully submitted to be processed.')
         );
-        $taskCompletedWarningMessage = $helper->escapeJs(
-            $helper->__('"%s" task has completed with warnings. <a target="_blank" href="%s">View log</a> for details.')
-        );
-        $taskCompletedErrorMessage = $helper->escapeJs(
-            $helper->__('"%s" task has completed with errors. <a target="_blank" href="%s">View log</a> for details.')
-        );
+        $taskCompletedWarningMessage = $helper->escapeJs($helper->__(
+            '"%task_title%" task has completed with warnings. <a target="_blank" href="%url%">View log</a> for details.'
+        ));
+        $taskCompletedErrorMessage = $helper->escapeJs($helper->__(
+            '"%task_title%" task has completed with errors. <a target="_blank" href="%url%">View log</a> for details.'
+        ));
 
         $lockedObjNoticeMessage = $helper->escapeJs(
             $helper->__('Some Play.com request(s) are being processed now.')
         );
-        $sendingDataToPlayMessage = $helper->escapeJs($helper->__('Sending %s product(s) data on Play.com.'));
+        $sendingDataToPlayMessage = $helper->escapeJs($helper->__(
+            'Sending %product_title% product(s) data on Play.com.'
+        ));
         $viewAllProductLogMessage = $helper->escapeJs($helper->__('View All Product Log.'));
 
         $listingLockedMessage = $helper->escapeJs(
@@ -270,13 +274,15 @@ class Ess_M2ePro_Block_Adminhtml_Common_Play_Listing_View extends Mage_Adminhtml
 
         $successfullyMovedMessage = $helper->escapeJs($helper->__('Product(s) was successfully moved.'));
         $productsWereNotMovedMessage = $helper->escapeJs(
-            $helper->__('Product(s) was not moved. <a target="_blank" href="%s">View log</a> for details.')
+            $helper->__('Product(s) was not moved. <a target="_blank" href="%url%">View log</a> for details.')
         );
         $someProductsWereNotMovedMessage = $helper->escapeJs(
-            $helper->__('Some product(s) was not moved. <a target="_blank" href="%s">View log</a> for details.')
+            $helper->__('Some product(s) was not moved. <a target="_blank" href="%url%">View log</a> for details.')
         );
 
-        $selectItemsMessage = $helper->escapeJs($helper->__('Please select items.'));
+        $selectItemsMessage = $helper->escapeJs(
+            $helper->__('Please select the products you want to perform the action on.')
+        );
         $selectActionMessage = $helper->escapeJs($helper->__('Please select action.'));
 
         $successWord = $helper->escapeJs($helper->__('Success'));
@@ -322,9 +328,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Play_Listing_View extends Mage_Adminhtml
     M2ePro.productsIdsForList = '{$productsIdsForList}';
 
     M2ePro.url.logViewUrl = '{$logViewUrl}';
-    M2ePro.url.checkLockListing = '{$checkLockListing}';
-    M2ePro.url.lockListingNow = '{$lockListingNow}';
-    M2ePro.url.unlockListingNow = '{$unlockListingNow}';
     M2ePro.url.getErrorsSummary = '{$getErrorsSummary}';
 
     M2ePro.url.runListProducts = '{$runListProducts}';
@@ -409,7 +412,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Play_Listing_View extends Mage_Adminhtml
             {$listingData['id']}
         );
 
-        // todo next (temp solution)
         ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
         ListingGridHandlerObj.movingHandler.setOptions(M2ePro);
         ListingGridHandlerObj.productSearchHandler.setOptions(M2ePro);

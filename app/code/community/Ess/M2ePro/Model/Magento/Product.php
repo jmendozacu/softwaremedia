@@ -18,6 +18,31 @@ class Ess_M2ePro_Model_Magento_Product
 
     const TAX_CLASS_ID_NONE = 0;
 
+    const FORCING_QTY_TYPE_MANAGE_STOCK_NO = 1;
+    const FORCING_QTY_TYPE_BACKORDERS = 2;
+
+    /**
+     *  $statistics = array(
+     *      'id' => array(
+     *         'store_id' => array(
+     *              'product_id' => array(
+     *                  'qty' => array(
+     *                      '1' => $qty,
+     *                      '2' => $qty,
+     *                  ),
+     *              ),
+     *              ...
+     *          ),
+     *          ...
+     *      ),
+     *      ...
+     *  )
+     */
+
+    public static $statistics = array();
+
+    private $statisticId;
+
     // ########################################
 
     private $_productId = 0;
@@ -67,9 +92,15 @@ class Ess_M2ePro_Model_Magento_Product
             throw new Exception('The Product ID is not set.');
         }
 
-        $this->_productModel = Mage::getModel('catalog/product')
-                                         ->setStoreId($storeId)
-                                         ->load($productId);
+        try {
+
+            $this->_productModel = Mage::getModel('catalog/product')
+                 ->setStoreId($storeId)
+                 ->load($productId);
+
+        } catch(Mage_Core_Model_Store_Exception $e) {
+            throw new Exception(Mage::helper('M2ePro')->__("Store ID '%store_id%' doesn't exist.", $storeId));
+        }
 
         $this->setProductId($productId);
         $this->setStoreId($storeId);
@@ -604,7 +635,7 @@ class Ess_M2ePro_Model_Magento_Product
             '/product/force_qty/','mode'
         );
 
-        if($forceQtyMode == 0){
+        if ($forceQtyMode == 0) {
             return $qty;
         }
 
@@ -613,14 +644,24 @@ class Ess_M2ePro_Model_Magento_Product
         );
 
         $manageStockGlobal = Mage::getStoreConfigFlag('cataloginventory/item_options/manage_stock');
-        if(($useConfigManageStock && !$manageStockGlobal) || (!$useConfigManageStock && !$manageStock)){
+        if (($useConfigManageStock && !$manageStockGlobal) || (!$useConfigManageStock && !$manageStock)) {
+            self::$statistics[$this->getStatisticId()]
+                             [$this->getProductId()]
+                             [$this->getStoreId()]
+                             ['qty']
+                             [self::FORCING_QTY_TYPE_MANAGE_STOCK_NO] = $forceQtyValue;
             return $forceQtyValue;
         }
 
         $backOrdersGlobal = Mage::getStoreConfig('cataloginventory/item_options/backorders');
-        if(($useConfigBackorders && $backOrdersGlobal != Mage_CatalogInventory_Model_Stock::BACKORDERS_NO) ||
-           (!$useConfigBackorders && $backorders != Mage_CatalogInventory_Model_Stock::BACKORDERS_NO)){
+        if (($useConfigBackorders && $backOrdersGlobal != Mage_CatalogInventory_Model_Stock::BACKORDERS_NO) ||
+           (!$useConfigBackorders && $backorders != Mage_CatalogInventory_Model_Stock::BACKORDERS_NO)) {
             if($forceQtyValue > $qty){
+                self::$statistics[$this->getStatisticId()]
+                                 [$this->getProductId()]
+                                 [$this->getStoreId()]
+                                 ['qty']
+                                 [self::FORCING_QTY_TYPE_BACKORDERS] = $forceQtyValue;
                 return $forceQtyValue;
             }
         }
@@ -652,7 +693,8 @@ class Ess_M2ePro_Model_Magento_Product
                 $stockItem->getUseConfigBackorders()
             );
 
-            if ($lifeMode && (!$isInStock || $childProduct->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
+            if ($lifeMode &&
+                (!$isInStock || $childProduct->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
                 continue;
             }
 
@@ -684,7 +726,8 @@ class Ess_M2ePro_Model_Magento_Product
                 $stockItem->getUseConfigBackorders()
             );
 
-            if ($lifeMode && (!$isInStock || $childProduct->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
+            if ($lifeMode &&
+                (!$isInStock || $childProduct->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
                 continue;
             }
 
@@ -735,7 +778,8 @@ class Ess_M2ePro_Model_Magento_Product
                 $itemInfoAsArray['stock_item']['use_config_backorders']
             );
 
-            if ($lifeMode && (!$isInStock || $itemInfoAsArray['status'] != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
+            if ($lifeMode &&
+                (!$isInStock || $itemInfoAsArray['status'] != Mage_Catalog_Model_Product_Status::STATUS_ENABLED)) {
                 continue;
             }
 
@@ -759,6 +803,19 @@ class Ess_M2ePro_Model_Magento_Product
         }
 
         return $minQty;
+    }
+
+    //-----------------------------------------
+
+    public function setStatisticId($id)
+    {
+        $this->statisticId = $id;
+        return $this;
+    }
+
+    public function getStatisticId()
+    {
+        return $this->statisticId;
     }
 
     // ########################################
@@ -853,7 +910,7 @@ class Ess_M2ePro_Model_Magento_Product
             } else {
                 if (!preg_match('((mailto\:|(news|(ht|f)tp(s?))\://){1}\S+)',$value)) {
                     $value = Mage::app()->getStore($this->getStoreId())
-                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).
+                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
                                         'catalog/product/'.ltrim($value,'/');
                     $value = str_replace('https://','http://',$value);
                 }
@@ -861,6 +918,20 @@ class Ess_M2ePro_Model_Magento_Product
         }
 
         return is_string($value) ? $value : '';
+    }
+
+    public function setAttributeValue($attributeCode, $value)
+    {
+        //supports only string values
+        if (is_string($value)) {
+            $productObject = $this->getProduct();
+
+            $productObject->setData($attributeCode, $value)
+                ->getResource()
+                ->saveAttribute($productObject, $attributeCode);
+        }
+
+        return $this;
     }
 
     // ########################################
@@ -912,9 +983,10 @@ class Ess_M2ePro_Model_Magento_Product
         if (is_file($imagePathResized)) {
             $currentTime = Mage::helper('M2ePro')->getCurrentGmtDate(true);
             if (filemtime($imagePathResized) + self::THUMBNAIL_IMAGE_CACHE_TIME > $currentTime) {
-                $tempValue = str_replace(basename($imagePathOriginal),$prefixResizedImage.basename($imagePathOriginal),$tempPath);
+                $tempValue = str_replace(basename($imagePathOriginal),$prefixResizedImage.basename($imagePathOriginal),
+                                         $tempPath);
                 return Mage::app()->getStore($this->getStoreId())
-                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).
+                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
                                         'catalog/product/'.ltrim($tempValue,'/');
             }
             @unlink($imagePathResized);
@@ -937,10 +1009,11 @@ class Ess_M2ePro_Model_Magento_Product
             return NULL;
         }
 
-        $tempValue = str_replace(basename($imagePathOriginal),$prefixResizedImage.basename($imagePathOriginal),$tempPath);
+        $tempValue = str_replace(basename($imagePathOriginal),$prefixResizedImage.basename($imagePathOriginal),
+                                 $tempPath);
 
         return Mage::app()->getStore($this->getStoreId())
-                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).
+                                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
                                         'catalog/product/'.ltrim($tempValue,'/');
     }
 
@@ -951,6 +1024,44 @@ class Ess_M2ePro_Model_Magento_Product
         }
 
         $imageUrl = $this->getAttributeValue($attribute);
+        return $this->prepareImageUrl($imageUrl);
+    }
+
+    public function getGalleryImageLink($position = 1)
+    {
+        $position = (int)$position;
+
+        if ($position <= 0) {
+            return '';
+        }
+
+        // need for correct sampling of the array
+        $position--;
+
+        $galleryImages = $this->getProduct()->getData('media_gallery');
+
+        if (!isset($galleryImages['images']) || !is_array($galleryImages['images'])) {
+            return '';
+        }
+
+        if (!isset($galleryImages['images'][$position])) {
+            return '';
+        }
+
+        $galleryImage = $galleryImages['images'][$position];
+
+        if (isset($galleryImage['disabled']) && (bool)$galleryImage['disabled']) {
+            return '';
+        }
+
+        if (!isset($galleryImage['file'])) {
+            return '';
+        }
+
+        $imageUrl = Mage::app()->getStore($this->getStoreId())
+                        ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
+                        'catalog/product/'.ltrim($galleryImage['file'],'/');
+
         return $this->prepareImageUrl($imageUrl);
     }
 
@@ -986,7 +1097,7 @@ class Ess_M2ePro_Model_Magento_Product
             }
 
             $imageUrl = Mage::app()->getStore($this->getStoreId())
-                            ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).
+                            ->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA, false).
                             'catalog/product/'.ltrim($galleryImage['file'],'/');
 
             $imageUrl = $this->prepareImageUrl($imageUrl);
@@ -1155,17 +1266,19 @@ class Ess_M2ePro_Model_Magento_Product
                 continue;
             }
 
+            $optionTitle = $singleOption->getTitle();
+            $optionTitle == '' && $optionTitle = $singleOption->getDefaultTitle();
+
+            if (isset($variationOptionsTitle[$optionTitle])) {
+                continue;
+            }
+
             $optionCombinationTitle = array();
             $possibleVariationProductOptions = array();
 
             $selectionsCollectionItems = $productInstance->getSelectionsCollection(
                 array(0 => $singleOption->getId()), $product
             )->getItems();
-
-            $optionTitle = $singleOption->getTitle();
-            if ($optionTitle == '') {
-                $optionTitle = $singleOption->getDefaultTitle();
-            }
 
             foreach ($selectionsCollectionItems as $item) {
                 $optionCombinationTitle[] = $item->getName();
@@ -1232,109 +1345,116 @@ class Ess_M2ePro_Model_Magento_Product
         /** @var $productTypeInstance Mage_Catalog_Model_Product_Type_Configurable */
         $productTypeInstance = $this->getTypeInstance();
 
-        $configurableProducts = $productTypeInstance->getUsedProducts(null, $product);
-        $configurableAttributes = $productTypeInstance->getConfigurableAttributes($product);
+        $attributes = array();
 
-        $variationOptionsTitle = array();
-        $possibleVariationProductOptions = array();
+        foreach ($productTypeInstance->getConfigurableAttributes($product) as $configurableAttribute) {
 
-        $allAttributesOptions = array();
+            /** @var $configurableAttribute Mage_Catalog_Model_Product_Type_Configurable_Attribute */
+            $configurableAttribute->setStoteId($this->getStoreId());
 
-        foreach ($configurableProducts as $item) {
+            /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+            $attribute = $configurableAttribute->getProductAttribute();
+            $attribute->setStoreId($this->getStoreId());
 
-            // get product depended information
-            $specifics = array();
-            $item->setStoreId($this->getStoreId());
+            $attributeLabel = '';
 
-            foreach ($configurableAttributes as $configurableAttribute) {
+            if (!(int)$configurableAttribute->getData('use_default')) {
+                $attributeLabel = $configurableAttribute->getData('label');
+            }
 
-                /** @var $configurableAttribute Mage_Catalog_Model_Product_Type_Configurable_Attribute */
+            if ($attributeLabel == '') {
 
-                /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
-                $attribute = $configurableAttribute->getProductAttribute();
-                $attribute->setStoreId($this->getStoreId());
-
-                $attributeLabel = '';
-
-                if (!(int)$configurableAttribute->getData('use_default')) {
-                    $attributeLabel = $configurableAttribute->getData('label');
-                }
-
-                if ($attributeLabel == '' && $configurableAttribute->getProductAttribute()) {
-                    $attributeLabel = $configurableAttribute->getProductAttribute()->getStoreLabel();
-                }
-
-                if (!isset($allAttributesOptions[$attributeLabel])) {
-
-                    if ($attribute->getFrontendInput() === 'select' ||
-                        $attribute->getFrontendInput() === 'multiselect') {
-
-                        $allAttributesOptions[$attributeLabel] =
-                                $attribute->getSource()->getAllOptions(false);
+                if ($this->getStoreId() && $tempStoreLabels = $attribute->getStoreLabels()) {
+                    if (isset($tempStoreLabels[$this->getStoreId()])) {
+                        $attributeLabel = $tempStoreLabels[$this->getStoreId()];
                     }
                 }
 
-                $attributeValue = Mage::getModel('M2ePro/Magento_Product')
-                                            ->setProduct($item)
-                                            ->getAttributeValue($attribute->getAttributeCode());
-
-                $specifics[] = array(
-                    'product_id' => $item->getId(),
-                    'product_type' => self::TYPE_CONFIGURABLE,
-                    'attribute' => $attributeLabel,
-                    'option' => $attributeValue
-                );
-
-                // Generate list of all options titles
-                if (!isset($variationOptionsTitle[$attributeLabel])) {
-                    $variationOptionsTitle[$attributeLabel] = array();
-                }
-
-                if (!in_array($attributeValue, $variationOptionsTitle[$attributeLabel])) {
-                    $variationOptionsTitle[$attributeLabel][] = $attributeValue;
-                }
+                $attributeLabel == '' && $attributeLabel = $attribute->getFrontendLabel();
             }
 
-            $possibleVariationProductOptions[] = $specifics;
+            $attributes[$attribute->getAttributeCode()] = $attributeLabel;
         }
 
-        $finalSet = $variationOptionsTitle;
+        $variations = array();
 
-        try {
+        foreach ($productTypeInstance->getUsedProducts(null, $product) as $childProduct) {
 
-            foreach ($allAttributesOptions as &$optionsTemp) {
-                foreach ($optionsTemp as &$optionTemp) {
-                    if (!is_array($optionTemp) || !isset($optionTemp['label'])) {
-                        throw new Exception();
-                    }
-                    $optionTemp = $optionTemp['label'];
-                }
-                $optionsTemp = array_unique($optionsTemp);
-            }
+            $variation = array();
+            $childProduct->setStoreId($this->getStoreId());
 
-            if (count($allAttributesOptions) <= 0) {
-                throw new Exception();
-            }
+            foreach ($attributes as $attributeCode => $attributeLabel) {
 
-            foreach ($allAttributesOptions as $key => &$optionsTemp) {
+                $attributeValue = Mage::getModel('M2ePro/Magento_Product')
+                                            ->setProduct($childProduct)
+                                            ->getAttributeValue($attributeCode);
 
-                if (!isset($variationOptionsTitle[$key]) ||
-                    !is_array($variationOptionsTitle[$key])) {
-                    throw new Exception();
+                if (empty($attributeValue)) {
+                    break;
                 }
 
-                $optionsTemp = array_intersect($optionsTemp,$variationOptionsTitle[$key]);
-                $optionsTemp = array_values($optionsTemp);
+                $variation[] = array(
+                    'product_id' => $childProduct->getId(),
+                    'product_type' => self::TYPE_CONFIGURABLE,
+                    'attribute' => $attributeLabel,
+                    'attribute_code' => $attributeCode,
+                    'option' => $attributeValue,
+                );
             }
 
-            $finalSet = $allAttributesOptions;
+            if (count($attributes) == count($variation)) {
+                $variations[] = $variation;
+            }
+        }
 
-        } catch (Exception $exception) {}
+        $set = array();
+
+        foreach ($variations as $variation) {
+            foreach ($variation as $option) {
+                if (empty($set[$option['attribute_code']])) {
+                    $set[$option['attribute_code']] = array(
+                        'label' => $option['attribute'],
+                        'options' => array(),
+                    );
+                }
+
+                $set[$option['attribute_code']]['options'][] = $option['option'];
+            }
+        }
+
+        $resultSet = array();
+        foreach ($set as $code => $data) {
+            $options = $this->sortAttributeOptions($code, array_values(array_unique($data['options'])));
+            $resultSet[$data['label']] = $options;
+        }
 
         return array(
-            'set' => $finalSet,
-            'variations' => $possibleVariationProductOptions
+            'set'        => $resultSet,
+            'variations' => $variations
         );
+    }
+
+    protected function sortAttributeOptions($attributeCode, $options)
+    {
+        $attribute = Mage::getModel('catalog/product')->getResource()->getAttribute($attributeCode);
+
+        /** @var Mage_Eav_Model_Resource_Entity_Attribute_Option_Collection $optionCollection */
+        $optionCollection = Mage::getModel('eav/entity_attribute_option')->getCollection();
+        $optionCollection->setAttributeFilter($attribute->getId());
+        $optionCollection->setPositionOrder();
+        $optionCollection->setStoreFilter($this->getStoreId());
+
+        $sortedOptions = array();
+        foreach ($optionCollection as $option) {
+            if (!in_array($option->getValue(), $options) ||
+                in_array($option->getValue(), $sortedOptions)) {
+                continue;
+            }
+
+            $sortedOptions[] = $option->getValue();
+        }
+
+        return $sortedOptions;
     }
 
     //-----------------------------------------
@@ -1549,18 +1669,25 @@ class Ess_M2ePro_Model_Magento_Product
 
         $configurableOptions = array();
 
-        foreach ($productTypeInstance->getConfigurableAttributes($product) as $attribute) {
-            $productAttribute = $attribute->getProductAttribute();
-            $productAttribute->setStoreId($this->getStoreId());
+        foreach ($productTypeInstance->getConfigurableAttributes($product) as $configurableAttribute) {
+
+            /** @var $configurableAttribute Mage_Catalog_Model_Product_Type_Configurable_Attribute */
+            $configurableAttribute->setStoteId($this->getStoreId());
+
+            /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+            $attribute = $configurableAttribute->getProductAttribute();
+            $attribute->setStoreId($this->getStoreId());
 
             $configurableOption = array(
-                'option_id' => $attribute->getAttributeId(),
-                'labels' => array_filter(array(
-                    trim($attribute->getData('label')),
-                    trim($productAttribute->getFrontendLabel()),
-                    trim($productAttribute->getStoreLabel())
+                'option_id' => $configurableAttribute->getAttributeId(),
+                'labels' => array_filter(array_merge(
+                    array_map('trim',array_values($attribute->getStoreLabels())),
+                    array(
+                        trim($configurableAttribute->getData('label')),
+                        trim($attribute->getFrontendLabel())
+                    )
                 )),
-                'values' => $this->getConfigurableAttributeValuesForOrder($attribute)
+                'values' => $this->getConfigurableAttributeValuesForOrder($configurableAttribute)
             );
 
             if (count($configurableOption['values']) == 0) {
@@ -1575,24 +1702,31 @@ class Ess_M2ePro_Model_Magento_Product
 
     //-----------------------------------------
 
-    private function getConfigurableAttributeValuesForOrder($attribute)
+    private function getConfigurableAttributeValuesForOrder($configurableAttribute)
     {
         $product = $this->getProduct();
+
         /** @var $productTypeInstance Mage_Catalog_Model_Product_Type_Configurable */
         $productTypeInstance = $this->getTypeInstance();
 
-        $productAttribute = $attribute->getProductAttribute();
+        /** @var $configurableAttribute Mage_Catalog_Model_Product_Type_Configurable_Attribute */
+        /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+        $attribute = $configurableAttribute->getProductAttribute();
+        $attribute->setStoreId($this->getStoreId());
 
-        $options = $this->getConfigurableAttributeOptionsForOrder($productAttribute);
         $values = array();
+        $options = $this->getConfigurableAttributeOptionsForOrder($attribute);
 
         foreach ($options as $option) {
+
             foreach ($productTypeInstance->getUsedProducts(null, $product) as $associatedProduct) {
-                if ($option['value_id'] != $associatedProduct->getData($productAttribute->getAttributeCode())) {
+
+                if ($option['value_id'] != $associatedProduct->getData($attribute->getAttributeCode())) {
                     continue;
                 }
 
-                $attributeOptionKey = $attribute->getAttributeId() . ':' . $option['value_id'];
+                $attributeOptionKey = $configurableAttribute->getAttributeId() . ':' . $option['value_id'];
+
                 if (!isset($values[$attributeOptionKey])) {
                     $values[$attributeOptionKey] = $option;
                 }
@@ -1604,13 +1738,15 @@ class Ess_M2ePro_Model_Magento_Product
         return array_values($values);
     }
 
-    private function getConfigurableAttributeOptionsForOrder($productAttribute)
+    private function getConfigurableAttributeOptionsForOrder($attribute)
     {
-        $options = $productAttribute->getSource()->getAllOptions(false, false);
-        $defaultOptions = $productAttribute->getSource()->getAllOptions(false, true);
+        $options = $attribute->getSource()->getAllOptions(false, false);
+        $defaultOptions = $attribute->getSource()->getAllOptions(false, true);
 
         $mergedOptions = array();
+
         foreach ($options as $option) {
+
             $mergedOption = array(
                 'product_ids' => array(),
                 'value_id' => $option['value'],

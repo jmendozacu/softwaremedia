@@ -4,146 +4,177 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-abstract class Ess_M2ePro_Model_Cron_Type_Abstract {
+abstract class Ess_M2ePro_Model_Cron_Type_Abstract
+{
+    const MAX_MEMORY_LIMIT = 1024;
 
-	const MAX_MEMORY_LIMIT = 1024;
+    private $previousStoreId = NULL;
 
-	private $lockItem = NULL;
-	private $operationHistory = NULL;
-	private $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
+    private $lockItem = NULL;
+    private $operationHistory = NULL;
 
-	//####################################
+    private $initiator = Ess_M2ePro_Helper_Data::INITIATOR_UNKNOWN;
 
-	public function process() {
-		$this->initialize();
-		$this->updateLastAccess();
+    //####################################
 
-		if (!$this->isPossibleToRun()) {
-			return false;
-		}
+    public function process()
+    {
+        $this->initialize();
+        $this->updateLastAccess();
 
-		$this->updateLastRun();
-		$this->beforeStart();
+        if (!$this->isPossibleToRun()) {
+            $this->deInitialize();
+            return true;
+        }
 
-		$result = true;
+        $this->updateLastRun();
+        $this->beforeStart();
 
-		try {
+        $result = true;
 
-			// local tasks
-			$result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_LogsCleaning::NICK) ? false : $result;
+        try {
 
-			// request tasks
-			$result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_Servicing::NICK) ? false : $result;
-			$result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_Processing::NICK) ? false : $result;
-			$result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_Synchronization::NICK) ? false : $result;
-		} catch (Exception $exception) {
+            // local tasks
+            $result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_LogsCleaning::NICK) ? false : $result;
 
-			$result = false;
+            // request tasks
+            $result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_Servicing::NICK) ? false : $result;
+            $result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_Processing::NICK) ? false : $result;
+            $result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_Synchronization::NICK) ? false : $result;
 
-			Mage::helper('M2ePro/Module_Exception')->process($exception);
+        } catch (Exception $exception) {
 
-			$this->getOperationHistory()->setContentData('exception', array(
-				'message' => $exception->getMessage(),
-				'file' => $exception->getFile(),
-				'line' => $exception->getLine(),
-				'trace' => $exception->getTraceAsString(),
-			));
-		}
+            $result = false;
 
-		$this->afterEnd();
+            Mage::helper('M2ePro/Module_Exception')->process($exception);
 
-		return $result;
-	}
+            $this->getOperationHistory()->setContentData('exception', array(
+                'message' => $exception->getMessage(),
+                'file'    => $exception->getFile(),
+                'line'    => $exception->getLine(),
+                'trace'   => $exception->getTraceAsString(),
+            ));
+        }
 
-	protected function processTask($task) {
-		$task = str_replace('_', ' ', $task);
-		$task = str_replace(' ', '', ucwords($task));
+        $this->afterEnd();
+        $this->deInitialize();
 
-		/** @var $task Ess_M2ePro_Model_Cron_Task_Abstract * */
-		$task = Mage::getModel('M2ePro/Cron_Task_' . trim($task));
+        return $result;
+    }
 
-		$task->setInitiator($this->getInitiator());
-		$task->setParentLockItem($this->getLockItem());
-		$task->setParentOperationHistory($this->getOperationHistory());
+    protected function processTask($task)
+    {
+        $task = str_replace('_',' ',$task);
+        $task = str_replace(' ','',ucwords($task));
 
-		$result = $task->process();
+        /** @var $task Ess_M2ePro_Model_Cron_Task_Abstract **/
+        $task = Mage::getModel('M2ePro/Cron_Task_'.trim($task));
 
-		return is_null($result) || $result;
-	}
+        $task->setInitiator($this->getInitiator());
+        $task->setParentLockItem($this->getLockItem());
+        $task->setParentOperationHistory($this->getOperationHistory());
 
-	// -----------------------------------
+        $result = $task->process();
 
-	abstract protected function getType();
+        return is_null($result) || $result;
+    }
 
-	//####################################
+    // -----------------------------------
 
-	public function setInitiator($value) {
-		$this->initiator = (int) $value;
-	}
+    abstract protected function getType();
 
-	public function getInitiator() {
-		return $this->initiator;
-	}
+    //####################################
 
-	//####################################
+    public function setInitiator($value)
+    {
+        $this->initiator = (int)$value;
+    }
 
-	protected function initialize() {
-		Mage::helper('M2ePro/Client')->setMemoryLimit(self::MAX_MEMORY_LIMIT);
-		Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
-	}
+    public function getInitiator()
+    {
+        return $this->initiator;
+    }
 
-	protected function updateLastAccess() {
-		$currentDateTime = Mage::helper('M2ePro')->getCurrentGmtDate();
-		Mage::helper('M2ePro/Module_Cron')->setLastAccess($currentDateTime);
-	}
+    //####################################
 
-	protected function isPossibleToRun() {
-		$helper = Mage::helper('M2ePro/Module_Cron');
+    protected function initialize()
+    {
+        $this->previousStoreId = Mage::app()->getStore()->getId();
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
 
-		return $this->getType() == $helper->getType() &&
-			$helper->isModeEnabled() &&
-			$helper->isReadyToRun() &&
-			!$this->getLockItem()->isExist();
-	}
+        Mage::helper('M2ePro/Client')->setMemoryLimit(self::MAX_MEMORY_LIMIT);
+        Mage::helper('M2ePro/Module_Exception')->setFatalErrorHandler();
+    }
 
-	protected function updateLastRun() {
-		$currentDateTime = Mage::helper('M2ePro')->getCurrentGmtDate();
-		Mage::helper('M2ePro/Module_Cron')->setLastRun($currentDateTime);
-	}
+    protected function deInitialize()
+    {
+        if (!is_null($this->previousStoreId)) {
+            Mage::app()->setCurrentStore($this->previousStoreId);
+            $this->previousStoreId = NULL;
+        }
+    }
 
-	// -----------------------------------
+    //####################################
 
-	protected function beforeStart() {
-		$this->getLockItem()->create();
-		$this->getLockItem()->makeShutdownFunction();
+    protected function updateLastAccess()
+    {
+        $currentDateTime = Mage::helper('M2ePro')->getCurrentGmtDate();
+        Mage::helper('M2ePro/Module_Cron')->setLastAccess($currentDateTime);
+    }
 
-		$this->getOperationHistory()->cleanOldData();
+    protected function isPossibleToRun()
+    {
+        $helper = Mage::helper('M2ePro/Module_Cron');
 
-		$this->getOperationHistory()->start('cron', NULL, $this->getInitiator());
-		$this->getOperationHistory()->makeShutdownFunction();
-	}
+        return $this->getType() == $helper->getType() &&
+               $helper->isModeEnabled() &&
+               $helper->isReadyToRun() &&
+               !$this->getLockItem()->isExist();
+    }
 
-	protected function afterEnd() {
-		$this->getOperationHistory()->stop();
-		$this->getLockItem()->remove();
-	}
+    protected function updateLastRun()
+    {
+        $currentDateTime = Mage::helper('M2ePro')->getCurrentGmtDate();
+        Mage::helper('M2ePro/Module_Cron')->setLastRun($currentDateTime);
+    }
 
-	//####################################
+    // -----------------------------------
 
-	protected function getLockItem() {
-		if (is_null($this->lockItem)) {
-			$this->lockItem = Mage::getModel('M2ePro/LockItem');
-			$this->lockItem->setNick('cron');
-		}
-		return $this->lockItem;
-	}
+    protected function beforeStart()
+    {
+        $this->getLockItem()->create();
+        $this->getLockItem()->makeShutdownFunction();
 
-	protected function getOperationHistory() {
-		if (is_null($this->operationHistory)) {
-			$this->operationHistory = Mage::getModel('M2ePro/OperationHistory');
-		}
-		return $this->operationHistory;
-	}
+        $this->getOperationHistory()->cleanOldData();
 
-	//####################################
+        $this->getOperationHistory()->start('cron',NULL,$this->getInitiator());
+        $this->getOperationHistory()->makeShutdownFunction();
+    }
+
+    protected function afterEnd()
+    {
+        $this->getOperationHistory()->stop();
+        $this->getLockItem()->remove();
+    }
+
+    //####################################
+
+    protected function getLockItem()
+    {
+        if (is_null($this->lockItem)) {
+            $this->lockItem = Mage::getModel('M2ePro/LockItem');
+            $this->lockItem->setNick('cron');
+        }
+        return $this->lockItem;
+    }
+
+    protected function getOperationHistory()
+    {
+        if (is_null($this->operationHistory)) {
+            $this->operationHistory = Mage::getModel('M2ePro/OperationHistory');
+        }
+        return $this->operationHistory;
+    }
+
+    //####################################
 }

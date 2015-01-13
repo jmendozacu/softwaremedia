@@ -21,16 +21,16 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Order
 
     // ########################################
 
-    public function getOrdersContainingItemsFromOrder(Ess_M2ePro_Model_Order $order)
+    public function getOrdersContainingItemsFromOrder($accountId, array $items)
     {
         // Prepare item_id-transaction_id pairs for sql
         // -------------
-        $readConnection = $this->getReadConnection();
+        $readConnection = $this->_getReadAdapter();
 
         $whereSql = array();
-        foreach ($order->getItemsCollection()->getItems() as $orderItem) {
-            $itemIdSql = $readConnection->quoteInto('?', $orderItem->getData('item_id'));
-            $transactionIdSql = $readConnection->quoteInto('?', $orderItem->getData('transaction_id'));
+        foreach ($items as $orderItem) {
+            $itemIdSql = $readConnection->quoteInto('?', $orderItem['item_id']);
+            $transactionIdSql = $readConnection->quoteInto('?', $orderItem['transaction_id']);
 
             $whereSql[] = "(item_id = {$itemIdSql} AND transaction_id = {$transactionIdSql})";
         }
@@ -55,8 +55,7 @@ class Ess_M2ePro_Model_Mysql4_Ebay_Order
                     array()
                 )
                 ->where($whereSql)
-                ->where('`main_table`.`id` != ?', $order->getId())
-                ->where('`main_table`.`account_id` = ?', $order->getAccountId())
+                ->where('`main_table`.`account_id` = ?', $accountId)
                 ->order(array('main_table.id ASC'));
         // -------------
 

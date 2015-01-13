@@ -31,7 +31,8 @@ class Ess_M2ePro_Model_Connector_Buy_Product_NewSku_MultipleResponser
 
             if (!isset($this->responseBody['skus'][$listingProduct->getId().'-id'])) {
 
-                // Parser hack -> Mage::helper('M2ePro')->__('New SKU was not added');
+                // M2ePro_TRANSLATIONS
+                // New SKU was not added
                 $this->addListingsProductsLogsMessage($listingProduct, 'New SKU was not added',
                                                       Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
                                                       Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
@@ -40,13 +41,14 @@ class Ess_M2ePro_Model_Connector_Buy_Product_NewSku_MultipleResponser
             }
 
             Mage::getModel('M2ePro/Connector_Buy_Product_Helper')
-                        ->updateAfterNewSkuAction($listingProduct,
-                                                  $this->getListingProductRequestNativeData($listingProduct),
-                                                  array_merge($this->params,array(
-                                                      'general_id' => $this->responseBody['skus'][$listingProduct->getId().'-id']
-                                                  )));
+            ->updateAfterNewSkuAction($listingProduct,
+                                      $this->getListingProductRequestNativeData($listingProduct),
+                                      array_merge($this->params,array(
+                                          'general_id' => $this->responseBody['skus'][$listingProduct->getId().'-id']
+                                      )));
 
-            // Parser hack -> Mage::helper('M2ePro')->__('New SKU was successfully added');
+            // M2ePro_TRANSLATIONS
+            // New SKU was successfully added
             $this->addListingsProductsLogsMessage($listingProduct, 'New SKU was successfully added',
                                                   Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
                                                   Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);

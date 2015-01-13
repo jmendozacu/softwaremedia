@@ -6,6 +6,7 @@
 
 /**
  * @method Ess_M2ePro_Model_Listing getParentObject()
+ * @method Ess_M2ePro_Model_Mysql4_Amazon_Listing getResource()
  */
 class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_Amazon_Abstract
 {
@@ -536,176 +537,37 @@ class Ess_M2ePro_Model_Amazon_Listing extends Ess_M2ePro_Model_Component_Child_A
 
     // ########################################
 
-    public function getAffectedListingProducts($asObjects = false, $key = NULL)
+    /**
+     * @param bool|array $asArrays
+     * @return array
+     */
+    public function getAffectedListingsProducts($asArrays = true)
     {
-        if (is_null($this->getId())) {
-            throw new LogicException('Method require loaded instance first');
+        $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
+        $listingProductCollection->addFieldToFilter('listing_id', $this->getId());
+
+        if ($asArrays === false) {
+            return (array)$listingProductCollection->getItems();
         }
 
-        $listingProducts = $this->getProducts($asObjects);
-
-        if (is_null($key)) {
-            return $listingProducts;
+        if (is_array($asArrays) && !empty($asArrays)) {
+            $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
+            $listingProductCollection->getSelect()->columns($asArrays);
         }
 
-        $return = array();
-        foreach ($listingProducts as $listingProduct) {
-            isset($listingProduct[$key]) && $return[] = $listingProduct[$key];
-        }
-
-        return $return;
+        return (array)$listingProductCollection->getData();
     }
 
     public function setSynchStatusNeed($newData, $oldData)
     {
-        $affectedListingProducts = $this->getAffectedListingProducts();
+        $neededColumns = array('id', 'synch_status', 'synch_reasons');
+        $listingsProducts = $this->getAffectedListingsProducts($neededColumns);
 
-        if (!$affectedListingProducts) {
+        if (!$listingsProducts) {
             return;
         }
 
-        $this->setSynchStatusNeedByListing($newData,$oldData, $affectedListingProducts);
-        $this->setSynchStatusNeedBySellingFormatTemplate($newData,$oldData, $affectedListingProducts);
-        $this->setSynchStatusNeedBySynchronizationTemplate($newData,$oldData, $affectedListingProducts);
-    }
-
-    // ---------------------------------------
-
-    private function setSynchStatusNeedByListing($newData, $oldData, $listingProducts)
-    {
-        unset(
-            $newData['template_selling_format_id'], $oldData['template_selling_format_id'],
-            $newData['template_synchronization_id'], $oldData['template_synchronization_id']
-        );
-
-        if (!$this->getResource()->isDifferent($newData,$oldData)) {
-            return;
-        }
-
-        $ids = array();
-        foreach ($listingProducts as $listingProduct) {
-            $ids[] = (int)$listingProduct['id'];
-        }
-
-        if (empty($ids)) {
-            return;
-        }
-
-        $templates = array('listing');
-
-        Mage::getSingleton('core/resource')->getConnection('core_read')->update(
-            Mage::getSingleton('core/resource')->getTableName('M2ePro/Listing_Product'),
-            array(
-                'synch_status' => Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_NEED,
-                'synch_reasons' => new Zend_Db_Expr(
-                    "IF(synch_reasons IS NULL,
-                        '".implode(',',$templates)."',
-                        CONCAT(synch_reasons,'".','.implode(',',$templates)."')
-                    )"
-                )
-            ),
-            array('id IN ('.implode(',', $ids).')')
-        );
-    }
-
-    private function setSynchStatusNeedBySellingFormatTemplate($newData, $oldData, $listingProducts)
-    {
-        $newSellingFormatTemplate = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-            $this->getComponentMode(),
-            'Template_SellingFormat',
-            $newData['template_selling_format_id'],
-            NULL, array('template')
-        );
-
-        $oldSellingFormatTemplate = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-            $this->getComponentMode(),
-            'Template_SellingFormat',
-            $oldData['template_selling_format_id'],
-            NULL, array('template')
-        );
-
-        $isDifferent = Mage::getResourceModel('M2ePro/Amazon_Template_SellingFormat')->isDifferent(
-            $newSellingFormatTemplate->getDataSnapshot(), $oldSellingFormatTemplate->getDataSnapshot()
-        );
-
-        if (!$isDifferent) {
-            return;
-        }
-
-        $templates = array('sellingFormatTemplate');
-
-        $ids = array();
-        foreach ($listingProducts as $listingProduct) {
-            $ids[] = $listingProduct['id'];
-        }
-
-        Mage::getSingleton('core/resource')->getConnection('core_read')->update(
-            Mage::getSingleton('core/resource')->getTableName('M2ePro/Listing_Product'),
-            array(
-                'synch_status' => Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_NEED,
-                'synch_reasons' => new Zend_Db_Expr(
-                    "IF(synch_reasons IS NULL,
-                        '".implode(',',$templates)."',
-                        CONCAT(synch_reasons,'".','.implode(',',$templates)."')
-                    )"
-                )
-            ),
-            array('id IN ('.implode(',', $ids).')')
-        );
-    }
-
-    private function setSynchStatusNeedBySynchronizationTemplate($newData, $oldData, $listingProducts)
-    {
-        $newSynchTemplate = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-            $this->getComponentMode(),
-            'Template_Synchronization',
-            $newData['template_synchronization_id'],
-            NULL, array('template')
-        );
-
-        $oldSynchTemplate = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-            $this->getComponentMode(),
-            'Template_Synchronization',
-            $oldData['template_synchronization_id'],
-            NULL, array('template')
-        );
-
-        $settings = $newSynchTemplate->getChildObject()->getFullReviseSettingWhichWereEnabled(
-            $newSynchTemplate->getDataSnapshot(), $oldSynchTemplate->getDataSnapshot()
-        );
-
-        if (!$settings) {
-            return;
-        }
-
-        $idsByReasonDictionary = array();
-        foreach ($listingProducts as $listingProduct) {
-
-            if ($listingProduct['synch_status'] != Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_SKIP) {
-                continue;
-            }
-
-            $listingProductSynchReasons = array_unique(array_filter(explode(',',$listingProduct['synch_reasons'])));
-            foreach ($listingProductSynchReasons as $reason) {
-                $idsByReasonDictionary[$reason][] = $listingProduct['id'];
-            }
-        }
-
-        $idsForUpdate = array();
-        foreach ($settings as $reason => $setting) {
-
-            if (!isset($idsByReasonDictionary[$reason])) {
-                continue;
-            }
-
-            $idsForUpdate = array_merge($idsForUpdate, $idsByReasonDictionary[$reason]);
-        }
-
-        Mage::getSingleton('core/resource')->getConnection('core_write')->update(
-            Mage::getResourceModel('M2ePro/Listing_Product')->getMainTable(),
-            array('synch_status' => Ess_M2ePro_Model_Listing_Product::SYNCH_STATUS_NEED),
-            array('id IN (?)' => array_unique($idsForUpdate))
-        );
+        $this->getResource()->setSynchStatusNeed($newData,$oldData,$listingsProducts);
     }
 
     // ########################################

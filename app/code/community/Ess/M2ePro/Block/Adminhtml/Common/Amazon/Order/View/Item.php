@@ -160,7 +160,7 @@ HTML;
 <b>{$generalIdLabel}:</b> {$generalId}<br />
 HTML;
 
-        if ($row->getIsIsbnGeneralId() && Mage::helper('M2ePro')->isEAN($row->getGeneralId())) {
+        if ($row->getIsIsbnGeneralId() && !Mage::helper('M2ePro')->isISBN($row->getGeneralId())) {
             $amazonLink = '';
         } else {
             $itemLinkText = Mage::helper('M2ePro')->__('View on Amazon');
@@ -191,10 +191,7 @@ HTML;
                 $action = Mage::helper('M2ePro')->__('Set Options');
             }
 
-            $class = '';
-            if (!$row->isActionRequired()) {
-                $class = 'class="gray"';
-            }
+            $class = 'class="gray"';
 
             $js = "{OrderEditItemHandlerObj.edit('{$gridId}', {$orderItemId});}";
             $editLink = '<a href="javascript:void(0);" onclick="'.$js.'" '.$class.'>'.$action.'</a>';

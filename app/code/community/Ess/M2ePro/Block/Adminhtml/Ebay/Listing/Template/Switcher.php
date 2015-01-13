@@ -70,6 +70,9 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adm
                 break;
 
             case Ess_M2ePro_Model_Ebay_Template_Manager::TEMPLATE_SYNCHRONIZATION:
+                $width = 140;
+                break;
+
             default:
                 $width = 100;
                 break;
@@ -231,12 +234,12 @@ HTML;
             );
         }
 
-        $data = array(
+        $parameters = array(
             'is_custom' => $this->isTemplateModeCustom(),
-            'custom_title' => Mage::helper('M2ePro/Data_Global')->getValue('ebay_custom_template_title')
+            'custom_title' => Mage::helper('M2ePro/Data_Global')->getValue('ebay_custom_template_title'),
+            'policy_localization' => $this->getData('policy_localization')
         );
-        $block = $this->getLayout()->createBlock($blockName);
-        $block->setData($data);
+        $block = $this->getLayout()->createBlock($blockName,'',$parameters);
 
         return $block;
     }

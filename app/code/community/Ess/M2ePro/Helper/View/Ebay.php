@@ -6,7 +6,8 @@
 
 class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 {
-    // Parser hack -> Mage::helper('M2ePro')->__('Sell On eBay');
+    // M2ePro_TRANSLATIONS
+    // Sell On eBay
 
     const NICK  = 'ebay';
     const TITLE = 'Sell On eBay';
@@ -21,7 +22,7 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 
     public function getMenuRootNodeLabel()
     {
-        return $this->__(self::TITLE);
+        return Mage::helper('M2ePro')->__(self::TITLE);
     }
 
     // ########################################
@@ -78,6 +79,44 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
     {
         return Mage::helper('M2ePro/Module')->getConfig()
                     ->getGroupValue('/view/ebay/support/', 'video_tutorials_url');
+    }
+
+    // ########################################
+
+    public function prepareMenu(array $menuArray)
+    {
+        if (!Mage::getSingleton('admin/session')->isAllowed(self::MENU_ROOT_NODE_NICK)) {
+            return $menuArray;
+        }
+
+        if (count(Mage::helper('M2ePro/View_Ebay_Component')->getActiveComponents()) <= 0) {
+            unset($menuArray[self::MENU_ROOT_NODE_NICK]);
+            return $menuArray;
+        }
+
+        $tempTitle = $this->getMenuRootNodeLabel();
+        !empty($tempTitle) && $menuArray[self::MENU_ROOT_NODE_NICK]['label'] = $tempTitle;
+
+        // Add wizard menu item
+        //---------------------------------
+        /* @var $wizardHelper Ess_M2ePro_Helper_Module_Wizard */
+        $wizardHelper = Mage::helper('M2ePro/Module_Wizard');
+
+        $activeBlocker = $wizardHelper->getActiveBlockerWizard(Ess_M2ePro_Helper_View_Ebay::NICK);
+
+        if (!$activeBlocker) {
+            return $menuArray;
+        }
+
+        unset($menuArray[self::MENU_ROOT_NODE_NICK]['children']);
+        unset($menuArray[self::MENU_ROOT_NODE_NICK]['click']);
+
+        $menuArray[self::MENU_ROOT_NODE_NICK]['url'] = Mage::helper('adminhtml')->getUrl(
+            'M2ePro/adminhtml_wizard_'.$wizardHelper->getNick($activeBlocker).'/index'
+        );
+        $menuArray[self::MENU_ROOT_NODE_NICK]['last'] = true;
+
+        return $menuArray;
     }
 
     // ########################################

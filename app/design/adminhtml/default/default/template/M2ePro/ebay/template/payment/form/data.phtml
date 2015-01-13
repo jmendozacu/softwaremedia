@@ -13,7 +13,7 @@
 
     M2ePro.translator.add(<?php echo Zend_Json::encode(array(
 
-        'Payment method should be specified.' => $this->__('Payment method should be specified.'),
+        'Payment method should be specified.' => Mage::helper('M2ePro')->__('Payment method should be specified.'),
 
     )); ?>);
 
@@ -149,7 +149,7 @@
                                         class="M2ePro-validate-payment-methods additional-payment-service"
                                         <?php if (in_array($service['ebay_id'], $formData['services'])): ?>checked="checked"<?php endif; ?>
                                     />&nbsp;
-                                    <?php if ((int)$marketplaceData['id'] == Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AUSTRALIA &&
+                                    <?php if ((int)$marketplaceData['id'] == Ess_M2ePro_Helper_Component_Ebay::MARKETPLACE_AU &&
                                                 $service['title'] == 'CIP') : ?>
                                         <?php echo 'Bank Deposit Express'; ?>
                                     <?php else: ?>
