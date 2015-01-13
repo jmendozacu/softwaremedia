@@ -34,7 +34,7 @@ if (count($productNames)>0) {
 $btn = '<button id="c2qBtn" onclick="%s" class="button btn-quote" style="margin-left:3px;" type="button"><span><span>%s</span></span></button>';
 ?>
 <?php if(Mage::helper('qquoteadv')->isActiveConfirmMode()) {
-	echo sprintf($btn, "outQqconfirmMode();", $this->__('Log out from quote confirmation mode') );
+	echo '<a href="/qquoteadv/view/outqqconfirmmode"><button id="c2qBtn" class="button btn-quote" style="margin-left:3px;" type="button"><span><span>Log out from quote confirmation mode</span></span></button></a>';
 ?>
 	<script type="text/javascript" language="javascript">
     
