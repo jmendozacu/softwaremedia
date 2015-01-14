@@ -63,7 +63,14 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Detail_
             ->joinAttribute('billing_telephone', 'customer_address/telephone', 'default_billing', null, 'left')
             ->joinAttribute('billing_region', 'customer_address/region', 'default_billing', null, 'left')
             ->joinAttribute('billing_country_id', 'customer_address/country_id', 'default_billing', null, 'left');
-            ;
+			$collection->getSelect()->joinLeft(
+				'customer_entity_int', '`customer_entity_int`.entity_id=`e`.entity_id AND `customer_entity_int`.attribute_id = 1553', array('value')
+			);
+			
+			$collection->getSelect()->joinLeft(
+				'eav_attribute_option_value', '`customer_entity_int`.value=`eav_attribute_option_value`.option_id', array('customer_rep' => 'value')
+			);
+
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -95,6 +102,12 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Detail_
             'header'    => Mage::helper('enterprise_customersegment')->__('Name'),
             'index'     => 'name'
         ));
+        
+        $this->addColumn('customer_rep', array(
+            'header'    => Mage::helper('enterprise_customersegment')->__('Customer Rep'),
+            'index'     => 'customer_rep'
+        ));
+        
         $this->addColumn('grid_email', array(
             'header'    => Mage::helper('enterprise_customersegment')->__('Email'),
             'width'     => 150,
