@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Campaign extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Campaign
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <softwaremedia_campaign translate="title" module="softwaremedia_campaign">
+                                        <title>Campaigns</title>
+                                    </softwaremedia_campaign>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <customer>
+                        <children>
+                            <softwaremedia_campaign translate="title" module="softwaremedia_campaign">
+                                <title>Customer Campaigns</title>
+                                <children>
+                                    <campaign translate="title" module="softwaremedia_campaign">
+                                        <title>Campaigns</title>
+                                        <sort_order>0</sort_order>
+                                    </campaign>
+                                    <step translate="title" module="softwaremedia_campaign">
+                                        <title>Steps</title>
+                                        <sort_order>10</sort_order>
+                                    </step>
+                                </children>
+                            </softwaremedia_campaign>                        </children>
+                    </customer>
+
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <menu>
+        <customer>
+            <children>
+                <softwaremedia_campaign translate="title" module="softwaremedia_campaign">
+                    <title>Customer Campaigns</title>
+                    <sort_order>65</sort_order>
+                    <children>
+                        <campaign translate="title" module="softwaremedia_campaign">
+                            <title>Campaigns</title>
+                            <action>adminhtml/campaign_campaign</action>
+                            <sort_order>0</sort_order>
+                        </campaign>
+                        <step translate="title" module="softwaremedia_campaign">
+                            <title>Steps</title>
+                            <action>adminhtml/campaign_step</action>
+                            <sort_order>10</sort_order>
+                        </step>
+                    </children>
+                </softwaremedia_campaign>            </children>
+        </customer>
+
+    </menu>
+</config>

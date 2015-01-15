@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Campaign extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Campaign
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+--> 
+<layout>
+    <adminhtml_campaign_campaign_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>system/softwaremedia_campaign/campaign</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_campaign/adminhtml_campaign" name="campaign" />
+
+        </reference>
+    </adminhtml_campaign_campaign_index>
+    <adminhtml_campaign_campaign_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="softwaremedia_campaign/adminhtml_campaign_grid" name="campaign_grid"/>
+        </block>
+    </adminhtml_campaign_campaign_grid>
+    <!-- Campaign add/edit action -->
+    <adminhtml_campaign_campaign_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>system/softwaremedia_campaign/campaign</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_campaign/adminhtml_campaign_edit" name="campaign_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="softwaremedia_campaign/adminhtml_campaign_edit_tabs" name="campaign_tabs"></block>
+        </reference>
+    </adminhtml_campaign_campaign_edit>
+
+    <adminhtml_campaign_step_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>system/softwaremedia_campaign/step</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_campaign/adminhtml_step" name="step" />
+
+        </reference>
+    </adminhtml_campaign_step_index>
+    <adminhtml_campaign_step_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="softwaremedia_campaign/adminhtml_step_grid" name="step_grid"/>
+        </block>
+    </adminhtml_campaign_step_grid>
+    <!-- Step add/edit action -->
+    <adminhtml_campaign_step_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>system/softwaremedia_campaign/step</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_campaign/adminhtml_step_edit" name="step_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="softwaremedia_campaign/adminhtml_step_edit_tabs" name="step_tabs"></block>
+        </reference>
+    </adminhtml_campaign_step_edit>
+
+</layout>
