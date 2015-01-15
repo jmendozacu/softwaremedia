@@ -22,7 +22,7 @@
 <config>
     <modules>
         <Magecon_CustomerNotes>
-            <version>0.0.1</version>
+            <version>0.0.3</version>
         </Magecon_CustomerNotes>
     </modules>
     <admin>

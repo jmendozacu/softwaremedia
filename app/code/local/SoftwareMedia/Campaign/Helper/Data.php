@@ -42,4 +42,24 @@ class SoftwareMedia_Campaign_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $converted;
     }
+    
+    public function getStepOptions() {
+    	$campaigns = array();
+    	$collection = Mage::getModel('softwaremedia_campaign/step')->getCollection();
+    	foreach ($collection as $campaign) {
+	    	$campaigns[$campaign->getId()] = $campaign->getName();
+    	}
+    	
+    	return $campaigns;
+    }
+    
+    public function getCampaignOptions() {
+    	$campaigns = array();
+    	$collection = Mage::getModel('softwaremedia_campaign/campaign')->getCollection();
+    	foreach ($collection as $campaign) {
+	    	$campaigns[$campaign->getId()] = $campaign->getName();
+    	}
+    	
+    	return $campaigns;
+    }
 }

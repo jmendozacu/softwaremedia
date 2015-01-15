@@ -31,11 +31,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			);
 	
 		$collection->getSelect()->joinLeft(
-				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time', array('increment_id','created_at')
+				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('increment_id','created_at')
 			);
 
 		$collection->getSelect()->group('note_id');
-
+		
 		/*
 		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('name')
@@ -135,6 +135,20 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			'type' => 'options',
 			'options' => Mage::helper('customernotes')->getOptions(),
 			'index' => 'contact_method'
+		));
+		
+		$this->addColumn('campaign_id', array(
+			'header' => Mage::helper('outofstock')->__('Campaign'),
+			'type' => 'options',
+			'options' => Mage::helper('softwaremedia_campaign')->getCampaignOptions(),
+			'index' => 'campaign_id'
+		));
+		
+		$this->addColumn('step_id', array(
+			'header' => Mage::helper('outofstock')->__('Campaign'),
+			'type' => 'options',
+			'options' => Mage::helper('softwaremedia_campaign')->getStepOptions(),
+			'index' => 'step_id'
 		));
 		
 		$this->addColumn('last_order', array(

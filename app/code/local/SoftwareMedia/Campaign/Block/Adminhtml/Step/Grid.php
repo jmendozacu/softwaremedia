@@ -111,7 +111,7 @@ class SoftwareMedia_Campaign_Block_Adminhtml_Step_Grid extends Mage_Adminhtml_Bl
         $this->addColumn(
             'sort',
             array(
-                'header' => Mage::helper('softwaremedia_campaign')->__('Sort Order'),
+                'header' => Mage::helper('softwaremedia_campaign')->__('Order'),
                 'index'  => 'sort',
                 'type'=> 'number',
 

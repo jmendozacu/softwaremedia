@@ -22,6 +22,16 @@ class Magecon_CustomerNotes_Model_Notes extends Mage_Core_Model_Abstract {
 		return array('','Phone - Hung Up','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
 	}
 	
+	public function getCampaign() {
+		$campaign = Mage::getModel('softwaremedia_campaign/campaign')->load($this->getCampaignId());
+		return $campaign;
+	}
+	
+	public function getStep() {
+		$step = Mage::getModel('softwaremedia_campaign/step')->load($this->getStepId());
+		return $step;
+	}
+	
     public function _construct() {
         parent::_construct();
         $this->_init('customernotes/notes');

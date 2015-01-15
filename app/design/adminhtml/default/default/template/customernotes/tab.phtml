@@ -19,6 +19,25 @@
                             	}
                             	?>
                             </select>
+                            
+                            <div class="f-right">
+                            	<label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Campaign') ?></label>
+                            	<select onchange="updateSteps();" name="campaign_id" id="campaign_id">
+                            		<option value=""></option>
+                            		<?php foreach(Mage::helper('customernotes')->getCampaigns() as $option) {
+	                            	
+	                            		echo "<option value=\"" . $option->getId() . "\">" . $option->getName() . "</option>";
+									}
+                            		?>
+                            	</select>
+                            </div>
+                        </span>
+                        <span class="field-row">
+                        	 <div class="f-right">
+                            	<select name="step_id" id="step_id">
+                            		<option value="">Choose a Campaign</option>
+                            	</select>	
+							</div>
                         </span>
                         <span class="field-row">
                             <label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Note') ?></label>
@@ -37,6 +56,9 @@
 
                 <?php $notes = array_reverse($this->getNotes());
                 foreach ($notes as $note):
+                	//echo $note['note_id'];
+                	$noteObj = Mage::getModel('customernotes/notes')->load($note['note_id']);
+                	
                     ?>
                     <form method="POST" action="<?php echo $this->getDeleteAction(); ?>">
     <?php echo $this->getBlockHtml('formkey') ?>
@@ -52,6 +74,14 @@
                              <?php endif; ?>
     <strong><?php echo $note['username']; ?></strong>
                             <div class="f-right">
+                            	<?php if ($noteObj->getCampaignId()) {
+	                            	echo "<strong>" . $noteObj->getCampaign()->getName() . "</strong>";
+	                            	if ($noteObj->getStep()) {
+	                            		echo '<span class="separator">|</span> ';
+										echo "<strong>" . $noteObj->getStep()->getName() . "</strong>";
+	                            	}
+                            	}
+                            	?>
                                 <!--input type="submit" class="form-button" value="<?php echo Mage::helper('customernotes')->__('Delete Note') ?>" onclick="return confirm('Are you sure you want to delete the note?')"/-->
                             </div>
                             <br/><?php echo $this->htmlEscape($note['note'], array('b', 'br', 'strong', 'i', 'u')) ?>
@@ -63,3 +93,30 @@
         </div>
     </fieldset>
 </div>
+
+<script>
+
+	var steps = <?php echo Mage::helper('customernotes')->getJSONSteps(); ?>;
+	var json = Object.toJSON( {"COUNTRIES":[{"COUNTRY":"Hong Kong","ID":1},{"COUNTRY":"Japan","ID":2}]} );
+	
+	function updateSteps() {
+		//setDropDown($('step_id'),[]);
+		//alert($('step_id').options.length);
+		$('step_id').update('');
+		if ($('campaign_id').value) {
+			steps[$('campaign_id').value].forEach(function(entry) {
+				$('step_id').options.add(new Option(entry.name, entry.id));
+			});		
+		} 
+	
+	}
+
+	function setDropDown(field, data, method, index) {
+	  field.options.length = index == null ? 1 : index;
+	  data.each(
+	    function(e) {
+	      field.options.add(method(e));
+	    }
+	  );
+	}
+</script>

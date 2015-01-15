@@ -24,6 +24,31 @@ class Magecon_CustomerNotes_Helper_Data extends Mage_Core_Helper_Abstract {
 		
 		return array('N/A','Phone - Hung Up','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
 	}
+	
+	public function getCampaigns() {
+		$collection = Mage::getModel('softwaremedia_campaign/campaign')->getCollection()->addFieldToFilter('status',1);
+		
+		
+		return $collection;
+	}
+	
+	public function getJSONSteps() {
+		$campaigns = $this->getCampaigns();
+		
+		$stepList = array();
+		foreach($campaigns as $campaign) {
+			$stepList[$campaign->getId()] = array();
+			$steps = Mage::getModel('softwaremedia_campaign/step')->getCollection()->addFieldToFilter('campaign_id',$campaign->getId())->addFieldToFilter('status',1);
+			$steps->getSelect()->order('sort','ASC');	
+			foreach($steps as $step) {
+				$stepList[$campaign->getId()][]	= array('id' => $step->getId(), 'name' => $step->getName());
+			}
+			
+		}
+		
+		return json_encode($stepList);
+		
+	}
     public function isEnabled() {
         return Mage::getStoreConfig(self::XML_PATH_ENABLED);
     }

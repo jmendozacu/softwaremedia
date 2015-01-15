@@ -117,7 +117,6 @@ class SoftwareMedia_Campaign_Block_Adminhtml_Step_Edit_Tab_Form extends Mage_Adm
             array(
                 'label' => Mage::helper('softwaremedia_campaign')->__('Reminder (days)'),
                 'name'  => 'reminder',
-            'class' => 'required-entry',
 
            )
         );
