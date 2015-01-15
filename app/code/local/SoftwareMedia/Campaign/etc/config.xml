@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Campaign extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Campaign
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <modules>
+        <SoftwareMedia_Campaign>
+            <version>1.0.2</version>
+        </SoftwareMedia_Campaign>
+    </modules>
+    <global>
+        <resources>
+            <softwaremedia_campaign_setup>
+                <setup>
+                    <module>SoftwareMedia_Campaign</module>
+                    <class>SoftwareMedia_Campaign_Model_Resource_Setup</class>
+                </setup>
+            </softwaremedia_campaign_setup>
+        </resources>
+        <blocks>
+            <softwaremedia_campaign>
+                <class>SoftwareMedia_Campaign_Block</class>
+            </softwaremedia_campaign>
+        </blocks>
+        <helpers>
+            <softwaremedia_campaign>
+                <class>SoftwareMedia_Campaign_Helper</class>
+            </softwaremedia_campaign>
+        </helpers>
+        <models>
+            <softwaremedia_campaign>
+                <class>SoftwareMedia_Campaign_Model</class>
+                <resourceModel>softwaremedia_campaign_resource</resourceModel>
+            </softwaremedia_campaign>
+            <softwaremedia_campaign_resource>
+                <class>SoftwareMedia_Campaign_Model_Resource</class>
+                <entities>
+                    <campaign>
+                        <table>softwaremedia_campaign_campaign</table>
+                    </campaign>
+                    <step>
+                        <table>softwaremedia_campaign_step</table>
+                    </step>
+                </entities>
+            </softwaremedia_campaign_resource>
+        </models>
+    </global>
+    <adminhtml>
+        <layout>
+            <updates>
+                <softwaremedia_campaign>
+                    <file>softwaremedia_campaign.xml</file>
+                </softwaremedia_campaign>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <SoftwareMedia_Campaign>
+                    <files>
+                        <default>SoftwareMedia_Campaign.csv</default>
+                    </files>
+                </SoftwareMedia_Campaign>
+            </modules>
+        </translate>
+        <global_search>
+            <campaign>
+                <class>softwaremedia_campaign/adminhtml_search_campaign</class>
+                <acl>softwaremedia_campaign</acl>
+            </campaign>
+            <step>
+                <class>softwaremedia_campaign/adminhtml_search_step</class>
+                <acl>softwaremedia_campaign</acl>
+            </step>
+        </global_search>
+    </adminhtml>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <SoftwareMedia_Campaign before="Mage_Adminhtml">SoftwareMedia_Campaign_Adminhtml</SoftwareMedia_Campaign>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>
