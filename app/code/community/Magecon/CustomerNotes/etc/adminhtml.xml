@@ -18,13 +18,6 @@
  */
 -->
 <config>
-    <menu>
-        <customernotes translate="title" module="customernotes">
-            <title>Customer Notes</title>
-            <sort_order>1000</sort_order>
-            <action>customernotes/notes/view</action>
-        </customernotes>
-    </menu>
     <acl>
         <resources>
             <all>
