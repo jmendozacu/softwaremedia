@@ -34,7 +34,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('increment_id','created_at')
 			);
 
-		$collection->getSelect()->group('note_id');
+
 		
 		/*
 		$collection = Mage::getModel('catalog/product')->getCollection()
