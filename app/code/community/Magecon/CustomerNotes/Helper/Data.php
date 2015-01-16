@@ -22,7 +22,7 @@ class Magecon_CustomerNotes_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	public function getOptions() {
 		
-		return array('N/A','Phone - Hung Up','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
+		return array('N/A','Phone - Hung Up','Phone - No Answer','Phone - Voicemail', 'Phone - Talked', 'E-Mail');
 	}
 	
 	public function getCampaigns() {
