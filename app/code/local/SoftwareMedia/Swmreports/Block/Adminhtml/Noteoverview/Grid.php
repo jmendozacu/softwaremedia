@@ -83,11 +83,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Noteoverview_Grid extends Mage_Ad
 				$avgReach += $avg->getCustomerCount();
 			}
 			
-			$col->setData('reach',$avgReach / count($orderCount));
+			$col->setData('reach',number_format($avgReach / count($orderCount),2));
 			$col->setData('customers',count($orderCount));
 			$customers = count($orderCount);
 			
-			$col->setData('retention',floor($orders / $customers * 100) . '%');
+			$col->setData('retention',number_format($orders / $customers * 100,2) . '%');
 			
 			$count = 0;
 			foreach(Mage::helper('customernotes')->getOptions() as $val) {
