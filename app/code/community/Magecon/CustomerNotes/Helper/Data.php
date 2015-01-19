@@ -32,6 +32,11 @@ class Magecon_CustomerNotes_Helper_Data extends Mage_Core_Helper_Abstract {
 		return $collection;
 	}
 	
+	public function getStepsCampaign($campaign) {
+		$steps = Mage::getModel('softwaremedia_campaign/step')->getCollection()->addFieldToFilter('campaign_id',$campaign)->addFieldToFilter('status',1);
+		return $steps;
+	}
+	
 	public function getJSONSteps() {
 		$campaigns = $this->getCampaigns();
 		

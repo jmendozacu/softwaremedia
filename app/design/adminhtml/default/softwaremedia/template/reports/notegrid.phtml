@@ -36,6 +36,14 @@
  */
 $numColumns = sizeof($this->getColumns());
 ?>
+
+<?php
+$from = $this->getRequest()->getParam('from');
+$to = $this->getRequest()->getParam('to');
+$campaign = $this->getRequest()->getParam('campaign_id');
+$step = $this->getRequest()->getParam('step_id');
+
+?>
 <?php if ($this->getCollection()): ?>
 	<?php if ($this->canDisplayContainer()): ?>
 		<?php if ($this->getGridHeader()): ?>
@@ -43,10 +51,12 @@ $numColumns = sizeof($this->getColumns());
 		    <table cellspacing="0">
 		        <tbody><tr>
 		            <td style="width:50%;"><h3 class="icon-head head-adminhtml-accountreceivable"><?php echo $this->getGridHeader(); ?></h3></td>
-		           		        </tr>
+		            <td class="form-buttons"><button id="id_e21e71f7479f3778da404bce2675de7b" title="Show Report" type="button" class="scalable " onclick="$('note_filter').submit()" style=""><span><span><span>Show Report</span></span></span></button></td>
+		        </tr>
 		    </tbody></table>
 		</div>
 		<?php endif ?>
+
 
 		<div id="<?php echo $this->getId() ?>">
 		<?php else: ?>
@@ -58,52 +68,115 @@ $numColumns = sizeof($this->getColumns());
 		    <table cellspacing="0">
 		        <tbody><tr>
 		            <td style="width:50%;"><h3 class="icon-head head-adminhtml-accountreceivable"><?php echo $this->getCustomHeader(); ?></h3></td>
+		            <td class="form-buttons"><button id="id_e21e71f7479f3778da404bce2675de7b" title="Show Report" type="button" class="scalable " onclick="$('note_filter').submit()" style=""><span><span><span>Show Report</span></span></span></button></td>
 		        </tr>
 		    </tbody></table>
 		</div>
 			<?php endif ?>
+			
+			<div class="entry-edit">
+				
+				<div class="entry-edit-head">
+	                <h4 class="icon-head head-edit-form fieldset-legend">Filter</h4>
+	                <div class="form-buttons"></div>
+	            </div>
+<div class="fieldset">
+                <div class="hor-scroll">
+                	<form method="get" id="note_filter">
+                    <table cellspacing="0" class="form-list">
+                        <tbody>
+                            <!--<tr>
+                                <td class="label"><label for="sales_report_period_type">Period</label></td>
+                                <td class="value">
+                                    <select class=" select" title="Period" name="period_type" id="sales_report_period_type">
+                                        <option value="day">Day</option>
+                                        <option value="month">Month</option>
+                                        <option value="year">Year</option>
+                                    </select>
+                                </td>
+                            </tr>-->
+                            <tr>
+                                <td class="label"><label for="ar_report_from">From</label></td>
+                                <td class="value">
+                                    <input type="text" style="width:110px !important;" class=" required-entry input-text" title="From" value="<?php echo $from ?>" id="ar_report_from" name="from" />
+                                    <img style="" title="Select Date" id="ar_report_from_trig" class="v-middle" alt="" src="<?php echo '/skin/adminhtml/default/default/images/grid-cal.gif'; ?>">
+                                    <script type="text/javascript">
+                                        //<![CDATA[
+                                        Calendar.setup({
+                                            inputField: "ar_report_from",
+                                            ifFormat: "%m/%e/%Y",
+                                            showsTime: false,
+                                            button: "ar_report_from_trig",
+                                            align: "Bl",
+                                            singleClick : true
+                                        });
+                                        //]]>
+                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><label for="ar_report_to">To</label></td>
+                                <td class="value">
+                                    <input type="text" style="width:110px !important;" class=" required-entry input-text" title="To" value="<?php echo $to ?>" id="ar_report_to" name="to" />
+                                    <img style="" title="Select Date" id="ar_report_to_trig" class="v-middle" alt="" src="<?php echo '/skin/adminhtml/default/default/images/grid-cal.gif'; ?>">
+                                    <script type="text/javascript">
+                                        //<![CDATA[
+                                        Calendar.setup({
+                                            inputField: "ar_report_to",
+                                            ifFormat: "%m/%e/%Y",
+                                            showsTime: false,
+                                            button: "ar_report_to_trig",
+                                            align: "Bl",
+                                            singleClick : true
+                                        });
+                                        //]]>
+                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><label for="ar_report_to">Campaign</label></td>
+                                <td class="value">
+                                	<select onchange="updateSteps();" name="campaign_id" id="campaign_id">
+                            		<option value=""></option>
+                            		<?php foreach(Mage::helper('customernotes')->getCampaigns() as $option) {
+	                            	
+	                            		echo "<option value=\"" . $option->getId() . "\"";
+	                            		if ($campaign == $option->getId())
+	                            			echo " selected=\"selected\"";
+	                            			
+	                            		echo ">" . $option->getName() . "</option>";
+									}
+                            		?>
+                            	</select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><label for="ar_report_to">Step</label></td>
+                                <td class="value">
+                                    <select name="step_id" id="step_id">
+                                    	<option value=""></option>
+                                    <?php 
+                                    	if ($campaign) {
+                                    		$stepLoaded = Mage::helper('customernotes')->getStepsCampaign($campaign);
+                                    		foreach($stepLoaded as $stepItem) {
+	                                    		echo "<option value=\"" . $stepItem->getId() . "\"";
+	                                    		if ($step == $stepItem->getId())
+													echo " selected=\"selected\"";
+	                                    		echo ">" . $stepItem->getName() . "</option>";
+                                    		}
+                                    		
+	                            		} ?>
+									</select>	
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+			</div>
+			
 			<table cellspacing="0" class="actions">
 				<tr>
-					<?php if ($this->getPagerVisibility()): ?>
-						<td class="pager">
-							<?php echo $this->__('Page') ?>
-
-							<?php $_curPage = $this->getCollection()->getCurPage() ?>
-							<?php $_lastPage = $this->getCollection()->getLastPageNumber() ?>
-							<?php if ($_curPage > 1): ?>
-								<a href="#" title="<?php echo $this->__('Previous page') ?>" onclick="<?php echo $this->getJsObjectName() ?>.setPage('<?php echo ($_curPage - 1) ?>'); return false;"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_left.gif') ?>" alt="Go to Previous page" class="arrow"/></a>
-							<?php else: ?>
-								<img src="<?php echo $this->getSkinUrl('images/pager_arrow_left_off.gif') ?>" alt="Go to Previous page" class="arrow"/>
-							<?php endif; ?>
-
-							<input type="text" name="<?php echo $this->getVarNamePage() ?>" value="<?php echo $_curPage ?>" class="input-text page" onkeypress="<?php echo $this->getJsObjectName() ?>.inputPage(event, '<?php echo $_lastPage ?>')"/>
-
-							<?php if ($_curPage < $_lastPage): ?>
-								<a href="#" title="<?php echo $this->__('Next page') ?>" onclick="<?php echo $this->getJsObjectName() ?>.setPage('<?php echo ($_curPage + 1) ?>'); return false;"><img src="<?php echo $this->getSkinUrl('images/pager_arrow_right.gif') ?>" alt="Go to Next page" class="arrow"/></a>
-							<?php else: ?>
-								<img src="<?php echo $this->getSkinUrl('images/pager_arrow_right_off.gif') ?>" alt="Go to Previous page" class="arrow"/>
-							<?php endif; ?>
-
-							<?php echo $this->__('of %s pages', $this->getCollection()->getLastPageNumber()) ?>
-							<span class="separator">|</span>
-							<?php echo $this->__('View') ?>
-							<select name="<?php echo $this->getVarNameLimit() ?>" onchange="<?php echo $this->getJsObjectName() ?>.loadByElement(this)">
-								<option value="20"<?php if ($this->getCollection()->getPageSize() == 20): ?> selected="selected"<?php endif; ?>>20</option>
-								<option value="30"<?php if ($this->getCollection()->getPageSize() == 30): ?> selected="selected"<?php endif; ?>>30</option>
-								<option value="50"<?php if ($this->getCollection()->getPageSize() == 50): ?> selected="selected"<?php endif; ?>>50</option>
-								<option value="100"<?php if ($this->getCollection()->getPageSize() == 100): ?> selected="selected"<?php endif; ?>>100</option>
-								<option value="200"<?php if ($this->getCollection()->getPageSize() == 200): ?> selected="selected"<?php endif; ?>>200</option>
-							</select>
-							<?php echo $this->__('per page') ?><span class="separator">|</span>
-							<?php echo $this->__('Total %d records found', $this->getCollection()->getSize()) ?>
-							<span id="<?php echo $this->getHtmlId() ?>-total-count" class="no-display"><?php echo $this->getCollection()->getSize() ?></span>
-							<?php if ($this->getRssLists()): ?>
-								<?php foreach ($this->getRssLists() as $_rss): ?>
-									<span class="separator">|</span><a href="<?php echo $_rss->getUrl() ?>" class="link-feed"><?php echo $_rss->getLabel() ?></a>
-								<?php endforeach ?>
-							<?php endif; ?>
-						</td>
-					<?php endif ?>
 					<?php if ($this->getExportTypes()): ?>
 						<td class="export a-right">
 							<img src="<?php echo $this->getSkinUrl('images/icon_export.gif') ?>" alt="" class="v-middle"/>&nbsp; <?php echo $this->__('Export to:') ?>
@@ -115,9 +188,6 @@ $numColumns = sizeof($this->getColumns());
 							<?php echo $this->getExportButtonHtml() ?>
 						</td>
 					<?php endif; ?>
-					<td class="filter-actions a-right">
-						<?php echo $this->getMainButtonsHtml() ?>
-					</td>
 				</tr>
 			</table>
 		<?php endif; ?>
@@ -251,3 +321,32 @@ $numColumns = sizeof($this->getColumns());
 
 
  endif ?>
+ 
+ <script>
+
+	var steps = <?php echo Mage::helper('customernotes')->getJSONSteps(); ?>;
+	var json = Object.toJSON( {"COUNTRIES":[{"COUNTRY":"Hong Kong","ID":1},{"COUNTRY":"Japan","ID":2}]} );
+	
+	function updateSteps() {
+		//setDropDown($('step_id'),[]);
+		//alert($('step_id').options.length);
+		$('step_id').update('');
+		if ($('campaign_id').value) {
+			$('step_id').options.add(new Option('', ''));
+			steps[$('campaign_id').value].forEach(function(entry) {
+				$('step_id').options.add(new Option(entry.name, entry.id));
+			});		
+		} 
+	
+	}
+
+	function setDropDown(field, data, method, index) {
+	  field.options.length = index == null ? 1 : index;
+	  data.each(
+	    function(e) {
+	      field.options.add(method(e));
+	    }
+	  );
+	}
+</script>
+

@@ -55,7 +55,10 @@
 								<title>CSSR Detailed Stats</title>
 								<action>swmreports/adminhtml_customernote</action>
 							</customernote>
-							
+							<noteoverview>
+								<title>CSSR Overview</title>
+								<action>swmreports/adminhtml_noteoverview</action>
+							</noteoverview>
 						</children>
 					</swmreports>
 				</children>
@@ -86,9 +89,13 @@
 											<action>swmreports/adminhtml_outofstock</action>
 										</outofstock>
 										<customernote>
-											<title>Customer Notes</title>
+											<title>Customer Notes Detailed</title>
 											<action>swmreports/adminhtml_customernote</action>
 										</customernote>
+										<noteoverview>
+											<title>Customer Notes Overview</title>
+											<action>swmreports/adminhtml_noteoverview</action>
+										</noteoverview>
 										<coupon>
 											<title>Coupon</title>
 											<action>swmreports/adminhtml_coupon</action>
@@ -115,6 +122,9 @@
 				<customernote>
 					<file>swmreports/customernote.xml</file>
 				</customernote>
+				<noteoverview>
+					<file>swmreports/noteoverview.xml</file>
+				</noteoverview>
 				<coupon>
 					<file>swmreports/coupon.xml</file>
 				</coupon>
@@ -158,6 +168,9 @@
 			<customernote>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</customernote>
+			<noteoverview>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</noteoverview>
 			<coupon>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</coupon>
