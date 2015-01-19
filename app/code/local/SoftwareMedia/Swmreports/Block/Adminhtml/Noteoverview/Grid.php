@@ -20,7 +20,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Noteoverview_Grid extends Mage_Ad
 		$this->setDefaultDir('DESC');
 		$this->setSaveParametersInSession(true);
 		$this->setSubReportSize(false);
-		$this->setCustomHeader('CSSR Overview Stats');
+		$this->setCustomHeader('CSSR Overview');
 	}
 
 	protected function _prepareCollection() {
