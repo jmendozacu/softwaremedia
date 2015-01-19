@@ -92,7 +92,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Noteoverview_Grid extends Mage_Ad
 			$count = 0;
 			foreach(Mage::helper('customernotes')->getOptions() as $val) {
 				$count++;
-				if ($count == -1)
+				if ($count == 1)
 					continue; 
 					
 				//Select Count of all types of contact methods
@@ -119,6 +119,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Noteoverview_Grid extends Mage_Ad
 			
 		$campaign = $this->getRequest()->getParam('campaign_id');
 		$step = $this->getRequest()->getParam('step_id');
+		
+		$col->addFieldToFilter('contact_method',array('neq' => 'N/A'));
 		
 		if ($campaign)
 			$col->addFieldToFilter('campaign_id',$campaign);
@@ -197,7 +199,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Noteoverview_Grid extends Mage_Ad
 		$count = 0;
 		foreach(Mage::helper('customernotes')->getOptions() as $val) {
 			$count++;
-			if ($count == -1)
+			if ($count == 1)
 				continue; 
 						$this->addColumn('stat_'.$count, array(
 							'header' => Mage::helper('outofstock')->__($val),
