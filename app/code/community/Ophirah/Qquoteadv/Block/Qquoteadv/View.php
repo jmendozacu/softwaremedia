@@ -171,7 +171,6 @@ class Ophirah_Qquoteadv_Block_Qquoteadv_View extends Mage_Checkout_Block_Cart_Ab
     	if( $status == Ophirah_Qquoteadv_Model_Status::STATUS_CANCELED
                || $status == Ophirah_Qquoteadv_Model_Status::STATUS_REQUEST
                || $status == Ophirah_Qquoteadv_Model_Status::STATUS_DENIED
-               || $status == Ophirah_Qquoteadv_Model_Status::STATUS_CONFIRMED
                || $status == Ophirah_Qquoteadv_Model_Status::STATUS_ORDERED
                || $status == Ophirah_Qquoteadv_Model_Status::STATUS_REQUEST_EXPIRED
                || $status == Ophirah_Qquoteadv_Model_Status::STATUS_PROPOSAL_EXPIRED
