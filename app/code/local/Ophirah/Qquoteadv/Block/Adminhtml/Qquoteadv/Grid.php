@@ -131,9 +131,9 @@ class Ophirah_Qquoteadv_Block_Adminhtml_Qquoteadv_Grid extends Mage_Adminhtml_Bl
 		}
 
 		// Sum up all of the item totals
-		$collection->join('qquoteadv/requestitem', '`qquoteadv/requestitem`.quote_id = `main_table`.quote_id', array('total' => 'SUM(`qquoteadv/requestitem`.owner_base_price * `qquoteadv/requestitem`.request_qty)'), null, 'left');
+		$collection->join('requestitem', '`requestitem`.quote_id = `main_table`.quote_id', array('total' => 'SUM(`requestitem`.owner_base_price * `requestitem`.request_qty)'), null, 'left');
 
-		$collection->getSelect()->group('qquoteadv/requestitem.quote_id');
+		$collection->getSelect()->group('requestitem.quote_id');
 
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
