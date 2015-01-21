@@ -473,7 +473,7 @@ class Ophirah_Qquoteadv_ViewController extends Mage_Core_Controller_Front_Action
         	Mage::helper('qquoteadv')->setActiveConfirmMode(true); 
 			Mage::getSingleton('checkout/session')->clear();
 			Mage::getSingleton('checkout/cart')->truncate();
-			Mage::getSingleton('checkout/cart')->getQuote()->delete();
+			//Mage::getSingleton('checkout/cart')->getQuote()->delete();
             $quoteId    = (int) $this->getRequest()->getParam('id');
             $params     = $this->getRequest()->getParams();
 			
