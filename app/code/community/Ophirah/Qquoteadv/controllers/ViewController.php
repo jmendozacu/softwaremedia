@@ -470,7 +470,14 @@ class Ophirah_Qquoteadv_ViewController extends Mage_Core_Controller_Front_Action
         $_helper = Mage::helper('cataloginventory');
         
         if ($quote = $this->_initQuote()) {
-
+        	Mage::helper('qquoteadv')->setActiveConfirmMode(false); 
+			$cartHelper = Mage::helper('checkout/cart');
+			$items = $cartHelper->getCart()->getItems();        
+			foreach ($items as $item) 
+			{
+			   $itemId = $item->getItemId();
+			   $cartHelper->getCart()->removeItem($itemId)->save();
+			} 
             $quoteId    = (int) $this->getRequest()->getParam('id');
             $params     = $this->getRequest()->getParams();
 			
