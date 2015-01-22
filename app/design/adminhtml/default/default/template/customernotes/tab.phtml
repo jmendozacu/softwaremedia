@@ -78,7 +78,7 @@
 	                            	echo "<strong>" . $noteObj->getCampaign()->getName() . "</strong>";
 	                            	if ($noteObj->getStep()) {
 	                            		echo '<span class="separator">|</span> ';
-										echo "<strong>" . $noteObj->getStep()->getName() . "</strong>";
+										echo "<strong>" . $noteObj->getStep()->getOrder() . ' - ' . $noteObj->getStep()->getName() . "</strong>";
 	                            	}
                             	}
                             	?>
@@ -104,8 +104,10 @@
 		//alert($('step_id').options.length);
 		$('step_id').update('');
 		if ($('campaign_id').value) {
+			var count = 0;
 			steps[$('campaign_id').value].forEach(function(entry) {
-				$('step_id').options.add(new Option(entry.name, entry.id));
+				count++;
+				$('step_id').options.add(new Option(count + ' - ' + entry.name, entry.id));
 			});		
 		} 
 	
