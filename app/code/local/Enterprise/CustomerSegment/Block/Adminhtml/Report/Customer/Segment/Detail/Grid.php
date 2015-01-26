@@ -100,7 +100,6 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Detail_
 			
 			
 			$collection->getSelect()->group('e.entity_id');
-			echo $collection->getSelect();
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
