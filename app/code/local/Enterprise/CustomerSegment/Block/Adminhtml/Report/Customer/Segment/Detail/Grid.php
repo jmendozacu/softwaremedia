@@ -218,4 +218,96 @@ class Enterprise_CustomerSegment_Block_Adminhtml_Report_Customer_Segment_Detail_
     {
         return null;
     }
+    
+        /**
+     * Retrieve a file container array by grid data as MS Excel 2003 XML Document
+     *
+     * Return array with keys type and value
+     *
+     * @return string
+     */
+    public function getExcelFile($sheetName = '')
+    {
+        $this->_isExport = true;
+        $this->_prepareGrid();
+
+        $parser = new Varien_Convert_Parser_Xml_Excel();
+        $io     = new Varien_Io_File();
+
+        $path = Mage::getBaseDir('var') . DS . 'export' . DS;
+        $name = md5(microtime());
+        $file = $path . DS . $name . '.xml';
+
+        $io->setAllowCreateFolders(true);
+        $io->open(array('path' => $path));
+        $io->streamOpen($file, 'w+');
+        $io->streamLock(true);
+        if ($this->getCustomerSegment()->getId() != 32)
+        	$io->streamWrite($parser->getHeaderXml($sheetName));
+        $io->streamWrite($parser->getRowXml($this->_getExportHeaders()));
+
+        $this->_exportIterateCollection('_exportExcelItem', array($io, $parser));
+
+        if ($this->getCountTotals()) {
+            $io->streamWrite($parser->getRowXml($this->_getExportTotals()));
+        }
+
+        $io->streamWrite($parser->getFooterXml());
+        $io->streamUnlock();
+        $io->streamClose();
+
+        return array(
+            'type'  => 'filename',
+            'value' => $file,
+            'rm'    => true // can delete file after use
+        );
+    }
+    
+        public function getCsv()
+    {
+        $csv = '';
+        $this->_isExport = true;
+        $this->_prepareGrid();
+        $this->getCollection()->getSelect()->limit();
+        $this->getCollection()->setPageSize(0);
+        $this->getCollection()->load();
+        $this->_afterLoadCollection();
+
+        $data = array();
+        
+        if ($this->getCustomerSegment()->getId() != 32) {
+	        foreach ($this->_columns as $column) {
+	            if (!$column->getIsSystem()) {
+	                $data[] = '"'.$column->getExportHeader().'"';
+	            }
+	        }
+	        $csv.= implode(',', $data)."\n";
+		}
+		
+        foreach ($this->getCollection() as $item) {
+            $data = array();
+            foreach ($this->_columns as $column) {
+                if (!$column->getIsSystem()) {
+                    $data[] = '"' . str_replace(array('"', '\\'), array('""', '\\\\'),
+                        $column->getRowFieldExport($item)) . '"';
+                }
+            }
+            $csv.= implode(',', $data)."\n";
+        }
+
+        if ($this->getCountTotals())
+        {
+            $data = array();
+            foreach ($this->_columns as $column) {
+                if (!$column->getIsSystem()) {
+                    $data[] = '"' . str_replace(array('"', '\\'), array('""', '\\\\'),
+                        $column->getRowFieldExport($this->getTotals())) . '"';
+                }
+            }
+            $csv.= implode(',', $data)."\n";
+        }
+
+        return $csv;
+    }
+    
 }
