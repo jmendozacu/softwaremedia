@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Ratings extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Ratings
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <modules>
+        <SoftwareMedia_Ratings>
+            <version>1.0.1</version>
+        </SoftwareMedia_Ratings>
+    </modules>
+    <global>
+        <resources>
+            <softwaremedia_ratings_setup>
+                <setup>
+                    <module>SoftwareMedia_Ratings</module>
+                    <class>SoftwareMedia_Ratings_Model_Resource_Setup</class>
+                </setup>
+            </softwaremedia_ratings_setup>
+        </resources>
+        <blocks>
+            <softwaremedia_ratings>
+                <class>SoftwareMedia_Ratings_Block</class>
+            </softwaremedia_ratings>
+        </blocks>
+        <helpers>
+            <softwaremedia_ratings>
+                <class>SoftwareMedia_Ratings_Helper</class>
+            </softwaremedia_ratings>
+        </helpers>
+        <models>
+            <softwaremedia_ratings>
+                <class>SoftwareMedia_Ratings_Model</class>
+                <resourceModel>softwaremedia_ratings_resource</resourceModel>
+            </softwaremedia_ratings>
+            <softwaremedia_ratings_resource>
+                <class>SoftwareMedia_Ratings_Model_Resource</class>
+                <entities>
+                    <rating>
+                        <table>softwaremedia_ratings_rating</table>
+                    </rating>
+                </entities>
+            </softwaremedia_ratings_resource>
+        </models>
+    </global>
+    <adminhtml>
+        <layout>
+            <updates>
+                <softwaremedia_ratings>
+                    <file>softwaremedia_ratings.xml</file>
+                </softwaremedia_ratings>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <SoftwareMedia_Ratings>
+                    <files>
+                        <default>SoftwareMedia_Ratings.csv</default>
+                    </files>
+                </SoftwareMedia_Ratings>
+            </modules>
+        </translate>
+    </adminhtml>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <SoftwareMedia_Ratings before="Mage_Adminhtml">SoftwareMedia_Ratings_Adminhtml</SoftwareMedia_Ratings>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <frontend>
+        <routers>
+            <softwaremedia_ratings>
+                <use>standard</use>
+                <args>
+                    <module>SoftwareMedia_Ratings</module>
+                    <frontName>softwaremedia_ratings</frontName>
+                </args>
+            </softwaremedia_ratings>
+        </routers>
+        <layout>
+            <updates>
+                <softwaremedia_ratings>
+                    <file>softwaremedia_ratings.xml</file>
+                </softwaremedia_ratings>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <SoftwareMedia_Ratings>
+                    <files>
+                        <default>SoftwareMedia_Ratings.csv</default>
+                    </files>
+                </SoftwareMedia_Ratings>
+            </modules>
+        </translate>
+    </frontend>
+    <default>
+        <softwaremedia_ratings>
+            <rating>
+                <breadcrumbs>1</breadcrumbs>
+            </rating>
+        </softwaremedia_ratings>
+    </default>
+</config>

@@ -1,0 +1,235 @@
+<?php
+/**
+ * SoftwareMedia_Ratings extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Ratings
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+/**
+ * Rating admin grid block
+ *
+ * @category    SoftwareMedia
+ * @package     SoftwareMedia_Ratings
+ * @author      Ultimate Module Creator
+ */
+class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_Block_Widget_Grid
+{
+    /**
+     * constructor
+     *
+     * @access public
+     * @author Ultimate Module Creator
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setId('ratingGrid');
+        $this->setDefaultSort('entity_id');
+        $this->setDefaultDir('ASC');
+        $this->setSaveParametersInSession(true);
+        $this->setUseAjax(true);
+    }
+
+    /**
+     * prepare collection
+     *
+     * @access protected
+     * @return SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid
+     * @author Ultimate Module Creator
+     */
+    protected function _prepareCollection()
+    {
+        $collection = Mage::getModel('softwaremedia_ratings/rating')
+            ->getCollection();
+        
+        $this->setCollection($collection);
+        return parent::_prepareCollection();
+    }
+
+    /**
+     * prepare grid collection
+     *
+     * @access protected
+     * @return SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid
+     * @author Ultimate Module Creator
+     */
+    protected function _prepareColumns()
+    {
+        $this->addColumn(
+            'entity_id',
+            array(
+                'header' => Mage::helper('softwaremedia_ratings')->__('Id'),
+                'index'  => 'entity_id',
+                'type'   => 'number'
+            )
+        );
+        $this->addColumn(
+            'user_id',
+            array(
+                'header'    => Mage::helper('softwaremedia_ratings')->__('Admin User ID'),
+                'align'     => 'left',
+                'index'     => 'user_id',
+            )
+        );
+        
+        $this->addColumn(
+            'status',
+            array(
+                'header'  => Mage::helper('softwaremedia_ratings')->__('Status'),
+                'index'   => 'status',
+                'type'    => 'options',
+                'options' => array(
+                    '1' => Mage::helper('softwaremedia_ratings')->__('Enabled'),
+                    '0' => Mage::helper('softwaremedia_ratings')->__('Disabled'),
+                )
+            )
+        );
+        $this->addColumn(
+            'customer_id',
+            array(
+                'header' => Mage::helper('softwaremedia_ratings')->__('Customer ID'),
+                'index'  => 'customer_id',
+                'type'=> 'text',
+
+            )
+        );
+        $this->addColumn(
+            'ip',
+            array(
+                'header' => Mage::helper('softwaremedia_ratings')->__('IP Address'),
+                'index'  => 'ip',
+                'type'=> 'text',
+
+            )
+        );
+        $this->addColumn(
+            'rating',
+            array(
+                'header' => Mage::helper('softwaremedia_ratings')->__('Rating'),
+                'index'  => 'rating',
+                'type'=> 'number',
+
+            )
+        );
+        $this->addColumn(
+            'created_at',
+            array(
+                'header' => Mage::helper('softwaremedia_ratings')->__('Created at'),
+                'index'  => 'created_at',
+                'width'  => '120px',
+                'type'   => 'datetime',
+            )
+        );
+        $this->addColumn(
+            'action',
+            array(
+                'header'  =>  Mage::helper('softwaremedia_ratings')->__('Action'),
+                'width'   => '100',
+                'type'    => 'action',
+                'getter'  => 'getId',
+                'actions' => array(
+                    array(
+                        'caption' => Mage::helper('softwaremedia_ratings')->__('Edit'),
+                        'url'     => array('base'=> '*/*/edit'),
+                        'field'   => 'id'
+                    )
+                ),
+                'filter'    => false,
+                'is_system' => true,
+                'sortable'  => false,
+            )
+        );
+        $this->addExportType('*/*/exportCsv', Mage::helper('softwaremedia_ratings')->__('CSV'));
+        $this->addExportType('*/*/exportExcel', Mage::helper('softwaremedia_ratings')->__('Excel'));
+        $this->addExportType('*/*/exportXml', Mage::helper('softwaremedia_ratings')->__('XML'));
+        return parent::_prepareColumns();
+    }
+
+    /**
+     * prepare mass action
+     *
+     * @access protected
+     * @return SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid
+     * @author Ultimate Module Creator
+     */
+    protected function _prepareMassaction()
+    {
+        $this->setMassactionIdField('entity_id');
+        $this->getMassactionBlock()->setFormFieldName('rating');
+        $this->getMassactionBlock()->addItem(
+            'delete',
+            array(
+                'label'=> Mage::helper('softwaremedia_ratings')->__('Delete'),
+                'url'  => $this->getUrl('*/*/massDelete'),
+                'confirm'  => Mage::helper('softwaremedia_ratings')->__('Are you sure?')
+            )
+        );
+        $this->getMassactionBlock()->addItem(
+            'status',
+            array(
+                'label'      => Mage::helper('softwaremedia_ratings')->__('Change status'),
+                'url'        => $this->getUrl('*/*/massStatus', array('_current'=>true)),
+                'additional' => array(
+                    'status' => array(
+                        'name'   => 'status',
+                        'type'   => 'select',
+                        'class'  => 'required-entry',
+                        'label'  => Mage::helper('softwaremedia_ratings')->__('Status'),
+                        'values' => array(
+                            '1' => Mage::helper('softwaremedia_ratings')->__('Enabled'),
+                            '0' => Mage::helper('softwaremedia_ratings')->__('Disabled'),
+                        )
+                    )
+                )
+            )
+        );
+        return $this;
+    }
+
+    /**
+     * get the row url
+     *
+     * @access public
+     * @param SoftwareMedia_Ratings_Model_Rating
+     * @return string
+     * @author Ultimate Module Creator
+     */
+    public function getRowUrl($row)
+    {
+        return $this->getUrl('*/*/edit', array('id' => $row->getId()));
+    }
+
+    /**
+     * get the grid url
+     *
+     * @access public
+     * @return string
+     * @author Ultimate Module Creator
+     */
+    public function getGridUrl()
+    {
+        return $this->getUrl('*/*/grid', array('_current'=>true));
+    }
+
+    /**
+     * after collection load
+     *
+     * @access protected
+     * @return SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid
+     * @author Ultimate Module Creator
+     */
+    protected function _afterLoadCollection()
+    {
+        $this->getCollection()->walk('afterLoad');
+        parent::_afterLoadCollection();
+    }
+}

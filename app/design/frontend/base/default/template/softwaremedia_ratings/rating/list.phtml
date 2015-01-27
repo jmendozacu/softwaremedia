@@ -1,0 +1,43 @@
+<?php 
+/**
+ * SoftwareMedia_Ratings extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Ratings
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+/**
+ * Rating list template
+ *
+ * @category    SoftwareMedia
+ * @package     SoftwareMedia_Ratings
+ * @author      Ultimate Module Creator
+ */
+?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $_ratings = $this->getRatings(); ?>
+<div class="page-title rating-title">
+    <h1><?php echo Mage::helper('softwaremedia_ratings')->__('Ratings') ?></h1>
+</div>
+<?php if ($_ratings->getSize() > 0) :?>
+    <?php echo $this->getPagerHtml(); ?>
+    <div class="rating-list-container">
+    <?php foreach ($_ratings as $_rating) : ?>
+        <div class="rating-list-item">
+            <?php echo $_rating->getUserId();?>
+<br />
+        </div>
+    <?php endforeach;?>
+    </div>
+    <?php echo $this->getPagerHtml(); ?>
+<?php else : ?>
+    <?php echo Mage::helper('softwaremedia_ratings')->__('There are no ratings at this moment');?>
+<?php endif;?>
