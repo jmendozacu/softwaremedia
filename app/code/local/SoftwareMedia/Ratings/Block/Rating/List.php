@@ -54,8 +54,8 @@ class SoftwareMedia_Ratings_Block_Rating_List extends Mage_Core_Block_Template
     
     public function getRatingURL($rating) {
 	    
-	    if (Mage::app()->getRequest()->getParam('chat'))
-	    	$chat = '/chat/1/';
+	    if (Mage::app()->getRequest()->getParam('source'))
+	    	$chat = '/source/' . Mage::app()->getRequest()->getParam('source');
 	    	
 	    return "/smratings/rating/rate/user_id/" . Mage::app()->getRequest()->getParam('user') . "/rating/" . $rating . $chat;
     }

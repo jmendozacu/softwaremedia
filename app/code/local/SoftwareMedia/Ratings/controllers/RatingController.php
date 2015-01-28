@@ -45,8 +45,8 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
     public function rateAction() {
 	     $rating    = Mage::getModel('softwaremedia_ratings/rating');
 	     
-	     if (Mage::app()->getRequest()->getParam('chat')) 
-	     	$rating->setSource('Chat');
+	     if (Mage::app()->getRequest()->getParam('source')) 
+	     	$rating->setSource(Mage::app()->getRequest()->getParam('source'));
 	     else 
 	     	$rating->setSource('E-Mail');
 	     	

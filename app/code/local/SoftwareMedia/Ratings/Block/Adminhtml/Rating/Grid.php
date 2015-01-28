@@ -94,11 +94,11 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
 			'header' => Mage::helper('sales')->__('Source'),
 			'index' => 'source',
 			'type' => 'options',
-			'options' => array('Chat' => 'Chat','E-Mail' => 'E-Mail'),
+			'options' => array('Chat' => 'Chat','E-Mail' => 'E-Mail', 'Web' => 'Web'),
 		));
 		
 		$this->addColumn('comment', array(
-			'header' => Mage::helper('sales')->__('Source'),
+			'header' => Mage::helper('sales')->__('Comment'),
 			'index' => 'comment'
 		));
 		
