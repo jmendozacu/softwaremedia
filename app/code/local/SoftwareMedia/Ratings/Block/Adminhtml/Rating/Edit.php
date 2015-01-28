@@ -71,11 +71,8 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Edit extends Mage_Adminhtml_B
     public function getHeaderText()
     {
         if (Mage::registry('current_rating') && Mage::registry('current_rating')->getId()) {
-            return Mage::helper('softwaremedia_ratings')->__(
-                "Edit Rating '%s'",
-                $this->escapeHtml(Mage::registry('current_rating')->getUserId())
-            );
-        } else {
+            return "Edit Rating";
+                    } else {
             return Mage::helper('softwaremedia_ratings')->__('Add Rating');
         }
     }

@@ -36,7 +36,8 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating extends Mage_Adminhtml_Block_
         $this->_blockGroup         = 'softwaremedia_ratings';
         parent::__construct();
         $this->_headerText         = Mage::helper('softwaremedia_ratings')->__('Rating');
-        $this->_updateButton('add', 'label', Mage::helper('softwaremedia_ratings')->__('Add Rating'));
+        $this->_removeButton('add');
+        //$this->_updateButton('add', 'label', Mage::helper('softwaremedia_ratings')->__('Add Rating'));
 
     }
 }

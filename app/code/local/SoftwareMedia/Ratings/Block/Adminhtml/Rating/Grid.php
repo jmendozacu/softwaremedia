@@ -138,25 +138,9 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
                 'type'   => 'datetime',
             )
         );
-        $this->addColumn(
-            'action',
-            array(
-                'header'  =>  Mage::helper('softwaremedia_ratings')->__('Action'),
-                'width'   => '100',
-                'type'    => 'action',
-                'getter'  => 'getId',
-                'actions' => array(
-                    array(
-                        'caption' => Mage::helper('softwaremedia_ratings')->__('Edit'),
-                        'url'     => array('base'=> '*/*/edit'),
-                        'field'   => 'id'
-                    )
-                ),
-                'filter'    => false,
-                'is_system' => true,
-                'sortable'  => false,
-            )
-        );
+
+        
+       
         $this->addExportType('*/*/exportCsv', Mage::helper('softwaremedia_ratings')->__('CSV'));
         $this->addExportType('*/*/exportExcel', Mage::helper('softwaremedia_ratings')->__('Excel'));
         $this->addExportType('*/*/exportXml', Mage::helper('softwaremedia_ratings')->__('XML'));
@@ -172,35 +156,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
      */
     protected function _prepareMassaction()
     {
-        $this->setMassactionIdField('entity_id');
-        $this->getMassactionBlock()->setFormFieldName('rating');
-        $this->getMassactionBlock()->addItem(
-            'delete',
-            array(
-                'label'=> Mage::helper('softwaremedia_ratings')->__('Delete'),
-                'url'  => $this->getUrl('*/*/massDelete'),
-                'confirm'  => Mage::helper('softwaremedia_ratings')->__('Are you sure?')
-            )
-        );
-        $this->getMassactionBlock()->addItem(
-            'status',
-            array(
-                'label'      => Mage::helper('softwaremedia_ratings')->__('Change status'),
-                'url'        => $this->getUrl('*/*/massStatus', array('_current'=>true)),
-                'additional' => array(
-                    'status' => array(
-                        'name'   => 'status',
-                        'type'   => 'select',
-                        'class'  => 'required-entry',
-                        'label'  => Mage::helper('softwaremedia_ratings')->__('Status'),
-                        'values' => array(
-                            '1' => Mage::helper('softwaremedia_ratings')->__('Enabled'),
-                            '0' => Mage::helper('softwaremedia_ratings')->__('Disabled'),
-                        )
-                    )
-                )
-            )
-        );
+
         return $this;
     }
 
@@ -214,7 +170,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
      */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/edit', array('id' => $row->getId()));
+        return $this->getUrl('*/*/index', array('id' => $row->getId()));
     }
 
     /**

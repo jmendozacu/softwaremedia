@@ -94,24 +94,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Edit_Tab_Form extends Mage_Ad
 
            )
         );
-        $fieldset->addField(
-            'status',
-            'select',
-            array(
-                'label'  => Mage::helper('softwaremedia_ratings')->__('Status'),
-                'name'   => 'status',
-                'values' => array(
-                    array(
-                        'value' => 1,
-                        'label' => Mage::helper('softwaremedia_ratings')->__('Enabled'),
-                    ),
-                    array(
-                        'value' => 0,
-                        'label' => Mage::helper('softwaremedia_ratings')->__('Disabled'),
-                    ),
-                ),
-            )
-        );
+
         $formValues = Mage::registry('current_rating')->getDefaultValues();
         if (!is_array($formValues)) {
             $formValues = array();
