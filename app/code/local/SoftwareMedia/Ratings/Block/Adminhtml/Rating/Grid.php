@@ -64,6 +64,8 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
      */
     protected function _prepareColumns()
     {
+    
+    	/*
         $this->addColumn(
             'entity_id',
             array(
@@ -72,7 +74,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
                 'type'   => 'number'
             )
         );
-        
+        */
         $adminUserModel = Mage::getModel('admin/user');
 		$userCollection = $adminUserModel->getCollection()->addFieldToFilter('is_active',1); 
 		
@@ -82,6 +84,15 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
 			$referer_arr[$user->getId()] = $user->getUsername();
 		}
 		
+		$this->addColumn(
+            'created_at',
+            array(
+                'header' => Mage::helper('softwaremedia_ratings')->__('Date'),
+                'index'  => 'created_at',
+                'type'   => 'datetime',
+            )
+        );
+        
 		$this->addColumn('user_id', array(
 			'header' => Mage::helper('sales')->__('Admin User'),
 			'index' => 'user_id',
@@ -94,7 +105,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
 			'header' => Mage::helper('sales')->__('Source'),
 			'index' => 'source',
 			'type' => 'options',
-			'options' => array('Chat' => 'Chat','E-Mail' => 'E-Mail', 'Web' => 'Web'),
+			'options' => array('Chat' => 'Chat','E-Mail' => 'E-Mail'),
 		));
 		
 		$this->addColumn('comment', array(
@@ -129,15 +140,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
 
             )
         );
-        $this->addColumn(
-            'created_at',
-            array(
-                'header' => Mage::helper('softwaremedia_ratings')->__('Created at'),
-                'index'  => 'created_at',
-                'width'  => '120px',
-                'type'   => 'datetime',
-            )
-        );
+        
 
         
        
