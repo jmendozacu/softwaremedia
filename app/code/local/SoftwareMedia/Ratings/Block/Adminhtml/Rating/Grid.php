@@ -131,17 +131,19 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
 
             )
         );
-        $this->addColumn(
-            'ip',
-            array(
-                'header' => Mage::helper('softwaremedia_ratings')->__('IP Address'),
-                'index'  => 'ip',
-                'type'=> 'text',
-
-            )
-        );
         
-        
+        $roleId = implode('', Mage::getSingleton('admin/session')->getUser()->getRoles());
+        if ($roleId == 1) {
+	        $this->addColumn(
+	            'ip',
+	            array(
+	                'header' => Mage::helper('softwaremedia_ratings')->__('IP Address'),
+	                'index'  => 'ip',
+	                'type'=> 'text',
+	
+	            )
+	        );
+        }
 
         
        
