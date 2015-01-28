@@ -127,6 +127,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
                 'header' => Mage::helper('softwaremedia_ratings')->__('Customer ID'),
                 'index'  => 'customer_id',
                 'type'=> 'text',
+                'width' => '70px'
 
             )
         );
