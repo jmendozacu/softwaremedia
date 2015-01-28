@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Ratings extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Ratings
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+--> 
+<config>
+    <tabs>
+        <softwaremedia translate="label" module="softwaremedia_ratings">
+            <label>Customer Ratings</label>
+            <sort_order>2000</sort_order>
+        </softwaremedia>
+    </tabs>
+    <sections>
+        <softwaremedia_ratings translate="label" module="softwaremedia_ratings">
+            <class>separator-top</class>
+            <label>Ratings</label>
+            <tab>softwaremedia</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <rating translate="label" module="softwaremedia_ratings">
+                    <label>Rating</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>0</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <breadcrumbs translate="label">
+                            <label>Use Breadcrumbs</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </breadcrumbs>
+                    </fields>
+                </rating>
+            </groups>
+        </softwaremedia_ratings>
+    </sections>
+</config>

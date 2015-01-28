@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Ratings extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Ratings
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <softwaremedia_ratings translate="title" module="softwaremedia_ratings">
+                                        <title>Ratings</title>
+                                    </softwaremedia_ratings>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <customer>
+                        <children>
+                            <softwaremedia_ratings translate="title" module="softwaremedia_ratings">
+                                <title>Ratings</title>
+                            </softwaremedia_ratings>
+                        </children>
+                    </customer>
+
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <menu>
+        <customer>
+            <children>
+                <softwaremedia_ratings translate="title" module="softwaremedia_ratings">
+                    <title>Ratings</title>
+                    <sort_order>82</sort_order>
+                    <action>adminhtml/ratings_rating</action>
+                </softwaremedia_ratings>            
+            </children>
+        </customer>
+
+    </menu>
+</config>

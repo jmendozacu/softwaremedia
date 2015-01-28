@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Ratings extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Ratings
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+--> 
+<layout>
+    <adminhtml_ratings_rating_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>customer/softwaremedia_ratings/rating</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_ratings/adminhtml_rating" name="rating" />
+
+        </reference>
+    </adminhtml_ratings_rating_index>
+    <adminhtml_ratings_rating_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="softwaremedia_ratings/adminhtml_rating_grid" name="rating_grid"/>
+        </block>
+    </adminhtml_ratings_rating_grid>
+    <!-- Rating add/edit action -->
+    <adminhtml_ratings_rating_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>customer/softwaremedia_ratings/rating</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_ratings/adminhtml_rating_edit" name="rating_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="softwaremedia_ratings/adminhtml_rating_edit_tabs" name="rating_tabs"></block>
+        </reference>
+    </adminhtml_ratings_rating_edit>
+
+</layout>
