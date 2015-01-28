@@ -107,7 +107,15 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
 			'type' => 'options',
 			'options' => array('Chat' => 'Chat','E-Mail' => 'E-Mail'),
 		));
-		
+		$this->addColumn(
+            'rating',
+            array(
+                'header' => Mage::helper('softwaremedia_ratings')->__('Rating'),
+                'index'  => 'rating',
+                'type'=> 'number',
+
+            )
+        );
 		$this->addColumn('comment', array(
 			'header' => Mage::helper('sales')->__('Comment'),
 			'index' => 'comment'
@@ -131,15 +139,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
 
             )
         );
-        $this->addColumn(
-            'rating',
-            array(
-                'header' => Mage::helper('softwaremedia_ratings')->__('Rating'),
-                'index'  => 'rating',
-                'type'=> 'number',
-
-            )
-        );
+        
         
 
         
