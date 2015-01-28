@@ -59,6 +59,10 @@
 								<title>CSSR Overview</title>
 								<action>swmreports/adminhtml_noteoverview</action>
 							</noteoverview>
+							<customerratings>
+								<title>CSSR Ratings</title>
+								<action>swmreports/adminhtml_customerratings</action>
+							</customerratings>
 						</children>
 					</swmreports>
 				</children>
@@ -96,6 +100,10 @@
 											<title>Customer Notes Overview</title>
 											<action>swmreports/adminhtml_noteoverview</action>
 										</noteoverview>
+										<customerratings>
+											<title>Customer Ratings Overview</title>
+											<action>swmreports/adminhtml_customerratings</action>
+										</customerratings>
 										<coupon>
 											<title>Coupon</title>
 											<action>swmreports/adminhtml_coupon</action>
@@ -125,6 +133,9 @@
 				<noteoverview>
 					<file>swmreports/noteoverview.xml</file>
 				</noteoverview>
+				<customerratings>
+					<file>swmreports/customerratings.xml</file>
+				</customerratings>
 				<coupon>
 					<file>swmreports/coupon.xml</file>
 				</coupon>
@@ -168,6 +179,9 @@
 			<customernote>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</customernote>
+			<customerratings>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</customerratings>
 			<noteoverview>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</noteoverview>
