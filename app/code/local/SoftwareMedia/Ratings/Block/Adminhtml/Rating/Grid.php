@@ -170,7 +170,7 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
      */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/index', array('id' => $row->getId()));
+        //return $this->getUrl('*/*/index', array('id' => $row->getId()));
     }
 
     /**
