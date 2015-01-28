@@ -21,17 +21,7 @@
         <resources>
             <admin>
                 <children>
-                    <system>
-                        <children>
-                            <config>
-                                <children>
-                                    <softwaremedia_ratings translate="title" module="softwaremedia_ratings">
-                                        <title>Ratings</title>
-                                    </softwaremedia_ratings>
-                                </children>
-                            </config>
-                        </children>
-                    </system>
+
                     <customer>
                         <children>
                             <softwaremedia_ratings translate="title" module="softwaremedia_ratings">
