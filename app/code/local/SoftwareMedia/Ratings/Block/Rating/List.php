@@ -36,6 +36,34 @@ class SoftwareMedia_Ratings_Block_Rating_List extends Mage_Core_Block_Template
                          ->addFieldToFilter('status', 1);
         $ratings->setOrder('user_id', 'asc');
         $this->setRatings($ratings);
+        
+        $adminId = Mage::app()->getRequest()->getParam('user');
+	    
+	    if ($adminId) {
+	    	$adminUser =  Mage::getModel('admin/user')->load($adminId); 
+	    
+			$this->setAdminUser($adminUser);
+		}
+		
+		$ratingId = Mage::app()->getRequest()->getParam('rating_id');
+		if ($ratingId) {
+			$rating = Mage::getModel('softwaremedia_ratings/rating')->load($ratingId);
+			$this->setRating($rating);
+		}
+    }
+    
+    public function getRatingURL($rating) {
+	    
+	    if (Mage::app()->getRequest()->getParam('user'))
+	    	$chat = '/chat/1/';
+	    return "/smratings/rating/rate/user_id/" . Mage::app()->getRequest()->getParam('user') . "/rating/" . $rating . $chat;
+    }
+    
+    public function getAdminName() {
+	    if ($this->getAdminUser()) {
+	    	return $this->getAdminUser()->getFirstname();
+	    }
+	    return false;
     }
 
     /**

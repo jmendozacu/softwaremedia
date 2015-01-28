@@ -72,27 +72,32 @@ class SoftwareMedia_Ratings_Block_Adminhtml_Rating_Grid extends Mage_Adminhtml_B
                 'type'   => 'number'
             )
         );
-        $this->addColumn(
-            'user_id',
-            array(
-                'header'    => Mage::helper('softwaremedia_ratings')->__('Admin User ID'),
-                'align'     => 'left',
-                'index'     => 'user_id',
-            )
-        );
         
-        $this->addColumn(
-            'status',
-            array(
-                'header'  => Mage::helper('softwaremedia_ratings')->__('Status'),
-                'index'   => 'status',
-                'type'    => 'options',
-                'options' => array(
-                    '1' => Mage::helper('softwaremedia_ratings')->__('Enabled'),
-                    '0' => Mage::helper('softwaremedia_ratings')->__('Disabled'),
-                )
-            )
-        );
+        $adminUserModel = Mage::getModel('admin/user');
+		$userCollection = $adminUserModel->getCollection()->addFieldToFilter('is_active',1); 
+		
+		$referer_arr = array();
+		
+		foreach($userCollection as $user) {
+			$referer_arr[$user->getId()] = $user->getUsername();
+		}
+		
+		$this->addColumn('user_id', array(
+			'header' => Mage::helper('sales')->__('Admin User'),
+			'index' => 'user_id',
+			'type' => 'options',
+			'width' => '70px',
+			'options' => $referer_arr,
+		));
+
+		$this->addColumn('source', array(
+			'header' => Mage::helper('sales')->__('Source'),
+			'index' => 'source',
+			'type' => 'options',
+			'width' => '70px',
+			'options' => array('Chat' => 'Chat','E-Mail' => 'E-Mail'),
+		));
+		
         $this->addColumn(
             'customer_id',
             array(

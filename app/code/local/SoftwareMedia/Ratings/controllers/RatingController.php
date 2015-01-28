@@ -31,6 +31,38 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
       * @return void
       * @author Ultimate Module Creator
       */
+     
+    public function commentAction() {
+	     $rating    = Mage::getModel('softwaremedia_ratings/rating')->load(Mage::app()->getRequest()->getParam('rating_id'));
+	     
+	     $rating->setComment(Mage::app()->getRequest()->getParam('comment'));
+
+	     $rating->save();
+	     
+	     $this->_redirect('*/*/index/rating_id/' . $rating->getId());
+    }
+     
+    public function rateAction() {
+	     $rating    = Mage::getModel('softwaremedia_ratings/rating');
+	     
+	     if (Mage::app()->getRequest()->getParam('chat')) 
+	     	$rating->setSource('Chat');
+	     else 
+	     	$rating->setSource('E-Mail');
+	     	
+	     if (Mage::app()->getRequest()->getParam('user_id'))
+	     	$rating->setUserId(Mage::app()->getRequest()->getParam('user_id'));
+	     
+	     $rating->setRating(Mage::app()->getRequest()->getParam('rating'));
+	     if($customer = Mage::getSingleton('customer/session')->isLoggedIn()) {
+		    $rating->setCustomerId(Mage::getSingleton('customer/session')->getId());
+		}
+	     $rating->setIp(Mage::helper('core/http')->getRemoteAddr());
+	     $rating->save();
+	     
+	     $this->_redirect('*/*/index/rating_id/' . $rating->getId());
+    }
+     
     public function indexAction()
     {
         $this->loadLayout();
@@ -47,9 +79,9 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
                     )
                 );
                 $breadcrumbBlock->addCrumb(
-                    'ratings',
+                    'smratings',
                     array(
-                        'label' => Mage::helper('softwaremedia_ratings')->__('Ratings'),
+                        'label' => Mage::helper('softwaremedia_ratings')->__('Rate Your Experience'),
                         'link'  => '',
                     )
                 );

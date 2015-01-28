@@ -19,7 +19,7 @@
 <config>
     <modules>
         <SoftwareMedia_Ratings>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </SoftwareMedia_Ratings>
     </modules>
     <global>
@@ -91,7 +91,7 @@
                 <use>standard</use>
                 <args>
                     <module>SoftwareMedia_Ratings</module>
-                    <frontName>softwaremedia_ratings</frontName>
+                    <frontName>smratings</frontName>
                 </args>
             </softwaremedia_ratings>
         </routers>

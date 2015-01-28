@@ -36,13 +36,8 @@
                         <children>
                             <softwaremedia_ratings translate="title" module="softwaremedia_ratings">
                                 <title>Ratings</title>
-                                <children>
-                                    <rating translate="title" module="softwaremedia_ratings">
-                                        <title>Rating</title>
-                                        <sort_order>0</sort_order>
-                                    </rating>
-                                </children>
-                            </softwaremedia_ratings>                        </children>
+                            </softwaremedia_ratings>
+                        </children>
                     </customer>
 
                 </children>
@@ -55,14 +50,9 @@
                 <softwaremedia_ratings translate="title" module="softwaremedia_ratings">
                     <title>Ratings</title>
                     <sort_order>82</sort_order>
-                    <children>
-                        <rating translate="title" module="softwaremedia_ratings">
-                            <title>Rating</title>
-                            <action>adminhtml/ratings_rating</action>
-                            <sort_order>0</sort_order>
-                        </rating>
-                    </children>
-                </softwaremedia_ratings>            </children>
+                    <action>adminhtml/ratings_rating</action>
+                </softwaremedia_ratings>            
+            </children>
         </customer>
 
     </menu>

@@ -25,19 +25,33 @@
 <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
 <?php $_ratings = $this->getRatings(); ?>
 <div class="page-title rating-title">
-    <h1><?php echo Mage::helper('softwaremedia_ratings')->__('Ratings') ?></h1>
+    <h1><?php echo Mage::helper('softwaremedia_ratings')->__('Rate Your Experience') ?></h1>
 </div>
-<?php if ($_ratings->getSize() > 0) :?>
-    <?php echo $this->getPagerHtml(); ?>
-    <div class="rating-list-container">
-    <?php foreach ($_ratings as $_rating) : ?>
-        <div class="rating-list-item">
-            <?php echo $_rating->getUserId();?>
-<br />
-        </div>
-    <?php endforeach;?>
-    </div>
-    <?php echo $this->getPagerHtml(); ?>
-<?php else : ?>
-    <?php echo Mage::helper('softwaremedia_ratings')->__('There are no ratings at this moment');?>
-<?php endif;?>
+
+<div class="std">
+<?php if ($this->getAdminName()): ?>
+	<p>Your customer service rep today was <strong><?php echo $this->getAdminName(); ?></strong></p>
+	<p><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('cs-rating')->toHtml(); ?></p>
+	
+	<div class="smiley_ratings">
+		<a href="<?php echo $this->getRatingURL(5); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_5.gif'); ?>" /></a>
+		<a href="<?php echo $this->getRatingURL(3); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_3.gif'); ?>" /></a>
+		<a href="<?php echo $this->getRatingURL(1); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_1.gif'); ?>" /></a>
+	</div>
+<?php else: ?>
+	<p><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('cs-rating-success')->toHtml(); ?></p>
+	<?php if ($this->getRating()): ?>
+		<?php if (!$this->getRating()->getComment()): ?>
+			<p>Would you like to leave a comment? </p>
+			
+			<form action="/smratings/rating/comment/">
+			<input type="hidden" name="rating_id" value="<?php echo $this->getRating()->getId(); ?>" />
+			<textarea style="width: 400px; height: 100px;" name="comment"></textarea><br />
+			
+			<input type="submit" value="Submit" />
+			
+			</form>
+		<?php endif; ?>
+	<?php endif; ?>
+<?php endif; ?>
+</div>
