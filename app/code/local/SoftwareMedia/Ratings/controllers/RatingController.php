@@ -57,8 +57,11 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
 	     if($customer = Mage::getSingleton('customer/session')->isLoggedIn()) {
 		    $rating->setCustomerId(Mage::getSingleton('customer/session')->getId());
 		}
-		//$rating->setIp(Mage::helper('core/http')->getRemoteAddr());
-	     $rating->setIp(Mage::app()->getRequest()->getServer('HTTP_X_FORWARDED_FOR'));
+		if (Mage::app()->getRequest()->getServer('HTTP_X_FORWARDED_FOR'))
+			$rating->setIp(Mage::app()->getRequest()->getServer('HTTP_X_FORWARDED_FOR'));
+		 else
+		 	$rating->setIp(Mage::helper('core/http')->getRemoteAddr());
+	     
 	     $rating->save();
 	     
 	     $this->_redirect('*/*/index/rating_id/' . $rating->getId());
