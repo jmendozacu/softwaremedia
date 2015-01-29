@@ -133,6 +133,9 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			//Mage::log('OUT OF STOCK: ' . $qty,null,'stock.log');
 		}
 		
+		if ($qty > 9999)
+			$qty = 9999;
+		
 		$stock_model->setData('qty',$qty);
 		try {
 			$product->save();
