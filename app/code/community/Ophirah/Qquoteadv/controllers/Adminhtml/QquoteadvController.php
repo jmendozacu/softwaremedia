@@ -779,18 +779,30 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController extends Mage_Adminht
 		$errorMsg = array();
 		$errors = array();
 		foreach ($quoteItems as $quoteItem) {
+			//var_dump($quoteItem);
+			//echo $quoteItem->getData('product_id');
 			$check = Mage::helper('qquoteadv')->isInStock($quoteItem->getData('product_id'));
+			
 			if ($check->getData('has_error')) {
 				$errors[] = $check->getData('message');
+				//echo "errors";
+			} else{
+				$_product = Mage::getModel('catalog/product')->load($quoteItem->getData('product_id'));
+				//echo $_product->getStockItem()->getQty() . " - " . $quoteItem->getData('qty');
+				
+				if (($_product->getStockItem()->getQty() < $quoteItem->getData('qty')) && !$_product->getStockItem()->getBackorders())
+					$errors[] = $_product->getSku() . " does not have enough quantity available";
 			}
 		}
-
+		//var_dump($errors);
+		//die();
 		//#return back in case any error found
 		if (count($errors)) {
 			$errorMsg = array_merge($errorMsg, $errors);
 			foreach ($errorMsg as $message) {
 				Mage::getSingleton('adminhtml/session')->addError($message);
 			}
+			return false;
 		}
 
 		$vars['quote'] = $_quoteadv;
