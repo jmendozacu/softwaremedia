@@ -27,16 +27,16 @@
 <div class="page-title rating-title">
     <h1><?php echo Mage::helper('softwaremedia_ratings')->__('Rate Your Experience') ?></h1>
 </div>
-
+<div class="cms-page-view">
 <div class="std">
 <?php if ($this->getAdminName()): ?>
 	<p>Your customer service rep today was <strong><?php echo $this->getAdminName(); ?></strong></p>
 	<p><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('cs-rating')->toHtml(); ?></p>
 	
 	<div class="smiley_ratings">
-		<a href="<?php echo $this->getRatingURL(1); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_1.gif'); ?>" /></a>
-		<a href="<?php echo $this->getRatingURL(3); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_3.gif'); ?>" /></a>
 		<a href="<?php echo $this->getRatingURL(5); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_5.gif'); ?>" /></a>
+		<a href="<?php echo $this->getRatingURL(3); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_3.gif'); ?>" /></a>
+		<a href="<?php echo $this->getRatingURL(1); ?>"><img src="<?php echo $this->getSkinUrl('images/smiley_1.gif'); ?>" /></a>
 	</div>
 <?php else: ?>
 	<p><?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('cs-rating-success')->toHtml(); ?></p>
@@ -54,4 +54,5 @@
 		<?php endif; ?>
 	<?php endif; ?>
 <?php endif; ?>
+</div>
 </div>

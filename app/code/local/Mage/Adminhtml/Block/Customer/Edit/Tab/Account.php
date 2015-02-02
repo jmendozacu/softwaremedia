@@ -103,6 +103,11 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_Account extends Mage_Adminhtml_Bloc
                         return {$prefix}_websites[elem.value] == true;
                     }
                 );
+                Event.observe(window, 'load', function(){
+					//alert('load');
+					$('_accountwebsite_id').value = 1;
+					//options[0] =
+					});
                 Element.observe('{$prefix}website_id', 'change', function(){
                     Validation.validate($('{$prefix}website_id'))
                 }.bind($('{$prefix}website_id')));
