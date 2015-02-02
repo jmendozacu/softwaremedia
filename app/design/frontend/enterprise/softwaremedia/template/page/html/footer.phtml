@@ -134,9 +134,10 @@ window.onload = function(){
 	  	$base = $prod->getAdminId();
 	  else
 	  	$base = $prod->getSku();
-	  ?>
-	  gts.push(["google_base_offer_id", "<?php echo $base; ?>"]);';
-	  <?php
+	  	?>
+	  	
+	  gts.push(["google_base_offer_id", "<?php echo $base; ?>"]);
+  <?php
   }
   ?>
   gts.push(["google_base_subaccount_id", "44232"]);
