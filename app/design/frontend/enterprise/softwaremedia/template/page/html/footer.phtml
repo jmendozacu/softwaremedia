@@ -123,11 +123,23 @@ window.onload = function(){
 <script type="text/javascript">
   var gts = gts || [];
 
+
   gts.push(["id", "571311"]);
-  gts.push(["badge_position", "BOTTOM_RIGHT"]);
+  gts.push(["badge_position", "BOTTOM_LEFT"]);
   gts.push(["locale", "en_US"]);
   //gts.push(["google_base_offer_id", "ITEM_GOOGLE_SHOPPING_ID"]);
-  //gts.push(["google_base_subaccount_id", "ITEM_GOOGLE_SHOPPING_ACCOUNT_ID"]);
+    <?php if (Mage::registry('current_product')) {
+	  $prod = Mage::registry('current_product');
+	  if ($prod->getAdminId()) 
+	  	$base = $prod->getAdminId();
+	  else
+	  	$base = $prod->getSku();
+	  ?>
+	  gts.push(["google_base_offer_id", "<?php echo $base; ?>"]);';
+	  M>
+  }
+  ?>
+  gts.push(["google_base_subaccount_id", "44232"]);
   //gts.push(["google_base_country", "ITEM_GOOGLE_SHOPPING_COUNTRY"]);
   //gts.push(["google_base_language", "ITEM_GOOGLE_SHOPPING_LANGUAGE"]);
 
