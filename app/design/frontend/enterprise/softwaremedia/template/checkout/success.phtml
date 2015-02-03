@@ -73,8 +73,6 @@
 //Get Order Number & Order Total
 if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 	$order = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId());
-	echo $order->getId();
-	echo " " . $order->getCustomerEmail();
 	$amount = number_format($order->getGrandTotal(), 2);
 	$shipping = number_format($order->getShippingAmount(), 2);
 	$tax = number_format($order->getTaxAmount(), 2);
@@ -181,7 +179,7 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 	
 
 <?php if (!$googleSkip): ?>	
-<?php $newOrder = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId()); ?>
+<?php $order = Mage::getModel('sales/order')->loadByIncrementId(Mage::getSingleton('checkout/session')->getLastRealOrderId()); ?>
 <!-- START Google Trusted Stores Order -->
 <style>
 #gts-order span {
@@ -191,10 +189,10 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 <div id="gts-order" translate="no">
 
   <!-- start order and merchant information -->
-  <span id="gts-o-id"><?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?> - <?php $newOrder->getId(); ?></span>
+  <span id="gts-o-id"><?php echo $order->getIncrementId(); ?></span>
   <span id="gts-o-domain">softwaremedia.com</span>
-  <span id="gts-o-email"><?php $newOrder->getCustomerEmail(); ?></span>
-  <span id="gts-o-country"><?php echo $newOrder->getShippingAddress()->getCountry(); ?></span>
+  <span id="gts-o-email"><?php echo $order->getCustomerEmail(); ?></span>
+  <span id="gts-o-country"><?php echo $order->getShippingAddress()->getCountry(); ?></span>
   <span id="gts-o-currency">USD</span>
   <span id="gts-o-total"><?php echo $amount; ?></span>
   <span id="gts-o-discounts"><?php echo $discount; ?></span>
@@ -218,7 +216,7 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
   </span>
   
   <?php endforeach; ?>
-<?php var_dump($newOrder); ?>
+
 </div>
 <!-- END Google Trusted Stores Order -->
 <?php endif; ?>
