@@ -9,4 +9,26 @@ error_reporting(-1);
 //echo "test";
 
 
-Mage::getModel('ubervisibility/observer')->updateProduct();
+?>
+
+<html>
+	<head>
+	
+	<title>Test</title>
+	</head>
+	<body>
+	
+<script type="text/javascript">
+var _rrES = {
+    seller_id: 3677,
+    email: "jeff@jaldev.com",
+    invoice: "100101113"};
+(function() {
+    var s=document.createElement('script');s.type='text/javascript';s.async=true;
+    s.src="https://www.resellerratings.com/popup/include/popup.js";var ss=document.getElementsByTagName('script')[0];
+    ss.parentNode.insertBefore(s,ss);
+})();
+</script>
+
+	</body>
+</html>
