@@ -31,9 +31,9 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			);
 	
 		$collection->getSelect()->joinLeft(
-				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('increment_id','created_at')
+				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('store_id','increment_id','created_at')
 			);
-
+			echo $collection->getSelect();
 
 		
 		/*
@@ -153,11 +153,12 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		
 		$this->addColumn('last_order', array(
 			'header' => Mage::helper('outofstock')->__('Order After Contact'),
-			'index' => 'increment_id',
-			'filter_index' => 'sales_flat_order.increment_id',
+			'index' => 'store_id',
+			'filter_index' => 'sales_flat_order.store_id',
 			'type' => 'options',
-			'options' => array('Yes' => 'Yes','No' => 'No'),
-			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer'
+			'options' => array('Yes' => 'Yes','No'=>'No'),
+			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer',
+			'filter_condition_callback' => array($this, '_filterHasUrlConditionCallback')
 		));
 		
 		$this->addColumn('increment_id', array(
@@ -219,5 +220,23 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 	public function getRowUrl($item) {
 		return false;
 	}
+	
+	protected function _filterHasUrlConditionCallback($collection, $column)
+	{
+    if (!$value = $column->getFilter()->getValue()) {
+        return $this;
+    }
+  
+    if ($value == "No") {
+        $this->getCollection()->getSelect()->where(
+             "sales_flat_order.increment_id IS NULL");
+    }
+    else {
+        $this->getCollection()->getSelect()->where(
+             "sales_flat_order.increment_id IS NOT NULL");
+    }
+
+    return $this;
+}
 
 }
