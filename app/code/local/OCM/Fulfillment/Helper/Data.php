@@ -5,11 +5,27 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function estimateDelivery($shippingMethod) {
 		$methods = $this->getMethods();
 		$shipDate = $this->estimateShipDate($shippingMethod);
+		$saturday = false;
 		
 		if (!array_key_exists($shippingMethod,$methods))
 			return false;
 			
 		$deliveryDate = date('Y-m-d', strtotime('+' . $methods[$shippingMethod] . ' days',strtotime($shipDate)));
+		
+		if ($shippingMethod == 'productmatrix_Overnight_Saturday') 
+			$saturday = true;
+		
+		//If package ships over a sunday, add 1 day
+		if (date('N', strtotime($shipDate) + $methods[$shippingMethod]) > 7)
+			$deliveryDate = date('Y-m-d', strtotime('+1 day',$deliveryDate));
+			
+		//If package is to be delivered on Sat, add 2 days
+		if (date('N', strtotime($deliveryDate)) == 6 && !$saturday)
+			$deliveryDate = date('Y-m-d', strtotime('+2 days',$deliveryDate));
+		
+		//If package is to be delivered on Sat, add 1 day
+		if (date('N', strtotime($deliveryDate)) == 7)
+			$deliveryDate = date('Y-m-d', strtotime('+1 day',$deliveryDate));
 			
 		return $deliveryDate;
 	}
@@ -21,15 +37,15 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 	
 	public function estimateShipDate($shippingMethod ) {
 		$methods = $this->getMethods();
-		$saturday = false;
-		if ($shippingMethod == 'productmatrix_Overnight_Saturday') 
-			$saturday = true;
 		
-		if (date('N') == 5 && !$saturday)
-			$estimate = date('Y-m-d', strtotime('+3 days'));
-		else {
+		if (date('N') == 6)
+			$estimate = date('Y-m-d', strtotime('+2 days'));
+		elseif (date('N') == 7)
 			$estimate = date('Y-m-d', strtotime('+1 days'));
-		}
+		elseif (date('H') > 15)
+			$estimate = date('Y-m-d', strtotime('+1 days'));
+		else
+			$estimate = date('Y-m-d');
 		
 		return $estimate;
 	}
@@ -38,8 +54,8 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		$methods = array(
 			'productmatrix_Free_Electronic_Delivery' => 1,
 			'productmatrix_Free_Budget_(5-9_Days)' => 7,
-			'productmatrix_Express_(3-5_Days)' => 4,
-			'productmatrix_Free_Express_(3-5_Days)' => 4,
+			'productmatrix_Express_(3-5_Days)' => 3,
+			'productmatrix_Free_Express_(3-5_Days)' => 3,
 			'productmatrix_Expedited_Air_(2_Days)' => 2,
 			'productmatrix_Free_Expedited_Air_(2_Days)' => 2,
 			'productmatrix_Standard_Overnight' => 1,
