@@ -34,7 +34,14 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('store_id','increment_id','created_at')
 			);
 
+		$collection->getSelect()->columns(array('cc' => 'COUNT(sales_flat_order.increment_id)'));
+		$collection->getSelect()->columns(array('increment_ids' => 'GROUP_CONCAT(sales_flat_order.increment_id)'));
+		$collection->getSelect()->group('note_id');
 		
+		//echo $collection->getSelect();
+		
+		
+		//die();
 		/*
 		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('name')
@@ -150,20 +157,20 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			'index' => 'step_id'
 		));
 		
-		$this->addColumn('last_order', array(
+		$this->addColumn('cc', array(
 			'header' => Mage::helper('outofstock')->__('Order After Contact'),
 			'index' => 'store_id',
-			'filter_index' => 'sales_flat_order.store_id',
+			'filter_index' => 'sales_flat_order.cc',
 			'type' => 'options',
 			'options' => array('Yes' => 'Yes','No'=>'No'),
 			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer',
 			'filter_condition_callback' => array($this, '_filterHasUrlConditionCallback')
 		));
 		
-		$this->addColumn('increment_id', array(
-			'header' => Mage::helper('outofstock')->__('Order ID'),
-			'index' => 'increment_id',
-			'filter_index' => 'sales_flat_order.increment_id'
+		$this->addColumn('increment_ids', array(
+			'header' => Mage::helper('outofstock')->__('Order IDs'),
+			'index' => 'increment_ids',
+			'filter_index' => 'increment_ids'
 		));
 		
 		$this->addColumn('created_at', array(
@@ -227,13 +234,19 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
     }
   
     if ($value == "No") {
-        $this->getCollection()->getSelect()->where(
-             "sales_flat_order.increment_id IS NULL");
+        $this->getCollection()->getSelect()->having('COUNT(sales_flat_order.increment_id) < 1');
+        //echo  $this->getCollection()->getSelect();
+        //die();
+
     }
     else {
-        $this->getCollection()->getSelect()->where(
-             "sales_flat_order.increment_id IS NOT NULL");
+       // $this->getCollection()->getSelect()->having("cc > 0");
+       $this->getCollection()->getSelect()->having('COUNT(sales_flat_order.increment_id) > 0');
+             
+       //echo  $this->getCollection()->getSelect();
     }
+    
+    //echo $this->getCollection()->getSize();
 
     return $this;
 }
