@@ -13,7 +13,7 @@ error_reporting(-1);
 
 <html>
 	<head>
-	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 	<title>Test</title>
 	</head>
 	<body>
