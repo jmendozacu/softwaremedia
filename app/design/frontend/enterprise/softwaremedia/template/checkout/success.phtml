@@ -189,7 +189,7 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 <div id="gts-order" translate="no">
 
   <!-- start order and merchant information -->
-  <span id="gts-o-id"><?php Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?> - <?php $order->getId(); ?></span>
+  <span id="gts-o-id"><?php echo Mage::getSingleton('checkout/session')->getLastRealOrderId(); ?> - <?php $order->getId(); ?></span>
   <span id="gts-o-domain">softwaremedia.com</span>
   <span id="gts-o-email"><?php $order->getCustomerEmail(); ?></span>
   <span id="gts-o-country"><?php echo $order->getShippingAddress()->getCountry(); ?></span>
