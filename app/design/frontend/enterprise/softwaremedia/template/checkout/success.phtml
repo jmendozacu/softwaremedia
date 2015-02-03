@@ -76,7 +76,19 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 	$amount = number_format($order->getGrandTotal(), 2);
 	$shipping = number_format($order->getShippingAmount(), 2);
 	$tax = number_format($order->getTaxAmount(), 2);
+	$discount = number_format($order->getDiscountAmount(), 2);
 	$items = $order->getAllVisibleItems();
+	$googleSkip = false;
+	$shippingMethod = $order->getShippingMethod();
+	$is_download = false;
+	if (!Mage::helper('ocm_fulfillment')->methodExists($shippingMethod))
+		$googleSkip = true;
+		
+	if ($shippingMethod == 'productmatrix_Free_Electronic_Delivery')
+		$googleSkip = true;
+		
+	$googleProds = array();
+	
 	?>
 	<script type="text/javascript"> if (!window.mstag)
 			mstag = {loadTag: function() {
@@ -104,6 +116,8 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 				'transactionShipping': <?php echo $shipping; ?>,
 				'transactionProducts': [
 	<?php foreach ($items as $item) : 
+		
+		
 		$itemCount++;
 		$itemString .= '&ITEM' . $itemCount . '=' . $item->getSku();
 		$itemString .= '&AMT' . $itemCount . '=' . number_format($item->getPrice(),2);
@@ -116,12 +130,92 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 							'price': <?php echo $item->getPrice(); ?>,
 							'quantity': <?php echo $item->getQtyOrdered(); ?>
 						},
+	<?php 
+		
+		$prod = Mage::getModel('catalog/product')->loadByAttribute('sku', $item->getSku());
+		$is_virtual = false;
+		$is_physical = false;
+		
+		$is_license = false;
+		if ($prod->getData('package_id') == 1084) {
+			$is_virtual = true;
+		} else {
+			$is_physical = true;
+		}
+		if (substr($prod->getSku(), -2) == 'DL') {
+			$is_download = true;
+		} 
+		
+		if ($prod->getLicenseNonlicenseDropdown() == 1210)
+			$is_license = true;
+		
+		
+			
+		if ($is_license) {
+			$googleSkip = true;
+			continue;
+		}
+		
+		if ($item->getQtyOrdered() > $prod->getStockItem()->getQty() && $prod->getStockItem()->getData('manage_stock') != 0) {
+			$googleSkip = true;
+		}
+		
+		$googleProd = array();
+		$googleProd['name'] = $item->getName();
+		$googleProd['price'] = $item->getPrice();
+		$googleProd['qty'] = $item->getQtyOrdered();
+		
+		if ($prod->getAdminId())
+			$googleProd['google_id'] = $prod->getAdminId();
+		else
+			$googleProd['google_id'] = $prod->getSku();
+			
+		$googleProds[] = $googleProd; 
+	?>
 	<?php endforeach; ?>
 				]
 			}];
 	</script>
 	
-	<script type="text/javascript">
+
+<?php if (!$googleSkip): ?>	
+<!-- START Google Trusted Stores Order -->
+<div id="gts-order" style="display:none;" translate="no">
+
+  <!-- start order and merchant information -->
+  <span id="gts-o-id"><?php $order->getIncrementId(); ?></span>
+  <span id="gts-o-domain">softwaremedia.com</span>
+  <span id="gts-o-email"><?php $order->getCustomerEmail(); ?></span>
+  <span id="gts-o-country"><?php echo $order->getShippingAddress()->getCountry(); ?></span>
+  <span id="gts-o-currency">USD</span>
+  <span id="gts-o-total"><?php echo $amount; ?></span>
+  <span id="gts-o-discounts"><?php echo $discount; ?></span>
+  <span id="gts-o-shipping-total"><?php echo $shipping; ?></span>
+  <span id="gts-o-tax-total"><?php echo $tax; ?></span>
+  <span id="gts-o-est-ship-date"><?php echo Mage::helper('ocm_fulfillment')->estimateShipDate($shippingMethod); ?></span>
+  <span id="gts-o-est-delivery-date"><?php echo Mage::helper('ocm_fulfillment')->estimateDelivery($shippingMethod); ?></span>
+  <span id="gts-o-has-preorder">N</span>
+  <span id="gts-o-has-digital"><?php echo $is_download ? "Y" : "N"; ?></span>
+  <!-- end order and merchant information -->
+
+  <?php foreach ($googleProds as $prod) : ?>
+  <span class="gts-item">
+    <span class="gts-i-name"><?php echo $prod['name']; ?></span>
+    <span class="gts-i-price"><?php echo $prod['price']; ?></span>
+    <span class="gts-i-quantity"><?php echo $prod['qty']; ?></span>
+    <span class="gts-i-prodsearch-id"><?php echo $prod['google_id']; ?></span>
+    <span class="gts-i-prodsearch-store-id">44232</span>
+    <span class="gts-i-prodsearch-country">US</span>
+    <span class="gts-i-prodsearch-language">en</span>
+  </span>
+  
+  <?php endforeach; ?>
+
+</div>
+<!-- END Google Trusted Stores Order -->
+<?php endif; ?>
+
+<script type="text/javascript">
   adroll_conversion_value_in_dollars = <?php echo $amount; ?>;
  adroll_custom_data = {"ORDER_ID": "<?php echo $order->getIncrementId();?>"};
 
