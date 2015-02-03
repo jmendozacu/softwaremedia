@@ -790,7 +790,7 @@ final class Ophirah_Qquoteadv_Adminhtml_QquoteadvController extends Mage_Adminht
 				$_product = Mage::getModel('catalog/product')->load($quoteItem->getData('product_id'));
 				//echo $_product->getStockItem()->getQty() . " - " . $quoteItem->getData('qty');
 				
-				if (($_product->getStockItem()->getQty() < $quoteItem->getData('qty')) && !$_product->getStockItem()->getBackorders())
+				if (($_product->getStockItem()->getQty() < $quoteItem->getData('qty')) && !$_product->getStockItem()->getBackorders() && !$_product->getStockItem()->getData('manage_stock') == 0)
 					$errors[] = $_product->getSku() . " does not have enough quantity available";
 			}
 		}
