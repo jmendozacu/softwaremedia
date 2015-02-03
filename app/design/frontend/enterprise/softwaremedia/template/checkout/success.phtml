@@ -162,8 +162,8 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 		
 		$googleProd = array();
 		$googleProd['name'] = $item->getName();
-		$googleProd['price'] = $item->getPrice();
-		$googleProd['qty'] = $item->getQtyOrdered();
+		$googleProd['price'] = number_format($item->getPrice(),2);
+		$googleProd['qty'] = floor($item->getQtyOrdered());
 		
 		if ($prod->getAdminId())
 			$googleProd['google_id'] = $prod->getAdminId();
@@ -188,7 +188,7 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 <div id="gts-order" translate="no">
 
   <!-- start order and merchant information -->
-  <span id="gts-o-id"><?php $order->getIncrementId(); ?></span>
+  <span id="gts-o-id"><?php $order->getIncrementId(); ?> - <?php $order->getId(); ?></span>
   <span id="gts-o-domain">softwaremedia.com</span>
   <span id="gts-o-email"><?php $order->getCustomerEmail(); ?></span>
   <span id="gts-o-country"><?php echo $order->getShippingAddress()->getCountry(); ?></span>
