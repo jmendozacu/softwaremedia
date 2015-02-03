@@ -155,7 +155,7 @@ var window_width = jQuery(window).width();
         var p = jQuery(window).scrollTop();
         jQuery(div).css('position',((p)>start) ? 'fixed' : 'static');
         jQuery(div).css('top',((p)>start) ? '0px' : '');
-        jQuery('#header-fix').css({'background-color':'#fff','z-index':'999999999'});
+        jQuery('#header-fix').css({'background-color':'#fff','z-index':'999'});
         if((p) > start){
             jQuery('.back-to-top').show();
         }else{
