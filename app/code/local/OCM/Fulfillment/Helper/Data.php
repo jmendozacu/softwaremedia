@@ -17,8 +17,8 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$saturday = true;
 		
 		//If package ships over a sunday, add 1 day
-		if (date('N', strtotime($shipDate) + $methods[$shippingMethod]) > 7)
-			$deliveryDate = date('Y-m-d', strtotime('+1 day',strtotime($deliveryDate)));
+		if (date('N', strtotime($shipDate)) + $methods[$shippingMethod] > 7)
+			$deliveryDate = date('Y-m-d', strtotime('+1 days',strtotime($deliveryDate)));
 		
 		//If package is to be delivered on Sat, add 2 days
 		if (date('N', strtotime($deliveryDate)) == 6 && !$saturday)
