@@ -8,27 +8,11 @@ error_reporting(-1);
 
 //echo "test";
 
+echo date('N');
+echo "<br />";
+echo Mage::helper('ocm_fulfillment')->estimateShipDate('productmatrix_Free_Budget_(5-9_Days)');
+echo "<br />";
+echo Mage::helper('ocm_fulfillment')->estimateDelivery('productmatrix_Free_Budget_(5-9_Days)');
 
-?>
-
-<html>
-	<head>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-	<title>Test</title>
-	</head>
-	<body>
-	
-<script type="text/javascript">
-var _rrES = {
-    seller_id: 3677,
-    email: "jeff@jaldev.com",
-    invoice: "100101113"};
-(function() {
-    var s=document.createElement('script');s.type='text/javascript';s.async=true;
-    s.src="https://www.resellerratings.com/popup/include/popup.js";var ss=document.getElementsByTagName('script')[0];
-    ss.parentNode.insertBefore(s,ss);
-})();
-</script>
-
-	</body>
-</html>
+echo "<br />";
+echo Mage::helper('ocm_fulfillment')->estimateDelivery("productmatrix_Express_(3-5_Days)"); 

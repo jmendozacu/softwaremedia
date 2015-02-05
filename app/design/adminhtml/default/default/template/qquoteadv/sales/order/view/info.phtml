@@ -29,6 +29,11 @@
 $_customer = Mage::getModel('customer/customer')->load($_order->getCustomerId());
 $orderAdminDate = $this->formatDate($_order->getCreatedAtDate(), 'medium', true);
 $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', true);
+
+$shippingAddress = Mage::getModel('sales/order_address')->load($_order->getShippingAddressId());
+$residentialAttribute = Mage::getModel('catalog/resource_eav_attribute')->loadByCode(2,'residential');
+
+
 ?>
 
 <div class="box-left">
@@ -98,7 +103,14 @@ $orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', 
                     <td class="label"><label><?php echo Mage::helper('sales')->__('Purchase Order') ?></label></td>
                     <td class="value"><span id="po_cancel" style="display: none;"><input type="text" value="<?php echo $_order->getPurchaseOrder() ?>" name="poedit" id="poedit" /> (<a href="#" onclick="return poSave();">save</a>) (<a href="#" onclick="return poCancel();">cancel</a>)</span><span id="po_view"><?php echo $_order->getPurchaseOrder() ?> (<a href="#" onclick="return poEdit();">edit</a>)</span></td>
                 </tr>
+              
+              <?php if ($shippingAddress->getResidential()): ?> 
+             <tr>
+                    <td class="label"><label><?php echo Mage::helper('sales')->__('Address Type') ?></label></td>
+                    <td class="value"><?php echo $residentialAttribute->getSource()->getOptionText($shippingAddress->getResidential()); ?></td>
+                </tr>
                 
+             <?php endif; ?>
             <?php $data = $this->getOrderCustomData(); ?>
             <?php foreach ($data as $aItem): ?>
             <?php if($aItem['code'] == 'comment' && !empty($aItem['value'])){ ?>

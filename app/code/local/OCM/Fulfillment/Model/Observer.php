@@ -9,6 +9,7 @@ class OCM_Fulfillment_Model_Observer {
 	const TAG_WAREHOUSE_ID = 1;
 	const TAG_LICENSING_ID = 2;
 	const TAG_DOWNLOAD_ID = 3;
+	const TAG_RESIDENTIAL_ID = 41;
 	const TAG_CS = 5;
 	const TAG_SUB = 29;
 
@@ -34,6 +35,14 @@ class OCM_Fulfillment_Model_Observer {
 			if (count($orderHistory) > 0) {
 				Mage::log($order->getId(), null, 'fulfillment_observer.log');
 				//continue;
+			}
+			$shippingAddress = $order->getShippingAddress();
+			$residentialAttribute = Mage::getModel('catalog/resource_eav_attribute')->loadByCode(2,'residential');
+			
+			if ($shippingAddress->getResidential()) {
+				$addressType = $residentialAttribute->getSource()->getOptionText($shippingAddress->getResidential());
+				if ($addressType == 'Residential')
+					$tagToOrderResource->addIntoDB($order->getId(), self::TAG_RESIDENTIAL_ID);
 			}
 
 			$is_virtual = false;

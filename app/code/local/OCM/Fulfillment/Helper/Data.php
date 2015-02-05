@@ -2,6 +2,72 @@
 
 class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 
+	public function estimateDelivery($shippingMethod) {
+		$methods = $this->getMethods();
+		$shipDate = $this->estimateShipDate($shippingMethod);
+		$saturday = false;
+		
+		if (!array_key_exists($shippingMethod,$methods))
+			return false;
+			
+		$deliveryDate = date('Y-m-d', strtotime('+' . $methods[$shippingMethod] . ' days',strtotime($shipDate)));
+		
+		
+		if ($shippingMethod == 'productmatrix_Overnight_Saturday') 
+			$saturday = true;
+		
+		//If package ships over a sunday, add 1 day
+		if (date('N', strtotime($shipDate)) + $methods[$shippingMethod] > 7)
+			$deliveryDate = date('Y-m-d', strtotime('+1 days',strtotime($deliveryDate)));
+		
+		//If package is to be delivered on Sat, add 2 days
+		if (date('N', strtotime($deliveryDate)) == 6 && !$saturday)
+			$deliveryDate = date('Y-m-d', strtotime('+2 days',strtotime($deliveryDate)));
+
+		//If package is to be delivered on Sun, add 1 day
+		if (date('N', strtotime($deliveryDate)) == 7)
+			$deliveryDate = date('Y-m-d', strtotime('+1 days',strtotime($deliveryDate)));
+
+		return $deliveryDate;
+	}
+	
+	public function methodExists($shippingMethod) {
+		$methods = $this->getMethods();
+		return array_key_exists($shippingMethod,$methods);
+	}
+	
+	public function estimateShipDate($shippingMethod ) {
+		$methods = $this->getMethods();
+		
+		if (date('N') == 6)
+			$estimate = date('Y-m-d', strtotime('+2 days'));
+		elseif (date('N') == 7)
+			$estimate = date('Y-m-d', strtotime('+1 days'));
+		elseif (date('H') > 15)
+			$estimate = date('Y-m-d', strtotime('+1 days'));
+		else
+			$estimate = date('Y-m-d');
+		
+		return $estimate;
+	}
+	
+	protected function getMethods() {
+		$methods = array(
+			'productmatrix_Free_Electronic_Delivery' => 1,
+			'productmatrix_Free_Budget_(5-9_Days)' => 7,
+			'productmatrix_Express_(3-5_Days)' => 3,
+			'productmatrix_Free_Express_(3-5_Days)' => 3,
+			'productmatrix_Expedited_Air_(2_Days)' => 2,
+			'productmatrix_Free_Expedited_Air_(2_Days)' => 2,
+			'productmatrix_Standard_Overnight' => 1,
+			'productmatrix_Priority_Overnight' => 1,
+			'productmatrix_Overnight_Saturday' => 1,
+			'productmatrix_2_Day_Air' => 2,
+			'productmatrix_Overnight' => 1,
+			'productmatrix_Expedited_Electronic_Processing' => 1);
+			
+		return $methods;
+	}
 	public function updateStock($product) {
 		$price_array = array();
 		$all_price = array();
