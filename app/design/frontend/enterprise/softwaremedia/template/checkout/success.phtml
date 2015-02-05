@@ -186,6 +186,22 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 	display: block;
 }
 </style>
+
+<table>
+	<tr>
+		<td>Shipping Method</td>
+		<td><?php echo $shippingMethod; ?></td>
+	</tr>
+	<tr>
+		<td>Shipping Date</td>
+		<td><?php echo Mage::helper('ocm_fulfillment')->estimateShipDate($shippingMethod); ?></td>
+	</tr>
+	<tr>
+		<td>Delivery Date</td>
+		<td><?php echo Mage::helper('ocm_fulfillment')->estimateDelivery($shippingMethod); ?></td>
+	</tr>
+</table>
+
 <div id="gts-order" translate="no">
 
   <!-- start order and merchant information -->
