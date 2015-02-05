@@ -12,21 +12,22 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			
 		$deliveryDate = date('Y-m-d', strtotime('+' . $methods[$shippingMethod] . ' days',strtotime($shipDate)));
 		
+		
 		if ($shippingMethod == 'productmatrix_Overnight_Saturday') 
 			$saturday = true;
 		
 		//If package ships over a sunday, add 1 day
 		if (date('N', strtotime($shipDate) + $methods[$shippingMethod]) > 7)
-			$deliveryDate = date('Y-m-d', strtotime('+1 day',$deliveryDate));
-			
+			$deliveryDate = date('Y-m-d', strtotime('+1 day',strtotime($deliveryDate)));
+		
 		//If package is to be delivered on Sat, add 2 days
 		if (date('N', strtotime($deliveryDate)) == 6 && !$saturday)
-			$deliveryDate = date('Y-m-d', strtotime('+2 days',$deliveryDate));
-		
-		//If package is to be delivered on Sat, add 1 day
+			$deliveryDate = date('Y-m-d', strtotime('+2 days',strtotime($deliveryDate)));
+
+		//If package is to be delivered on Sun, add 1 day
 		if (date('N', strtotime($deliveryDate)) == 7)
-			$deliveryDate = date('Y-m-d', strtotime('+1 day',$deliveryDate));
-			
+			$deliveryDate = date('Y-m-d', strtotime('+1 days',strtotime($deliveryDate)));
+
 		return $deliveryDate;
 	}
 	

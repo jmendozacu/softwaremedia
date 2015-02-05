@@ -13,3 +13,6 @@ echo "<br />";
 echo Mage::helper('ocm_fulfillment')->estimateShipDate('productmatrix_Free_Budget_(5-9_Days)');
 echo "<br />";
 echo Mage::helper('ocm_fulfillment')->estimateDelivery('productmatrix_Free_Budget_(5-9_Days)');
+
+echo "<br />";
+echo Mage::helper('ocm_fulfillment')->estimateDelivery("productmatrix_Express_(3-5_Days)"); 
