@@ -138,7 +138,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 			$has_ship_line = ($order->getData('shipping_amount') - $order->getData('shipping_refunded') > 0) ? 1 : 0;
 			$has_promo_line = ($order->getData('discount_amount') != 0) ? 1 : 0;
 			
-			if ($has_promo_line && ($invoice->getData('discount_amount')) * -1 + $points_discount > 0) {
+			if ($has_promo_line && ($order->getData('discount_amount')) * -1 + $points_discount > 0) {
 				$has_promo_line = 1;
 			} else {
 				$has_promo_line = 0;
