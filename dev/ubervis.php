@@ -8,11 +8,11 @@ error_reporting(-1);
 
 //echo "test";
 
-echo date('N');
-echo "<br />";
-echo Mage::helper('ocm_fulfillment')->estimateShipDate('productmatrix_Free_Budget_(5-9_Days)');
-echo "<br />";
-echo Mage::helper('ocm_fulfillment')->estimateDelivery('productmatrix_Free_Budget_(5-9_Days)');
+$time = time();
 
+$fedEx = Mage::getModel('ocm_fulfillment/fedex');
+$fedEx->addRecipient('UT','84095','US');
+
+echo var_dump($fedEx->getEstimate()); 
 echo "<br />";
-echo Mage::helper('ocm_fulfillment')->estimateDelivery("productmatrix_Express_(3-5_Days)"); 
+echo time() - $time;

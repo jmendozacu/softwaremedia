@@ -2,11 +2,20 @@
 // Copyright 2009, FedEx Corporation. All rights reserved.
 // Version 12.0.0
 
-require_once('../library/fedex-common.php5');
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
+
+require "../../../app/Mage.php";
+Mage::app('admin')->setUseSessionInUrl(false);
+require_once(Mage::getBaseDir('lib') . '/FedEx/fedex-common.php');
+//require_once('../../library/fedex-common.php5');
+
+$newline = "<br />";
 //The WSDL is not included with the sample code.
 //Please include and reference in $path_to_wsdl variable.
-$path_to_wsdl = "../RateService_v16.wsdl";
+$path_to_wsdl = Mage::getBaseDir('lib') . "/FedEx/RateService_v16.wsdl";
 
 ini_set("soap.wsdl_cache_enabled", "0");
  
@@ -14,13 +23,13 @@ $client = new SoapClient($path_to_wsdl, array('trace' => 1)); // Refer to http:/
 
 $request['WebAuthenticationDetail'] = array(
 	'UserCredential' =>array(
-		'Key' => getProperty('0MjRNnnfWOpK4pxE'), 
-		'Password' => getProperty('MvkiI5mwSoy1178ddGCQdE0Hx')
+		'Key' => getProperty('key'), 
+		'Password' => getProperty('password')
 	)
 ); 
 $request['ClientDetail'] = array(
-	'AccountNumber' => getProperty('510087542'), 
-	'MeterNumber' => getProperty('118582618')
+	'AccountNumber' => getProperty('shipaccount'), 
+	'MeterNumber' => getProperty('meter')
 );
 $request['TransactionDetail'] = array('CustomerTransactionId' => ' *** Rate Available Services Request using PHP ***');
 $request['Version'] = array(
@@ -119,7 +128,12 @@ try {
 function printRateReplyDetails($rateReply){
 	echo '<tr>';
 	$serviceType = '<td>'.$rateReply -> ServiceType . '</td>';
-	$amount = '<td>$' . number_format($rateReply->RatedShipmentDetails[0]->ShipmentRateDetail->TotalNetCharge->Amount,2,".",",") . '</td>';
+	
+	foreach($rateReply->RatedShipmentDetails as $rate) {
+	    	//var_dump($rate);
+    	}
+    	
+	$amount = '<td>$' . number_format($rate->ShipmentRateDetail->TotalNetCharge->Amount,2,".",",") . '</td>';
 	if(array_key_exists('DeliveryTimestamp',$rateReply)){
 		$deliveryDate= '<td>' . $rateReply->DeliveryTimestamp . '</td>';
 	}else{

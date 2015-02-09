@@ -2,16 +2,20 @@
 // Copyright 2009, FedEx Corporation. All rights reserved.
 // Version 12.0.0
 
+/*
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+*/
 
-require_once('../../library/fedex-common.php5');
+require "../app/Mage.php";
+require_once(Mage::getBaseDir('lib') . '/FedEx/fedex-common.php');
+//require_once('../../library/fedex-common.php5');
 
 $newline = "<br />";
 //The WSDL is not included with the sample code.
 //Please include and reference in $path_to_wsdl variable.
-$path_to_wsdl = "../../RateService_v16.wsdl";
+$path_to_wsdl = Mage::getBaseDir('lib') . "/RateService_v16.wsdl";
 
 ini_set("soap.wsdl_cache_enabled", "0");
  
@@ -19,13 +23,13 @@ $client = new SoapClient($path_to_wsdl, array('trace' => 1)); // Refer to http:/
 
 $request['WebAuthenticationDetail'] = array(
 	'UserCredential' =>array(
-		'Key' => getProperty('0MjRNnnfWOpK4pxE'), 
-		'Password' => getProperty('MvkiI5mwSoy1178ddGCQdE0Hx')
+		'Key' => getProperty('key'), 
+		'Password' => getProperty('password')
 	)
 ); 
 $request['ClientDetail'] = array(
-	'AccountNumber' => getProperty('510087542'), 
-	'MeterNumber' => getProperty('118582618')
+	'AccountNumber' => getProperty('shipaccount'), 
+	'MeterNumber' => getProperty('meter')
 );
 $request['TransactionDetail'] = array('CustomerTransactionId' => ' *** Rate Request using PHP ***');
 $request['Version'] = array(
@@ -37,7 +41,7 @@ $request['Version'] = array(
 $request['ReturnTransitAndCommit'] = true;
 $request['RequestedShipment']['DropoffType'] = 'REGULAR_PICKUP'; // valid values REGULAR_PICKUP, REQUEST_COURIER, ...
 $request['RequestedShipment']['ShipTimestamp'] = date('c');
-$request['RequestedShipment']['ServiceType'] = 'INTERNATIONAL_PRIORITY'; // valid values STANDARD_OVERNIGHT, PRIORITY_OVERNIGHT, FEDEX_GROUND, ...
+$request['RequestedShipment']['ServiceType'] = 'FEDEX_GROUND'; // valid values STANDARD_OVERNIGHT, PRIORITY_OVERNIGHT, FEDEX_GROUND, ...
 $request['RequestedShipment']['PackagingType'] = 'YOUR_PACKAGING'; // valid values FEDEX_BOX, FEDEX_PAK, FEDEX_TUBE, YOUR_PACKAGING, ...
 $request['RequestedShipment']['TotalInsuredValue']=array(
 	'Ammount'=>100,
@@ -63,7 +67,12 @@ try {
     	echo '<table border="1">';
         echo '<tr><td>Service Type</td><td>Amount</td><td>Delivery Date</td></tr><tr>';
     	$serviceType = '<td>'.$rateReply -> ServiceType . '</td>';
-        $amount = '<td>$' . number_format($rateReply->RatedShipmentDetails[0]->ShipmentRateDetail->TotalNetCharge->Amount,2,".",",") . '</td>';
+    	foreach($rateReply->RatedShipmentDetails as $rate) {
+	    	//var_dump($rate);
+    	}
+    	//var_dump($rate);
+    	//die();
+        $amount = '<td>$' . number_format($rate->ShipmentRateDetail->TotalNetCharge->Amount,2,".",",") . '</td>';
         if(array_key_exists('DeliveryTimestamp',$rateReply)){
         	$deliveryDate= '<td>' . $rateReply->DeliveryTimestamp . '</td>';
         }else if(array_key_exists('TransitTime',$rateReply)){
@@ -89,15 +98,15 @@ try {
 function addShipper(){
 	$shipper = array(
 		'Contact' => array(
-			'PersonName' => 'Sender Name',
-			'CompanyName' => 'Sender Company Name',
+			'PersonName' => 'Jeff Losee',
+			'CompanyName' => 'SoftwareMedia',
 			'PhoneNumber' => '9012638716'
 		),
 		'Address' => array(
-			'StreetLines' => array('Address Line 1'),
-			'City' => 'Collierville',
-			'StateOrProvinceCode' => 'TN',
-			'PostalCode' => '38017',
+			'StreetLines' => array('916 S. Main St'),
+			'City' => 'Salt Lake City',
+			'StateOrProvinceCode' => 'UT',
+			'PostalCode' => '84095',
 			'CountryCode' => 'US'
 		)
 	);

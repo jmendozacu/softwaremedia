@@ -171,6 +171,20 @@ class Webshopapps_Productmatrix_Model_Carrier_Productmatrix
      	$max_shipping_cost=$this->getConfigData('max_shipping_cost');
      	$min_shipping_cost=$this->getConfigData('min_shipping_cost');
 
+	 	$postcode = $request->getDestPostcode();
+		$regionId = $request->getDestRegionId();	
+		$region = Mage::getModel('directory/region')->load($regionId);	
+		$region = $region->getCode();
+		
+		
+		$countryId = $request->getDestCountryId();
+		
+		
+		$fedEx = Mage::getModel('ocm_fulfillment/fedex');
+		$fedEx->addRecipient($region,$postcode,$countryId);
+		
+		$estimates = $fedEx->getEstimate(); 
+				
 	    foreach ($ratearray as $rate)
 		{
 		   if (!empty($rate) && $rate['price'] >= 0) {
@@ -211,8 +225,17 @@ class Webshopapps_Productmatrix_Model_Carrier_Productmatrix
        	   			$modifiedName=preg_replace('/&|;| /',"_",$rate['method_name']);
 					$method->setMethodTitle(Mage::helper('shipping')->__($rate['delivery_type']));
 				}
-
+				
+				
 				$method->setMethod($modifiedName);
+				$title =$rate['delivery_type'];
+				
+				if ($fedEx->getFedExMethod($modifiedName)) {
+					if (array_key_exists($fedEx->getFedExMethod($modifiedName), $estimates))
+						$title .= " <span style='font-size: 70%'>(est. delivery " . $estimates[$fedEx->getFedExMethod($modifiedName)] . ")</span>";
+				}
+					
+				$method->setMethodTitle($title);
 				$method->setMethodDescription($rate['notes']);
 
 				$method->setPrice($shippingPrice);
