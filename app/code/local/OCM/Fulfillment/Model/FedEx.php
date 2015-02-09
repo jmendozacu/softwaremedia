@@ -2,7 +2,7 @@
 require_once(Mage::getBaseDir('lib') . '/FedEx/fedex-common.php');
 ini_set("soap.wsdl_cache_enabled", "0");
 
-class OCM_Fulfillment_Model_FedEx extends Mage_Core_Model_Abstract
+class OCM_Fulfillment_Model_Fedex extends Mage_Core_Model_Abstract
 {
     public function _construct()
     {
