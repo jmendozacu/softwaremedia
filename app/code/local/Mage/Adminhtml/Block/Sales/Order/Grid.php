@@ -55,12 +55,24 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 
 	protected function _prepareCollection() {
 		$collection = Mage::getResourceModel($this->_getCollectionClass());
-		$collection->getSelect()->joinLeft(
+		
+		$cols = Mage::helper('ampgrid')->getOrderGridAttributes();
+		foreach($cols as $key => $remove) {
+			if ($remove == 'sku')
+				$this->setSkuRemove(1);
+			
+			}
+			
+		if (!$this->getSkuRemove()) {
+			$collection->getSelect()->joinLeft(
 				'sales_flat_order_item', '`sales_flat_order_item`.order_id=`main_table`.entity_id', array(
 				'sku' => new Zend_Db_Expr('group_concat(DISTINCT CONCAT(`sales_flat_order_item`.sku," (", CAST(`sales_flat_order_item`.qty_ordered AS UNSIGNED),")") SEPARATOR "<br />")')
 				)
-			)
-			->joinLeft('ocm_peachtree_referer', '`ocm_peachtree_referer`.order_id = `main_table`.entity_id', array('referer_id'))
+			);
+			
+		}
+		
+		$collection->getSelect()->joinLeft('ocm_peachtree_referer', '`ocm_peachtree_referer`.order_id = `main_table`.entity_id', array('referer_id'))
 			->joinLeft('aitoc_order_entity_custom', '`aitoc_order_entity_custom`.entity_id = `main_table`.entity_id AND `aitoc_order_entity_custom`.attribute_id = 1393', array('eul_company' => 'value'))
 			;
 
@@ -183,15 +195,17 @@ class Mage_Adminhtml_Block_Sales_Order_Grid extends Mage_Adminhtml_Block_Widget_
 		  'currency' => 'base_currency_code',
 		  ));
 		 */
-		$this->addColumn('sku', array(
-			'header' => Mage::helper('Sales')->__('Products'),
-			'width' => '250px',
-			'index' => 'sku',
-			'type' => 'text',
-			'filter_condition_callback' => array($this, '_productFilter')
-		));
-
-
+		 
+		if (!$this->getSkuRemove()) {
+			$this->addColumn('sku', array(
+				'header' => Mage::helper('Sales')->__('Products'),
+				'width' => '250px',
+				'index' => 'sku',
+				'type' => 'text',
+				'filter_condition_callback' => array($this, '_productFilter')
+			));
+		}
+		
 		$this->addColumn('grand_total', array(
 			'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
 			'index' => 'grand_total',
