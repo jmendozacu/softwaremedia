@@ -84,7 +84,7 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
 	if (!Mage::helper('ocm_fulfillment')->methodExists($shippingMethod))
 		$googleSkip = true;
 		
-	if ($shippingMethod == 'productmatrix_Free_Electronic_Delivery' || $shippingMethod = 'Expedited_Electronic_Processing')
+	if ($shippingMethod == 'productmatrix_Free_Electronic_Delivery' || $shippingMethod == 'Expedited_Electronic_Processing')
 		$googleSkip = true;
 		
 	$googleProds = array();
