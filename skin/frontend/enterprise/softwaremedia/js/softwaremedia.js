@@ -195,10 +195,7 @@ var window_width = jQuery(window).width();
  */
 
   jQuery(".cms-faqs .content").hide();
-  jQuery(".cms-faqs .heading").click(function()
-  {
-	jQuery(this).next(".cms-faqs .content").slideToggle(500);
-  });
+
 
 
         jQuery('#testimonial_list').carouFredSel({
@@ -293,6 +290,11 @@ var window_width = jQuery(window).width();
 
 jQuery(function() {
 	init();
+	  jQuery(".cms-faqs .heading").click(function(event)
+  {
+
+	jQuery(this).next(".cms-faqs .content").stop().slideToggle(500);
+  });
 	if (getQueryVariable('ovchn')) {
 		var myDate = new Date();
 		myDate.setMonth(myDate.getMonth() + 12);
