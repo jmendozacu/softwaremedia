@@ -43,7 +43,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$estimate = date('Y-m-d', strtotime('+2 days'));
 		elseif (date('N') == 7)
 			$estimate = date('Y-m-d', strtotime('+1 days'));
-		elseif (date('H') > 15)
+		elseif (date('H') >= 15)
 			$estimate = date('Y-m-d', strtotime('+1 days'));
 		else
 			$estimate = date('Y-m-d');
