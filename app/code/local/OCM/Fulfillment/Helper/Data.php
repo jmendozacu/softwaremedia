@@ -46,14 +46,14 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function estimateShipDate($shippingMethod ) {
 		$methods = $this->getMethods();
 		
-		if (date('N') == 6)
-			$estimate = date('Y-m-d', strtotime('+2 days'));
-		elseif (date('N') == 7)
-			$estimate = date('Y-m-d', strtotime('+1 days'));
-		elseif (date('H') >= 15)
-			$estimate = date('Y-m-d', strtotime('+1 days'));
-		else
-			$estimate = date('Y-m-d');
+		$estimate = date('Y-m-d');
+		if (date('H') >= 15 && date('N') < 6)
+			$estimate = date('Y-m-d', strtotime('+1 days', strtotime($estimate)));
+			
+		if (date('N', strtotime($estimate)) == 6)
+			$estimate = date('Y-m-d', strtotime('+2 days', strtotime($estimate)));
+		elseif (date('N', strtotime($estimate)) == 7)
+			$estimate = date('Y-m-d', strtotime('+1 days', strtotime($estimate)));
 		
 		return $estimate;
 	}
