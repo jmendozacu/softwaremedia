@@ -35,10 +35,13 @@ class OCM_Fulfillment_Model_Fedex extends Mage_Core_Model_Abstract
 		return $deliveryDate;
 	}
 	
-	//Return delivery estimate from FedEx API
+	//Return delivery estimates from FedEx API
     public function getEstimate() {
     	$fedExRates = array();
 				
+		if (!$this->getRecipient())
+			return false;
+			
 		$shipDate = Mage::helper('ocm_fulfillment')->estimateShipDate();
 		$path_to_wsdl = Mage::getBaseDir('lib') . "/FedEx/RateService_v16.wsdl";
 		
@@ -111,7 +114,8 @@ class OCM_Fulfillment_Model_Fedex extends Mage_Core_Model_Abstract
 			        }
 			        
 				}
-		        
+		        $this->setRates($fedExRates);
+		        Mage::getSingleton('core/session')->setFedExRates($fedExRates);
 		        return $fedExRates;
 		    }else{
 		    	return false;
@@ -125,6 +129,22 @@ class OCM_Fulfillment_Model_Fedex extends Mage_Core_Model_Abstract
 		
 	}
     	
+    public function getDeliveryDate($method) {
+	    if ($this->getRates())
+	    	$rates = $this->getRates();
+	    elseif (Mage::getSingleton('core/session')->getFedExRates())
+	    	$rates = Mage::getSingleton('core/session')->getFedExRates();
+		else
+	    	$rates = $this->getRates();
+	    	
+	    $method = str_replace('productmatrix_', '', $method);
+
+	    if (!array_key_exists($this->getFedExMethod($method), $rates))
+	    	return false;
+	    	
+	    return date('Y-m-d',strtotime($rates[$this->getFedExMethod($method)] . ', ' . date('Y')));
+    }
+    
 	public function addShipper(){
 		$this->setShipper(array(
 			'Address' => array(

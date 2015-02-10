@@ -15,4 +15,5 @@ $fedEx->addRecipient('UT','84095','US');
 
 echo var_dump($fedEx->getEstimate()); 
 echo "<br />";
-echo time() - $time;
+echo Mage::helper('ocm_fulfillment')->estimateDelivery('productmatrix_Free_Budget'); 
+//echo time() - $time;

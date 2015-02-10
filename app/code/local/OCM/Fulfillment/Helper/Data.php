@@ -3,6 +3,13 @@
 class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	public function estimateDelivery($shippingMethod) {
+		
+		$fedEx = Mage::getModel('ocm_fulfillment/fedex');
+		if ($fedEx->getDeliveryDate($shippingMethod))
+			return $fedEx->getDeliveryDate($shippingMethod);
+				
+			
+		//If FedEx rates aren't available, calculate based on general shipping estimates	
 		$methods = $this->getMethods();
 		$shipDate = $this->estimateShipDate($shippingMethod);
 		$saturday = false;
@@ -135,11 +142,11 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 	protected function getMethods() {
 		$methods = array(
 			'productmatrix_Free_Electronic_Delivery' => 1,
-			'productmatrix_Free_Budget_(5-9_Days)' => 7,
-			'productmatrix_Express_(3-5_Days)' => 3,
-			'productmatrix_Free_Express_(3-5_Days)' => 3,
-			'productmatrix_Expedited_Air_(2_Days)' => 2,
-			'productmatrix_Free_Expedited_Air_(2_Days)' => 2,
+			'productmatrix_Free_Budget' => 7,
+			'productmatrix_Express' => 3,
+			'productmatrix_Free_Express' => 3,
+			'productmatrix_Expedited_Air' => 2,
+			'productmatrix_Free_Expedited_Air' => 2,
 			'productmatrix_Standard_Overnight' => 1,
 			'productmatrix_Priority_Overnight' => 1,
 			'productmatrix_Overnight_Saturday' => 1,
