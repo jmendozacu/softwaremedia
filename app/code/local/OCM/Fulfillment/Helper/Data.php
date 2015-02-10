@@ -2,11 +2,17 @@
 		 
 class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 
-	public function estimateDelivery($shippingMethod) {
+	public function estimateDelivery($shippingMethod, $offset = NULL) {
 		
 		$fedEx = Mage::getModel('ocm_fulfillment/fedex');
-		if ($fedEx->getDeliveryDate($shippingMethod))
-			return $fedEx->getDeliveryDate($shippingMethod);
+		if ($fedEx->getDeliveryDate($shippingMethod)) {
+			$delivery = $fedEx->getDeliveryDate($shippingMethod);
+			if ($offset)
+				$delivery = date('Y-m-d',strtotime('+1 days',strtotime($delivery)));
+				
+			return $delivery;
+		}
+		
 				
 			
 		//If FedEx rates aren't available, calculate based on general shipping estimates	
@@ -56,87 +62,6 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			$estimate = date('Y-m-d', strtotime('+1 days', strtotime($estimate)));
 		
 		return $estimate;
-	}
-	
-	
-	public function getFedExEstimate() {
-		$time = now();
-		$path_to_wsdl = Mage::getBaseDir('lib') . "/FedEx/RateService_v16.wsdl";
-		
-		$client = new SoapClient($path_to_wsdl, array('trace' => 1)); // Refer to http://us3.php.net/manual/en/ref.soap.php for more information
-		
-		$request['WebAuthenticationDetail'] = array(
-			'UserCredential' =>array(
-				'Key' => getProperty('key'), 
-				'Password' => getProperty('password')
-			)
-		); 
-		$request['ClientDetail'] = array(
-			'AccountNumber' => getProperty('shipaccount'), 
-			'MeterNumber' => getProperty('meter')
-		);
-		$request['TransactionDetail'] = array('CustomerTransactionId' => ' *** Rate Request using PHP ***');
-		$request['Version'] = array(
-			'ServiceId' => 'crs', 
-			'Major' => '16', 
-			'Intermediate' => '0', 
-			'Minor' => '0'
-		);
-		$request['ReturnTransitAndCommit'] = true;
-		$request['RequestedShipment']['DropoffType'] = 'REGULAR_PICKUP'; // valid values REGULAR_PICKUP, REQUEST_COURIER, ...
-		$request['RequestedShipment']['ShipTimestamp'] = date('c');
-		$request['RequestedShipment']['ServiceType'] = 'FEDEX_GROUND'; // valid values STANDARD_OVERNIGHT, PRIORITY_OVERNIGHT, FEDEX_GROUND, ...
-		$request['RequestedShipment']['PackagingType'] = 'YOUR_PACKAGING'; // valid values FEDEX_BOX, FEDEX_PAK, FEDEX_TUBE, YOUR_PACKAGING, ...
-		$request['RequestedShipment']['TotalInsuredValue']=array(
-			'Ammount'=>100,
-			'Currency'=>'USD'
-		);
-		$request['RequestedShipment']['Shipper'] = $this->addShipper();
-		$request['RequestedShipment']['Recipient'] = $this->addRecipient();
-		$request['RequestedShipment']['ShippingChargesPayment'] = $this->addShippingChargesPayment();
-		$request['RequestedShipment']['PackageCount'] = '1';
-		$request['RequestedShipment']['RequestedPackageLineItems'] = $this->addPackageLineItem1();
-		
-		
-		
-		try {
-			if(setEndpoint('changeEndpoint')){
-				$newLocation = $client->__setLocation(setEndpoint('endpoint'));
-			}
-			
-			$response = $client -> getRates($request);
-		        
-		    if ($response -> HighestSeverity != 'FAILURE' && $response -> HighestSeverity != 'ERROR'){  	
-		    	$rateReply = $response -> RateReplyDetails;
-		    	echo '<table border="1">';
-		        echo '<tr><td>Service Type</td><td>Amount</td><td>Delivery Date</td></tr><tr>';
-		    	$serviceType = '<td>'.$rateReply -> ServiceType . '</td>';
-		    	foreach($rateReply->RatedShipmentDetails as $rate) {
-			    	//var_dump($rate);
-		    	}
-		    	//var_dump($rate);
-		    	//die();
-		        $amount = '<td>$' . number_format($rate->ShipmentRateDetail->TotalNetCharge->Amount,2,".",",") . '</td>';
-		        if(array_key_exists('DeliveryTimestamp',$rateReply)){
-		        	$deliveryDate= '<td>' . $rateReply->DeliveryTimestamp . '</td>';
-		        }else if(array_key_exists('TransitTime',$rateReply)){
-		        	$deliveryDate= '<td>' . $rateReply->TransitTime . '</td>';
-		        }else {
-		        	$deliveryDate='<td>&nbsp;</td>';
-		        }
-		        echo $serviceType . $amount. $deliveryDate;
-		        echo '</tr>';
-		        echo '</table>';
-		        
-		        printSuccess($client, $response);
-		    }else{
-		        printError($client, $response);
-		    } 
-		} catch (SoapFault $exception) {
-		   printFault($exception, $client);        
-		}
-		
-		echo now() - $time;
 	}
 	
 	protected function getMethods() {

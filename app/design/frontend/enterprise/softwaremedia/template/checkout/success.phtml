@@ -200,7 +200,7 @@ if (Mage::getSingleton('checkout/session')->getLastRealOrderId()):
   <span id="gts-o-shipping-total"><?php echo $shipping; ?></span>
   <span id="gts-o-tax-total"><?php echo $tax; ?></span>
   <span id="gts-o-est-ship-date"><?php echo Mage::helper('ocm_fulfillment')->estimateShipDate($shippingMethod); ?></span>
-  <span id="gts-o-est-delivery-date"><?php echo Mage::helper('ocm_fulfillment')->estimateDelivery($shippingMethod); ?></span>
+  <span id="gts-o-est-delivery-date"><?php echo Mage::helper('ocm_fulfillment')->estimateDelivery($shippingMethod,1); ?></span>
   <span id="gts-o-has-preorder">N</span>
   <span id="gts-o-has-digital"><?php echo $is_download ? "Y" : "N"; ?></span>
   <!-- end order and merchant information -->
