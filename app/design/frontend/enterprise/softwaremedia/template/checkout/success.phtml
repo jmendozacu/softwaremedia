@@ -275,6 +275,11 @@ adroll_pix_id = "D666DQIFWFHETOUK4WQNMI";
 
 <?php endif; ?>
 
+<?php 
+
+$shopperRand = rand(1,10);
+echo $shopperRand;
+if ($shopperRand > 5): ?>
 <script type="text/javascript">
 var _rrES = {
     seller_id: 3677,
@@ -292,6 +297,11 @@ var _rrES = {
     ss.parentNode.insertBefore(s1,ss);
 })();
 </script>
+
 <style>
 	#__rr_instant_survey_container { z-index: 9999 !important;}
 </style>
+
+<?php else: ?>
+<script type="text/javascript"> var sa_values = { "site":10841 };  function saLoadScript(src) { var js = window.document.createElement("script"); js.src = src; js.type = "text/javascript"; document.getElementsByTagName("head")[0].appendChild(js); } var d = new Date(); if (d.getTime() - 172800000 > 1423591151000) saLoadScript("//www.shopperapproved.com/thankyou/rate/10841.js"); else saLoadScript("//direct.shopperapproved.com/thankyou/rate/10841.js?d=" + d.getTime()); </script>
+<?php endif; ?>
