@@ -8,12 +8,21 @@ error_reporting(-1);
 
 //echo "test";
 
-$time = time();
+setShippingDescription("Shipping Option - Free Budget <span style='font-size: 70%'>(est. delivery Feb 13th)</span>");
 
-$fedEx = Mage::getModel('ocm_fulfillment/fedex');
-$fedEx->addRecipient('UT','84095','US');
-
-echo var_dump($fedEx->getEstimate()); 
-echo "<br />";
-echo Mage::helper('ocm_fulfillment')->estimateDelivery('productmatrix_Free_Budget'); 
-//echo time() - $time;
+   function setShippingDescription($description) {
+    	$pos = strpos($description,'<');
+    	if ($pos) {
+    		//$this->setData('shipping_description',substr($description, 0, $pos -1));
+    		$pos = strpos($description,'(');
+    		$pos2 = strpos($description,')');
+    		$estimate = substr($description, $pos + 15,-8);
+    		echo date('Y-m-d',strtotime($estimate . " " . date('Y')));
+    		die();
+    		//$this->setDeliveryEstimate(date('Y-m-d',strtotime($estimate . " " . date('Y'))));
+    		
+    		
+    	} else {
+	    	//$this->setData('shipping_description',$description);
+	    }
+    }

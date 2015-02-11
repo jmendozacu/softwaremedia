@@ -103,7 +103,12 @@ $residentialAttribute = Mage::getModel('catalog/resource_eav_attribute')->loadBy
                     <td class="label"><label><?php echo Mage::helper('sales')->__('Purchase Order') ?></label></td>
                     <td class="value"><span id="po_cancel" style="display: none;"><input type="text" value="<?php echo $_order->getPurchaseOrder() ?>" name="poedit" id="poedit" /> (<a href="#" onclick="return poSave();">save</a>) (<a href="#" onclick="return poCancel();">cancel</a>)</span><span id="po_view"><?php echo $_order->getPurchaseOrder() ?> (<a href="#" onclick="return poEdit();">edit</a>)</span></td>
                 </tr>
-              
+              <?php if($_order->getDeliveryEstimate()): ?>
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('sales')->__('Delivery Estimate') ?></label></td>
+                    <td class="value"><?php echo date('M jS, Y',strtotime($_order->getDeliveryEstimate())); ?></td>
+                </tr>
+                <?php endif; ?>
               <?php if ($shippingAddress->getResidential()): ?> 
              <tr>
                     <td class="label"><label><?php echo Mage::helper('sales')->__('Address Type') ?></label></td>

@@ -998,6 +998,21 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         return $this->_setState($state, $status, $comment, $isCustomerNotified, true);
     }
 
+    //Hijack shipping description to remove estimates
+    public function setShippingDescription($description) {
+    	$pos = strpos($description,'<');
+    	if ($pos) {
+    		$this->setData('shipping_description',substr($description, 0, $pos -1));
+    		$pos = strpos($description,'(');
+    		$pos2 = strpos($description,')');
+    		$estimate = substr($description, $pos + 15,-8);
+
+    		$this->setDeliveryEstimate(date('Y-m-d',strtotime($estimate . " " . date('Y'))));
+    	} else {
+	    	$this->setData('shipping_description',$description);
+	    }
+    }
+
     /**
      * Order state protected setter.
      * By default allows to set any state. Can also update status to default or specified value
