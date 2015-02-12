@@ -65,7 +65,14 @@ class SoftwareMedia_Campaign_Adminhtml_Campaign_ImportController extends Mage_Ad
 							continue;
 						}
 						
+						$time = date('Y-m-d H:i:s',strtotime($row[2]));
 
+						$dupeNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customer->getId())->addFieldToFilter('created_time', $time);
+						if (count($dupeNote)>0) {
+							Mage::getSingleton('adminhtml/session')->addError('Error in row ' . $count . ': Note already exists for this customer and time');			
+							$error = true;
+							continue;
+						}
 						$lastNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customer->getId())->addFieldToFilter('update_time', array('null' => true));
 						echo $lastNote->getSelect();
 		
