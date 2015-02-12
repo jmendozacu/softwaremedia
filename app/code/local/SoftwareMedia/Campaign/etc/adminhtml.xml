@@ -76,7 +76,7 @@
                             <sort_order>10</sort_order>
                         </step>
                         <import translate="title" module="softwaremedia_campaign">
-                            <title>Import Reaches</title>
+                            <title>Import</title>
                             <action>adminhtml/campaign_import</action>
                             <sort_order>20</sort_order>
                         </import>
