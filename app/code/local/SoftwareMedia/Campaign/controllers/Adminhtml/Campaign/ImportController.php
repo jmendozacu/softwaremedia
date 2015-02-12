@@ -44,9 +44,9 @@ class SoftwareMedia_Campaign_Adminhtml_Campaign_ImportController extends Mage_Ad
 					$uploader->save($path, 'campaign.csv');
 					
 					$handle = fopen($path . 'campaign.csv', 'r');
-					$count = 1;
+					$count = 0;
 					while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
-
+						$count++;
 						$note = Mage::getModel('customernotes/notes');
 
 						$admin = Mage::getModel('admin/user')->getCollection()->addFieldToFilter('username',$row[0])->getFirstItem();
@@ -60,7 +60,7 @@ class SoftwareMedia_Campaign_Adminhtml_Campaign_ImportController extends Mage_Ad
 						
 						$customer = Mage::getModel('customer/customer')->loadByEmail($row[1]);
 						if (!$customer->getId()) {
-							Mage::getSingleton('adminhtml/session')->addError('Error in row ' . $count . ': Customer Email ' . $row[0] . ' does not exist');			
+							Mage::getSingleton('adminhtml/session')->addError('Error in row ' . $count . ': Customer Email ' . $row[1] . ' does not exist');			
 							$error = true;
 							continue;
 						}
@@ -86,7 +86,7 @@ class SoftwareMedia_Campaign_Adminhtml_Campaign_ImportController extends Mage_Ad
 						$note->setNote($row[6]);
 						$note->save();
 						
-						$count++;
+						
 					}
 					if (!$error)
 						Mage::getSingleton('adminhtml/session')->addSuccess('All rows imported succesfully');
