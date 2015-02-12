@@ -45,8 +45,13 @@
                                         <title>Steps</title>
                                         <sort_order>10</sort_order>
                                     </step>
+                                    <import translate="title" module="softwaremedia_campaign">
+                                        <title>Import</title>
+                                        <sort_order>10</sort_order>
+                                    </import>
                                 </children>
-                            </softwaremedia_campaign>                        </children>
+                            </softwaremedia_campaign>                        
+                       </children>
                     </customer>
 
                 </children>
@@ -70,6 +75,11 @@
                             <action>adminhtml/campaign_step</action>
                             <sort_order>10</sort_order>
                         </step>
+                        <import translate="title" module="softwaremedia_campaign">
+                            <title>Import Reaches</title>
+                            <action>adminhtml/campaign_import</action>
+                            <sort_order>20</sort_order>
+                        </import>
                     </children>
                 </softwaremedia_campaign>            </children>
         </customer>

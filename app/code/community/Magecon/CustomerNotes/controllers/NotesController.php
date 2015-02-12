@@ -68,9 +68,7 @@ class Magecon_CustomerNotes_NotesController extends Mage_Adminhtml_Controller_Ac
                     "created_time" => now()
                    );
                     
-                $lastNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customer_id)->setOrder('created_time','DESC');
-                
-                $lastNote->getSelect()->limit(1);
+                $lastNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customer_id)->addFieldToFilter('update_time', array('null' => true));
 
                 foreach($lastNote as $lNote) {
 					$lNote->setUpdateTime(now());

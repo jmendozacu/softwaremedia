@@ -87,15 +87,15 @@
             </step>
         </global_search>
     </adminhtml>
-    <admin>
+	<admin>
         <routers>
-            <adminhtml>
-                <args>
-                    <modules>
-                        <SoftwareMedia_Campaign before="Mage_Adminhtml">SoftwareMedia_Campaign_Adminhtml</SoftwareMedia_Campaign>
-                    </modules>
-                </args>
-            </adminhtml>
+			<adminhtml>
+				<args>
+    				<modules>
+                        <campaign before="Mage_Adminhtml">SoftwareMedia_Campaign_Adminhtml</campaign>
+    				</modules>
+				</args>
+			</adminhtml>
         </routers>
     </admin>
 </config>
