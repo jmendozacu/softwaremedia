@@ -81,8 +81,10 @@ class SoftwareMedia_Campaign_Adminhtml_Campaign_ImportController extends Mage_Ad
 						$note->setCustomerName($customer->getFirstName() . " " . $customer->getLastName());
 						$note->setCreatedTime($row[2]);
 						$note->setContactMethod($row[3]);
-						$note->setCampaignId($row[4]);
-						$note->setStepId($row[5]);
+						if ($row[4])
+							$note->setCampaignId($row[4]);
+						if ($row[5])
+							$note->setStepId($row[5]);
 						$note->setNote($row[6]);
 						$note->save();
 						
