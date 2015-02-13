@@ -71,6 +71,8 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
       	foreach($_SERVER as $key => $val) {
 	      	Mage::log($key . ": " . $val,NULL,'addr.log');
       	}
+      	Mage::log($_ENV['HTTP_X_FORWARDED_FOR'],NULL,'addr.log');
+      	
 		  // Check for shared internet/ISP IP
 		  if (!empty($_SERVER['HTTP_CLIENT_IP']) && $this->validate_ip($_SERVER['HTTP_CLIENT_IP']))
 		   return $_SERVER['HTTP_CLIENT_IP'];
