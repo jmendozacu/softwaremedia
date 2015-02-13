@@ -21,6 +21,8 @@
  * @package     SoftwareMedia_Ratings
  * @author      Ultimate Module Creator
  */
+ 
+ error_reporting(E_ALL);
 class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_Action
 {
 
@@ -79,11 +81,11 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
 		   // Check if multiple IP addresses exist in var
 		    $iplist = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
 		    foreach ($iplist as $ip) {
-		     if ($this->validate_ip($ip))
-		      return $ip;
+		     	if ($this->validate_ip($ip))
+			 		return $ip;
 		    }
 		   }
-		  }
+		  
 		  if (!empty($_SERVER['HTTP_X_FORWARDED']) && $this->validate_ip($_SERVER['HTTP_X_FORWARDED']))
 		   return $_SERVER['HTTP_X_FORWARDED'];
 		  if (!empty($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']) && $this->validate_ip($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']))
@@ -111,7 +113,6 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
 		                         FILTER_FLAG_NO_PRIV_RANGE | 
 		                         FILTER_FLAG_NO_RES_RANGE) === false)
 		         return false;
-		     self::$ip = $ip;
 		     return true;
 		 }
 		 
