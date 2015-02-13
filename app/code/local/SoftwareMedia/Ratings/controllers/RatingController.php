@@ -57,9 +57,6 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
 	     if($customer = Mage::getSingleton('customer/session')->isLoggedIn()) {
 		    $rating->setCustomerId(Mage::getSingleton('customer/session')->getId());
 		}
-		
-		$xForwardIp = Mage::app()->getRequest()->getServer('HTTP_X_FORWARDED_FOR');
-        $this->_quote->setXForwardedFor($xForwardIp);
             
 		if (Mage::app()->getRequest()->getServer('HTTP_X_FORWARDED_FOR'))
 			$rating->setIp(Mage::app()->getRequest()->getServer('HTTP_X_FORWARDED_FOR'));
