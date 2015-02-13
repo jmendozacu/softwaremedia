@@ -62,16 +62,15 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
             
 		 $rating->setIp($this->get_ip_address());
 	     
-	     Mage::log("Remote Addr: " . Mage::helper('core/http')->getRemoteAddr(), NULL,'addr.log');
-	     Mage::log("FORWARDED Addr: " . Mage::app()->getRequest()->getServer('HTTP_X_FORWARDED_FOR'), NULL,'addr.log');
-	     Mage::log("FORWARDED Addr: " . Mage::app()->getRequest()->getServer('HTTP_CLIENT_IP'), NULL,'addr.log');
-	     
 	     $rating->save();
 	     
 	     $this->_redirect('*/*/index/rating_id/' . $rating->getId());
     }
      
       public function get_ip_address() {
+      	foreach($_SERVER as $key => $val) {
+	      	Mage::log($key . ": " . $val,NULL,'addr.log');
+      	}
 		  // Check for shared internet/ISP IP
 		  if (!empty($_SERVER['HTTP_CLIENT_IP']) && $this->validate_ip($_SERVER['HTTP_CLIENT_IP']))
 		   return $_SERVER['HTTP_CLIENT_IP'];
