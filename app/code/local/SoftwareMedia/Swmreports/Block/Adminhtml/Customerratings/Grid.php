@@ -34,7 +34,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customerratings_Grid extends Mage
 				
 		$collection->getSelect()->columns(
 		        array(
-		            'sum' => new Zend_Db_Expr('FORMAT(sum(rating) / count(rating),2)'),
+		            'sum' => new Zend_Db_Expr('sum(rating) / count(rating)'),
 		            'ratings' => new Zend_Db_Expr('count(rating)')
 		        ));
 		
