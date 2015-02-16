@@ -103,6 +103,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customerratings_Grid extends Mage
 			$col->addFieldToFilter('created_at',array('lt' => $to));
 				
 		$col->addFieldToFilter('main_table.user_id',array('notnull' => true));
+		$col->addFieldToFilter('ip',array('neq' => "50.200.227.173"));
+		
 		
 		return $col;
 	}
