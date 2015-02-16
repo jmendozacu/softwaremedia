@@ -24,20 +24,21 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customerratings_Grid extends Mage
 	}
 
 	protected function _prepareCollection() {
-
-		$collection = Mage::getModel('customernotes/notes')->getCollection();
+		$collection = Mage::getModel('softwaremedia_ratings/rating')->getCollection();
 		$collection = $this->addFilters($collection);
-		$collection->getSelect()->joinLeft(
-				'customer_entity', '`customer_entity`.entity_id=`main_table`.customer_id', array('email','entity_id')
-			);
-	
-		$collection->getSelect()->joinLeft(
-				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('increment_id','created_at')
-			);
 
-
-		$collection->getSelect()->group('username');
-
+		
+		$collection->getSelect()->joinRight(
+					'admin_user', '`admin_user`.user_id=`main_table`.user_id', array('username')
+				);
+				
+		$collection->getSelect()->columns(
+		        array(
+		            'sum' => new Zend_Db_Expr('FORMAT(sum(rating) / count(rating),2)'),
+		            'ratings' => new Zend_Db_Expr('count(rating)')
+		        ));
+		
+		$collection->getSelect()->group('main_table.user_id');
 		/*
 		$collection = Mage::getModel('catalog/product')->getCollection()
 			->addAttributeToSelect('name')
@@ -52,58 +53,37 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customerratings_Grid extends Mage
 		*/
 		
 		foreach($collection as $col) {
-			$orderCount = Mage::getModel('customernotes/notes')->getCollection();
-			$orderCount->addFieldToFilter('username',$col->getUsername());
-			$orderCount = $this->addFilters($orderCount);
-			$orderCount->getSelect()->joinLeft(
-					'customer_entity', '`customer_entity`.entity_id=`main_table`.customer_id', array('email','entity_id')
-				);
 		
-			$orderCount->getSelect()->joinRight(
-					'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('increment_id','created_at')
-				);
-			$orderCount->getSelect()->group('customer_id');
+			$ratingsCount = Mage::getModel('softwaremedia_ratings/rating')->getCollection();
+			$ratingsCount->addFieldToFilter('user_id',$col->getUserId());
+			$ratingsCount->addFieldToFilter('source','Chat');
+			$ratingsCount = $this->addFilters($ratingsCount);			
+			$col->setData('chat',number_format(count($ratingsCount),0));	
 			
-			$col->setData('talked',1);
-			$col->setData('orders',count($orderCount));
-			$orders = count($orderCount);
-						
-			//Really inneficient way to get reaches per customer
-			$orderCount = Mage::getModel('customernotes/notes')->getCollection();
-			$orderCount->addFieldToFilter('username',$col->getUsername());
-			$orderCount->getSelect()->columns(
-		        array(
-		            'customer_count' => new Zend_Db_Expr('count(customer_id)')
-		        ));
-			$orderCount = $this->addFilters($orderCount);
-			$orderCount->getSelect()->group('customer_id');
+			$ratingsCount = Mage::getModel('softwaremedia_ratings/rating')->getCollection();
+			$ratingsCount->addFieldToFilter('user_id',$col->getUserId());
+			$ratingsCount->addFieldToFilter('source','E-Mail');
+			$ratingsCount = $this->addFilters($ratingsCount);			
+			$col->setData('email',number_format(count($ratingsCount),0));	
 			
-			$avgReach = 0;
-			foreach($orderCount as $avg) {
-				$avgReach += $avg->getCustomerCount();
-			}
+			$ratingsCount = Mage::getModel('softwaremedia_ratings/rating')->getCollection();
+			$ratingsCount->addFieldToFilter('user_id',$col->getUserId());
+			$ratingsCount->addFieldToFilter('rating',1);
+			$ratingsCount = $this->addFilters($ratingsCount);			
+			$col->setData('bad',number_format(count($ratingsCount),0));	
 			
-			$col->setData('reach',number_format($avgReach / count($orderCount),2));
-			$col->setData('customers',count($orderCount));
-			$customers = count($orderCount);
+			$ratingsCount = Mage::getModel('softwaremedia_ratings/rating')->getCollection();
+			$ratingsCount->addFieldToFilter('user_id',$col->getUserId());
+			$ratingsCount->addFieldToFilter('rating',5);
+			$ratingsCount = $this->addFilters($ratingsCount);			
+			$col->setData('good',number_format(count($ratingsCount),0));	
 			
-			$col->setData('retention',number_format($orders / $customers * 100,2) . '%');
-			
-			$count = 0;
-			foreach(Mage::helper('customernotes')->getOptions() as $val) {
-				$count++;
-				if ($count == 1)
-					continue; 
-					
-				//Select Count of all types of contact methods
-				$orderCount = Mage::getModel('customernotes/notes')->getCollection();
-				$orderCount->addFieldToFilter('username',$col->getUsername());
-				$orderCount->addFieldToFilter('contact_method',$val);
-				$orderCount = $this->addFilters($orderCount);
-				
-				$col->setData('stat_'.$count,count($orderCount));
-			
-			}
+			$ratingsCount = Mage::getModel('softwaremedia_ratings/rating')->getCollection();
+			$ratingsCount->addFieldToFilter('user_id',$col->getUserId());
+			$ratingsCount->addFieldToFilter('rating',3);
+			$ratingsCount = $this->addFilters($ratingsCount);			
+			$col->setData('neutral',number_format(count($ratingsCount),0));	
+			//$col->setData('sum',number_format($ratingsSum / $ratingsCount,2));
 		}
 		
 		$this->setCollection($collection);
@@ -116,21 +96,14 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customerratings_Grid extends Mage
 		
 		if ($this->getRequest()->getParam('to'))
 			$to = date('Y-m-d 23:59:59',strtotime($this->getRequest()->getParam('to')));
-			
-		$campaign = $this->getRequest()->getParam('campaign_id');
-		$step = $this->getRequest()->getParam('step_id');
-		
-		$col->addFieldToFilter('contact_method',array('neq' => 'N/A'));
-		
-		if ($campaign)
-			$col->addFieldToFilter('campaign_id',$campaign);
-		if ($step)
-			$col->addFieldToFilter('step_id',$step);
+
 		if ($from)
 			$col->addFieldToFilter('created_time',array('gt' => $from));
 		if ($to)
 			$col->addFieldToFilter('created_time',array('lt' => $to));
 				
+		$col->addFieldToFilter('main_table.user_id',array('notnull' => true));
+		
 		return $col;
 	}
 
@@ -195,50 +168,56 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customerratings_Grid extends Mage
 			'filter' => false,
 			'sortable' => false
 		));
-		
-		$count = 0;
-		foreach(Mage::helper('customernotes')->getOptions() as $val) {
-			$count++;
-			if ($count == 1)
-				continue; 
-						$this->addColumn('stat_'.$count, array(
-							'header' => Mage::helper('outofstock')->__($val),
-							'index' => 'stat_'.$count,
-							'filter' => false,
-							'sortable' => false
-						));
-			}
-
-
-		$this->addColumn('customers', array(
-			'header' => Mage::helper('outofstock')->__('Customers Reached'),
-			'index' => 'customers',
+		$this->addColumn('ratings', array(
+			'header' => Mage::helper('sales')->__('# of Ratings'),
+			'index' => 'ratings',
 			'filter' => false,
 			'sortable' => false
 		));
 		
-		$this->addColumn('reach', array(
-			'header' => Mage::helper('outofstock')->__('Reaches Per Customer'),
-			'index' => 'reach',
+		$this->addColumn('chat', array(
+			'header' => Mage::helper('sales')->__('From Chat'),
+			'index' => 'chat',
+			'filter' => false,
+			'sortable' => false
+		));
+		
+		$this->addColumn('email', array(
+			'header' => Mage::helper('sales')->__('From E-Mail'),
+			'index' => 'email',
 			'filter' => false,
 			'sortable' => false
 		));
 		
 		
-		$this->addColumn('orders', array(
-			'header' => Mage::helper('outofstock')->__('# of Customers Placed Order since Contacted'),
-			'index' => 'orders',
+		$this->addColumn('bad', array(
+			'header' => Mage::helper('sales')->__('# of Bad'),
+			'index' => 'bad',
 			'filter' => false,
 			'sortable' => false
 		));
 		
-		$this->addColumn('retention', array(
-			'header' => Mage::helper('outofstock')->__('Retention Rate'),
-			'index' => 'retention',
+		$this->addColumn('neutral', array(
+			'header' => Mage::helper('sales')->__('# of Neutral'),
+			'index' => 'neutral',
 			'filter' => false,
 			'sortable' => false
 		));
 		
+		$this->addColumn('good', array(
+			'header' => Mage::helper('sales')->__('# of Good'),
+			'index' => 'good',
+			'filter' => false,
+			'sortable' => false
+		));
+		
+		
+		$this->addColumn('sum', array(
+			'header' => Mage::helper('sales')->__('Avg. Rating'),
+			'index' => 'sum',
+			'filter' => false,
+			'sortable' => false
+		));
 					
 		/*		
 		$this->addColumn('last_order', array(

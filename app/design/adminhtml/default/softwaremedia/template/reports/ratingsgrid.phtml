@@ -133,42 +133,6 @@ $step = $this->getRequest()->getParam('step_id');
                                     </script>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="label"><label for="ar_report_to">Campaign</label></td>
-                                <td class="value">
-                                	<select onchange="updateSteps();" name="campaign_id" id="campaign_id">
-                            		<option value=""></option>
-                            		<?php foreach(Mage::helper('customernotes')->getCampaigns() as $option) {
-	                            	
-	                            		echo "<option value=\"" . $option->getId() . "\"";
-	                            		if ($campaign == $option->getId())
-	                            			echo " selected=\"selected\"";
-	                            			
-	                            		echo ">" . $option->getName() . "</option>";
-									}
-                            		?>
-                            	</select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label"><label for="ar_report_to">Step</label></td>
-                                <td class="value">
-                                    <select name="step_id" id="step_id">
-                                    	<option value=""></option>
-                                    <?php 
-                                    	if ($campaign) {
-                                    		$stepLoaded = Mage::helper('customernotes')->getStepsCampaign($campaign);
-                                    		foreach($stepLoaded as $stepItem) {
-	                                    		echo "<option value=\"" . $stepItem->getId() . "\"";
-	                                    		if ($step == $stepItem->getId())
-													echo " selected=\"selected\"";
-	                                    		echo ">" . $stepItem->getName() . "</option>";
-                                    		}
-                                    		
-	                            		} ?>
-									</select>	
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     </form>
