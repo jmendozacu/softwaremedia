@@ -98,9 +98,9 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customerratings_Grid extends Mage
 			$to = date('Y-m-d 23:59:59',strtotime($this->getRequest()->getParam('to')));
 
 		if ($from)
-			$col->addFieldToFilter('created_time',array('gt' => $from));
+			$col->addFieldToFilter('created_at',array('gt' => $from));
 		if ($to)
-			$col->addFieldToFilter('created_time',array('lt' => $to));
+			$col->addFieldToFilter('created_at',array('lt' => $to));
 				
 		$col->addFieldToFilter('main_table.user_id',array('notnull' => true));
 		
