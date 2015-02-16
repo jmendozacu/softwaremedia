@@ -22,7 +22,6 @@
  * @author      Ultimate Module Creator
  */
  
- error_reporting(E_ALL);
 class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_Action
 {
 
@@ -71,8 +70,16 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
       	foreach($_SERVER as $key => $val) {
 	      	Mage::log($key . ": " . $val,NULL,'addr.log');
       	}
-      	Mage::log($_ENV['HTTP_X_FORWARDED_FOR'],NULL,'addr.log');
+      	Mage::log('FORWARD: ' . $GLOBALS['forwarded_ip'],NULL,'addr.log');
       	
+	      	if (!empty($GLOBALS['forwarded_ip'])) {
+		      	$iplist = explode(',', $GLOBALS['forwarded_ip']);
+			    foreach ($iplist as $ip) {
+			     	if ($this->validate_ip($ip))
+				 		return $ip;
+			    }
+	      		
+      		}
 		  // Check for shared internet/ISP IP
 		  if (!empty($_SERVER['HTTP_CLIENT_IP']) && $this->validate_ip($_SERVER['HTTP_CLIENT_IP']))
 		   return $_SERVER['HTTP_CLIENT_IP'];

@@ -24,6 +24,8 @@
  * @license     http://www.magentocommerce.com/license/enterprise-edition
  */
 
+$GLOBALS['forwarded_ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+
 if (version_compare(phpversion(), '5.2.0', '<')===true) {
     echo  '<div style="font:12px/1.35em arial, helvetica, sans-serif;">
 <div style="margin:0 0 25px 0; border-bottom:1px solid #ccc;">
