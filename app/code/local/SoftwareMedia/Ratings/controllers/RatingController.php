@@ -126,6 +126,8 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
 		 
     public function indexAction()
     {
+    	Mage::log('After IP: ' . $this->get_ip_address(),NULL,'addr.log');
+    	
         $this->loadLayout();
         $this->_initLayoutMessages('catalog/session');
         $this->_initLayoutMessages('customer/session');
