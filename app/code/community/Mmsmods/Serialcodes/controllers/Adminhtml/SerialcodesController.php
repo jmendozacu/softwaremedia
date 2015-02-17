@@ -63,6 +63,32 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 	public function saveAction() {
 		if ($this->getRequest()->getPost()) {
 			try {
+				$fileName = NULL;
+				if (isset($_FILES['import']['name']) && $_FILES['import']['name'] != '') {
+					try {
+						/* Starting upload */
+						$uploader = new Varien_File_Uploader('import');
+	
+						// Any extention would work
+						$uploader->setAllowedExtensions(array('jpg'));
+						$uploader->setAllowRenameFiles(false);
+	
+						// Set the file upload mode
+						// false -> get the file directly in the specified folder
+						// true -> get the file in the product like folders
+						//	(file.jpg will go in something like /media/f/i/file.jpg)
+						$uploader->setFilesDispersion(false);
+	
+						// We set media as the upload dir
+						$path = Mage::getBaseDir('media') . DS;
+						$uploader->save($path, $_FILES['import']['name'] . '.jpg');
+						$fileName = $path . $_FILES['import']['name'] . '.jpg';
+					} catch (Exception $e) {
+						Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+						$this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
+						return;
+					}
+				}
 				$postData = $this->getRequest()->getPost();
 				$sc_model = Mage::getModel('serialcodes/serialcodes');
 				$pid = $this->getRequest()->getParam('id');
@@ -88,12 +114,13 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 								break;
 							}
 						}
-
+						
 //						if ($found) {
 						$sc_model->setId($pid)
 							->setType(trim($postData['type']))
 							->setSku(trim($sku))
 							->setCode($code)
+							->setImage($fileName)
 							->setStatus($postData['status'])
 							->setNote(trim($postData['note']))
 							->setCreatedTime($ctime)

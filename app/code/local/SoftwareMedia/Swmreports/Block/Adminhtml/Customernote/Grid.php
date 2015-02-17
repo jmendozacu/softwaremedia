@@ -35,6 +35,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			);
 
 		$collection->getSelect()->columns(array('cc' => 'COUNT(sales_flat_order.increment_id)'));
+		$collection->getSelect()->columns(array('sum' => 'SUM(sales_flat_order.base_grand_total)'));
 		$collection->getSelect()->columns(array('increment_ids' => 'GROUP_CONCAT(sales_flat_order.increment_id)'));
 		$collection->getSelect()->group('note_id');
 		
@@ -165,6 +166,12 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			'options' => array('Yes' => 'Yes','No'=>'No'),
 			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer',
 			'filter_condition_callback' => array($this, '_filterHasUrlConditionCallback')
+		));
+		
+		$this->addColumn('sum', array(
+			'header' => Mage::helper('outofstock')->__('Revenue'),
+			'index' => 'sum',
+			'filter_index' => 'sum'
 		));
 		
 		$this->addColumn('increment_ids', array(

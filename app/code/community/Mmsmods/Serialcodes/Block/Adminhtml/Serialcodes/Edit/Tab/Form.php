@@ -86,6 +86,12 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
 				'style'     => 'width:98%; height:300px;',
 				'wysiwyg'   => false
 			));
+
+			$fieldset->addField('import', 'file', array(
+				'label'     => Mage::helper('serialcodes')->__('Image'),
+				'name'      => 'import'
+			));
+			
 			$fieldset->addField('status', 'hidden', array(
 				'name'      => 'status',
 				'value'     => 0
