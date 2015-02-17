@@ -100,7 +100,6 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 				}
 				$codes = explode("\n", $this->getRequest()->getParam('code'));
 				$codes_filtered = array_count_values(array_map('trim', $codes));
-				$existing_codes = $sc_model->getCollection()->addFieldToFilter('sku', trim($sku));
 
 				if ($this->getRequest()->getParam('webcam[value]')) { 
 					$path = Mage::getBaseDir('media') . DS . 'codes' . DS;
@@ -110,16 +109,7 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 				foreach ($codes_filtered as $code => $count) {
 					$code = trim($code);
 					if ($code <> '') {
-						$found = false;
 
-						foreach ($existing_codes as $existing) {
-							if (strcasecmp($existing->getCode(), $code) == 0) {
-								$found = true;
-								break;
-							}
-						}
-						
-//						if ($found) {
 						$sc_model->setId($pid)
 							->setType(trim($postData['type']))
 							->setSku(trim($sku))
