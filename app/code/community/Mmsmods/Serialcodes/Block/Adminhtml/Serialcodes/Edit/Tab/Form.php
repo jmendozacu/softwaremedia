@@ -87,7 +87,7 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
 				'wysiwyg'   => false
 			));
 
-			$fieldset->addField('import', 'file', array(
+			$fieldset->addField('import', 'image', array(
 				'label'     => Mage::helper('serialcodes')->__('Image'),
 				'name'      => 'import'
 			));
