@@ -20,5 +20,15 @@
 
 class Mmsmods_Serialcodes_Helper_Data extends Mage_Core_Helper_Abstract
 {
- 
+	public function testFunc() {
+		echo "test";
+		die();
+		
+	}
+	public function getImages($code) {
+		echo "asdas";
+		echo $code;
+		$code = Mage::getModel('serialcodes/serialcodes')->loadByField('code',$code);
+		return $code->getImage();
+	}
 }

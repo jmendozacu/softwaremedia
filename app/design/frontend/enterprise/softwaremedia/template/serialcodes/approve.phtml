@@ -58,11 +58,25 @@
 		echo "</td>";
 		
 		if ($item->getSerialCodes()) {
-			
+			$path = Mage::getBaseUrl('media');
 					
 			$hasCodes = true;
 			if ($item->getSerialCodesViewed()) {
-				echo "<td>" . nl2br($item->getSerialCodes()) . "</td>";
+				echo "<td>";
+				$codes = explode("\n", str_replace("\r", '', $item->getSerialCodes()));
+				foreach($codes as $code) {
+					$model = Mage::getModel('serialcodes/serialcodes') ->getCollection()->addFieldToFilter('code', $item->getSerialCodes())->getFirstItem(); 
+					echo $code;
+					if ($model->getImage()) {
+						echo " (<a target=\"_blank\" href='javascript:window.open(\"" . $path . $model->getImage() . "\", \"\", \"width=640, height=480, menubar=no, resizable=no\")'>view authenticity)";
+					}
+					echo "<br />";
+				}
+				
+				
+				
+				
+				echo "</td>";
 			} else {
 				if ($item->getSerialCodesIssued() > 1)
 					$suffix = "s"; 

@@ -24,12 +24,17 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
     {
         $form = new Varien_Data_Form();
         $this->setForm($form);
+        
+        
 		if ( $this->getRequest()->getParam('id') <> 0  )
         {
 			$fieldset = $form->addFieldset('serialcodes_form', array('legend'=>Mage::helper('serialcodes')->__('Edit Code')));
         } else {
 			$fieldset = $form->addFieldset('serialcodes_form', array('legend'=>Mage::helper('serialcodes')->__('Add Codes')));
 		}
+		
+		$fieldset->addType('webcam', 'Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Renderer_Webcam');
+ 
         $fieldset->addField('sku', 'text', array(
             'label'     => Mage::helper('serialcodes')->__('SKU (or Code Pool)'),
             'class'     => 'required-entry',
@@ -43,10 +48,17 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
             'name'      => 'type',
 			'note'		=> Mage::helper('serialcodes')->__('Reference only. Set Serial Code Type at product level.')
         ));
-        $fieldset->addField('import', 'file', array(
+        /*
+        $fieldset->addField('image', 'image', array(
 				'label'     => Mage::helper('serialcodes')->__('Image'),
-				'name'      => 'import'
+				'name'      => 'image'
 			));
+		*/	
+		$fieldset->addField('webcam', 'webcam', array(
+				'label'     => Mage::helper('serialcodes')->__('Image'),
+				'name'      => 'webcam'
+		));
+
 		if ( $this->getRequest()->getParam('id') <> 0  )
         {
 			$fieldset->addField('code', 'text', array(
@@ -102,10 +114,14 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
 		}
         if ( Mage::getSingleton('adminhtml/session')->getSerialcodesData() )
         {
-            $form->setValues(Mage::getSingleton('adminhtml/session')->getSerialcodesData());
+        	$data = Mage::getSingleton('adminhtml/session')->getSerialcodesData();
+        	$data['webcam'] = $data['image'];
+            $form->setValues($data);
             Mage::getSingleton('adminhtml/session')->setSerialcodesData(null);
         } elseif ( Mage::registry('serialcodes_data') ) {
-            $form->setValues(Mage::registry('serialcodes_data')->getData());
+        	$data = Mage::registry('serialcodes_data');
+            $data['webcam'] = $data['image'];
+            $form->setValues($data);
         }
         return parent::_prepareForm();
     }

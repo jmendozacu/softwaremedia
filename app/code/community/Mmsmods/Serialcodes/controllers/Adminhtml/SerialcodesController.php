@@ -64,10 +64,10 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 		if ($this->getRequest()->getPost()) {
 			try {
 				$fileName = NULL;
-				if (isset($_FILES['import']['name']) && $_FILES['import']['name'] != '') {
+				if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != '') {
 					try {
 						/* Starting upload */
-						$uploader = new Varien_File_Uploader('import');
+						$uploader = new Varien_File_Uploader('image');
 	
 						// Set the file upload mode
 						// false -> get the file directly in the specified folder
@@ -80,7 +80,7 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 						$path = Mage::getBaseDir('media') . DS . 'codes' . DS;
 						$result = $uploader->save($path);
 						
-						$fileName = DS . 'codes' . $result['file'];
+						$fileName = 'codes' . $result['file'];
 					} catch (Exception $e) {
 						Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
 						$this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
@@ -88,6 +88,7 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 					}
 				}
 				$postData = $this->getRequest()->getPost();
+
 				$sc_model = Mage::getModel('serialcodes/serialcodes');
 				$pid = $this->getRequest()->getParam('id');
 				$sku = $postData['sku'];
@@ -101,6 +102,11 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 				$codes_filtered = array_count_values(array_map('trim', $codes));
 				$existing_codes = $sc_model->getCollection()->addFieldToFilter('sku', trim($sku));
 
+				if ($this->getRequest()->getParam('webcam[value]')) { 
+					$path = Mage::getBaseDir('media') . DS . 'codes' . DS;
+					
+				}
+				
 				foreach ($codes_filtered as $code => $count) {
 					$code = trim($code);
 					if ($code <> '') {
@@ -118,19 +124,39 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 							->setType(trim($postData['type']))
 							->setSku(trim($sku))
 							->setCode($code)
-							->setImage($fileName)
 							->setStatus($postData['status'])
 							->setNote(trim($postData['note']))
 							->setCreatedTime($ctime)
 							->setUpdateTime($ptime)
 							->save();
-//						}
+							
+						if ($this->getRequest()->getParam('webcam')) {
+							$path = Mage::getBaseDir('media') . DS . 'codes' . DS;
+							$data = $this->getRequest()->getParam('webcam');
+							$uri = substr($data,strpos($data,",")+1);
+							
+							unlink($path . $sc_model->getId() . ".png");
+							
+							file_put_contents($path . $sc_model->getId() . ".png", base64_decode($uri));
+							
+							$sc_model->setImage('codes' . DS . $sc_model->getId() . ".png")->save();
+						}
+						
+						if ($this->getRequest()->getParam('webcam_delete')) {
+							$sc_model->setImage(NULL)->save();
+						}
+				
 					}
 				}
 				$sc_model->updateInventoryStock($sku);
 				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('serialcodes')->__('Successfully saved.'));
 				Mage::getSingleton('adminhtml/session')->setSerialcodesData(false);
-				$this->_redirect('*/*/');
+				
+				if ($pid)
+					$this->_redirect('*/*/');
+				else
+					$this->_redirect('*/*/new');
+					
 				return;
 			} catch (Exception $e) {
 				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
