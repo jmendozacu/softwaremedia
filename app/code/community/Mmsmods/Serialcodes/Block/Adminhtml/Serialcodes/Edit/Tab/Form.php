@@ -43,6 +43,10 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
             'name'      => 'type',
 			'note'		=> Mage::helper('serialcodes')->__('Reference only. Set Serial Code Type at product level.')
         ));
+        $fieldset->addField('import', 'file', array(
+				'label'     => Mage::helper('serialcodes')->__('Image'),
+				'name'      => 'import'
+			));
 		if ( $this->getRequest()->getParam('id') <> 0  )
         {
 			$fieldset->addField('code', 'text', array(
@@ -85,11 +89,6 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
 				'name'      => 'code',
 				'style'     => 'width:98%; height:300px;',
 				'wysiwyg'   => false
-			));
-
-			$fieldset->addField('import', 'image', array(
-				'label'     => Mage::helper('serialcodes')->__('Image'),
-				'name'      => 'import'
 			));
 			
 			$fieldset->addField('status', 'hidden', array(
