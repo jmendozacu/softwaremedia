@@ -26,6 +26,7 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Form extends Mage_Adm
                                         'id' => 'edit_form',
                                         'action' => $this->getUrl('*/*/save', array('id' => $this->getRequest()->getParam('id'))),
                                         'method' => 'post',
+                                        'enctype'    => 'multipart/form-data'
                                      )
         );
  

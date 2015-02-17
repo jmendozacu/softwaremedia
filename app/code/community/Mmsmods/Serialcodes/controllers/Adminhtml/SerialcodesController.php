@@ -65,8 +65,6 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 			try {
 				$fileName = NULL;
 				if (isset($_FILES['import']['name']) && $_FILES['import']['name'] != '') {
-					echo "image";
-					die();
 					try {
 						/* Starting upload */
 						$uploader = new Varien_File_Uploader('import');
@@ -79,10 +77,10 @@ class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml
 		                $uploader->setFilesDispersion(true);
 		                $uploader->setAllowCreateFolders(true);
 						// We set media as the upload dir
-						$path = Mage::getBaseDir('media') . DS;
+						$path = Mage::getBaseDir('media') . DS . 'codes' . DS;
 						$result = $uploader->save($path);
 						
-						$fileName = $result['file'];
+						$fileName = DS . 'codes' . $result['file'];
 					} catch (Exception $e) {
 						Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
 						$this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
