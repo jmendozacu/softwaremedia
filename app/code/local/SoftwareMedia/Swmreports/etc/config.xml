@@ -55,6 +55,10 @@
 								<title>CSSR Detailed Stats</title>
 								<action>swmreports/adminhtml_customernote</action>
 							</customernote>
+							<customernoteorder>
+								<title>CSSR Detailed Order</title>
+								<action>swmreports/adminhtml_customernoteorder</action>
+							</customernoteorder>
 							<noteoverview>
 								<title>CSSR Overview</title>
 								<action>swmreports/adminhtml_noteoverview</action>
@@ -92,6 +96,10 @@
 											<title>Out of Stock</title>
 											<action>swmreports/adminhtml_outofstock</action>
 										</outofstock>
+										<customernoteorder>
+											<title>Customer Notes Order</title>
+											<action>swmreports/adminhtml_customernoteorder</action>
+										</customernoteorder>
 										<customernote>
 											<title>Customer Notes Detailed</title>
 											<action>swmreports/adminhtml_customernote</action>
@@ -130,6 +138,9 @@
 				<customernote>
 					<file>swmreports/customernote.xml</file>
 				</customernote>
+				<customernoteorder>
+					<file>swmreports/customernoteorder.xml</file>
+				</customernoteorder>
 				<noteoverview>
 					<file>swmreports/noteoverview.xml</file>
 				</noteoverview>

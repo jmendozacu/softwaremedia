@@ -11,7 +11,7 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Adminhtml_Block_Widget_Grid {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Customernoteorder_Grid extends Mage_Adminhtml_Block_Widget_Grid {
 
 	public function __construct() {
 		parent::__construct();
@@ -20,7 +20,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		$this->setDefaultDir('DESC');
 		$this->setSaveParametersInSession(true);
 		$this->setSubReportSize(false);
-		$this->setCustomHeader('CSSR Detailed Stats');
+		$this->setCustomHeader('CSSR Detailed Order');
 	}
 
 	protected function _prepareCollection() {
@@ -30,14 +30,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 				'customer_entity', '`customer_entity`.entity_id=`main_table`.customer_id', array('email','entity_id')
 			);
 	
-		$collection->getSelect()->joinLeft(
-				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('store_id','increment_id','created_at')
+		$collection->getSelect()->joinInner(
+				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('store_id','base_grand_total','increment_id','created_at')
 			);
 
-		$collection->getSelect()->columns(array('cc' => 'COUNT(sales_flat_order.increment_id)'));
-		$collection->getSelect()->columns(array('sum' => 'SUM(sales_flat_order.base_grand_total)'));
-		$collection->getSelect()->columns(array('increment_ids' => 'GROUP_CONCAT(sales_flat_order.increment_id)'));
-		$collection->getSelect()->group('note_id');
+		$collection->getSelect()->group('sales_flat_order.increment_id');
 		
 		//echo $collection->getSelect();
 		
@@ -118,6 +115,22 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		foreach($userCollection as $user) {
 			$referer_arr[$user->getUsername()] = $user->getUsername();
 		}
+		$this->addColumn('increment_id', array(
+			'header' => Mage::helper('outofstock')->__('Order ID'),
+			'index' => 'increment_id',
+			'filter_index' => 'increment_id'
+		));
+		$this->addColumn('created_at', array(
+			'header' => Mage::helper('outofstock')->__('Order Time'),
+			'index' => 'created_at',
+			'type'  => 'datetime',
+			'filter_index' => 'sales_flat_order.created_at'
+		));
+		$this->addColumn('note_id', array(
+			'header' => Mage::helper('outofstock')->__('Note ID'),
+			'index' => 'note_id',
+			'filter_index' => 'note_id'
+		));
 		
 		$this->addColumn('username', array(
 			'header' => Mage::helper('sales')->__('Admin User'),
@@ -130,7 +143,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		$this->addColumn('entity_id', array(
 			'header' => Mage::helper('outofstock')->__('Customer ID'),
 			'index' => 'entity_id',
-			'filter_index' => 'customer_entity.entity_id'
+			'filter_index' => 'customer_entity.entity)id'
 		));
 		$this->addColumn('email', array(
 			'header' => Mage::helper('outofstock')->__('Customer E-Mail'),
@@ -158,34 +171,15 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			'index' => 'step_id'
 		));
 		
-		$this->addColumn('cc', array(
-			'header' => Mage::helper('outofstock')->__('Order After Contact'),
-			'index' => 'store_id',
-			'filter_index' => 'sales_flat_order.cc',
-			'type' => 'options',
-			'options' => array('Yes' => 'Yes','No'=>'No'),
-			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer',
-			'filter_condition_callback' => array($this, '_filterHasUrlConditionCallback')
-		));
-		
-		$this->addColumn('sum', array(
+		$this->addColumn('base_grand_total', array(
 			'header' => Mage::helper('outofstock')->__('Revenue'),
-			'index' => 'sum',
-			'filter_index' => 'sum'
+			'index' => 'base_grand_total',
+			'filter_index' => 'base_grand_total'
 		));
 		
-		$this->addColumn('increment_ids', array(
-			'header' => Mage::helper('outofstock')->__('Order IDs'),
-			'index' => 'increment_ids',
-			'filter_index' => 'increment_ids'
-		));
 		
-		$this->addColumn('created_at', array(
-			'header' => Mage::helper('outofstock')->__('Order Time'),
-			'index' => 'created_at',
-			'type'  => 'datetime',
-			'filter_index' => 'sales_flat_order.created_at'
-		));
+		
+		
 		
 		$this->addColumn('action', array(
 				'header' => Mage::helper('sales')->__('Action'),
