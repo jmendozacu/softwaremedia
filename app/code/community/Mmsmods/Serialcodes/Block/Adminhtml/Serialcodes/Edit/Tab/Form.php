@@ -33,8 +33,10 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
 			$fieldset = $form->addFieldset('serialcodes_form', array('legend'=>Mage::helper('serialcodes')->__('Add Codes')));
 		}
 		
+		/*
 		$fieldset->addType('webcam', 'Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Renderer_Webcam');
- 
+		*/
+		
         $fieldset->addField('sku', 'text', array(
             'label'     => Mage::helper('serialcodes')->__('SKU (or Code Pool)'),
             'class'     => 'required-entry',
