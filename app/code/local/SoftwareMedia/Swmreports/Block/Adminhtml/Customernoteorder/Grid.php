@@ -24,18 +24,19 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernoteorder_Grid extends Ma
 	}
 
 	protected function _prepareCollection() {
-
-		$collection = Mage::getModel('customernotes/notes')->getCollection();
+		$collection = Mage::getModel('sales/order')->getCollection();
 		$collection->getSelect()->joinLeft(
-				'customer_entity', '`customer_entity`.entity_id=`main_table`.customer_id', array('email','entity_id')
+				'customer_entity', '`customer_entity`.entity_id=`main_table`.customer_id', array('email')
 			);
-	
-		$collection->getSelect()->joinInner(
-				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('store_id','base_grand_total','increment_id','created_at')
-			);
+		$collection->getSelect()->joinInner('magecon_customer_notes','`magecon_customer_notes`.customer_id=`main_table`.customer_id AND `main_table`.created_at > `magecon_customer_notes`.created_time AND (`main_table`.created_at < `magecon_customer_notes`.update_time OR `magecon_customer_notes`.update_time IS NULL)',array('note_id','user_id','update_time','created_time','customer_id','username','contact_method','campaign_id','step_id'));
 
-		$collection->getSelect()->group('sales_flat_order.increment_id');
 		
+		
+	
+		$collection->getSelect()->group('main_table.entity_id');
+		
+		//echo $collection->getSelect();
+		//die();
 		//echo $collection->getSelect();
 		
 		
@@ -140,10 +141,10 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernoteorder_Grid extends Ma
 			'options' => $referer_arr,
 		));
 
-		$this->addColumn('entity_id', array(
+		$this->addColumn('customer_id', array(
 			'header' => Mage::helper('outofstock')->__('Customer ID'),
-			'index' => 'entity_id',
-			'filter_index' => 'customer_entity.entity)id'
+			'index' => 'customer_id',
+			'filter_index' => 'magecon_customer_notes.customer_id'
 		));
 		$this->addColumn('email', array(
 			'header' => Mage::helper('outofstock')->__('Customer E-Mail'),
@@ -174,6 +175,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernoteorder_Grid extends Ma
 		$this->addColumn('base_grand_total', array(
 			'header' => Mage::helper('outofstock')->__('Revenue'),
 			'index' => 'base_grand_total',
+			'type' => 'price',
+			'currency' => 'order_currency_code',
 			'filter_index' => 'base_grand_total'
 		));
 		

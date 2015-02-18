@@ -25,13 +25,15 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 
 	protected function _prepareCollection() {
 
+
+		
 		$collection = Mage::getModel('customernotes/notes')->getCollection();
 		$collection->getSelect()->joinLeft(
 				'customer_entity', '`customer_entity`.entity_id=`main_table`.customer_id', array('email','entity_id')
 			);
 	
 		$collection->getSelect()->joinLeft(
-				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('store_id','increment_id','created_at')
+				'sales_flat_order', '`customer_entity`.entity_id=`sales_flat_order`.customer_id AND `sales_flat_order`.created_at > `main_table`.created_time AND (`sales_flat_order`.created_at < `main_table`.update_time OR `main_table`.update_time IS NULL)', array('order_currency_code','store_id','increment_id','created_at')
 			);
 
 		$collection->getSelect()->columns(array('cc' => 'COUNT(sales_flat_order.increment_id)'));
@@ -171,7 +173,9 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		$this->addColumn('sum', array(
 			'header' => Mage::helper('outofstock')->__('Revenue'),
 			'index' => 'sum',
-			'filter_index' => 'sum'
+			'filter_index' => 'sum',
+			'type' => 'price',
+			'currency' => 'order_currency_code'
 		));
 		
 		$this->addColumn('increment_ids', array(
