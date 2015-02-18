@@ -812,7 +812,7 @@ class Ophirah_Qquoteadv_Helper_Data extends Mage_Core_Helper_Abstract
     } 
     
     public function getAdmins(){
-        return Mage::getModel('admin/user')->getCollection();
+        return Mage::getModel('admin/user')->getCollection()->addFieldToFilter('is_active',1);
     }
     
    final public function hasExpired() {

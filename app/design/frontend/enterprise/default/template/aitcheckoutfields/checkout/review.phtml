@@ -133,6 +133,14 @@
 		?>
 		<script type="text/javascript">
 			//<![CDATA[
+			select = document.getElementById('customreview:aitoc_checkout_1396');
+			var opt = document.createElement('option');
+            opt.value = '';
+            opt.innerHTML = '';
+            opt.selected = 'selected';
+            select.insertBefore(opt,select.firstChild);
+            //select.appendChild(opt);
+            
 			addSubscribeToPost = function(element) {
 
 				if ($('magemonkey-subscribe')) {
@@ -187,6 +195,7 @@
 		<script type="text/javascript">
 			//<![CDATA[
 			//Handle newsletter subscribe/unsubscribe checkbox events
+
 			$$('input.monkey-list-subscriber').each(function(chk) {
 
 				if (!chk.checked) {
