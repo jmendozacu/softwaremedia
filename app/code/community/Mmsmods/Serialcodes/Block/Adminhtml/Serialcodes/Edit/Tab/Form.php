@@ -55,12 +55,13 @@ class Mmsmods_Serialcodes_Block_Adminhtml_Serialcodes_Edit_Tab_Form extends Mage
 				'label'     => Mage::helper('serialcodes')->__('Image'),
 				'name'      => 'image'
 			));
-		*/	
+		
 		$fieldset->addField('webcam', 'webcam', array(
 				'label'     => Mage::helper('serialcodes')->__('Image'),
 				'name'      => 'webcam'
 		));
-
+		*/
+		
 		if ( $this->getRequest()->getParam('id') <> 0  )
         {
 			$fieldset->addField('code', 'text', array(
