@@ -174,8 +174,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 			'header' => Mage::helper('outofstock')->__('Revenue'),
 			'index' => 'sum',
 			'filter_index' => 'sum',
-			'type' => 'price',
-			'currency' => 'order_currency_code'
+			'type' => 'number'
 		));
 		
 		$this->addColumn('increment_ids', array(

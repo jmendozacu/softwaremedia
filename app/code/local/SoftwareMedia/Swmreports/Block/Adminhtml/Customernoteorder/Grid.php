@@ -175,8 +175,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernoteorder_Grid extends Ma
 		$this->addColumn('base_grand_total', array(
 			'header' => Mage::helper('outofstock')->__('Revenue'),
 			'index' => 'base_grand_total',
-			'type' => 'price',
-			'currency' => 'order_currency_code',
+			'type' => 'number',
 			'filter_index' => 'base_grand_total'
 		));
 		
