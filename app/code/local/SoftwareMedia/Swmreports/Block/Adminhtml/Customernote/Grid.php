@@ -180,7 +180,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernote_Grid extends Mage_Ad
 		$this->addColumn('increment_ids', array(
 			'header' => Mage::helper('outofstock')->__('Order IDs'),
 			'index' => 'increment_ids',
-			'filter_index' => 'increment_ids'
+			'filter' => false
+			
 		));
 		
 		$this->addColumn('created_at', array(

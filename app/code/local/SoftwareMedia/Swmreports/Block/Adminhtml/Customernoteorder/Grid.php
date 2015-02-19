@@ -119,17 +119,18 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Customernoteorder_Grid extends Ma
 		$this->addColumn('increment_id', array(
 			'header' => Mage::helper('outofstock')->__('Order ID'),
 			'index' => 'increment_id',
-			'filter_index' => 'increment_id'
+			'filter_index' => 'main_table.increment_id'
 		));
 		$this->addColumn('created_at', array(
 			'header' => Mage::helper('outofstock')->__('Order Time'),
 			'index' => 'created_at',
 			'type'  => 'datetime',
-			'filter_index' => 'sales_flat_order.created_at'
+			'filter_index' => 'main_table.created_at'
 		));
 		$this->addColumn('note_id', array(
 			'header' => Mage::helper('outofstock')->__('Note ID'),
 			'index' => 'note_id',
+			'type' => 'number',
 			'filter_index' => 'note_id'
 		));
 		
