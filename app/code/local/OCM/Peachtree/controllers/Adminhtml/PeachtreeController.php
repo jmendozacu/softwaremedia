@@ -148,14 +148,14 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 					$header = array_map('strtolower', fgetcsv($handle));
 
 					$outFiles = array();
-					$outFiles['visa/mc'] = array('name' => 'Visa/MasterCard',
-						'filename' => 'pt-visa-mc.csv',
-						'data' => array());
+//					$outFiles['visa/mc'] = array('name' => 'Visa/MasterCard',
+//						'filename' => 'pt-visa-mc.csv',
+//						'data' => array());
 					$outFiles['amex'] = array('name' => 'American Express',
 						'filename' => 'pt-amex.csv',
 						'data' => array());
-					$outFiles['disc'] = array('name' => 'Discover',
-						'filename' => 'pt-disc.csv',
+					$outFiles['visa/mc/disc'] = array('name' => 'Visa/MasterCard/Discover',
+						'filename' => 'pt-visa-mc-disc.csv',
 						'data' => array());
 					$outFiles['wholesale'] = array('name' => 'Wholesale',
 						'filename' => 'pt-wholesale.csv',
@@ -190,19 +190,56 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 								default: $method = '';
 							}
 
-							$data = array($date, '=B1', 'Online Sales', '=D1', $date, $method, '10100', '', '', $orderID, $amount);
+							$data = array($date, 'OO', 'Online Sales', 'Orbital', $date, $method, '10100', '', '', $orderID, $amount);
 
 							if ($actionCode == 'Tran Accepted - Credit') {
 								$outFiles['credits']['data'][] = $data;
 							} else if (!preg_match('/^[0-9]+$/', $orderID)) {
 								$outFiles['wholesale']['data'][] = $data;
 							} else {
+								$dayOfWeek = date('w', strtotime($date));
+
+								// TODO: Retrieve proper customer ID & separate the files
+								$data = array('', 'OO', 'Online Sales', '', '', $method, '10104', '', '', $orderID, $amount);
 								switch ($method) {
-									case 'VISA': case 'MC': $outFiles['visa/mc']['data'][] = $data;
+									case 'VISA':
+									case 'MC':
+									case 'DISC':
+										// If day is Sunday-Thursday, just add one day. Else, set it to Monday
+										if ($dayOfWeek < 5) {
+											$date = date('n/j/Y', strtotime($date . ' + 1 day'));
+										} else {
+											$date = date('n/j/Y', strtotime($date . ' + ' . (8 - $dayOfWeek) . ' days'));
+										}
+										$data[0] = $date;
+										$data[4] = $date;
+
+										$data[3] = 'Orb ' . $date . ' Visa/MC/Disc';
+
+										$outFiles['visa/mc/disc']['data'][] = $data;
 										break;
-									case 'AMEX': $outFiles['amex']['data'][] = $data;
-										break;
-									case 'DISC': $outFiles['disc']['data'][] = $data;
+									case 'AMEX':
+										// Set the date to the following logic
+										/*
+										 * Monday > following Friday
+										 * Tues-Thurs > following Monday
+										 * Fri-Sun > following Tuesday
+										 */
+										if ($dayOfWeek == 1) {
+											$date = date('n/j/Y', strtotime($date . ' + 4 days'));
+										} elseif ($dayOfWeek > 1 && $dayOfWeek < 5) {
+											$date = date('n/j/Y', strtotime($date . ' + ' . (8 - $dayOfWeek) . ' days'));
+										} elseif ($dayOfWeek >= 5) {
+											$date = date('n/j/Y', strtotime($date . ' + ' . (9 - $dayOfWeek) . ' days'));
+										} elseif ($dayOfWeek == 0) {
+											$date = date('n/j/Y', strtotime($date . ' + 2 days'));
+										}
+										$data[0] = $date;
+										$data[4] = $date;
+
+										$data[3] = 'Orb ' . $date . ' Amex';
+
+										$outFiles['amex']['data'][] = $data;
 										break;
 								}
 							}
@@ -216,8 +253,8 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							$filename = $path . $outFile['filename'];
 							$csv = new Varien_File_Csv();
 
-							$outFile['data'][0][1] = 'OO';
-							$outFile['data'][0][3] = 'Orbital';
+//							$outFile['data'][0][1] = 'OO';
+//							$outFile['data'][0][3] = 'Orbital';
 
 							for ($i = 0; $i < $count; $i++) {
 								$outFile['data'][$i][7] = '=SUM(K1:K' . $count . ')';
