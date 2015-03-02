@@ -333,16 +333,23 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 //							$outFile['data'][0][1] = 'OO';
 //							$outFile['data'][0][3] = 'Orbital';
 
+							
 							foreach ($outFile['data'] as $customer_key => $customer_files) 
 							{
 								$filename = $path . $customer_key . '-' . $outFile ['filename'];
 								$csv = new Varien_File_Csv ();
 								$count = sizeof ( $customer_files );
+								$sum = 0;
+								$oCount = 0;
+								for($i = 0; $i < $count; $i ++) {
+									$sum += $outFile ['data'] [$customer_key] [$i] [10];
+									$oCount++;
+								}
 								
 								for($i = 0; $i < $count; $i ++) {
 									
-									$outFile ['data'] [$customer_key] [$i] [7] = '=SUM(K1:K' . $count . ')';
-									$outFile ['data'] [$customer_key] [$i] [8] = '=COUNT(K1:K' . $count . ')';
+									$outFile ['data'] [$customer_key] [$i] [7] = $sum;
+									$outFile ['data'] [$customer_key] [$i] [8] = $oCount;
 								}
 								
 								$csv->saveData ( $filename, $outFile ['data'] [$customer_key] );
