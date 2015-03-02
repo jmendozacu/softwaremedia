@@ -104,6 +104,14 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 		$this->_redirect ( '*/*/' );
 	}
 	public function convertAction() {
+	
+		$adminUserModel = Mage::getModel('admin/user');
+		$userCollection = $adminUserModel->getCollection()->load(); 
+		$adminUsers = array();
+		foreach($userCollection as $user) {
+			$adminUsers[] = $user->getUsername();
+		}
+		
 		$data = $this->getRequest ()->getPost ();
 		if (! empty ( $data )) {
 			if (isset ( $_FILES ['orbital_converter'] ['name'] ) && $_FILES ['orbital_converter'] ['name'] != '') {
@@ -160,7 +168,20 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							'data' => array () 
 					);
 					
+					$rows = array();
+					
+					
 					while ( ($row = fgetcsv ( $handle, 0, ',', '"' )) !== false ) {
+						$rows[] = $row;
+						$date = date ( 'n/j/Y', strtotime ( $this->findItem ( $row, $header, array (
+									'datetime' 
+							) ) ) );
+							
+						if (strtotime($date) > strtotime($batchDate))
+							$batchDate = $date;
+					}
+					
+					foreach($rows as $row) {
 						$responseCode = trim ( $this->findItem ( $row, $header, array (
 								'resp code' 
 						) ) );
@@ -212,7 +233,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 									'Orbital',
 									$date,
 									$method,
-									'10100',
+									'10104',
 									'',
 									'',
 									$orderID,
@@ -220,17 +241,31 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							);
 							
 							if ($actionCode == 'Tran Accepted - Credit') {
+								$customer_id = 'O' . date ( 'my', strtotime ( $date ) );
+								$data[1] = $customer_id;
 								$outFiles ['credits'] ['data'] [0] [] = $data;
 							} else if (! preg_match ( '/^[0-9]+$/', $orderID )) {
+								$customer_id = 'O' . date ( 'my', strtotime ( $date ) );
+								$data[1] = $customer_id;
 								$outFiles ['wholesale'] ['data'] [0] [] = $data;
 							} else {
-								$dayOfWeek = date ( 'w', strtotime ( $date ) );
+								$dayOfWeek = date ( 'w', strtotime ( $batchDate ) );
 								
 								// Retrieve proper customer ID & separate the files
-								$orders = Mage::getModel ( 'sales/order' )->loadByIncrementId ( $this->findItem ( $row, $header, array (
-										'order #' 
-								) ) );
+								$orders = Mage::getModel ( 'sales/order' )->loadByIncrementId ($orderID);
+
 								$customer_id = 'O' . date ( 'my', strtotime ( $orders->getData ( 'created_at' ) ) );
+								if (!$orders->getData('created_at'))
+									$customer_id = 'O' . date ( 'my', strtotime ( $date ) );
+	
+								//Load order referer and add W to customer ID if wholesale
+								$peach = Mage::getModel('peachtree/referer')->loadByAttribute('order_id',(int)$orders->getId());
+
+					         	if ($peach) {
+					         		if (in_array($peach->getRefererId(), $adminUsers))
+					            		$customer_id = $customer_id . 'W';
+					            }
+					            	
 								$data = array (
 										'',
 										$customer_id,
@@ -248,13 +283,13 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 									case 'VISA' :
 									case 'MC' :
 									case 'DISC' :
-										$data [3] = 'Orb ' . $date . ' Visa/MC/Disc';
+										$data [3] = 'Orb ' . date ( 'n/j', strtotime ( $batchDate)) . ' Visa/MC/Disc';
 										
 										// If day is Sunday-Thursday, just add one day. Else, set it to Monday
 										if ($dayOfWeek < 5) {
-											$date = date ( 'n/j/Y', strtotime ( $date . ' + 1 day' ) );
+											$date = date ( 'n/j/Y', strtotime ( $batchDate . ' + 1 day' ) );
 										} else {
-											$date = date ( 'n/j/Y', strtotime ( $date . ' + ' . (8 - $dayOfWeek) . ' days' ) );
+											$date = date ( 'n/j/Y', strtotime ( $batchDate . ' + ' . (8 - $dayOfWeek) . ' days' ) );
 										}
 										$data [0] = $date;
 										$data [4] = $date;
@@ -262,7 +297,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 										$outFiles ['visa/mc/disc'] ['data'] [$customer_id] [] = $data;
 										break;
 									case 'AMEX' :
-										$data [3] = 'Orb ' . $date . ' Amex';
+										$data [3] = 'Orb ' . date ( 'n/j', strtotime ( $batchDate)) . ' Amex';
 										
 										// Set the date to the following logic
 										/*
@@ -271,14 +306,15 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 										 * Fri-Sun > following Tuesday
 										 */
 										if ($dayOfWeek == 1) {
-											$date = date ( 'n/j/Y', strtotime ( $date . ' + 4 days' ) );
+											$date = date ( 'n/j/Y', strtotime ( $batchDate . ' + 4 days' ) );
 										} elseif ($dayOfWeek > 1 && $dayOfWeek < 5) {
-											$date = date ( 'n/j/Y', strtotime ( $date . ' + ' . (8 - $dayOfWeek) . ' days' ) );
+											$date = date ( 'n/j', strtotime ( $batchDate . ' + ' . (8 - $dayOfWeek) . ' days' ) );
 										} elseif ($dayOfWeek >= 5) {
-											$date = date ( 'n/j/Y', strtotime ( $date . ' + ' . (9 - $dayOfWeek) . ' days' ) );
+											$date = date ( 'n/j/Y', strtotime ( $batchDate . ' + ' . (9 - $dayOfWeek) . ' days' ) );
 										} elseif ($dayOfWeek == 0) {
-											$date = date ( 'n/j/Y', strtotime ( $date . ' + 2 days' ) );
+											$date = date ( 'n/j/Y', strtotime ( $batchDate . ' + 2 days' ) );
 										}
+			
 										$data [0] = $date;
 										$data [4] = $date;
 										
@@ -328,7 +364,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 				Mage::getSingleton ( 'adminhtml/session' )->addError ( Mage::helper ( 'peachtree' )->__ ( 'Please choose a file to upload' ) );
 			}
 		}
-		
+
 		$this->_redirect ( '*/*/' );
 	}
 	public function deleteAction() {
