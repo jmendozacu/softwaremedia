@@ -350,6 +350,9 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 									
 									$outFile ['data'] [$customer_key] [$i] [7] = $sum;
 									$outFile ['data'] [$customer_key] [$i] [8] = $oCount;
+									
+									//$outFile ['data'] [$customer_key] [$i] [7] = '=SUM(K1:K' . $count . ')';
+									//$outFile ['data'] [$customer_key] [$i] [8] = '=COUNT(K1:K' . $count . ')';
 								}
 								
 								$csv->saveData ( $filename, $outFile ['data'] [$customer_key] );
