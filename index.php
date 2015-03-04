@@ -27,8 +27,8 @@
 $GLOBALS['forwarded_ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
 $GLOBALS['remote_ip'] = $_SERVER['REMOTE_ADDR'];
 
-error_log("Remote IP: " . $_SERVER['HTTP_X_FORWARDED_FOR'], 3, "/var/tmp/remote-ip.log");
-error_log("Forwarded: " . $_SERVER['REMOTE_ADDR'], 3, "/var/tmp/remote-ip.log");
+error_log("Remote IP: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "\n", 3, "/var/tmp/remote-ip.log");
+error_log("Forwarded: " . $_SERVER['REMOTE_ADDR'] . "\n", 3, "/var/tmp/remote-ip.log");
 
 if (version_compare(phpversion(), '5.2.0', '<')===true) {
     echo  '<div style="font:12px/1.35em arial, helvetica, sans-serif;">
