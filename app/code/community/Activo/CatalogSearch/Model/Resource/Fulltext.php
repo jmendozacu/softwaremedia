@@ -101,6 +101,8 @@ class Activo_CatalogSearch_Model_Resource_Fulltext extends Mage_CatalogSearch_Mo
                 $this->getTable('catalogsearch/result'),
                 array(),
                 Varien_Db_Adapter_Interface::INSERT_ON_DUPLICATE);
+                
+            Mage::log($sql,NULL,'search.log');
             $adapter->query($sql, $bind);
 
             $query->setIsProcessed(1);

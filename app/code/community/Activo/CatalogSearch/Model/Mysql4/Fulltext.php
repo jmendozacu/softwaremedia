@@ -93,6 +93,7 @@ class Activo_CatalogSearch_Model_Mysql4_Fulltext extends Mage_CatalogSearch_Mode
                 $query->getStoreId()
             );
 
+			Mage::log($sql,NULL,'search.log');
             $this->_getWriteAdapter()->query($sql, $bind);
 
             $query->setIsProcessed(1);
