@@ -26,7 +26,7 @@
 
 $GLOBALS['forwarded_ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
 $GLOBALS['remote_ip'] = $_SERVER['REMOTE_ADDR'];
-error_log(date('h:i:s' . "\n", 3, "/var/tmp/remote-ip.log");
+
 error_log("Remote IP: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "\n", 3, "/var/tmp/remote-ip.log");
 error_log("Forwarded: " . $_SERVER['REMOTE_ADDR'] . "\n", 3, "/var/tmp/remote-ip.log");
 
