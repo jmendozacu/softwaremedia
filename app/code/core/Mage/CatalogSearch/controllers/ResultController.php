@@ -43,7 +43,7 @@ class Mage_CatalogSearch_ResultController extends Mage_Core_Controller_Front_Act
      */
     public function indexAction()
     {
-    	Mage::log(Mage::helper('core/http')->getHttpUserAgent(),NULL,'search-agent.log');
+    	Mage::log('User Agent: ' . Mage::helper('core/http')->getHttpUserAgent(),NULL,'search-agent.log');
     	
         $query = Mage::helper('catalogsearch')->getQuery();
         /* @var $query Mage_CatalogSearch_Model_Query */
