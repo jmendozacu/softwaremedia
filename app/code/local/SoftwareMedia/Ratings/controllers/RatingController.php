@@ -67,8 +67,9 @@ class SoftwareMedia_Ratings_RatingController extends Mage_Core_Controller_Front_
     }
      
       public function get_ip_address() {
-      	return $_SERVER['REMOTE_ADDR'];
-
+      	foreach($_SERVER as $key => $val) {
+	      	Mage::log($key . ": " . $val,NULL,'addr.log');
+      	}
       	Mage::log('FORWARD: ' . $GLOBALS['forwarded_ip'],NULL,'addr.log');
       	
 	      	if (!empty($GLOBALS['forwarded_ip'])) {
