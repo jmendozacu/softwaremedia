@@ -103,6 +103,155 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 		
 		$this->_redirect ( '*/*/' );
 	}
+	
+	public function convertAmazon() {
+		try {
+			/* Starting upload */
+			$uploader = new Varien_File_Uploader ( 'amazon_converter' );
+					
+			// Any extention would work
+			$uploader->setAllowedExtensions ( array (
+					'txt' 
+			) );
+			$uploader->setAllowRenameFiles ( false );
+			
+			// Set the file upload mode
+			// false -> get the file directly in the specified folder
+			// true -> get the file in the product like folders
+			// (file.jpg will go in something like /media/f/i/file.jpg)
+			$uploader->setFilesDispersion ( false );
+			
+			// We set media as the upload dir
+			$path = Mage::getBaseDir ( 'media' ) . DS;
+			$uploader->save ( $path, 'amazon_converter.csv');
+			
+			$dataStart = 4;
+			$row_count = 0;
+			$handle = fopen ( $path . 'amazon_converter.csv', 'r' );
+			for($row_count = 1; $row_count < $dataStart; $row_count ++) {
+				fgetcsv ( $handle, 0, "\t" );
+			}
+			$header = array_map ( 'strtolower', fgetcsv ( $handle, 0, "\t" ) );
+			
+			$oldId = NULL;
+			
+			$fba = "SWM";
+			
+			while ( ($row = fgetcsv ( $handle, 0, "\t")) !== false ) {
+				$rows[] = $row;
+			}
+			
+			$date = date('n/j/Y',strtotime($rows[0][0]));
+			$aMethod = "ACH";
+
+			$oldId = null;
+					
+			$csvData = array();		
+			$fbaData = array();	
+			foreach($rows as $row) {
+				$orderId =  $this->findVal($row,$header,'order id');
+				//var_dump($row);
+				if ($oldId != $orderId && $oldId) {
+					$data = array (
+							$date,
+							'AMAZON' . $fba,
+							'Online Sales',
+							$aMethod,
+							$date,
+							'Amazon PP',
+							'10104',
+							$sumText,
+							$countText,
+							$oldId,
+							($amount + $shipping) * -1
+					);
+					if ($fba == 'FBA' && $amount)
+						$csvData[] = $data;
+					elseif ($amount)
+						$fbaData[] = $data;
+					
+					$amount = 0; 
+					$shipping = 0;
+					$fba = "SWM";
+				}
+			
+				
+				
+				if (substr($row[2],-3) == 'FBA')
+					$fba = "FBA";
+					
+				$amt = str_replace(',','',substr($row[6],1));
+				if ($row[4] == 'Product charges') {
+					$amount = $amt;
+				} elseif ($row[4] == 'Other') {
+					$shipping += $amt;
+				} elseif ($row[4] == 'Promo rebates') {
+					$shipping += $amt;
+				} 
+				$oldId = $orderId;
+				
+			}
+			
+			$data = array (
+							$date,
+							'AMAZON' . $fba,
+							'Online Sales',
+							$aMethod,
+							$date,
+							'AMAZON',
+							'10104',
+							$sumText,
+							$countText,
+							$oldId,
+							($amount + $shipping) * -1
+					);
+			if ($fba == 'FBA' && $amount)
+						$csvData[] = $data;
+					elseif ($amount)
+						$fbaData[] = $data;
+			
+			//Save SWM Data		
+			$count = count($csvData);
+			$sumText = '=SUM(K1:K' . $count . ')';
+			$countText= '=COUNT(K1:K' . $count . ')';
+			
+			foreach ($csvData as $key => $val) {
+				$csvData[$key][7] = $sumText;
+				$csvData[$key][8] = $countText;
+			}
+			
+			$filename = $path . 'amazon-swm.csv';
+			$csv = new Varien_File_Csv ();
+			
+			$csv->saveData ( $filename, $csvData );
+			
+			
+			//Save FBA Data
+			$count = count($fbaData);
+			$sumText = '=SUM(K1:K' . $count . ')';
+			$countText= '=COUNT(K1:K' . $count . ')';
+			
+			foreach ($fbaData as $key => $val) {
+				$fbaData[$key][7] = $sumText;
+				$fbaData[$key][8] = $countText;
+			}
+			
+			$filename = $path . 'amazon-fba.csv';
+			$csv = new Varien_File_Csv ();
+			
+			$csv->saveData ( $filename, $fbaData );
+			
+			Mage::getSingleton ( 'adminhtml/session' )->addSuccess ( Mage::helper ( 'peachtree' )->__ ( '<a href="/media/amazon-swm.csv?rand=' . rand () . '" target="_blank">Amazon - AMAZONSWM</a>' ) );
+			
+			Mage::getSingleton ( 'adminhtml/session' )->addSuccess ( Mage::helper ( 'peachtree' )->__ ( '<a href="/media/amazon-fba.csv?rand=' . rand () . '" target="_blank">Amazon - AMAZONFBA</a>' ) );
+			
+			
+		} catch ( Exception $e ) {
+		
+		}
+	
+	}
+	
 	public function convertAction() {
 	
 		$adminUserModel = Mage::getModel('admin/user');
@@ -114,6 +263,13 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 		
 		$data = $this->getRequest ()->getPost ();
 		if (! empty ( $data )) {
+		
+			//If amazon file uploaded, redirect request
+			if (isset ( $_FILES ['amazon_converter'] ['name'] ) && $_FILES ['amazon_converter'] ['name'] != '') {
+				$this->convertAmazon();
+				
+			}
+			
 			if (isset ( $_FILES ['orbital_converter'] ['name'] ) && $_FILES ['orbital_converter'] ['name'] != '') {
 				try {
 					/* Starting upload */
@@ -370,9 +526,9 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 					}
 				} catch ( Exception $e ) {
 				}
-			} else {
-				Mage::getSingleton ( 'adminhtml/session' )->addError ( Mage::helper ( 'peachtree' )->__ ( 'Please choose a file to upload' ) );
 			}
+		} else {
+				Mage::getSingleton ( 'adminhtml/session' )->addError ( Mage::helper ( 'peachtree' )->__ ( 'Please choose a file to upload' ) );
 		}
 
 		$this->_redirect ( '*/*/' );
@@ -442,6 +598,15 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 		$response->sendResponse ();
 		die ();
 	}
+	
+	private function findVal($row, $header, $term) {
+		if (($pos = array_search ( $term, $header )) !== false) {
+			return $row [$pos];
+		}
+		
+		return '';
+	}
+	
 	private function findItem($row, $header, $terms) {
 		foreach ( $terms as $term ) {
 			if (($pos = array_search ( $term, $header )) !== false) {

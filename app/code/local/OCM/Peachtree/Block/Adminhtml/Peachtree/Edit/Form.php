@@ -50,12 +50,19 @@ class OCM_Peachtree_Block_Adminhtml_Peachtree_Edit_Form extends Mage_Adminhtml_B
 			$form->setValues(Mage::registry('peachtree_data')->getData());
 		}
 
-		$fieldset3 = $form->addFieldset('peachtree_orbital_form', array('legend' => Mage::helper('peachtree')->__('Peachtree Orbital Converter')));
+		$fieldset3 = $form->addFieldset('peachtree_orbital_form', array('legend' => Mage::helper('peachtree')->__('Peachtree Converter')));
 		$fieldset3->addField('orbital_converter', 'file', array(
-			'label' => Mage::helper('peachtree')->__('CSV File'),
+			'label' => Mage::helper('peachtree')->__('Orbital File'),
 			'required' => false,
 			'name' => 'orbital_converter',
 		));
+		
+		$fieldset3->addField('amazon_converter', 'file', array(
+			'label' => Mage::helper('peachtree')->__('Amazon File'),
+			'required' => false,
+			'name' => 'amazon_converter',
+		));
+		
 
 		return parent::_prepareForm();
 	}

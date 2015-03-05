@@ -17,7 +17,7 @@ class OCM_Peachtree_Block_Adminhtml_Peachtree_Edit extends Mage_Adminhtml_Block_
 
 		$this->_addButton(
 			'Convert Orbital', array(
-			'label' => Mage::helper('catalog')->__('Orbital Converter'),
+			'label' => Mage::helper('catalog')->__('Peachtree Converter'),
 			'onclick' => '$(\'edit_form\').writeAttribute(\'action\',\'' . $this->getUrl('*/*/convert') . '\'); $(\'edit_form\').submit()',
 			)
 		);
