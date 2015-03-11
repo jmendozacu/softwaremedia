@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <SoftwareMedia_Licensing>
+            <version>0.1</version>
+        </SoftwareMedia_Licensing>
+    </modules>
+    <global>
+	    <helpers>
+            <licensing>
+                <class>SoftwareMedia_Licensing_Helper</class>
+            </licensing>
+        </helpers>    
+
+    </global>
+	<admin>
+		<routers>
+			<adminhtml>
+				<args>
+					<modules>
+						<SoftwareMedia_Licensing before="Mage_Adminhtml">SoftwareMedia_Licensing_Adminhtml</SoftwareMedia_Licensing>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <licensing>
+                    <file>licensing.xml</file>
+                </licensing>
+            </updates>
+        </layout>
+    </adminhtml>
+</config>
