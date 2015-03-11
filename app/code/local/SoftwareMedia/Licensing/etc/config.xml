@@ -11,7 +11,38 @@
                 <class>SoftwareMedia_Licensing_Helper</class>
             </licensing>
         </helpers>    
-
+	    <blocks>
+	    	<licensing>
+	       	 <class>SoftwareMedia_Licensing_Block</class>
+			</licensing>
+		    <adminhtml>
+	        <rewrite>
+	             <sales_items_abstract>SoftwareMedia_Licensing_Block_Adminhtml_Sales_Items_Abstract</sales_items_abstract>
+	             <sales_items_renderer_default>SoftwareMedia_Licensing_Block_Adminhtml_Sales_Items_Renderer_Default</sales_items_renderer_default>
+				 <sales_items_renderer_configurable>SoftwareMedia_Licensing_Block_Adminhtml_Sales_Items_Renderer_Configurable</sales_items_renderer_configurable>
+	         </rewrite>
+			 </adminhtml>
+	
+		 </blocks>
+		 <template>
+            <email>
+                <ingram_license translate="label" module="ordertags">
+                    <label>Ingram License</label>
+                    <file>license/ingram.html</file>
+                    <type>html</type>
+                </ingram_license>
+                <synnex_license translate="label" module="ordertags">
+                    <label>Synnex License</label>
+                    <file>license/synnex.html</file>
+                    <type>html</type>
+                </synnex_license>
+                <techdata_license translate="label" module="ordertags">
+                    <label>TechData License</label>
+                    <file>license/techdata.html</file>
+                    <type>html</type>
+                </techdata_license>
+            </email>
+        </template>
     </global>
 	<admin>
 		<routers>

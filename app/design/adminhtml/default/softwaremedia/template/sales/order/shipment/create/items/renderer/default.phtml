@@ -25,10 +25,30 @@
  */
 ?>
 <?php $_item = $this->getItem() ?>
+<?php 
+
+$productId = $_item->getProductId();
+		
+$invoiceItem = Mage::getModel('sales/order_invoice_item')->load($_item->getId(), 'order_item_id');
+if ($invoiceItem->getSku())
+	$productId = $invoiceItem->getProductId();
+$product = Mage::getModel('catalog/product')->load($productId);
+
+?>
 <tr class="border">
     <td><?php echo $this->getColumnHtml($_item, 'name') ?></td>
     <td>
-
+		<?php if ($dist = $this->isLicense()): ?>
+			<select name="license[items][<?php echo $_item->getOrderItemId() ?>]">
+				<option <?php if ($dist == 'none') { echo "selected=\"selected\" "; }?>value="">Don't Send</option>
+				<option <?php if ($dist == 'ingram') { echo "selected=\"selected\" "; }?>value="Ingram">Ingram<?php if ($product->getIngramPrice()) { echo " - $" . number_format($product->getIngramPrice(),2); }?></option>
+				<option <?php if ($dist == 'techdata') { echo "selected=\"selected\" "; }?>value="TechData">TechData<?php if ($product->getTechdataPrice()) { echo " - $" . number_format($product->getTechdataPrice(),2); }?></option>
+				<option <?php if ($dist == 'synnex') { echo "selected=\"selected\" "; }?>value="Synnex">Synnex<?php if ($product->getSynnexPrice()) { echo " - $" . number_format($product->getSynnexPrice(),2); }?></option>
+			</select>
+			
+		<?php else: ?>
+		N/A
+		<?php endif; ?>
     </td>
     <td><?php echo $this->getColumnHtml($_item, 'qty') ?></td>
 

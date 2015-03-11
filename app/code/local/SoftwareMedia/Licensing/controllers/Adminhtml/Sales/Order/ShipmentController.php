@@ -27,21 +27,17 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 
 			
             $shipment->register();
-            
-            //Load End User custom information
+
+			//Load End User custom information
             $order = $shipment->getOrder();
 	        $oAitcheckoutfields  = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
 	        $aCustomAtrrList = $oAitcheckoutfields->getOrderCustomData($order->getId(), $order->getStoreId(), true, true); 
-	        foreach ($aCustomAtrrList as $aItem) {
-		        //var_dump($aItem);
-	        }
-	        
-			//var_dump($license);
+
+
 			foreach($license['items'] as $key => $item) {
-				echo $data['items'][$key];
-				var_dump($item);
+				if ($item)
+					$this->_sendLicense($key,$data['items'][$key],$item,$shipment,$aCustomAtrrList);
 			}
-			die();
 
             $comment = '';
             if (!empty($data['comment_text'])) {
@@ -104,5 +100,80 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
         }
     }
 
+	protected function _sendLicense($itemId,$qty,$dist,$shipment,$endUser) {
+	
+		$subjectDist = array(
+			'Ingram' => array('email' => 'manufacturer@ingrammicro.com', 'subject'=>'Acct: 50-208-360 License Order', 'template'=>'ingram_license'),
+			'TechData' => array('email' => 'wbd3@techdata.com', 'subject'=>'License Order Account #38024479', 'template'=>'techdata_license'),
+			'Synnex' => array('email' => 'joels@synnex.com', 'subject'=>'License Order Account #520985', 'template'=>'synnex_license'));
+		
+		$endUserFields = array('company_name','contact_name','address','city','company_email_address','country','state','country','phone_number','prior_license_authorization','prior_license_agreement');
+		$endUserHtml = "";
+		
+		foreach($endUser as $attr) {
+			//var_dump($attr);
+			if ($attr['value'] && in_array($attr['code'], $endUserFields))
+				$endUserHtml .= $attr['label'] . ": " . $attr['value'] . "<br />";
+			
+		}
+		
+		$orderItem = Mage::getModel('sales/order_item')->load($itemId);
+		$sku = $orderItem->getSku();
+		
+		//echo $orderItem->getProductId();
+		echo $this->_getIngramEmail($orderItem->getProductId());
+		
+		$invoiceItem = Mage::getModel('sales/order_invoice_item')->load($orderItem->getId(), 'order_item_id');
+		if ($invoiceItem->getSku())
+			$sku = $invoiceItem->getSku();
+			
+		$order = $shipment->getOrder();
+		$order = Mage::getModel('sales/order')->load($order->getId());
+		$order->addStatusHistoryComment("<strong>License Ordered - </strong>" . $dist . "<br />SKU: " . $sku . "<br />" . " QTY: " . $qty)
+            ->setIsVisibleOnFront(false)
+            ->setIsCustomerNotified(false);
+           
+        $order->save();
+        
+        $vars = array();
+		$template = Mage::getModel('core/email_template');
+		 
+		if ($dist == 'Ingram')
+			$email = $this->_getIngramEmail($orderItem->getProductId()) . "@ingrammicro.com";
+		else 
+			$email = $subjectDist[$dist]['email'];
+		
+		$vars['order'] = $order;	
+		$vars['order_id'] = $order->getId();
+		$vars['increment_id'] = $order->getIncrementId();
+		$vars['enduser'] = $endUserHtml;
+		$vars['qty'] = $qty;
+		$vars['sku'] = $sku;
+        $template->loadDefault($subjectDist[$dist]['template']);
+        $template->setSenderName('Software Media Licensing');
+        $template->setSenderEmail('licensing@softwaremedia.com');
+        $template->setTemplateSubject($subjectDist[$dist]['subject']);
+        $template->send('jlosee@softwaremedia.com', $email, $vars);
+
+	}
+	
+	protected function _getIngramEmail($productId) {
+		$manLookup = array('Microsoft Open Value' => 'Open.Value','Microsoft Open Government' => 'Microsoft','VMware Academic' => 'VMware'); 
+		
+		$product = Mage::getModel('catalog/product')->load($productId);
+		$cats = $product->getCategoryIds();
+		foreach ($cats as $category_id) {
+			
+		    $_cat = Mage::getModel('catalog/category')->load($category_id) ;
+		    //echo $_cat->getParentCategory()->getId();
+		    if ($_cat->getParentCategory()->getId() == 52) {
+		    	if (array_key_exists($_cat->getName(), $manLookup))
+		    		return $manLookup[$_cat->getName()];
+		    		
+		    	return $_cat->getName();
+		    }
+		} 
+		//return $category->getPath();
+	}
 
 }
