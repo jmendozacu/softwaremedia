@@ -292,7 +292,16 @@ class Mage_Catalog_Model_Resource_Category_Tree extends Varien_Data_Tree_Dbp
      */
     protected function _getInactiveItemIds($collection, $storeId)
     {
-        $filter = $collection->getAllIdsSql();
+        //$filter = $collection->getAllIdsSql();
+        $idsSelect = clone $collection->getSelect();
+        $idsSelect->reset(Zend_Db_Select::ORDER);
+        $idsSelect->reset(Zend_Db_Select::LIMIT_COUNT);
+        $idsSelect->reset(Zend_Db_Select::LIMIT_OFFSET);
+        $idsSelect->reset(Zend_Db_Select::COLUMNS);
+        $idsSelect->reset(Zend_Db_Select::GROUP);
+        $idsSelect->columns('e.'.$this->getEntity()->getIdFieldName());
+        $filter = $idsSelect;
+        
         $attributeId = $this->_getIsActiveAttributeId();
 
         $conditionSql = $this->_conn->getCheckSql('c.value_id > 0', 'c.value', 'd.value');
