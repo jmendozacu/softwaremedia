@@ -160,7 +160,7 @@ class Mage_Catalog_Model_Resource_Category_Tree extends Varien_Data_Tree_Dbp
         }
 
         if ($this->_joinUrlRewriteIntoCollection) {
-            $collection->joinUrlRewrite();
+            $collection->addUrlRewriteToResult();
             $this->_joinUrlRewriteIntoCollection = false;
         }
 
