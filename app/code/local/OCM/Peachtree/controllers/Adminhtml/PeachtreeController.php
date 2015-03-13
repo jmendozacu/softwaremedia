@@ -163,7 +163,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							$sumText,
 							$countText,
 							$oldId,
-							($amount + $shipping) * -1
+							$amount * -1
 					);
 					if ($fba == 'FBA' && $amount)
 						$csvData[] = $data;
