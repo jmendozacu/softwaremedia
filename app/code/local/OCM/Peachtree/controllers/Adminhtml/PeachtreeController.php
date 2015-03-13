@@ -161,7 +161,8 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 					$fba = "FBA";
 					
 				$amt = str_replace(',','',substr($row[6],1));
-				if ($row[4] == 'Product charges') {
+				if ($row[4] == 'Product charges' && $row[3] != 'Refund') {
+					
 					$amount = $amt;
 					$data = array (
 							$date,
