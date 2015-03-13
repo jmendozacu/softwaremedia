@@ -111,7 +111,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 					
 			// Any extention would work
 			$uploader->setAllowedExtensions ( array (
-					'txt' 
+					'txt','csv'
 			) );
 			$uploader->setAllowRenameFiles ( false );
 			
@@ -247,7 +247,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 			
 			
 		} catch ( Exception $e ) {
-		
+			$this->_getSession ()->addError ( $e->getMessage () );
 		}
 	
 	}
@@ -525,6 +525,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 						}
 					}
 				} catch ( Exception $e ) {
+					$this->_getSession ()->addError ( $e->getMessage () );
 				}
 			}
 		} else {
