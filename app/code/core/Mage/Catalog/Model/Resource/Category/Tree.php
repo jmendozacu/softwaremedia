@@ -160,7 +160,7 @@ class Mage_Catalog_Model_Resource_Category_Tree extends Varien_Data_Tree_Dbp
         }
 
         if ($this->_joinUrlRewriteIntoCollection) {
-            $collection->addUrlRewriteToResult();
+            $collection->joinUrlRewrite();
             $this->_joinUrlRewriteIntoCollection = false;
         }
 
@@ -292,7 +292,6 @@ class Mage_Catalog_Model_Resource_Category_Tree extends Varien_Data_Tree_Dbp
      */
     protected function _getInactiveItemIds($collection, $storeId)
     {
-    	return false;
         $filter = $collection->getAllIdsSql();
         $attributeId = $this->_getIsActiveAttributeId();
 

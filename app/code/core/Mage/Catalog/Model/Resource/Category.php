@@ -640,7 +640,7 @@ class Mage_Catalog_Model_Resource_Category extends Mage_Catalog_Model_Resource_A
             ->addAttributeToSelect('all_children')
             ->addAttributeToSelect('is_anchor')
             ->setOrder('position', Varien_Db_Select::SQL_ASC)
-            ->addUrlRewriteToResult();
+            ->joinUrlRewrite();
 
         return $collection;
     }
