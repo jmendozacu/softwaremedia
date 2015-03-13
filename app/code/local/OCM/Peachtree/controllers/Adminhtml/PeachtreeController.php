@@ -152,6 +152,18 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 				$orderId =  $this->findVal($row,$header,'order id');
 				//var_dump($row);
 				if ($oldId != $orderId && $oldId) {
+					
+				}
+			
+				
+				
+				if (substr($row[2],-3) == 'FBA')
+					$fba = "FBA";
+					
+				$amt = str_replace(',','',substr($row[6],1));
+				if ($row[4] == 'Product charges') {
+					
+					$amount = $amt;
 					$data = array (
 							$date,
 							'AMAZON' . $fba,
@@ -163,35 +175,28 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							$sumText,
 							$countText,
 							$oldId,
-							($amount + $shipping) * -1
+							$amount * -1
 					);
-					if ($fba == 'FBA' && $amount)
+					if ($fba == 'FBA')
 						$csvData[] = $data;
-					elseif ($amount)
+					elsei
 						$fbaData[] = $data;
 					
 					$amount = 0; 
 					$shipping = 0;
 					$fba = "SWM";
 				}
-			
 				
-				
-				if (substr($row[2],-3) == 'FBA')
-					$fba = "FBA";
-					
-				$amt = str_replace(',','',substr($row[6],1));
-				if ($row[4] == 'Product charges') {
-					$amount = $amt;
-				} elseif ($row[4] == 'Other') {
+				/* elseif ($row[4] == 'Other') {
 					$shipping += $amt;
 				} elseif ($row[4] == 'Promo rebates') {
 					$shipping += $amt;
 				} 
 				$oldId = $orderId;
-				
+				*/
 			}
 			
+			/*
 			$data = array (
 							$date,
 							'AMAZON' . $fba,
@@ -209,7 +214,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 						$csvData[] = $data;
 					elseif ($amount)
 						$fbaData[] = $data;
-			
+			*/
 			//Save SWM Data		
 			$count = count($csvData);
 			$sumText = '=SUM(K1:K' . $count . ')';
