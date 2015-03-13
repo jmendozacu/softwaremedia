@@ -179,7 +179,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 					);
 					if ($fba == 'FBA')
 						$csvData[] = $data;
-					elseif ($amount)
+					else
 						$fbaData[] = $data;
 					
 					$amount = 0; 
