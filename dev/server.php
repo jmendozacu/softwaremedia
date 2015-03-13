@@ -2,8 +2,9 @@
 
 var_dump($_SERVER);
 
-require "../app/Mage.php";
-Mage::app('admin')->setUseSessionInUrl(false);
 
+?>
 
-var_dump($_SERVER);
+<form action="/dev/server.php" method="get">
+<input type="submit" />
+</form>
