@@ -176,7 +176,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							$oldId,
 							$amount * -1
 					);
-					if ($fba == 'FBA' && $amount)
+					if ($fba == 'FBA')
 						$csvData[] = $data;
 					elseif ($amount)
 						$fbaData[] = $data;
@@ -184,13 +184,15 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 					$amount = 0; 
 					$shipping = 0;
 					$fba = "SWM";
-				} elseif ($row[4] == 'Other') {
+				}
+				
+				/* elseif ($row[4] == 'Other') {
 					$shipping += $amt;
 				} elseif ($row[4] == 'Promo rebates') {
 					$shipping += $amt;
 				} 
 				$oldId = $orderId;
-				
+				*/
 			}
 			
 			/*
