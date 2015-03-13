@@ -44,10 +44,6 @@ class Mage_CatalogSearch_ResultController extends Mage_Core_Controller_Front_Act
     public function indexAction()
     {
     	$query = Mage::helper('catalogsearch')->getQuery();
-    	Mage::log('User Agent: ' . Mage::helper('core/http')->getHttpUserAgent(),NULL,'search-agent.log');
-    	Mage::log('Query: ' .  $query->getQueryText(),NULL,'search-agent.log');
-    	Mage::log('IP: ' .  $GLOBALS['forwarded_ip'],NULL,'search-agent.log');
-    	Mage::log('Remote IP: ' .  $GLOBALS['remote_ip'],NULL,'search-agent.log');
 		
         /* @var $query Mage_CatalogSearch_Model_Query */
 

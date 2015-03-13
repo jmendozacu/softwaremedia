@@ -43,6 +43,14 @@
 		<?php echo $this->getProductListHtml() ?>
 	</div>
 <?php else: ?>
+<?php
+
+    	Mage::log('User Agent: ' . Mage::helper('core/http')->getHttpUserAgent(),NULL,'search-query.log');
+    	Mage::log('Query: ' .  $this->helper('catalogsearch')->getEscapedQueryText(),NULL,'search-query.log');
+    	Mage::log('IP: ' .  $GLOBALS['forwarded_ip'],NULL,'search-query.log');
+    	Mage::log('Remote IP: ' .  $GLOBALS['remote_ip'],NULL,'search-query.log');
+    	
+?>
 	<div class="page-title">
 		<h1><?php echo ($this->getHeaderText() || $this->getHeaderText() === false) ? $this->getHeaderText() : $this->__("Search results for '%s'", $this->helper('catalogsearch')->getEscapedQueryText()) ?></h1>
 	</div>
