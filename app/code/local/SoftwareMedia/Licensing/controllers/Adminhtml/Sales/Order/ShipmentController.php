@@ -118,15 +118,18 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		}
 		
 		$orderItem = Mage::getModel('sales/order_item')->load($itemId);
-		$sku = $orderItem->getSku();
+		$sku = $orderItem->getProductId();
 		
 		//echo $orderItem->getProductId();
 		echo $this->_getIngramEmail($orderItem->getProductId());
 		
 		$invoiceItem = Mage::getModel('sales/order_invoice_item')->load($orderItem->getId(), 'order_item_id');
 		if ($invoiceItem->getSku())
-			$sku = $invoiceItem->getSku();
+			$sku = $invoiceItem->getProductId();
 			
+		$product = Mage::getModel('catalog/product')->load($sku);
+		$sku = $product->getData('manufacturer_pn_2');
+		
 		$order = $shipment->getOrder();
 		$order = Mage::getModel('sales/order')->load($order->getId());
 		$order->addStatusHistoryComment("<strong>License Ordered - </strong>" . $dist . "<br />SKU: " . $sku . "<br />" . " QTY: " . $qty)
@@ -153,6 +156,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
         $template->setSenderName('Software Media Licensing');
         $template->setSenderEmail('licensing@softwaremedia.com');
         $template->setTemplateSubject($subjectDist[$dist]['subject']);
+        $template->addBcc("licensing@softwaremedia.com");
         $template->send('jlosee@softwaremedia.com', $email, $vars);
 
 	}
