@@ -55,6 +55,7 @@ class Magecon_CustomerNotes_NotesController extends Mage_Adminhtml_Controller_Ac
                 $customer_id = $this->getRequest()->getPost('customer_id');
                 $customer_name = $this->getRequest()->getPost('customer_name');
                 $contact_method = $this->getRequest()->getPost('contact_method');
+                $static = $this->getRequest()->getPost('static');
                 $step_id = $this->getRequest()->getPost('step_id') ? $this->getRequest()->getPost('step_id') : NULL;
                 $campaign_id = $this->getRequest()->getPost('campaign_id') ? $this->getRequest()->getPost('campaign_id') : NULL;
                 $data = array("user_id" => Mage::getSingleton('admin/session')->getUser()->getId(),
@@ -63,6 +64,7 @@ class Magecon_CustomerNotes_NotesController extends Mage_Adminhtml_Controller_Ac
                     "customer_name" => $customer_name,
                     "contact_method" => $contact_method,
                     "campaign_id" => $campaign_id,
+                    "static"		=> $static,
                     "step_id" => $step_id,
                     "note" => $this->getRequest()->getPost('note'),
                     "created_time" => now()

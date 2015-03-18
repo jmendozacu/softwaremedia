@@ -6,23 +6,29 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
 
-//echo "test";
+$noteList = Mage::getModel('customernotes/notes')->getCollection();
+$noteList->setOrder('created_time','DESC');
+$notes = array();
 
-setShippingDescription("Shipping Option - Free Budget <span style='font-size: 70%'>(est. delivery Feb 13th)</span>");
-
-   function setShippingDescription($description) {
-    	$pos = strpos($description,'<');
-    	if ($pos) {
-    		//$this->setData('shipping_description',substr($description, 0, $pos -1));
-    		$pos = strpos($description,'(');
-    		$pos2 = strpos($description,')');
-    		$estimate = substr($description, $pos + 15,-8);
-    		echo date('Y-m-d',strtotime($estimate . " " . date('Y')));
-    		die();
-    		//$this->setDeliveryEstimate(date('Y-m-d',strtotime($estimate . " " . date('Y'))));
-    		
-    		
-    	} else {
-	    	//$this->setData('shipping_description',$description);
-	    }
-    }
+foreach($noteList as $note) {
+	if(!array_key_exists($note->getCustomerId(), $notes))
+		$notes[$note->getCustomerId()] = array();
+		
+	$notes[$note->getCustomerId()][] = $note;
+}
+ 
+foreach($notes as $customerNote) {
+	if (count($customerNote) > 1) {
+		$time = null;
+		echo "New" . "<br />";
+		foreach($customerNote as $note) {
+				if ($time)
+					$note->setUpdateTime($time);
+				else
+					$note->setUpdateTime(NULL);
+				$note->save();
+			
+			$time = $note->getCreatedTime();
+		}
+	}
+}
