@@ -208,7 +208,11 @@
 				<?php endif; ?>
 			</div>
 			<div class="right-infor">
-				<div class="info-first"><?php //echo $this->getChildHtml('related-category')          ?></div>
+				<div class="info-first"><?php //echo $this->getChildHtml('related-category')          ?>
+				<?php if ($_product->getData('license_nonlicense_dropdown') == 1210) {
+					echo $this->getLayout()->createBlock('cms/block')->setBlockId('licensing')->toHtml();
+				}?>
+				</div>
 				<?php echo $this->getChildHtml('tool-resource') ?>
 				<?php echo $this->getChildHtml('recently_viewed') ?>
 			</div>
