@@ -77,7 +77,7 @@ class SoftwareMedia_Campaign_Adminhtml_Campaign_ImportController extends Mage_Ad
 						echo $lastNote->getSelect();
 		
 		                foreach($lastNote as $lNote) {
-							$lNote->setUpdateTime(now());
+							$lNote->setUpdateTime($row[2]);
 							$lNote->save();
 							
 		                }
