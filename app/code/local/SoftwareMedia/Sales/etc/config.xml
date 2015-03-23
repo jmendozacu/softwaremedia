@@ -15,6 +15,14 @@
                     </softwareMedia_sales_license>
                 </observers>
             </sales_order_save_commit_after>
+            <sales_order_save_before>
+            	<observers>
+                    <softwareMedia_sales_note>
+                        <class>softwareMedia_sales/observer</class>
+                        <method>salesNote</method>
+                    </softwareMedia_sales_note>
+                </observers>
+            </sales_order_save_before>
         </events>
         <models>
             <softwareMedia_sales>

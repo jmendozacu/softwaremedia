@@ -10,6 +10,7 @@
                         <input type="hidden" name="customer_id" value="<?php echo $this->getCustomerId(); ?>" />
                         <input type="hidden" name="customer_name" value="<?php echo $this->getCustomerName(); ?>" />
                         <span class="field-row">
+                        	<div class="f-left">
                             <label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Disposition') ?></label>
                             <select name="contact_method">
                             
@@ -19,7 +20,8 @@
                             	}
                             	?>
                             </select>
-                            
+                           
+                        	</div>
                             <div class="f-right">
                             	<label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Campaign') ?></label>
                             	<select onchange="updateSteps();" name="campaign_id" id="campaign_id">
@@ -33,6 +35,8 @@
                             </div>
                         </span>
                         <span class="field-row">
+                        	 <label class="normal" for="note">Static Note?</label>
+                            <input type="checkbox" value="1" name="static" />
                         	 <div class="f-right">
                             	<select name="step_id" id="step_id">
                             		<option value="">Choose a Campaign</option>
@@ -73,6 +77,12 @@
                              <span class="separator">|</span> 
                              <?php endif; ?>
     <strong><?php echo $note['username']; ?></strong>
+    <?php
+   								 if ($noteObj->getStatic()) {
+                            		echo '<span class="separator">|</span> ';
+                            		echo "<strong>STATIC</strong>";
+                            	}
+                            	?>
                             <div class="f-right">
                             	<?php if ($noteObj->getCampaignId()) {
 	                            	echo "<strong>" . $noteObj->getCampaign()->getName() . "</strong>";
@@ -80,7 +90,10 @@
 	                            		echo '<span class="separator">|</span> ';
 										echo "<strong>" . $noteObj->getStep()->getOrder() . ' - ' . $noteObj->getStep()->getName() . "</strong>";
 	                            	}
+	                            	
+	                            	
                             	}
+                            	
                             	?>
                                 <!--input type="submit" class="form-button" value="<?php echo Mage::helper('customernotes')->__('Delete Note') ?>" onclick="return confirm('Are you sure you want to delete the note?')"/-->
                             </div>

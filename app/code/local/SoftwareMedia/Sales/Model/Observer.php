@@ -2,6 +2,19 @@
 
 class SoftwareMedia_Sales_Model_Observer {
 
+	public function salesNote($observer = null) {
+		$order = $observer->getEvent()->getOrder();
+
+		if ($order->getCustomerId() && !$order->getId()) {
+			$customerId = $order->getCustomerId();
+			$lastNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customerId)->addFieldToFilter('static','1');
+			
+			foreach($lastNote as $note) {
+				$order->addStatusHistoryComment("Static Note (" . $note->getNote())->setAdmin($note->getUsername() . ")");
+			}
+		}
+			
+	}
 	//Monitor newly completed orders to switch status for licensing orders
 	public function evaluateLicenseOrder($observer = null) {
 		$order = $observer->getEvent()->getOrder();

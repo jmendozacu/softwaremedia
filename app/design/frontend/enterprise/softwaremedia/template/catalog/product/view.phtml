@@ -15,7 +15,29 @@
 			</div>
 			<div class="product-essential">
                 <div class="page-title">
-                    <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+                    <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
+                    
+                    <?php if ($_product->getAttributeText('platform')): ?>
+									<div class="platform">
+										<?php if ($_product->getAttributeText('platform') == 'Mac'): ?>
+											<img src="<?php echo $this->getSkinUrl(); ?>images/Mac-small.png" alt="Mac" />
+										<?php endif; ?>
+										<?php if ($_product->getAttributeText('platform') == 'Macintosh'): ?>
+											<img src="<?php echo $this->getSkinUrl(); ?>images/Mac-small.png" alt="Mac" />
+										<?php endif; ?>
+										<?php if ($_product->getAttributeText('platform') == 'Windows'): ?>
+											<img src="<?php echo $this->getSkinUrl(); ?>images/Windows-small.png" alt="Windows" />
+										<?php endif; ?>
+										<?php if ($_product->getAttributeText('platform') == 'PC'): ?>
+											<img src="<?php echo $this->getSkinUrl(); ?>images/Windows-small.png" alt="Windows" />
+										<?php endif; ?>
+										<?php if ($_product->getAttributeText('platform') == 'PC Mac'): ?>
+											<img src="<?php echo $this->getSkinUrl(); ?>images/Windows-small.png" alt="Windows" />
+											<img src="<?php echo $this->getSkinUrl(); ?>images/Mac-small.png" alt="Mac" />
+										<?php endif; ?>
+									</div>
+									<?php endif; ?>
+                    </h1>
 					<?php if ($_product->getData('brand')): ?>
 						<?php
 						echo Mage::helper('ocm_mods')->getCategoryThumbnail($_product->getAttributeText('brand'));
@@ -208,7 +230,11 @@
 				<?php endif; ?>
 			</div>
 			<div class="right-infor">
-				<div class="info-first"><?php //echo $this->getChildHtml('related-category')          ?></div>
+				<div class="info-first"><?php //echo $this->getChildHtml('related-category')          ?>
+				<?php if ($_product->getData('license_nonlicense_dropdown') == 1210) {
+					echo $this->getLayout()->createBlock('cms/block')->setBlockId('licensing')->toHtml();
+				}?>
+				</div>
 				<?php echo $this->getChildHtml('tool-resource') ?>
 				<?php echo $this->getChildHtml('recently_viewed') ?>
 			</div>
@@ -296,3 +322,22 @@
 		return false;
 	}
 </script>
+
+<style>
+
+	h1 .platform {
+		display: inline-block;
+		margin: 0;
+		border: none;
+		float : none;
+	}
+		.product-view .page-title h1 .platform img {
+			margin: 0;
+			border: none;
+			float: none;
+			position: relative;
+			width: 32px;
+			height: 32px;
+			top: 2px;	
+		}
+</style>
