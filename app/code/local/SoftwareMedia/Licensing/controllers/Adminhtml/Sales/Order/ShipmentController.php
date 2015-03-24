@@ -174,7 +174,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		    	if (array_key_exists($_cat->getName(), $manLookup))
 		    		return $manLookup[$_cat->getName()];
 		    		
-		    	return $_cat->getName();
+		    	return str_replace(" ","",$_cat->getName());
 		    }
 		} 
 		//return $category->getPath();
