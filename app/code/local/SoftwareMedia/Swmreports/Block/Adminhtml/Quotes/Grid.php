@@ -123,10 +123,10 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 
 		$arr = Mage::getSingleton('sales/order_config')->getStatuses();
 
-		 $this->addColumn('created', array(
+		 $this->addColumn('created_at', array(
             'header'    => Mage::helper('qquoteadv')->__('Created On'),
-            'index'     => 'created',
-            'filter_index' => 'created',
+            'index'     => 'created_at',
+            'filter_index' => 'main_table.created_at',
             'type'      => 'datetime',
             'width'     => '100px',
         ));
@@ -177,20 +177,29 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		$this->addColumn('orders', array(
 			'header' => Mage::helper('coupon')->__('# Orders'),
 			'sortable' => false,
-			'index' => 'orders'
+			'index' => 'orders',
+			'filter' => false,
+			'sortable' => false,
+			'filterable' => false
 		));
 		
 		$this->addColumn('previous_orders', array(
 			'header' => Mage::helper('coupon')->__('Previous Orders'),
 			'sortable' => false,
-			'index' => 'previous_orders'
+			'index' => 'previous_orders',
+			'filter' => false,
+			'sortable' => false,
+			'filterable' => false
 		));
 		
 		$this->addColumn('sum', array(
 			'header' => Mage::helper('coupon')->__('Total Revenue'),
 			'sortable' => false,
 			'type' => 'currency',
+			'filterable' => false,
 			'index' => 'sum',
+			'filter' => false,
+			'sortable' => false,
 			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
 		));
 
@@ -198,6 +207,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			'header' => Mage::helper('coupon')->__('Cost'),
 			'sortable' => false,
 			'type' => 'currency',
+			'filter' => false,
+			'sortable' => false,
 			'index' => 'cost',
 			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
 		));
@@ -207,6 +218,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			'sortable' => false,
 			'type' => 'currency',
 			'index' => 'profit',
+			'filter' => false,
+			'sortable' => false,
 			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
 		));
 		
@@ -229,6 +242,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
                 'is_system' => true,
         ));
         
+        $this->addExportType('*/*/exportCsv', Mage::helper('swmreports')->__('CSV'));
 		parent::_prepareColumns();
 	}
 
@@ -247,5 +261,33 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 
 		return parent::_addCustomFilter($filterData, $collection);
 	}
+	
+	protected function _filterHasUrlConditionCallback($collection, $column)
+	{
+	echo "call";
+	die();
+    if (!$value = $column->getFilter()->getValue()) {
+        return $this;
+    }
+	var_dump($column->getFilter()->getValue());
+	die();
+    if ($value == "No") {
+        $this->getCollection()->getSelect()->having('COUNT(sales_flat_order.increment_id) < 1');
+        //echo  $this->getCollection()->getSelect();
+        //die();
+
+    }
+    else {
+       // $this->getCollection()->getSelect()->having("cc > 0");
+       $this->getCollection()->getSelect()->having('COUNT(sales_flat_order.increment_id) > 0');
+             
+       //echo  $this->getCollection()->getSelect();
+    }
+    
+    //echo $this->getCollection()->getSize();
+
+	    return $this;
+	}
+
 
 }
