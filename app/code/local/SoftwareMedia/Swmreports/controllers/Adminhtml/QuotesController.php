@@ -27,7 +27,7 @@ class SoftwareMedia_Swmreports_Adminhtml_QuotesController extends Mage_Adminhtml
 	 */
 	public function exportCsvAction() {
 		$fileName = 'customer_notes.csv';
-		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_customernote_grid');
+		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_quotes_grid');
 		$this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
 	}
 
