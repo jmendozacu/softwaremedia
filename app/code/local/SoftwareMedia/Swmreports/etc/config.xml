@@ -51,6 +51,10 @@
 								<title>Coupon</title>
 								<action>swmreports/adminhtml_coupon</action>
 							</coupon>
+							<quotes>
+								<title>Quotes</title>
+								<action>swmreports/adminhtml_quotes</action>
+							</quotes>
 							<customernote>
 								<title>CSSR Detailed Stats</title>
 								<action>swmreports/adminhtml_customernote</action>
@@ -116,6 +120,10 @@
 											<title>Coupon</title>
 											<action>swmreports/adminhtml_coupon</action>
 										</coupon>
+										<quotes>
+											<title>Quotes</title>
+											<action>swmreports/adminhtml_quotes</action>
+										</quotes>
 									</children>
 								</swmreports>
 							</children>
@@ -150,6 +158,9 @@
 				<coupon>
 					<file>swmreports/coupon.xml</file>
 				</coupon>
+				<quotes>
+					<file>swmreports/quotes.xml</file>
+				</quotes>
 			</updates>
 		</layout>
 	</adminhtml>
@@ -199,6 +210,9 @@
 			<coupon>
 				<class>SoftwareMedia_Swmreports_Block</class>
 			</coupon>
+			<quotes>
+				<class>SoftwareMedia_Swmreports_Block</class>
+			</quotes>
 		</blocks>
 		<helpers>
 			<swmreports>
@@ -219,6 +233,9 @@
 			<coupon>
 				<class>SoftwareMedia_Swmreports_Helper</class>
 			</coupon>
+			<quotes>
+				<class>SoftwareMedia_Swmreports_Helper</class>
+			</quotes>
 		</helpers>
 	</global>
 </config>
