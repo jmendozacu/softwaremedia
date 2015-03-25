@@ -65,10 +65,10 @@
 				echo "<td>";
 				$codes = explode("\n", str_replace("\r", '', $item->getSerialCodes()));
 				foreach($codes as $code) {
-					$model = Mage::getModel('serialcodes/serialcodes') ->getCollection()->addFieldToFilter('code', $item->getSerialCodes())->getFirstItem(); 
+					$model = Mage::getModel('serialcodes/serialcodes') ->getCollection()->addFieldToFilter('code', $code)->getFirstItem(); 
 					echo $code;
 					if ($model->getImage()) {
-						echo " (<a target=\"_blank\" href='javascript:window.open(\"" . $path . $model->getImage() . "\", \"\", \"width=640, height=480, menubar=no, resizable=no\")'>view authenticity)";
+						echo " (<a target=\"_blank\" href='javascript:window.open(\"" . $path . $model->getImage() . "\", \"\", \"width=640, height=480, menubar=no, resizable=no\")'>view authenticity)</a>";
 					}
 					echo "<br />";
 				}
