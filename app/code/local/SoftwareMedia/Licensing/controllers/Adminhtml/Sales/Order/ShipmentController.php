@@ -35,8 +35,18 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 
 
 			foreach($license['items'] as $key => $item) {
-				if ($item)
-					$this->_sendLicense($key,$data['items'][$key],$item,$shipment,$aCustomAtrrList);
+				if ($item) {
+					$orderItem = Mage::getModel('sales/order_item')->load($key);
+					$invoiceItem = Mage::getModel('sales/order_invoice_item')->load($orderItem->getId(), 'order_item_id');
+					$invMult = 1;
+						
+					if ($orderItem->getQtyInvoiced() > 0) 
+						$invMult = $orderItem->getQtyInvoiced() / $orderItem->getQtyOrdered();
+						 
+					$qty = $data['items'][$key] * $invMult;
+					
+					$this->_sendLicense($key,$qty,$item,$shipment,$aCustomAtrrList);
+				}
 			}
 
             $comment = '';
@@ -156,7 +166,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
         $template->setSenderName('Software Media Licensing');
         $template->setSenderEmail('licensing@softwaremedia.com');
         $template->setTemplateSubject($subjectDist[$dist]['subject']);
-        $template->addBcc("licensing@softwaremedia.com");
+        //$template->addBcc("licensing@softwaremedia.com");
         $template->send($email, $email, $vars);
 
 	}
