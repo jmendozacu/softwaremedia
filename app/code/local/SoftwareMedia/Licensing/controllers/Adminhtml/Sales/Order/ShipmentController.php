@@ -4,6 +4,8 @@ require_once('Mage/Adminhtml/controllers/Sales/Order/ShipmentController.php');
 
 class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends Mage_Adminhtml_Sales_Order_ShipmentController {
 
+	protected $licenses = array();
+	
     /**
      * Save shipment
      * We can save only new shipment. Existing shipments are not editable
@@ -48,6 +50,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 					$this->_sendLicense($key,$qty,$item,$shipment,$aCustomAtrrList);
 				}
 			}
+			$this->sendLicense();
 
             $comment = '';
             if (!empty($data['comment_text'])) {
@@ -110,6 +113,42 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
         }
     }
 
+	protected function addLicense($vars) {
+		if (!array_key_exists($vars['email'], $this->licenses)) 
+			$this->licenses[$vars['email']] = array();
+		
+		$this->licenses[$vars['email']][] = $vars;
+	}
+	
+	protected function sendLicense() {
+		foreach($this->licenses as $email => $license) {
+			$vars = null;
+			$qtyHTML = null;
+			
+			foreach($license as $item) {
+				if (!$vars) {
+					$vars = $item;
+					$vars['qty'] = array();
+					$vars['sku'] = array();
+				} 
+				$qtyHTML .= "Qty: " . $item['qty'] . "<br />";
+				$qtyHTML .= "SKU: " . $item['sku'] . "<br /><br />";
+
+				
+			}
+			
+			$vars['qty'] = $qtyHTML;
+			$template = Mage::getModel('core/email_template');
+			
+	        $template->loadDefault($vars['template']);
+	        $template->setSenderName('Software Media Licensing');
+	        $template->setSenderEmail('licensing@softwaremedia.com');
+	        $template->setTemplateSubject($vars['subject']);
+	        $template->addBcc("licensing@softwaremedia.com");
+	        $template->send('jlosee@softwaremedia.com', $email, $vars);
+        
+		}
+	}
 	protected function _sendLicense($itemId,$qty,$dist,$shipment,$endUser) {
 	
 		$subjectDist = array(
@@ -162,13 +201,17 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		$vars['enduser'] = $endUserHtml;
 		$vars['qty'] = $qty;
 		$vars['sku'] = $sku;
+		$vars['template'] = $subjectDist[$dist]['template'];
+		$vars['subject'] = $subjectDist[$dist]['subject'];
+		$vars['email'] = $email;
+		
         $template->loadDefault($subjectDist[$dist]['template']);
         $template->setSenderName('Software Media Licensing');
         $template->setSenderEmail('licensing@softwaremedia.com');
         $template->setTemplateSubject($subjectDist[$dist]['subject']);
         $template->addBcc("licensing@softwaremedia.com");
-        $template->send($email, $email, $vars);
-
+       // $template->send($email, $email, $vars);
+	   $this->addLicense($vars);
 	}
 	
 	protected function _getIngramEmail($productId) {
