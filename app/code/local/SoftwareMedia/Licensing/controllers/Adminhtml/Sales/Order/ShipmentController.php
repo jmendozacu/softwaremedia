@@ -117,7 +117,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 			'TechData' => array('email' => 'wbd3@techdata.com', 'subject'=>'License Order Account #38024479', 'template'=>'techdata_license'),
 			'Synnex' => array('email' => 'team_6540@synnex.com', 'subject'=>'License Order Account #520985', 'template'=>'synnex_license'));
 		
-		$endUserFields = array('company_name','contact_name','address','city','company_email_address','country','state','country','phone_number','prior_license_authorization','prior_license_agreement');
+		$endUserFields = array('company_name','contact_name','address','city','zip','company_email_address','country','state','country','phone_number','prior_license_authorization','prior_license_agreement');
 		$endUserHtml = "";
 		
 		foreach($endUser as $attr) {
