@@ -131,12 +131,21 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 					$vars['qty'] = array();
 					$vars['sku'] = array();
 				} 
+				
+				if (!$item['sku']) {
+					Mage::getSingleton ( 'adminhtml/session' )->addError ( "SKU " . $item['real_sku'] . " is missing manufacturer part number - not ordered" );
+					continue;
+				}
+					
 				$qtyHTML .= "Qty: " . $item['qty'] . "<br />";
 				$qtyHTML .= "SKU: " . $item['sku'] . "<br /><br />";
 
 				
 			}
 			
+			if (!$qtyHTML)
+				continue;
+				
 			$vars['qty'] = $qtyHTML;
 			$template = Mage::getModel('core/email_template');
 			
@@ -203,9 +212,31 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		$vars['enduser'] = $endUserHtml;
 		$vars['qty'] = $qty;
 		$vars['sku'] = $sku;
+		$vars['real_sku'] = $product->getSku();
 		$vars['template'] = $subjectDist[$dist]['template'];
 		$vars['subject'] = $subjectDist[$dist]['subject'];
 		$vars['email'] = $email;
+		
+		
+		if($product->getTypeId() == 'grouped' ) {
+			$multQty = $qty;
+			$associatedProducts = $product->getTypeInstance(true)->getAssociatedProducts($product);
+			$hasPrice = false;
+			
+			foreach($associatedProducts as $groupSubProd) {
+				$qty = 1;
+				
+				if ($groupSubProd->getQty() > 0)
+					$qty = $groupSubProd->getQty();
+					
+				$vars['sku'] = $groupSubProd->getData('manufacturer_pn_2');
+				$vars['qty'] = $qty * $multQty;
+				$vars['real_sku'] = $groupSubProd->getSku();
+				$this->addLicense($vars);
+			}
+		} else {
+			 $this->addLicense($vars);
+		}
 		
         $template->loadDefault($subjectDist[$dist]['template']);
         $template->setSenderName('Software Media Licensing');
@@ -213,7 +244,6 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
         $template->setTemplateSubject($subjectDist[$dist]['subject']);
         $template->addBcc("licensing@softwaremedia.com");
        // $template->send($email, $email, $vars);
-	   $this->addLicense($vars);
 	}
 	
 	protected function _getIngramEmail($productId) {
