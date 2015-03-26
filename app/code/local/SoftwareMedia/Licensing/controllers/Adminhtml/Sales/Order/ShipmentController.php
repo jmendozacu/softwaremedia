@@ -43,7 +43,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 					$invMult = 1;
 						
 					if ($orderItem->getQtyInvoiced() > 0) 
-						$invMult = $orderItem->getQtyInvoiced() / $orderItem->getQtyOrdered();
+						$invMult = $invoiceItem->getQty() / $orderItem->getQtyOrdered();
 						 
 					$qty = $data['items'][$key] * $invMult;
 					
@@ -76,7 +76,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
                 $responseAjax->setOk(true);
             }
 
-            //$this->_saveShipment($shipment);
+            $this->_saveShipment($shipment);
 
             $shipment->sendEmail(!empty($data['send_email']), $comment);
 
@@ -144,7 +144,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	        $template->setSenderName('Software Media Licensing');
 	        $template->setSenderEmail('licensing@softwaremedia.com');
 	        $template->setTemplateSubject($vars['subject']);
-	        //$template->addBcc("licensing@softwaremedia.com");
+	        $template->addBcc("licensing@softwaremedia.com");
 	        $template->send('jlosee@softwaremedia.com', $email, $vars);
         
 		}
