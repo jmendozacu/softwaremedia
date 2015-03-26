@@ -145,12 +145,14 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	        $template->setSenderEmail('licensing@softwaremedia.com');
 	        $template->setTemplateSubject($vars['subject']);
 	        $template->addBcc("licensing@softwaremedia.com");
-	        $template->send('jlosee@softwaremedia.com', $email, $vars);
+	        $template->send($email, $email, $vars);
         
 		}
 	}
 	protected function _sendLicense($itemId,$qty,$dist,$shipment,$endUser) {
-	
+		if (!$qty)
+			return;
+			
 		$subjectDist = array(
 			'Ingram' => array('email' => 'manufacturer@ingrammicro.com', 'subject'=>'Acct: 50-208-360 License Order', 'template'=>'ingram_license'),
 			'TechData' => array('email' => 'wbd3@techdata.com', 'subject'=>'License Order Account #38024479', 'template'=>'techdata_license'),
