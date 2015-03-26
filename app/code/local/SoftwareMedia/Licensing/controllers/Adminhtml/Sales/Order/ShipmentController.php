@@ -244,7 +244,6 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
         $template->setTemplateSubject($subjectDist[$dist]['subject']);
         $template->addBcc("licensing@softwaremedia.com");
        // $template->send($email, $email, $vars);
-	   $this->addLicense($vars);
 	}
 	
 	protected function _getIngramEmail($productId) {
