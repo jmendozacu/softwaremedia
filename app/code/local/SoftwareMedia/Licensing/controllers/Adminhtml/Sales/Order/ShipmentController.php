@@ -76,7 +76,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
                 $responseAjax->setOk(true);
             }
 
-            //$this->_saveShipment($shipment);
+            $this->_saveShipment($shipment);
 
             $shipment->sendEmail(!empty($data['send_email']), $comment);
 
