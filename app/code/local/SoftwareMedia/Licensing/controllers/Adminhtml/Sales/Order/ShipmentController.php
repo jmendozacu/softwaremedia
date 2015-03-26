@@ -76,7 +76,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
                 $responseAjax->setOk(true);
             }
 
-            $this->_saveShipment($shipment);
+            //$this->_saveShipment($shipment);
 
             $shipment->sendEmail(!empty($data['send_email']), $comment);
 
@@ -150,7 +150,9 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		}
 	}
 	protected function _sendLicense($itemId,$qty,$dist,$shipment,$endUser) {
-	
+		if (!$qty)
+			return;
+			
 		$subjectDist = array(
 			'Ingram' => array('email' => 'manufacturer@ingrammicro.com', 'subject'=>'Acct: 50-208-360 License Order', 'template'=>'ingram_license'),
 			'TechData' => array('email' => 'wbd3@techdata.com', 'subject'=>'License Order Account #38024479', 'template'=>'techdata_license'),
