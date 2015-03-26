@@ -145,7 +145,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	        $template->setSenderEmail('licensing@softwaremedia.com');
 	        $template->setTemplateSubject($vars['subject']);
 	        $template->addBcc("licensing@softwaremedia.com");
-	        $template->send('jlosee@softwaremedia.com', $email, $vars);
+	        $template->send($email, $email, $vars);
         
 		}
 	}
