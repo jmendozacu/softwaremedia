@@ -88,4 +88,16 @@ window.onload = function(){
     s.parentNode.insertBefore(gts, s);
   })();
 </script>
+
+<script>
+  function updateStatus(s) {
+    document.getElementById('live-chat-status').innerHTML = '<a href="javascript:$zopim.livechat.window.show()"><img src="/skin/frontend/enterprise/softwaremedia/images/chatnow.png" /></a>';
+  }
+ 
+  $zopim(function() {
+    $zopim.livechat
+      .setOnStatus(updateStatus);
+  });
+</script>
+
 <!-- END: Google Trusted Stores -->
