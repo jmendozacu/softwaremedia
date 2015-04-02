@@ -56,6 +56,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		$collection = Mage::getModel('qquoteadv/qqadvcustomer')->getCollection()
                               ->addFieldToFilter('main_table.is_quote','1')
                               ->addFieldToFilter('main_table.status',array('gt'=>'1'))
+                              ->addFieldToFilter('main_table.status',array('neq'=>'21'))
                               ->addFieldToFilter('main_table.customer_id',array('gt' =>'0'));
 
 		$collection = $this->addFilters($collection);
