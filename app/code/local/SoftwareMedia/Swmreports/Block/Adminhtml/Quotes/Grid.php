@@ -19,6 +19,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 //		$this->setUseAjax(true);
 		$this->setSaveParametersInSession(true);
 		$this->setSubReportSize(false);
+		$this->setCountTotals(false);
 		$this->setDefaultLimit(10000);
 	}
 	
@@ -113,9 +114,6 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		
 		//echo $collection->getSelect();
 		$this->setCollection($collection);
-		
-		echo "size: " . $collection->getSize();
-		die();
 
 		return parent::_prepareCollection();
 	}
