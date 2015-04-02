@@ -91,10 +91,6 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			'quoteadv_request_item', '`main_table`.quote_id=`quoteadv_request_item`.quote_id', array()
 		);
 
-		$collection->getSelect()->joinLeft(
-			'quoteadv_customer', '`main_table`.quote_id=`quoteadv_customer`.quote_id', array('qid' => 'increment_id', 'created'=>'created_at')
-		);
-
 
 		$collection->getSelect()->joinLeft(
 			'admin_user', '`main_table`.user_id=`admin_user`.user_id', array('username')
@@ -157,7 +153,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			
 		$this->addColumn('Quote ID', array(
 			'header' => Mage::helper('coupon')->__('Quote ID'),
-			'index' => 'qid',
+			'index' => 'increment_id',
+			'filter_index' => 'main_table.increment_id',
 			'width' => '100px',
 		));
 
