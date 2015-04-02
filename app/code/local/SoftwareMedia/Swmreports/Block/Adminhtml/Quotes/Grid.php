@@ -26,7 +26,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		if ($this->getRequest()->getParam('from'))
 			$from = date('Y-m-d 00:00:00',strtotime($this->getRequest()->getParam('from')));
 		
-		$now = $to = date('Y-m-d 23:59:59',strtotime( '-1 days' ));
+		$now = $to = date('Y-m-d 23:59:59',strtotime( '-1 hours' ));
 			
 		if ($this->getRequest()->getParam('to'))
 			$to = date('Y-m-d 23:59:59',strtotime($this->getRequest()->getParam('to')));
