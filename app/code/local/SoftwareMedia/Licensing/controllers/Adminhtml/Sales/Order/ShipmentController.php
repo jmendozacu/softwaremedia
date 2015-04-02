@@ -158,7 +158,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	        $send = 'jlosee@softwaremedia.com';
 	        echo $_SERVER['HTTP_HOST'];
 	        
-	        if (strpos($_SERVER['HTTP_HOST'], 'dev')) {
+	        if (strpos($_SERVER['HTTP_HOST'], 'dev') === 0) {
 	        	echo "DEV";
 	        	echo $_SERVER['HTTP_HOST'];
 	        	$send = 'jlosee@softwaremedia.com';
