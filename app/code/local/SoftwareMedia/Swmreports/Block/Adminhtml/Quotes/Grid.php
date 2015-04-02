@@ -72,7 +72,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		$collection->getSelect()->joinLeft(
 			'catalog_product_entity_decimal', '`quoteadv_request_item`.product_id=`catalog_product_entity_decimal`.entity_id AND catalog_product_entity_decimal.attribute_id = 100', array()
 		);
-		echo "<br />" . count($collection);
+		
 		/*
 
 		$collection->getSelect()->joinLeft(
@@ -86,7 +86,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		$collection->getSelect()->group('quoteadv_request_item.quote_id');
 		
 		//echo $collection->getSelect();
-		echo "<br />" . count($collection);
+
 		
 		foreach($collection as $col) {
 			$cost = NULL;
@@ -114,8 +114,9 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		//echo $collection->getSelect();
 		$this->setCollection($collection);
 		
-		echo "<br />" . count($collection);
+		echo $collection->getSize();
 		die();
+
 		return parent::_prepareCollection();
 	}
 
