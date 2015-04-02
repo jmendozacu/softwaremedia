@@ -72,6 +72,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		if (!$this->getRequest()->getParam('from'))
 			return parent::_prepareColumns();
 			
+			
+		$resource = Mage::getSingleton('core/resource');
+	    $readConnection = $resource->getConnection('core_read');
+
+    
 		/**
 		 * @var Mage_SalesRule_Model_Resource_Coupon_Collection $collection
 		 */
@@ -101,6 +106,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		);
 		
 		/*
+
 		$collection->getSelect()->joinLeft(
 			'catalog_product_entity_int', '`quoteadv_request_item`.product_id=`catalog_product_entity_decimal`.entity_id AND catalog_product_entity_int.attribute_id = 1455 AND catalog_product_entity_int.value=1210', array('license'=>'value')
 		);
@@ -129,7 +135,12 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 
 			$col->setData('previous_orders',$salesItems->getSize());
 			
-					}
+			$query = 'SELECT value FROM catalog_product_entity_int WHERE entity_id IN (SELECT product_id FROM quoteadv_request_item WHERE quote_id = ' . $col->getQuoteId() . ') AND attribute_id = 1455 AND value=1210';
+			
+			$licenses = $readConnection->fetchCol($query);
+			
+			$col->setData('license',count($licenses));
+		}
 	
 		
 		//echo $collection->getSelect();
@@ -202,6 +213,17 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
             'index'     => 'username'
         ));
         
+        		
+		$this->addColumn('license', array(
+			'header' => Mage::helper('coupon')->__('Has License'),
+			'sortable' => false,
+			'index' => 'license',
+			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer',
+			'filter' => false,
+			'sortable' => false
+		));
+		
+		
 		/*
 		$this->addColumn('license', array(
             'header'    => Mage::helper('qquoteadv')->__('License'),
@@ -246,6 +268,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			'index' => 'cost',
 			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
 		));
+
         
         $this->addColumn('profit', array(
 			'header' => Mage::helper('coupon')->__('Quote Profit'),
