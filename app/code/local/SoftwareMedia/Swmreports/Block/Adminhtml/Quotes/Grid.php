@@ -114,7 +114,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		//echo $collection->getSelect();
 		$this->setCollection($collection);
 		
-		echo $collection->getSize();
+		echo "size: " . $collection->getSize();
 		die();
 
 		return parent::_prepareCollection();
