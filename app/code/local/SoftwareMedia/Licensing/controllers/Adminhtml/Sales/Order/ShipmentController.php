@@ -255,7 +255,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	}
 	
 	protected function _getIngramEmail($productId) {
-		$manLookup = array('Microsoft Open Value' => 'Open.Value','Microsoft' => 'microsoft-licensing','Microsoft Open Government' => 'microsoft-licensing','VMware Academic' => 'VMware'); 
+		$manLookup = array('Microsoft Open Value' => 'Open.Value', 'Trend Micro' => 'trend-licensing','Microsoft' => 'microsoft-licensing','Microsoft Open Government' => 'microsoft-licensing','VMware Academic' => 'VMware'); 
 		
 		$product = Mage::getModel('catalog/product')->load($productId);
 		$cats = $product->getCategoryIds();
@@ -267,7 +267,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		    	if (array_key_exists($_cat->getName(), $manLookup))
 		    		return $manLookup[$_cat->getName()];
 		    		
-		    	return str_replace(" ","",$_cat->getName());
+		    	return str_replace(" ","",$_cat->getName()) . '-licensing';
 		    }
 		} 
 		//return $category->getPath();
