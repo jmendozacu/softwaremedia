@@ -100,10 +100,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			'catalog_product_entity_decimal', '`quoteadv_request_item`.product_id=`catalog_product_entity_decimal`.entity_id AND catalog_product_entity_decimal.attribute_id = 100', array()
 		);
 		
-
+		/*
 		$collection->getSelect()->joinLeft(
 			'catalog_product_entity_int', '`quoteadv_request_item`.product_id=`catalog_product_entity_decimal`.entity_id AND catalog_product_entity_int.attribute_id = 1455 AND catalog_product_entity_int.value=1210', array('license'=>'value')
 		);
+		*/
 				
 		$collection->getSelect()->columns(array('sum' => 'SUM(quoteadv_request_item.owner_cur_price * quoteadv_request_item.request_qty)'));
 		$collection->getSelect()->columns(array('cost' => 'SUM(catalog_product_entity_decimal.value * quoteadv_request_item.request_qty)'));
@@ -201,17 +202,6 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
             'index'     => 'username'
         ));
         
-        		
-		$this->addColumn('license', array(
-			'header' => Mage::helper('coupon')->__('Has License'),
-			'sortable' => false,
-			'index' => 'license',
-			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer',
-			'filter' => false,
-			'sortable' => false
-		));
-		
-		
 		/*
 		$this->addColumn('license', array(
             'header'    => Mage::helper('qquoteadv')->__('License'),
@@ -256,7 +246,6 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			'index' => 'cost',
 			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
 		));
-
         
         $this->addColumn('profit', array(
 			'header' => Mage::helper('coupon')->__('Quote Profit'),
