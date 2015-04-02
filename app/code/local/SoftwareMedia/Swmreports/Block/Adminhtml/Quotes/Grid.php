@@ -92,7 +92,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		);
 
 		$collection->getSelect()->joinLeft(
-			'quoteadv_customer', '`main_table`.quote_id=`quoteadv_customer`.quote_id', array('qid' => 'quote_id', 'created'=>'created_at')
+			'quoteadv_customer', '`main_table`.quote_id=`quoteadv_customer`.quote_id', array('qid' => 'increment_id', 'created'=>'created_at')
 		);
 
 
