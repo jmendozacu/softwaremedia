@@ -156,6 +156,8 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	        $template->addBcc("licensing@softwaremedia.com");
 	        $send = $email;
 	        $send = 'jlosee@softwaremedia.com';
+	        echo $_SERVER['HTTP_HOST'];
+	        die();
 	        if (strpos($_SERVER['HTTP_HOST'], 'local') || strpos($_SERVER['HTTP_HOST'], 'dev')) {
 	        	echo $_SERVER['HTTP_HOST'];
 	        	$send = 'jlosee@softwaremedia.com';
