@@ -19,7 +19,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 //		$this->setUseAjax(true);
 		$this->setSaveParametersInSession(true);
 		$this->setSubReportSize(false);
-		$this->setDefaultLimit(200);
+		$this->setDefaultLimit(10000);
 	}
 	
 	public function addFilters($col) {
