@@ -30,10 +30,6 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			
 		if ($this->getRequest()->getParam('to'))
 			$to = date('Y-m-d 23:59:59',strtotime($this->getRequest()->getParam('to')));
-		else 
-			$to = $now;
-		if ($to>$now)
-			$to = $now;
 			
 				
 		if ($from)
