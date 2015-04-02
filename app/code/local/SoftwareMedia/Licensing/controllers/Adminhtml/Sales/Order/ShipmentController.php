@@ -163,7 +163,11 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	        	echo $_SERVER['HTTP_HOST'];
 	        	$send = 'jlosee@softwaremedia.com';
 				die();
+			} else {
+				echo "NOT DEV";
+				
 			}
+			
 			die();
 	        $template->send($send, $email, $vars);
         
