@@ -34,6 +34,10 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			$to = $now;
 		if ($to>$now)
 			$to = $now;
+			
+		echo $to . "<br />";
+		echo $now;
+		die();
 				
 		if ($from)
 			$col->addFieldToFilter('main_table.created_at',array('gt' => $from));
