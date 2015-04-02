@@ -26,7 +26,7 @@ class SoftwareMedia_Swmreports_Adminhtml_QuotesController extends Mage_Adminhtml
 	 * Export order grid to CSV format
 	 */
 	public function exportCsvAction() {
-		$fileName = 'quotes.xlsx';
+		$fileName = 'quotes.csv';
 		if (!$this->getRequest()->getParam('from')) {
 			Mage::getSingleton('core/session')->addError('Please enter a from date');
 			$this->_redirect('*/*/index');
@@ -34,7 +34,20 @@ class SoftwareMedia_Swmreports_Adminhtml_QuotesController extends Mage_Adminhtml
 		}
 			
 		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_quotes_grid');
-		$this->_prepareDownloadResponse($fileName, $grid->getExcelFile());
+		
+		$path = Mage::getBaseDir('var') . DS . 'export' . DS;
+		$name = md5(microtime());
+		$file = $path . DS . $name . '.csv';
+		
+		$myfile = fopen($file, "w");
+		fwrite($myfile, $grid->getCsv());
+		fclose($myfile);
+		
+		$this->_prepareDownloadResponse($fileName, array(
+			'type' => 'filename',
+			'value' => $file,
+			'rm' => true // can delete file after use
+		));
 	}
 
 }

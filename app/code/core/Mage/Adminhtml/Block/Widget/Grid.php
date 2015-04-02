@@ -1043,8 +1043,10 @@ class Mage_Adminhtml_Block_Widget_Grid extends Mage_Adminhtml_Block_Widget
             }
         }
         $csv.= implode(',', $data)."\n";
-
+		
+		$i =0;
         foreach ($this->getCollection() as $item) {
+        	$i++;
             $data = array();
             foreach ($this->_columns as $column) {
                 if (!$column->getIsSystem()) {
@@ -1054,6 +1056,8 @@ class Mage_Adminhtml_Block_Widget_Grid extends Mage_Adminhtml_Block_Widget
             }
             $csv.= implode(',', $data)."\n";
         }
+        echo $i;
+        die();
 
         if ($this->getCountTotals())
         {
