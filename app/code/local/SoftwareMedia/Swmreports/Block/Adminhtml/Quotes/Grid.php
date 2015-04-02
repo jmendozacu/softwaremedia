@@ -52,7 +52,26 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		return $this;
 	}
 
+	public function addFilters($col) {
+		if ($this->getRequest()->getParam('from'))
+			$from = date('Y-m-d 00:00:00',strtotime($this->getRequest()->getParam('from')));
+		
+		if ($this->getRequest()->getParam('to'))
+			$to = date('Y-m-d 23:59:59',strtotime($this->getRequest()->getParam('to')));
+		
+		if ($from)
+			$col->addFieldToFilter('main_table.created_at',array('gt' => $from));
+		if ($to)
+			$col->addFieldToFilter('main_table.created_at',array('lt' => $to));
+				
+		return $col;
+	}
+	
 	protected function _prepareCollection() {
+		
+		if (!$this->getRequest()->getParam('from'))
+			return parent::_prepareColumns();
+			
 		/**
 		 * @var Mage_SalesRule_Model_Resource_Coupon_Collection $collection
 		 */
@@ -61,6 +80,8 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
                               ->addFieldToFilter('main_table.status',array('gt'=>'1'))
                               ->addFieldToFilter('main_table.customer_id',array('gt' =>'0'));
 
+		$collection = $this->addFilters($collection);
+		
 		$collection->getSelect()->joinLeft(
 			'quoteadv_request_item', '`main_table`.quote_id=`quoteadv_request_item`.quote_id', array()
 		);
@@ -71,14 +92,18 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 
 
 		$collection->getSelect()->joinLeft(
+			'admin_user', '`main_table`.user_id=`admin_user`.user_id', array('username')
+		);
+
+
+		$collection->getSelect()->joinLeft(
 			'catalog_product_entity_decimal', '`quoteadv_request_item`.product_id=`catalog_product_entity_decimal`.entity_id AND catalog_product_entity_decimal.attribute_id = 100', array()
 		);
 		
-		/*
+
 		$collection->getSelect()->joinLeft(
 			'catalog_product_entity_int', '`quoteadv_request_item`.product_id=`catalog_product_entity_decimal`.entity_id AND catalog_product_entity_int.attribute_id = 1455 AND catalog_product_entity_int.value=1210', array('license'=>'value')
 		);
-		*/
 				
 		$collection->getSelect()->columns(array('sum' => 'SUM(quoteadv_request_item.owner_cur_price * quoteadv_request_item.request_qty)'));
 		$collection->getSelect()->columns(array('cost' => 'SUM(catalog_product_entity_decimal.value * quoteadv_request_item.request_qty)'));
@@ -115,6 +140,9 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 
 	protected function _prepareColumns() {
 
+		if (!$this->getRequest()->getParam('from'))
+			return parent::_prepareColumns();
+			
 		$this->addColumn('Quote ID', array(
 			'header' => Mage::helper('coupon')->__('Quote ID'),
 			'index' => 'qid',
@@ -168,6 +196,22 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
             'index'     => 'email'
         ));
 
+		$this->addColumn('username', array(
+            'header'    => Mage::helper('qquoteadv')->__('Sales Rep'),
+            'index'     => 'username'
+        ));
+        
+        		
+		$this->addColumn('license', array(
+			'header' => Mage::helper('coupon')->__('Has License'),
+			'sortable' => false,
+			'index' => 'license',
+			'renderer' => 'OCM_Catalog_Block_Widget_Orenderer',
+			'filter' => false,
+			'sortable' => false
+		));
+		
+		
 		/*
 		$this->addColumn('license', array(
             'header'    => Mage::helper('qquoteadv')->__('License'),
@@ -175,7 +219,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
         ));
         */
 		$this->addColumn('orders', array(
-			'header' => Mage::helper('coupon')->__('# Orders'),
+			'header' => Mage::helper('coupon')->__('Orders after Quote'),
 			'sortable' => false,
 			'index' => 'orders',
 			'filter' => false,
@@ -184,7 +228,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		));
 		
 		$this->addColumn('previous_orders', array(
-			'header' => Mage::helper('coupon')->__('Previous Orders'),
+			'header' => Mage::helper('coupon')->__('Orders before Quote'),
 			'sortable' => false,
 			'index' => 'previous_orders',
 			'filter' => false,
@@ -193,7 +237,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		));
 		
 		$this->addColumn('sum', array(
-			'header' => Mage::helper('coupon')->__('Total Revenue'),
+			'header' => Mage::helper('coupon')->__('Quote Rev'),
 			'sortable' => false,
 			'type' => 'currency',
 			'filterable' => false,
@@ -204,7 +248,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		));
 
 		$this->addColumn('cost', array(
-			'header' => Mage::helper('coupon')->__('Cost'),
+			'header' => Mage::helper('coupon')->__('Quote Cost'),
 			'sortable' => false,
 			'type' => 'currency',
 			'filter' => false,
@@ -212,9 +256,10 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 			'index' => 'cost',
 			'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
 		));
+
         
         $this->addColumn('profit', array(
-			'header' => Mage::helper('coupon')->__('Profit'),
+			'header' => Mage::helper('coupon')->__('Quote Profit'),
 			'sortable' => false,
 			'type' => 'currency',
 			'index' => 'profit',
@@ -264,8 +309,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 	
 	protected function _filterHasUrlConditionCallback($collection, $column)
 	{
-	echo "call";
-	die();
+
     if (!$value = $column->getFilter()->getValue()) {
         return $this;
     }

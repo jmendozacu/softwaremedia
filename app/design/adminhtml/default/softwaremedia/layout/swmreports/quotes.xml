@@ -2,7 +2,7 @@
 <layout version="0.1.0">
 	<swmreports_adminhtml_quotes_index>
 		<reference name="content">
-			<block type="swmreports/adminhtml_quotes" name="quotes" />
+			<block type="swmreports/adminhtml_quotes_grid" name="quotes" template="reports/quotes.phtml" />
 		</reference>
 	</swmreports_adminhtml_quotes_index>
 </layout>
