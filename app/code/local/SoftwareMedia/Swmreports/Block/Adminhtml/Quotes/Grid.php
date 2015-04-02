@@ -21,44 +21,20 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		$this->setSubReportSize(false);
 		$this->setDefaultLimit(200);
 	}
-
-	protected function _addColumnFilterToCollection($column) {
-		if ($this->getCollection()) {
-			$field = ( $column->getFilterIndex() ) ? $column->getFilterIndex() : $column->getIndex();
-			if ($column->getFilterConditionCallback()) {
-				call_user_func($column->getFilterConditionCallback(), $this->getCollection(), $column);
-			} else {
-				$cond = $column->getFilter()->getCondition();
-				if ($field && isset($cond)) {
-					if ($field == 'discount_amount') {
-						$to = (!empty($cond['to']) ? $cond['to'] : 0);
-						$from = (!empty($cond['from']) ? $cond['from'] : 0);
-						unset($cond['from']);
-						unset($cond['to']);
-
-						if (!empty($from)) {
-							$cond['to'] = $from * -1;
-						}
-						if (!empty($to)) {
-							$cond['from'] = $to * -1;
-						}
-						$this->getCollection()->addFieldToFilter('main_table.discount_amount', $cond);
-					} else {
-						$this->getCollection()->addFieldToFilter($field, $cond);
-					}
-				}
-			}
-		}
-		return $this;
-	}
-
+	
 	public function addFilters($col) {
 		if ($this->getRequest()->getParam('from'))
 			$from = date('Y-m-d 00:00:00',strtotime($this->getRequest()->getParam('from')));
 		
+		$now = $to = date('Y-m-d 23:59:59',strtotime( '-1 days' ));
+			
 		if ($this->getRequest()->getParam('to'))
 			$to = date('Y-m-d 23:59:59',strtotime($this->getRequest()->getParam('to')));
-		
+		else 
+			$to = $now;
+		if ($to>$now)
+			$to = $now;
+				
 		if ($from)
 			$col->addFieldToFilter('main_table.created_at',array('gt' => $from));
 		if ($to)
