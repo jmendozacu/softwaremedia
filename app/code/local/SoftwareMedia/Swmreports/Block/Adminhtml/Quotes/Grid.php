@@ -25,8 +25,6 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 	public function addFilters($col) {
 		if ($this->getRequest()->getParam('from'))
 			$from = date('Y-m-d 00:00:00',strtotime($this->getRequest()->getParam('from')));
-		
-		$now = $to = date('Y-m-d 23:59:59',strtotime( '-1 days' ));
 			
 		if ($this->getRequest()->getParam('to'))
 			$to = date('Y-m-d 23:59:59',strtotime($this->getRequest()->getParam('to')));
@@ -74,7 +72,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		$collection->getSelect()->joinLeft(
 			'catalog_product_entity_decimal', '`quoteadv_request_item`.product_id=`catalog_product_entity_decimal`.entity_id AND catalog_product_entity_decimal.attribute_id = 100', array()
 		);
-		
+		echo "<br />" . count($collection);
 		/*
 
 		$collection->getSelect()->joinLeft(
@@ -88,7 +86,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		$collection->getSelect()->group('quoteadv_request_item.quote_id');
 		
 		//echo $collection->getSelect();
-
+		echo "<br />" . count($collection);
 		
 		foreach($collection as $col) {
 			$cost = NULL;
@@ -113,10 +111,11 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Quotes_Grid extends Mage_Adminhtm
 		}
 	
 		
-		echo $collection->getSelect();
-		die();
+		//echo $collection->getSelect();
 		$this->setCollection($collection);
-
+		
+		echo "<br />" . count($collection);
+		die();
 		return parent::_prepareCollection();
 	}
 
