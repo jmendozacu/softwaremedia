@@ -27,6 +27,12 @@ class SoftwareMedia_Swmreports_Adminhtml_QuotesController extends Mage_Adminhtml
 	 */
 	public function exportCsvAction() {
 		$fileName = 'quotes.csv';
+		if (!$this->getRequest()->getParam('from')) {
+			Mage::getSingleton('core/session')->addError('Please enter a from date');
+			$this->_redirect('*/*/index');
+			return;
+		}
+			
 		$grid = $this->getLayout()->createBlock('swmreports/adminhtml_quotes_grid');
 		$this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
 	}
