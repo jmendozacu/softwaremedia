@@ -1,29 +1,4 @@
 <?php
-/**
- * aheadWorks Co.
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://ecommerce.aheadworks.com/AW-LICENSE.txt
- *
- * =================================================================
- *                 MAGENTO EDITION USAGE NOTICE
- * =================================================================
- * This software is designed to work with Magento enterprise edition and
- * its use on an edition other than specified is prohibited. aheadWorks does not
- * provide extension support in case of incorrect edition use.
- * =================================================================
- *
- * @category   AW
- * @package    AW_Ordertags
- * @version    1.3.1
- * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
- * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
- */
-
 class AW_All_Model_Observer
 {
     public function prepareAWTabs($observer)
@@ -31,7 +6,7 @@ class AW_All_Model_Observer
         $tabsBlock = $observer->getBlock();
         if ($tabsBlock instanceof Mage_Adminhtml_Block_System_Config_Tabs) {
             foreach ($tabsBlock->getTabs() as $tab) {
-                if ($tab->getId() != 'awall') {
+                if ($tab->getId() != 'awall' || null === $tab->getSections()) {
                     continue;
                 }
                 $_sections = $tab->getSections()->getItems();
@@ -40,7 +15,7 @@ class AW_All_Model_Observer
                 $_sectionLabelList = array();
                 $_sectionList = array();
                 foreach ($_sections as $key => $_section) {
-                    if (!in_array($key, array('awstore', 'awall'))) {
+                    if (!in_array($key, array('awall'))) {
                         $_sectionLabelList[] = strtolower(str_replace(' ', '_', $_section->getLabel()));
                         $_sectionList[] = $_section;
                     }
@@ -51,9 +26,7 @@ class AW_All_Model_Observer
                     $tab->getSections()->addItem($_section);
                 }
 
-                if (array_key_exists('awstore', $_sections)) {
-                    $tab->getSections()->addItem($_sections['awstore']);
-                }
+
                 if (array_key_exists('awall', $_sections)) {
                     $tab->getSections()->addItem($_sections['awall']);
                 }

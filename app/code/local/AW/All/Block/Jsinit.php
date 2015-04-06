@@ -1,29 +1,4 @@
 <?php
-/**
- * aheadWorks Co.
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://ecommerce.aheadworks.com/AW-LICENSE.txt
- *
- * =================================================================
- *                 MAGENTO EDITION USAGE NOTICE
- * =================================================================
- * This software is designed to work with Magento enterprise edition and
- * its use on an edition other than specified is prohibited. aheadWorks does not
- * provide extension support in case of incorrect edition use.
- * =================================================================
- *
- * @category   AW
- * @package    AW_Ordertags
- * @version    1.3.1
- * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
- * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
- */
-
 class AW_All_Block_Jsinit extends Mage_Adminhtml_Block_Template
 {
     protected $_platform = -1;
@@ -31,7 +6,6 @@ class AW_All_Block_Jsinit extends Mage_Adminhtml_Block_Template
     protected $_extensions;
 
     protected $_section = '';
-    protected $_store_data = null;
 
     /**
      * Include JS in head if section is moneybookers
@@ -44,12 +18,6 @@ class AW_All_Block_Jsinit extends Mage_Adminhtml_Block_Template
                     ->getBlock('head')
                     ->addJs('aw_all/aw_all.js');
             $this->setData('extensions', $this->_initExtensions());
-        } elseif ($this->_section == 'awstore') {
-            // AW extensions store
-            $this->getLayout()
-                    ->getBlock('head')
-                    ->addJs('aw_all/aw_all.js');
-            $this->setData('store_data', $this->_getStoreData());
         }
         parent::_prepareLayout();
     }
@@ -60,7 +28,7 @@ class AW_All_Block_Jsinit extends Mage_Adminhtml_Block_Template
      */
     protected function _toHtml()
     {
-        if ($this->_section == 'awall' || $this->_section == 'awstore') {
+        if ($this->_section == 'awall') {
             return parent::_toHtml();
         } else {
             return '';
@@ -188,60 +156,6 @@ class AW_All_Block_Jsinit extends Mage_Adminhtml_Block_Template
         }
         return new Varien_Object(array('title' => $title, 'source' => $this->getSkinUrl($icon)));
     }
-
-    /**
-     * Fetch store data and return as Varien Object
-     * @return Varien_Object
-     */
-    protected function _getStoreData()
-    {
-        if (!is_null($this->_store_data))
-            return $this->_store_data;
-        $storeData = array();
-        $connection = $this->_getStoreConnection();
-        $storeResponse = $connection->read();
-
-        if ($storeResponse !== false) {
-            $storeResponse = preg_split('/^\r?$/m', $storeResponse, 2);
-            $storeResponse = trim($storeResponse[1]);
-            Mage::app()->saveCache($storeResponse, AW_All_Helper_Config::STORE_RESPONSE_CACHE_KEY);
-        }
-        else {
-            $storeResponse =  Mage::app()->loadCache(AW_All_Helper_Config::STORE_RESPONSE_CACHE_KEY);
-            if (!$storeResponse) {
-                Mage::getSingleton('adminhtml/session')->addError($this->__('Sorry, but Extensions Store is not available now. Please try again in a few minutes.'));
-            }
-        }
-
-        $connection->close();
-        $this->_store_data = new Varien_Object(array('text_response' => $storeResponse));
-        return $this->_store_data;
-    }
-
-    /**
-     * Returns URL to store
-     * @return Varien_Http_Adapter_Curl
-     */
-    protected function _getStoreConnection()
-    {
-        $params = array(
-
-        );
-        $url = array();
-        foreach ($params as $k => $v) {
-            $url[] = urlencode($k) . "=" . urlencode($v);
-        }
-        $url = rtrim(AW_All_Helper_Config::STORE_URL) . (sizeof($url) ? ("?" . implode("&", $url)) : "");
-
-        $curl = new Varien_Http_Adapter_Curl();
-        $curl->setConfig(array(
-                              'timeout' => 5
-                         ));
-        $curl->write(Zend_Http_Client::GET, $url, '1.0');
-
-        return $curl;
-    }
-
 
 }
  

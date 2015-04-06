@@ -1,4 +1,5 @@
 <?php
+
 /**
  * aheadWorks Co.
  *
@@ -7,23 +8,13 @@
  * This source file is subject to the EULA
  * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
- * http://ecommerce.aheadworks.com/AW-LICENSE.txt
- *
- * =================================================================
- *                 MAGENTO EDITION USAGE NOTICE
- * =================================================================
- * This software is designed to work with Magento enterprise edition and
- * its use on an edition other than specified is prohibited. aheadWorks does not
- * provide extension support in case of incorrect edition use.
- * =================================================================
+ * http://ecommerce.aheadworks.com/LICENSE-M1.txt
  *
  * @category   AW
- * @package    AW_Ordertags
- * @version    1.3.1
- * @copyright  Copyright (c) 2010-2012 aheadWorks Co. (http://www.aheadworks.com)
- * @license    http://ecommerce.aheadworks.com/AW-LICENSE.txt
+ * @package    AW_All
+ * @copyright  Copyright (c) 2009-2010 aheadWorks Co. (http://www.aheadworks.com)
+ * @license    http://ecommerce.aheadworks.com/LICENSE-M1.txt
  */
-
 class AW_All_Block_Notification_Window extends Mage_Adminhtml_Block_Notification_Window
 {
     protected function _construct()
@@ -33,14 +24,13 @@ class AW_All_Block_Notification_Window extends Mage_Adminhtml_Block_Notification
         if (!Mage::getStoreConfig('awall/install/run')) {
             $c = Mage::getModel('core/config_data');
             $c
-                    ->setScope('default')
-                    ->setPath('awall/install/run')
-                    ->setValue(time())
-                    ->save();
+                ->setScope('default')
+                ->setPath('awall/install/run')
+                ->setValue(time())
+                ->save();
             $this->setHeaderText($this->__("aheadWorks Notifications Setup"));
             $this->setIsFirstRun(1);
             $this->setIsHtml(1);
-
         }
     }
 
@@ -48,6 +38,8 @@ class AW_All_Block_Notification_Window extends Mage_Adminhtml_Block_Notification
     {
         if ($this->getIsHtml()) {
             $this->setTemplate('aw_all/notification/window.phtml');
+        } else {
+            $this->setTemplate('aw_all/notification/window/standard.phtml');
         }
         return parent::_toHtml();
     }
@@ -66,6 +58,4 @@ class AW_All_Block_Notification_Window extends Mage_Adminhtml_Block_Notification
             return $this->getData('notice_message_text');
         }
     }
-
-
 }
