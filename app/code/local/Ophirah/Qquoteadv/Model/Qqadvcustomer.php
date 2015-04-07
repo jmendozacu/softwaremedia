@@ -625,7 +625,13 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 					echo "Quote " . $_quoteadv->getIncrementId() . " Reminder" . $inc . " Due Today";
 					echo "<br />";
 				}
-
+				
+				$_quoteadv->load($_quoteadv->getId());
+				if ($_quoteadv->getData('no_reminder' . $inc) == 1)
+					continue;
+					
+				$_quoteadv->setData('no_reminder' . $inc, 1);
+				$_quoteadv->save();
 
 				if (substr($_quoteadv->getData('proposal_sent'), 0, 4) != 0) {
 
@@ -693,8 +699,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 						echo "Send to " . $_quoteadv->getEmail() . "<br /><br />";
 
 					$res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
-					$_quoteadv->setData('no_reminder' . $inc, 1);
-					$_quoteadv->save();
+					
 				}
 			}
 		}
