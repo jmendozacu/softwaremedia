@@ -56,6 +56,7 @@ class Magecon_CustomerNotes_NotesController extends Mage_Adminhtml_Controller_Ac
                 $customer_name = $this->getRequest()->getPost('customer_name');
                 $contact_method = $this->getRequest()->getPost('contact_method');
                 $static = $this->getRequest()->getPost('static');
+                $quoteId = $this->getRequest()->getPost('quote_id');
                 $step_id = $this->getRequest()->getPost('step_id') ? $this->getRequest()->getPost('step_id') : NULL;
                 $campaign_id = $this->getRequest()->getPost('campaign_id') ? $this->getRequest()->getPost('campaign_id') : NULL;
                 $data = array("user_id" => Mage::getSingleton('admin/session')->getUser()->getId(),
@@ -88,7 +89,10 @@ class Magecon_CustomerNotes_NotesController extends Mage_Adminhtml_Controller_Ac
             Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
         }
 
-        $this->_redirect("adminhtml/customer/edit/id/{$customer_id}");
+		if ($quoteId)
+			$this->_redirect("adminhtml/qquoteadv/edit/id/{$quoteId}");
+		else
+        	$this->_redirect("adminhtml/customer/edit/id/{$customer_id}");
     }
 
     public function deleteAction() {

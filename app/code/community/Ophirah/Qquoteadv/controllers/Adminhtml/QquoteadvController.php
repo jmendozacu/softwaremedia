@@ -1971,6 +1971,49 @@ function hideBox() {
 		$this->_redirect('*/*/edit', array('id' => $c2qId));
 	}
 
+	public function addNoteAction() {
+        try {
+            //if ($this->getRequest()->isPost()) {
+                $customer_id = $this->getRequest()->getParam('customer_id');
+                $customer_name = $this->getRequest()->getParam('customer_name');
+                $contact_method = $this->getRequest()->getParam('contact_method');
+                $static = $this->getRequest()->getParam('static');
+                $quoteId = $this->getRequest()->getParam('quote_id');
+                $step_id = $this->getRequest()->getParam('step_id') ? $this->getRequest()->getParam('step_id') : NULL;
+                $campaign_id = $this->getRequest()->getParam('campaign_id') ? $this->getRequest()->getParam('campaign_id') : NULL;
+                $data = array("user_id" => Mage::getSingleton('admin/session')->getUser()->getId(),
+                    "username" => Mage::getSingleton('admin/session')->getUser()->getUsername(),
+                    "customer_id" => $customer_id,
+                    "customer_name" => $customer_name,
+                    "contact_method" => $contact_method,
+                    "campaign_id" => $campaign_id,
+                    "static"		=> $static,
+                    "step_id" => $step_id,
+                    "note" => $this->getRequest()->getParam('note'),
+                    "created_time" => now()
+                   );
+                    
+                $lastNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customer_id)->addFieldToFilter('update_time', array('null' => true));
+
+                foreach($lastNote as $lNote) {
+					$lNote->setUpdateTime(now());
+					$lNote->save();
+                }
+               
+                $model = Mage::getModel('customernotes/notes');
+                $model->setData($data);
+                $model->save();
+                Mage::getSingleton('adminhtml/session')->addSuccess('Added Customer Note');
+        } catch (Exception $e) {
+            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+        }
+
+		if ($quoteId)
+			$this->_redirect("adminhtml/qquoteadv/edit/id/{$quoteId}");
+		else
+        	$this->_redirect("adminhtml/customer/edit/id/{$customer_id}");
+    }
+    
 	public function addQtyFieldAction() {
 		$quoteProductId = (int) $this->getRequest()->getParam('quote_product_id');
 		$quoteProduct = Mage::getModel('qquoteadv/qqadvproduct')->load($this->getRequest()->getParam('quote_product_id'));
