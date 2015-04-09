@@ -1,0 +1,52 @@
+<?php $quoteCampaign = 5; ?>
+
+<?php $name = $this->getCustomerName($quoteModel->getData('customer_id')); ?>
+<div class="entry-edit">
+    <div class="entry-edit-head"><div class="ajax"><h4 class="icon-head head-customer-view"><?php echo Mage::helper('customernotes')->__('Contact Notes') ?></h4></div></div>
+		<div class="fieldset">
+            <div class="hor-scroll">
+                <div id="history_form" class="order-history-form">
+                    <form action="<?php echo $this->getUrl('*/*/addNote'); ?>">
+                        <input type="hidden" name="customer_id" value="<?php echo $quoteModel->getData('customer_id'); ?>" />
+                        <input type="hidden" value="<?php echo $quoteCampaign; ?>" name="campaign_id" id="campaign_id" />
+                        <input type="hidden" value="<?php echo $quoteModel->getId();?>" name="quote_id" id="quote_id" />
+                        <input type="hidden" name="customer_name" value="<?php echo $name; ?>" />
+                        <span class="field-row">
+                        	<div class="f-left">
+                            <label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Disposition') ?></label>
+                            <select name="contact_method">
+                            
+                            	<?php foreach(Mage::helper('customernotes')->getOptions() as $option) {
+	                            	
+	                            	echo "<option value=\"" . $option . "\">" . $option . "</option>";
+                            	}
+                            	?>
+                            </select>
+                           
+                        	</div>
+                            <div class="f-left">
+                            	<label class="normal" for="note"><?php echo Mage::helper('customernotes')->__('Step') ?></label>
+                            	<select name="step_id" id="step_id">
+                            		<?php 
+                            		$steps = Mage::helper('customernotes')->getStepsCampaign($quoteCampaign);
+                            		foreach($steps as $step) {
+                            			echo "<option value='" . $step->getId() . "'>" . $step->getName() . "</option>";
+                            		}	
+                            		
+                            		?>
+                            	</select>
+                            </div>
+                        </span>
+                        <span class="field-row" >
+                            <textarea name="note" rows="3" cols="5" style="height:6em; width:99%;" id="history_note"></textarea>
+                        </span>
+                        <div class="f-right">
+                            <input type="submit" class="form-button" value="<?php echo Mage::helper('customernotes')->__('Add Note') ?>" />
+                        </div>
+                        <div class="clear"></div>
+                    </form>	
+                </div>
+
+        </div>
+    </div>
+</div>
