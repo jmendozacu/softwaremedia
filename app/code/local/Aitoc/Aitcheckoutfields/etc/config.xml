@@ -60,7 +60,6 @@
                 <rewrite>
                     <sales_order_view_info>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderViewInfo</sales_order_view_info>
 <sales_order_create_form_account>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderCreateFormAccount</sales_order_create_form_account>
-                    <customer_edit_tabs>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminCustomerEditTabs</customer_edit_tabs>
                 </rewrite>
             </adminhtml>
             
