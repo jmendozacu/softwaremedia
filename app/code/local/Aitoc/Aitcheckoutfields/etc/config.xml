@@ -59,8 +59,7 @@
             <adminhtml>
                 <rewrite>
                     <sales_order_view_info>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderViewInfo</sales_order_view_info>
-                    <sales_order_grid>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminhtmlSalesOrderGrid</sales_order_grid>
-                    <sales_order_create_form_account>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderCreateFormAccount</sales_order_create_form_account>
+<sales_order_create_form_account>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderCreateFormAccount</sales_order_create_form_account>
                     <customer_edit_tabs>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminCustomerEditTabs</customer_edit_tabs>
                 </rewrite>
             </adminhtml>
@@ -77,10 +76,6 @@
             
             <checkout>
                 <rewrite>
-                    <onepage_billing>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageBilling</onepage_billing>
-                    <onepage_shipping>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageShipping</onepage_shipping>
-                    <onepage_shipping_method>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageShippingMethod</onepage_shipping_method>
-                    <onepage_payment>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepagePayment</onepage_payment>
                     <onepage_review>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageReview</onepage_review>
                     <onepage_review_info>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageReviewInfo</onepage_review_info>
                     <multishipping_addresses>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutMultishippingAddresses</multishipping_addresses>
@@ -289,15 +284,3 @@
         </aitcheckoutfields>
     </default>
 </config>
-
-<!--
-/**
- * Checkout Fields Manager
- *
- * @category:    Aitoc
- * @package:     Aitoc_Aitcheckoutfields
- * @version      10.5.3
- * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
- * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
- */
--->

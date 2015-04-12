@@ -182,16 +182,6 @@
 			</action>
 			<block type="core/html_calendar" name="head.calendar" as="html_calendar" template="aitcheckoutfields/js/calendar.phtml"/>
 		</reference>
-		<reference name="checkout.onepage.payment">
-			<action method="setTemplate">
-				<template>aitcommonfiles/design--frontend--enterprise--default--template--checkout--onepage--payment.phtml</template>
-			</action>
-		</reference>
-		<reference name="checkout.onepage.shipping_method">
-			<action method="setTemplate">
-				<template>aitcommonfiles/design--frontend--base--default--template--checkout--onepage--shipping_method.phtml</template>
-			</action>
-		</reference>
 	</checkout_onepage_index>
 
 	<sales_order_info translate="label">

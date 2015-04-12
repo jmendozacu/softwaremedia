@@ -17,7 +17,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			
 		//If FedEx rates aren't available, calculate based on general shipping estimates	
 		$methods = $this->getMethods();
-		$shipDate = $this->estimateShipDate($shippingMethod);
+		$shipDate = $this->estimateShipDate();
 		$saturday = false;
 		
 		if (!array_key_exists($shippingMethod,$methods))
@@ -49,7 +49,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		return array_key_exists($shippingMethod,$methods);
 	}
 	
-	public function estimateShipDate($shippingMethod ) {
+	public function estimateShipDate() {
 		$methods = $this->getMethods();
 		
 		$estimate = date('Y-m-d');

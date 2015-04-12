@@ -28,7 +28,9 @@
 <?php $_order = $this->getOrder() ?>
 <div class="order-page">
 <div class="page-title title-buttons">
-	<?php if ($_order->getState() == 'holded') { $state =  "On Hold"; } else { $state = ucfirst($_order->getState()); } ?>
+	<?php if ($_order->getState() == 'holded') { $state =  "On Hold"; } elseif ($_order->getStatus() == 'ordered_license_1' || $_order->getStatus() == 'ordered_license_2') {
+								$state = 'Processing';
+							} else { $state = ucfirst($_order->getState()); } ?>
     <h1><?php echo $this->__('Order #%s - %s', $_order->getRealOrderId(), $state) ?></h1>
     <?php echo $this->getChildHtml('buttons') ?>
 </div>
