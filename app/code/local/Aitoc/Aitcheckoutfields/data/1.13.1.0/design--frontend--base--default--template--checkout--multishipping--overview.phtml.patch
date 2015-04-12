@@ -1,0 +1,107 @@
+diff -aurBb /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare55212946736884d2b271879db8 /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare55212946736884d2b271879db8
+--- /home/httpd/htdocs/trepachko/var/ait_patch_orig/compare55212946736884d2b271879db8	2011-01-10 17:34:48.000000000 +0200
++++ /home/httpd/htdocs/trepachko/var/ait_patch_modif/compare55212946736884d2b271879db8	2011-01-10 17:34:48.000000000 +0200
+@@ -29,7 +29,57 @@
+         <h1><?php echo $this->__('Review Order') ?></h1>
+     </div>
+     <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
++
++
++
++
++    
++<?php /* START AITOC COMMENTING
+     <form action="<?php echo $this->getPostActionUrl() ?>" method="post" onsubmit="return showLoader();">
++
++
++
++
++FINISH AITOC COMMENTING */ ?>
++    
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++
++    <form action="<?php echo $this->getPostActionUrl() ?>" method="post" onsubmit="return showLoader();" id="overview_form">
++    
++<script type="text/javascript">
++
++var Addresses = Class.create();
++Addresses.prototype = {
++    initialize: function(formId){
++        this.formId = formId;
++        this.validator = new Validation(this.formId);
++    },
++    
++    save: function(){
++        if (this.validator.validate()) {
++            return true;
++        }
++        else 
++        {
++            return false;
++        }
++    }
++}
++
++</script>
++
++    <?php if ($aFieldList = $this->getCustomFieldList(1)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->        
++    
++    
+         <?php echo $this->getBlockHtml('formkey'); ?>
+         <div class="col2-set">
+             <h2 class="legend"><?php echo $this->__('Billing Information') ?></h2>
+             <div class="col-1">
+@@ -190,6 +240,30 @@
+ 
+             <div id="checkout-review-submit">
+                 <?php echo $this->getChildHtml('agreements') ?>
++
++
++
++
++                
++<!--     START AITOC CHECKOUT ATTRIBUTES     -->
++    <?php if ($aFieldList = $this->getCustomFieldList(2)): ?>
++    <fieldset>
++        <ul class="form-list">
++        <?php foreach ($aFieldList as $aField): ?>
++            <?php echo $this->getFieldHtml($aField); ?>
++        <?php endforeach; ?>
++        </ul>                
++    </fieldset>
++    <?php endif; ?>
++ 
++<script type="text/javascript">
++//<![CDATA[
++    var addresses = new Addresses('overview_form');
++//]]>
++</script>
++
++<!--     FINISH AITOC CHECKOUT ATTRIBUTES     -->        
++                
+                 <div class="place-order">
+                     <div class="grand-total">
+                         <div class="inner">
+@@ -214,6 +288,13 @@
+ 
+             function showLoader()
+             {
++
++
++
++
++                
++                if (!addresses.save()) return false; // AITOC CHECKOUT ATTRIBUTES
++                
+                 if (submitted) {
+                     return false;
+                 }

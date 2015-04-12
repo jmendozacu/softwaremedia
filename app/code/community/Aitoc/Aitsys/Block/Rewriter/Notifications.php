@@ -10,7 +10,7 @@ class Aitoc_Aitsys_Block_Rewriter_Notifications extends Aitoc_Aitsys_Abstract_Ad
     public function isShow()
     {
         $aitsysCache = Mage::app()->useCache('aitsys');
-        if (!$aitsysCache && in_array(1, Mage::app()->useCache())) {
+        if (!$aitsysCache && in_array(1, Mage::app()->useCache()) && Mage::helper('aitsys/rewriter')->getRewriterStatus()) {
             return true;
         }
         return false;

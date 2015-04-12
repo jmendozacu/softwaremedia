@@ -7,6 +7,7 @@ class Aitoc_Aitsys_Model_Rewriter_Merge extends Aitoc_Aitsys_Model_Rewriter_Abst
 {
     
     protected $_latestMergedFiles = array();
+    protected $_classContentArray = array();
     
     /**
     * Clearing current rewrites
@@ -60,7 +61,6 @@ class Aitoc_Aitsys_Model_Rewriter_Merge extends Aitoc_Aitsys_Model_Rewriter_Abst
                 $iEncodedCount++;
             }
         }
-        
         foreach ($classes as $parent => $class)
         {
             if ($bOmitRewriteChain) {
@@ -91,7 +91,7 @@ class Aitoc_Aitsys_Model_Rewriter_Merge extends Aitoc_Aitsys_Model_Rewriter_Abst
             /**
             * The last $child is always magento base class
             */
-            $contents = $rewriteClass->getContents($contentFrom);
+            $contents = $class['content'];
             $this->_latestMergedFiles[$contentFrom] = $rewriteClass->getClassPath($contentFrom);
             if ($child) // if child is empty - need to keep current child
             {

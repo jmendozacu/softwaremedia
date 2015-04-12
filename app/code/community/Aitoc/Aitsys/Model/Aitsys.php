@@ -59,14 +59,6 @@ implements Aitoc_Aitsys_Abstract_Model_Interface
 
     /**
      * @return string
-     */
-    protected function _getLocalDir()
-    {
-        return $this->tool()->filesystem()->getLocalDir();
-    }
-
-    /**
-     * @return string
      * @todo refactoring: remove?
      */
     protected function _getDiffFilePath($sModuleDir, $sArea, $sFileKey)
@@ -89,14 +81,7 @@ implements Aitoc_Aitsys_Abstract_Model_Interface
      */
     protected function _getModuleDir($moduleName)
     {
-        if (!$moduleName)
-        {
-            return false;
-        }
-        
-        $moduleDir = $this->_getLocalDir() . str_replace('_', '/', $moduleName);
-        
-        return $moduleDir;
+        return $this->tool()->filesystem()->getModuleDir( $moduleName );
     }
 
     /**
@@ -192,7 +177,7 @@ implements Aitoc_Aitsys_Abstract_Model_Interface
     protected function _getDesignFileDestinationPrefix( $areaName )
     {
         $filePrefix = 'design/' . $areaName . '/base/';
-        if (file_exists(Mage::getConfig()->getOptions()->getAppDir().$filePrefix))
+        if (file_exists(Mage::getConfig()->getOptions()->getAppDir(). DS . $filePrefix))
         {
             return $filePrefix;
         }
@@ -462,7 +447,15 @@ implements Aitoc_Aitsys_Abstract_Model_Interface
                 $oModuleBaseConfig = simplexml_load_file($sFullPath);
                 
                 $oModuleBaseConfig->modules->$sModuleName->active = $sModuleActive;
-                
+
+                if( $oModuleBaseConfig->modules->$sModuleName->aitdepends && $sModuleActive == 'true')
+                {
+                    foreach($oModuleBaseConfig->modules->$sModuleName->aitdepends->children() as $module=>$depend)
+                    {
+                        $aData[$module] = true;
+                    }
+                }
+
                 if ($iPriority = $oModuleBaseConfig->modules->$sModuleName->priority)
                 {
                     $this->_aModulePriority[$sModuleName] = (integer)$iPriority;
@@ -694,62 +687,64 @@ implements Aitoc_Aitsys_Abstract_Model_Interface
      */
     public function getAllowInstallErrors()
     {
-        $aAitocModuleList = $this->getAitocModuleList();
-        
         $aErrorList = array();
-       
-        if ($aAitocModuleList)
+        $closedFolders = $this->tool()->filesystem()->checkMainPermissions();
+        if (!empty($closedFolders)) {
+            $aErrorList[] = array(
+                'type' => 'notice-msg',
+                'message' => Mage::helper('aitsys')->__('Before any action with AITOC Modules, please ensure the folders below (including their files and subfolders) have writable permissions for the web server user (for example, apache):').
+                '<br /><b>'.join('<br />', $closedFolders).'</b>'
+            );
+        }
+
+        $rewriteHelper = Mage::helper('aitsys/rewriter');
+        if (!$rewriteHelper->getRewriterStatus()
+            && ($aAitocModuleList = $this->getAitocModuleList())
+            && $rewriteHelper->analysisInheritedClasses($this, 'addConflictClassesInModuleObject', $aAitocModuleList, false))
         {
-            $sHasRewritePathOld = '';
-            $sHasRewritePathNew = '';
-            
-            foreach ($aAitocModuleList as $aModule)
+            foreach($aAitocModuleList as $module)
             {
-                if ($aModule['key'] == $this->_sModuleRewriteNameOld)
-                {
-                    $sHasRewritePathOld = $aModule['file'];
-                }
-                
-                if ($aModule['key'] == $this->_sModuleRewriteNameNew)
-                {
-                    $sHasRewritePathNew = $aModule['file'];
-                }
-            }
-            
-            if ($sHasRewritePathOld) // has old version
-            {
-                if (!$sHasRewritePathNew) // no new version
-                {
-                    $sErrorMsg = $this->_aithelper()->__('Module can not be installed because you have outdated version of Checkout Fields Manager installed. Please contact AITOC for updated version of Checkout Fields Manager to resolve this issue.');
-                    
-                    $aErrorList[] = $sErrorMsg;
-                    return $aErrorList;
-                }
-                
-                if (is_writable($sHasRewritePathOld))
-                {
-                    $aPostData = array($aModule['key'] => 1);
-                    
-                    $aModuleHashStrict = array($this->_sModuleRewriteNameNew . '.php' => $sHasRewritePathNew);
-                    
-                    $aErrorList = $this->saveData($aPostData, $aModuleHashStrict);
-                    
-                    if (!$aErrorList)
-                    {
-                        unlink($sHasRewritePathOld); // kill old version config file
-                    }
-                    
-                    return $aErrorList;
-                }
-                else 
-                {
-                    $sErrorMsg = $this->_aithelper()->__('File does not have write permissions: %s', $sHasRewritePathOld);
-                    $aErrorList[] = $sErrorMsg;
-                    return $aErrorList;
+                if ($conflictString = Mage::helper('aitsys/strings')->getModuleConflictString($module)) {
+                    $aErrorList[] = array(
+                        'type' => 'error-msg',
+                        'message' => $conflictString
+                    );
                 }
             }
         }
-        
+
+        if(empty($aErrorList))
+        {
+            return false;
+        }
+
+        return $aErrorList;
+    }
+
+    /**
+     * @param $paramsMethod
+     * @return bool
+     */
+    public function addConflictClassesInModuleObject(&$paramsMethod)
+    {
+        unset($paramsMethod['inheritedClasses']['_baseClasses']);
+        foreach(array_keys($paramsMethod['inheritedClasses']) as $class)
+        {
+            list($vendor, $name) = explode('_',$class,3);
+            if('Aitoc' != $vendor && 'AdjustWare' != $vendor)
+            {
+                foreach(array_keys($paramsMethod['inheritedClasses']) as $aitModulesClass)
+                {
+                    list($aitvendor, $aitname) = explode('_',$aitModulesClass,3);
+                    if('Aitoc' != $aitvendor && 'AdjustWare' != $aitvendor)
+                    {
+                        continue;
+                    }
+                    $paramsMethod['params'][$aitvendor.'_'.$aitname]->addConflict($aitModulesClass, $class, $vendor.'_'.$name);
+                    return true;
+                }
+            }
+        }
         return false;
     }
 	

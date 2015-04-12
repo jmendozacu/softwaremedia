@@ -80,5 +80,60 @@ class Aitoc_Aitsys_Helper_Rewriter extends Aitoc_Aitsys_Helper_Data
         
         return true;        
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getRewriterStatus()
+    {
+        return Mage::getStoreConfig('aitsys/rewriter_status');
+    }
+
+    /**
+     * Found all Inherited Classes and run method for analysis
+     *
+     * @param $object
+     * @param $method
+     * @param array $params
+     * @param bool $useOrdering
+     * @return bool
+     */
+    public function analysisInheritedClasses($object, $method, &$params = array(), $useOrdering = true)
+    {
+        $rewriterConflictModel = new Aitoc_Aitsys_Model_Rewriter_Conflict();
+        $conflicts = $rewriterConflictModel->getConflictList();
+
+        // will combine rewrites by alias groups
+        if (!empty($conflicts)) {
+            $rewriterClassModel = new Aitoc_Aitsys_Model_Rewriter_Class();
+            $rewriterInheritanceModel = new Aitoc_Aitsys_Model_Rewriter_Inheritance();
+            $result = false;
+            foreach($conflicts as $groupType => $modules) {
+                $groupType = substr($groupType, 0, -1);
+                foreach($modules as $moduleName => $moduleRewrites) {
+                    foreach($moduleRewrites['rewrite'] as $moduleClass => $rewriteClasses) {
+                        // building inheritance tree
+                        $alias              = $moduleName . '/' . $moduleClass;
+                        $baseClass          = $rewriterClassModel->getBaseClass($groupType, $alias);
+                        $inheritedClasses   = $rewriterInheritanceModel->build($rewriteClasses, $baseClass, $useOrdering);
+                        if ($inheritedClasses == false) {
+                            continue;
+                        }
+                        $paramsMethod = array(
+                            'rewriteClasses'    => $rewriteClasses,
+                            'alias'             => $alias,
+                            'baseClass'         => $baseClass,
+                            'inheritedClasses'  => $inheritedClasses,
+                            'params'            => &$params
+                        );
+                        $result = $object->$method($paramsMethod)?true:$result;
+                    }
+                }
+            }
+            return $result;
+        }
+
+        return false;
+    }
+
 }

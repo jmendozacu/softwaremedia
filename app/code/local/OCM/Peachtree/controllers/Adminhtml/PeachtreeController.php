@@ -171,7 +171,7 @@ class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Control
 							$aMethod,
 							$date,
 							'Amazon PP',
-							'10014',
+							'10104',
 							$sumText,
 							$countText,
 							$orderId,

@@ -159,7 +159,7 @@ class Aitoc_Aitsys_Model_Mysql4_Setup extends Aitoc_Aitsys_Abstract_Resource_Set
         $xmlData = (array)$this->_resourceConfig->sql_files->$actionType;
         if(false === $this->haveAllFiles($typeFiles, $xmlData)) {
             $this->_allowUpdate = false;
-            Mage::log('Unable to upgrade Aitsys module from '.$fromVersion.' to '.$toVersion.'. If this error is repeated for some time please check that all files are uploaded to app/code/local/Aitoc/Aitsys/sql/aitsys_setup folder.');
+            Mage::log('Unable to upgrade Aitsys module from '.$fromVersion.' to '.$toVersion.'. If this error is repeated for some time please check that all files are uploaded to app/code/community/Aitoc/Aitsys/sql/aitsys_setup folder.');
             return array();
         }
 
@@ -223,8 +223,11 @@ class Aitoc_Aitsys_Model_Mysql4_Setup extends Aitoc_Aitsys_Abstract_Resource_Set
      */
     protected function _processStateSql($processType, $moduleName)
     {
-        $localDir = Aitoc_Aitsys_Abstract_Service::get()->filesystem()->getLocalDir();
-        $moduleDir = $localDir . str_replace('_', '/', $moduleName);
+        $moduleDir = Aitoc_Aitsys_Abstract_Service::get()->filesystem()->getModuleDir( $moduleName );
+        if ( !$moduleDir ) {
+            // Module dir not found
+            return false;
+        }
         
         // Attempt to locate and load module's main config file or its .data version
         $configFile = $moduleDir.DS.'etc'.DS.'config.data.xml';
@@ -336,5 +339,16 @@ class Aitoc_Aitsys_Model_Mysql4_Setup extends Aitoc_Aitsys_Abstract_Resource_Set
         
         self::$_hadUpdates = true;
         return true;
+    }
+
+    public function getCoreConfig($path)
+    {
+        $table = $this->getTable('core/config_data');
+        // this is a fix for mysql 4.1
+        $this->getConnection()->showTableStatus($table);
+
+        $select = $this->getConnection()->select();
+        $select->from($table, 'value')->where('path = \''.$path.'\'');
+        return $this->getConnection()->fetchOne($select);
     }
 }

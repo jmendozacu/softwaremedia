@@ -13,6 +13,9 @@ class Aitoc_Aitsys_Block_Rewriter_List extends Aitoc_Aitsys_Abstract_Adminhtml_B
      * @var array
      */
     protected $_groups = array();
+    protected $_groupsBase = array();
+
+    protected $_statuses = array(0=>'Disabled', 1=>'Enabled' );
     
     protected function _construct()
     {
@@ -24,6 +27,24 @@ class Aitoc_Aitsys_Block_Rewriter_List extends Aitoc_Aitsys_Abstract_Adminhtml_B
     
     protected function _prepareLayout()
     {
+        if ($this->getRewriterStatus()) {
+            $this->setChild('change_status_button',
+                $this->getLayout()->createBlock('adminhtml/widget_button')
+                    ->setData(array(
+                    'label'     => Mage::helper('adminhtml')->__('Disable'),
+                    'onclick' => 'setLocation(\'' . $this->getUrl('*/*/disable') . '\')',
+                    'class'     => 'save'
+                )));
+        } else {
+            $this->setChild('change_status_button',
+                $this->getLayout()->createBlock('adminhtml/widget_button')
+                    ->setData(array(
+                    'label'     => Mage::helper('adminhtml')->__('Enable'),
+                    'onclick' => 'setLocation(\'' . $this->getUrl('*/*/enable') . '\')',
+                    'class'     => 'save'
+                )));
+        }
+
         $this->setChild('save_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
@@ -60,7 +81,33 @@ class Aitoc_Aitsys_Block_Rewriter_List extends Aitoc_Aitsys_Abstract_Adminhtml_B
     {
         return $this->getChildHtml('reset_button');
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getChangeStatusButton()
+    {
+        return $this->getChildHtml('change_status_button');
+    }
+
+    /**
+     * @param $paramsMethod
+     * @return bool
+     */
+    public function addClassesInGroupArray(&$paramsMethod)
+    {
+        if(!empty($paramsMethod['inheritedClasses']['_baseClasses']))
+        {
+            $this->_groupsBase[$paramsMethod['baseClass']] = $paramsMethod['inheritedClasses']['_baseClasses'];
+            unset($paramsMethod['inheritedClasses']['_baseClasses']);
+        }
+        $this->_groups[$paramsMethod['baseClass']] = array_keys($paramsMethod['inheritedClasses']);
+        rsort($this->_groups[$paramsMethod['baseClass']]);
+        $this->_groups[$paramsMethod['baseClass']] = array_values($this->_groups[$paramsMethod['baseClass']]);
+
+        return true;
+    }
+
     /**
      * Retrieve conflicts data
      */
@@ -68,33 +115,14 @@ class Aitoc_Aitsys_Block_Rewriter_List extends Aitoc_Aitsys_Abstract_Adminhtml_B
     {
         $allExtensions    = array();
         $currentExtension = Mage::app()->getRequest()->getParam('extension');
-        
-        $rewriterConflictModel = new Aitoc_Aitsys_Model_Rewriter_Conflict();
-        list($conflicts) = $rewriterConflictModel->getConflictList();
-        
-        // will combine rewrites by alias groups
-        $groups = array();
-        
-        if (!empty($conflicts)) {
-            $rewriterClassModel = new Aitoc_Aitsys_Model_Rewriter_Class();
-            $rewriterinheritanceModel = new Aitoc_Aitsys_Model_Rewriter_Inheritance();
+
+
+        $rewriteHelper = Mage::helper('aitsys/rewriter');
+        $result = array();
+        if ($rewriteHelper->analysisInheritedClasses($this, 'addClassesInGroupArray', $result, false))
+        {
             $order = Mage::helper('aitsys/rewriter')->getOrderConfig();
-            
-            foreach($conflicts as $groupType => $modules) {
-                $groupType = substr($groupType, 0, -1);
-                foreach($modules as $moduleName => $moduleRewrites) {
-                    foreach($moduleRewrites['rewrite'] as $moduleClass => $rewriteClasses) {
-                        // building inheritance tree
-                        $alias              = $moduleName . '/' . $moduleClass;
-                        $baseClass          = $rewriterClassModel->getBaseClass($groupType, $alias);
-                        $inheritedClasses   = $rewriterinheritanceModel->build($rewriteClasses, $baseClass, false);
-                        $groups[$baseClass] = array_keys($inheritedClasses);
-                        ksort($groups[$baseClass]);
-                        $groups[$baseClass] = array_values($groups[$baseClass]);
-                    }
-                }
-            }
-            
+            $groups = $this->_groups;
             foreach ($groups as $baseClass => $group) {
                 $groups[$baseClass] = array_flip($group);
                 $isCurrentFound = !(bool)$currentExtension;
@@ -138,8 +166,11 @@ class Aitoc_Aitsys_Block_Rewriter_List extends Aitoc_Aitsys_Abstract_Adminhtml_B
             }
             $this->_extensions[$this->getExtensionUrl($key)] = $moduleName;
         }
-        
-        $this->_groups = $groups;
+
+        if(!empty($groups))
+        {
+            $this->_groups = $groups;
+        }
     }
     
     /**
@@ -203,5 +234,45 @@ class Aitoc_Aitsys_Block_Rewriter_List extends Aitoc_Aitsys_Abstract_Adminhtml_B
         $classes = Mage::helper('aitsys/rewriter')->getExcludeClassesConfig();
         $classes = implode("\n", $classes);
         return $classes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRewriterStatus()
+    {
+        return Mage::helper('aitsys/rewriter')->getRewriterStatus();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRewriterCacheStatus()
+    {
+        if($this->getRewriterStatus())
+        {
+            return (int) Mage::app()->useCache('aitsys');
+        }
+        return 0;
+    }
+
+    public function getStatusLabel($id)
+    {
+        return $this->_statuses[$id];
+    }
+
+    protected function _getBaseClass($class, $classBaseEcho)
+    {
+        if(empty($this->_groupsBase[$class]))
+        {
+            return false;
+        }
+
+        if(empty($classBaseEcho))
+        {
+            return $this->_groupsBase[$class]['__topClass'];
+        }
+
+        return empty($this->_groupsBase[$class][$classBaseEcho])?false:$this->_groupsBase[$class][$classBaseEcho];
     }
 }

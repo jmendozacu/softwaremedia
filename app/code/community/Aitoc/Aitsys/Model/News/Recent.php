@@ -15,11 +15,6 @@ class Aitoc_Aitsys_Model_News_Recent extends Aitoc_Aitsys_Abstract_Model
      * @var string
      */
     protected $_cacheKey = 'AITOC_AITSYS_NEWS';
-    
-    /**
-     * @var string
-     */
-    protected $_method = 'getNews';
 
     /**
      * @var string
@@ -65,32 +60,50 @@ class Aitoc_Aitsys_Model_News_Recent extends Aitoc_Aitsys_Abstract_Model
         }
         
         try {
-            $this->tool()->testMsg('Load news from service');
-            $service = $this->tool()->platform()->getService()->setMethodPrefix('aitnewsad');
-            if ($service->getServiceUrl()) {
-                $this->tool()->testMsg('Get news data from: ' . $service->getServiceUrl());
-                $service->connect();
-                if ($news = $service->{$this->_method}()) {
-                    $this->tool()->testMsg($news);
-                    foreach ($news as $item) {
-                        $this->addNews($item);
-                    }
-                }
-                $service->disconnect();
+            $news = $this->_getPageData();
+            if(!empty($news))
+            {
+                $this->addNews($news);
                 $this->saveData();
-            } else {
-                $this->tool()->testMsg('Service URL is empty: News download skipped.');
             }
         } catch (Exception $exc) {
             Mage::logException($exc);
-            $this->tool()->testMsg($exc);
         }
 
-        $this->tool()->testMsg("Loaded news:");
-        $this->tool()->testMsg($this->_news);
         return $this;
     }
-    
+
+    protected function _getStaticPage()
+    {
+
+        $ch = curl_init();
+        $timeout = 5;
+        curl_setopt($ch, CURLOPT_URL, Mage::getStoreConfig('aitsys/feed/store_url'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        return $data;
+    }
+
+
+    protected function _getPageData()
+    {
+        $aPageData = array();
+        try {
+            $oPage = $this->_getStaticPage();
+            if ($oPage != '')
+            {
+                $aPageData['title'] = '';
+                $aPageData['content'] = $oPage;
+                $aPageData['pubDate'] = time();
+            }
+        } catch (Mage_Core_Exception $e) {
+            Mage::logException($e);
+        }
+        return $aPageData;
+    }
     /**
      * @return Aitoc_Aitsys_Model_News_Recent
      */

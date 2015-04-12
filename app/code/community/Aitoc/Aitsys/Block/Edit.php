@@ -17,10 +17,7 @@ class Aitoc_Aitsys_Block_Edit extends Mage_Adminhtml_Block_Widget
     public function _construct()
     {
         $aitsysModel = new Aitoc_Aitsys_Model_Aitsys(); 
-        if ($this->_errorList = $aitsysModel->getAllowInstallErrors()) {
-            $this->_allowInstall = false;
-        }
-        
+        $this->_errorList = $aitsysModel->getAllowInstallErrors();
         $this->setTitle('Aitoc Modules Manager v%s');
     }
     
@@ -77,7 +74,7 @@ class Aitoc_Aitsys_Block_Edit extends Mage_Adminhtml_Block_Widget
                         'class' => 'save',
                     ))
             );
-            
+
             $this->setChild('form',
                 $this->getLayout()->createBlock('aitsys/form')
                     ->initForm()
@@ -107,23 +104,14 @@ class Aitoc_Aitsys_Block_Edit extends Mage_Adminhtml_Block_Widget
      */
     public function getInstallText()
     {
-        if ($this->_allowInstall) {
-            $installText = '';
-            $closedFolders = $this->tool()->filesystem()->checkMainPermissions();
-            if (!empty($closedFolders)) {
-                $installText = '<ul class="messages"><li class="notice-msg"><ul><li>'.
-                Mage::helper('aitsys')->__('Before any action with AITOC Modules, please ensure the folders below (including their files and subfolders) have writable permissions for the web server user (for example, apache):').
-                '<br /><b>'.
-                join('<br />', $closedFolders).
-                '</b></li></ul></li></ul>';
-            }
-        } else {
-            $installText = '<ul class="messages"><li class="error-msg"><ul><li>';
+        $installText = '';
+        if (!empty($this->_errorList)) {
+            $installText .= '<ul class="messages"  style="width:50%">';
             
             foreach ($this->_errorList as $errorMsg) {
-                $installText .= $errorMsg . '<br />';
+                $installText .= '<li class="'.$errorMsg['type'].'"><ul><li>'.$errorMsg['message'] . '<br /></li></ul></li>';
             }
-            $installText .= '</li></ul></li></ul>';
+            $installText .= '</ul>';
         }
         
         return $installText;

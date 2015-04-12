@@ -81,10 +81,13 @@ class Aitoc_Aitsys_Model_Core_Compiler_Rules
      */
     public function applyExcludeFilesRule()
     {
-        foreach (array_keys($this->getCompileConfig()->getNode('exclude_files')->asArray()) as $exclusion) {
-            $target = $this->getIncludeDir() . DS . $exclusion . '.php';
-            if(@file_exists($target)) {
-                Aitoc_Aitsys_Abstract_Service::get()->filesystem()->rmFile($target);
+        if($array = $this->getCompileConfig()->getNode('exclude_files')->asArray())
+        {
+            foreach (array_keys($array) as $exclusion) {
+                $target = $this->getIncludeDir() . DS . $exclusion . '.php';
+                if(@file_exists($target)) {
+                    Aitoc_Aitsys_Abstract_Service::get()->filesystem()->rmFile($target);
+                }
             }
         }
         return $this;
@@ -97,11 +100,14 @@ class Aitoc_Aitsys_Model_Core_Compiler_Rules
      */
     public function applyReplaceRule()
     {
-        foreach (array_keys($this->getCompileConfig()->getNode('replace')->asArray()) as $replace) {
-            $source = Aitoc_Aitsys_Model_Rewriter_Abstract::getRewritesCacheDir().$replace.'.php';
-            $target = $this->getIncludeDir().DS.$replace.'.php';
-            if(@file_exists($source) && @file_exists($target)) {
-                copy($source, $target);
+        if($array = $this->getCompileConfig()->getNode('replace')->asArray())
+        {
+            foreach (array_keys($array) as $replace) {
+                $source = Aitoc_Aitsys_Model_Rewriter_Abstract::getRewritesCacheDir().$replace.'.php';
+                $target = $this->getIncludeDir().DS.$replace.'.php';
+                if(@file_exists($source) && @file_exists($target)) {
+                    copy($source, $target);
+                }
             }
         }
         return $this;

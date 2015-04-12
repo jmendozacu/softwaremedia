@@ -9,6 +9,15 @@ class Aitoc_Aitsys_Model_Rewriter extends Aitoc_Aitsys_Model_Rewriter_Abstract
      * @var array
      */
     protected $_excludedClasses;
+
+    /**
+     * @var Aitoc_Aitsys_Model_Rewriter_Merge
+     */
+    protected $_merge;
+    /**
+     * @var Aitoc_Aitsys_Model_Rewriter_Config
+     */
+    protected $_rewriterConfig;
     
     /**
      * @return array
@@ -20,7 +29,7 @@ class Aitoc_Aitsys_Model_Rewriter extends Aitoc_Aitsys_Model_Rewriter_Abstract
         }
         return $this->_excludedClasses;
     }
-    
+
     public function preRegisterAutoloader()
     {
         $configFile = $this->_rewriteDir . 'config.php';
@@ -33,85 +42,41 @@ class Aitoc_Aitsys_Model_Rewriter extends Aitoc_Aitsys_Model_Rewriter_Abstract
             }
         }
     }
-    
+
     public function prepare()
     {
-        $merge = new Aitoc_Aitsys_Model_Rewriter_Merge();
-        $rewriterConfig = new Aitoc_Aitsys_Model_Rewriter_Config();
-        
+        $this->_merge = new Aitoc_Aitsys_Model_Rewriter_Merge();
+        $this->_rewriterConfig = new Aitoc_Aitsys_Model_Rewriter_Config();
+
         // first clearing current class rewrites
         Aitoc_Aitsys_Model_Rewriter_Autoload::instance()->clearConfig();
-        $merge->clear();
-        
-        $conflict = new Aitoc_Aitsys_Model_Rewriter_Conflict();
-        list($conflicts, $rewritesAbstract) = $conflict->getConflictList();
-        
-        /**
-         * FOR NORMAL REWRITES
-         */
-        // will combine rewrites by alias groups
-        if (!empty($conflicts)) {
-            foreach ($conflicts as $groupType => $modules) {
-                $groupType = substr($groupType, 0, -1);
-                foreach ($modules as $moduleName => $moduleRewrites) {
-                    foreach ($moduleRewrites['rewrite'] as $moduleClass => $rewriteClasses) {
-                        /*
-                         * $rewriteClasses is an array of class names for one rewrite alias
-                         * for example:
-                         * Array
-                         *   (
-                         *       [0] => AdjustWare_Deliverydate_Model_Rewrite_AdminhtmlSalesOrderCreate
-                         *       [4] => Aitoc_Aitcheckoutfields_Model_Rewrite_AdminSalesOrderCreate
-                         *       [10] => Aitoc_Aitorderedit_Model_Rewrite_AdminSalesOrderCreate
-                         *   )
-                         */
-                        // building inheritance tree
-                        $alias              = $moduleName . '/' . $moduleClass;
-                        $classModel         = new Aitoc_Aitsys_Model_Rewriter_Class();
-                        $inheritanceModel   = new Aitoc_Aitsys_Model_Rewriter_Inheritance();
-                        $baseClass          = $classModel->getBaseClass($groupType, $alias);
-                        $inheritedClasses   = $inheritanceModel->build($rewriteClasses, $baseClass);
-                        
-                        // don't create rewrites for excluded Magento base classes
-                        if (in_array($baseClass, $this->_getExcludedClasses())) {
-                            continue;
-                        }
-                        
-                        $mergedFilename = $merge->merge($inheritedClasses);
-                        if ($mergedFilename) {
-                            $rewriterConfig->add($mergedFilename, $rewriteClasses);
-                        }
-                    }
-                }
-            }
+        $this->_merge->clear();
+
+        $rewriteHelper = Mage::helper('aitsys/rewriter');
+        $result = array();
+        if ($rewriteHelper->analysisInheritedClasses($this, 'mergeFilesFromClass', $result))
+        {
+            $this->_rewriterConfig->commit();
         }
-        
-        /**
-         * FOR ABSTRACT REWRITES (AITOC IMPLEMENTATION)
-         */
-        if (!empty($rewritesAbstract)) {
-            foreach ($rewritesAbstract as $groupType => $modules) {
-                $groupType = substr($groupType, 0, -1);
-                foreach ($modules as $moduleName => $moduleRewrites) {
-                    foreach ($moduleRewrites['rewriteabstract'] as $moduleClass => $rewriteClass) {
-                        // building inheritance tree
-                        $alias              = $moduleName . '/' . $moduleClass;
-                        $classModel         = new Aitoc_Aitsys_Model_Rewriter_Class();
-                        $inheritanceModel   = new Aitoc_Aitsys_Model_Rewriter_Inheritance();
-                        $baseClass          = $classModel->getBaseClass($groupType, $alias);
-                        $inheritedClasses   = $inheritanceModel->buildAbstract($rewriteClass, $baseClass);
-                        
-                        $mergedFilename = $merge->merge($inheritedClasses, true);
-                        if ($mergedFilename) {
-                            $rewriterConfig->add($mergedFilename, array($rewriteClass, $baseClass));
-                        }
-                    }
-                }
-            }
-        }
-        
-        $rewriterConfig->commit();
         
         Aitoc_Aitsys_Model_Rewriter_Autoload::instance()->setupConfig();
     }
+
+    /**
+     * @param $paramsMethod
+     * @return bool
+     */
+    public function mergeFilesFromClass(&$paramsMethod)
+    {
+        if (in_array($paramsMethod['baseClass'], $this->_getExcludedClasses())) {
+            return false;
+        }
+
+        $mergedFilename = $this->_merge->merge($paramsMethod['inheritedClasses']);
+        if ($mergedFilename) {
+            $this->_rewriterConfig->add($mergedFilename, $paramsMethod['rewriteClasses']);
+        }
+        return true;
+    }
+
 }

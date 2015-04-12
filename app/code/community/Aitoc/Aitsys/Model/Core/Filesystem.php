@@ -67,23 +67,35 @@ class Aitoc_Aitsys_Model_Core_Filesystem extends Aitoc_Aitsys_Abstract_Model
         return $this->getCommunityDir().'Aitoc/Aitsys';
     }
     
-    public function getAitocModulesDir()
+    public function getModuleDir( $moduleName )
     {
-        if (!$this->hasData('aitoc_modules_dir'))
+        if (!$this->hasData($moduleName . '_dir'))
         {
-            $dir = $this->getLocalDir().'Aitoc/';
-            $this->setAitocModulesDir($dir);
+            $dir = false;
+            if ( $moduleName ) {
+                $vendorDir = str_replace('_', DS, $moduleName);
+                $community = $this->getCommunityDir().$vendorDir;
+                $local     = $this->getLocalDir().$vendorDir;
+                if ( file_exists( $community ) && is_dir( $community ) ) {
+                    $dir = $community;
+                } elseif ( file_exists( $local ) && is_dir( $local ) ) {
+                    $dir = $local;
+                }
+            }
+            $this->setData($moduleName . '_dir', $dir);
         }
-        return $this->getData('aitoc_modules_dir');
+        return $this->getData($moduleName . '_dir');
     }
     
     public function getAitocModulesDirs()
     {
         if (!$this->hasData('aitoc_modules_dirs')) {
-            $result = array();
-            $local = $this->getLocalDir();
+            $result    = array();
+            $local     = $this->getLocalDir();
+            $community = $this->getCommunityDir();
             foreach ($this->tool()->platform()->getModuleDirs() as $dir) {
                 $result[] = $local.$dir.DS;
+                $result[] = $community.$dir.DS;
             }
             $this->setData('aitoc_modules_dirs',$result);
         }

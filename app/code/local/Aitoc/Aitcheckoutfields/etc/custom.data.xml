@@ -25,7 +25,7 @@
             <file path="design--frontend--base--default--template--customer--form--edit"></file>
             
             <file path="design--frontend--base--default--template--paypal--express--review"></file>
-            <file path="design--frontend--base--default--template--paypaluk--express--review" version="1.12.0.0" operator="ge"></file>
+            <file path="design--frontend--base--default--template--paypaluk--express--review" version="1.12.0.0" operator="ge" optional="1"></file>
             
             <file path="design--frontend--enterprise--default--template--checkout--multishipping--addresses"></file>
             <file path="design--frontend--enterprise--default--template--checkout--multishipping--billing"></file>
@@ -40,6 +40,14 @@
             
             <file path="design--frontend--enterprise--default--template--customer--form--register"></file>
             <file path="design--frontend--enterprise--default--template--customer--form--edit"></file>
+
+            <file path="design--frontend--rwd--default--template--checkout--multishipping--billing" version="1.9.0.0" operator="ge" optional="1"></file>
+            <file path="design--frontend--rwd--default--template--checkout--onepage--payment" version="1.9.0.0" operator="ge" optional="1"></file>
+            <file path="design--frontend--rwd--default--template--checkout--onepage--review--info" version="1.9.0.0" operator="ge" optional="1"></file>
+            <file path="design--frontend--rwd--default--template--checkout--onepage--shipping" version="1.9.0.0" operator="ge" optional="1"></file>
+            <file path="design--frontend--rwd--default--template--customer--form--edit" version="1.9.0.0" operator="ge" optional="1"></file>
+            <file path="design--frontend--rwd--default--template--paypal--express--review" version="1.9.0.0" operator="ge" optional="1"></file>
+
         </frontend>
     </template>
 </config>
@@ -49,8 +57,8 @@
  *
  * @category:    Aitoc
  * @package:     Aitoc_Aitcheckoutfields
- * @version      10.5.3
- * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
- * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
+ * @version      10.5.7
+ * @license:     grDwoQqpctpZdS57isl8WpY91kLDyrRZ7i5S4ZKTe1
+ * @copyright:   Copyright (c) 2015 AITOC, Inc. (http://www.aitoc.com)
  */
 -->

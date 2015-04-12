@@ -17,10 +17,11 @@ class Aitoc_Aitsys_Block_Form extends Mage_Adminhtml_Block_Widget_Form
         $form = new Varien_Data_Form();
 
         $fieldset = $form->addFieldset('module_list', array(
-            'legend' => Mage::helper('aitsys')->__('Enable/Disable Modules')
+            'legend' => Mage::helper('aitsys')->__('AITOC Modules')
         ));
+        $fieldset->getRenderer()->setTemplate('aitcore/fieldset.phtml');
 
-        $aitsysModel = new Aitoc_Aitsys_Model_Aitsys(); 
+        $aitsysModel = new Aitoc_Aitsys_Model_Aitsys();
         $modulesList = $aitsysModel->getAitocModuleList();
         
         $this->_elementRenderer = $this->getLayout()->createBlock('aitsys/form_element_renderer');
@@ -42,10 +43,16 @@ class Aitoc_Aitsys_Block_Form extends Mage_Adminhtml_Block_Widget_Form
      */
     protected function _addModule(Aitoc_Aitsys_Model_Module $module, Varien_Data_Form_Element_Fieldset $fieldset)
     {
+        if($module->isIgnore())
+        {
+            return false;
+        }
+
         $aModule = $module;
         $label = $module->getInfo()->getLabel().($module->getInfo()->getVersion()?' v'.$module->getInfo()->getVersion():'');
         $message = '';
         $messageType = 'notice-msg';
+        $isDemo = false;
         
         if ($this->tool()->platform()->hasDemoMode()) {
             $xml = simplexml_load_file(Mage::getBaseDir()."/aitmodules.xml");
@@ -54,6 +61,7 @@ class Aitoc_Aitsys_Block_Form extends Mage_Adminhtml_Block_Widget_Form
                 $link = $this->tool()->getAitocUrl();
             }
             $message = Mage::helper('aitsys')->__("The extension is already enabled on this Demo Magento installation and can't be disabled for security reasons. Please proceed to the next step outlined in the extension's <a href='%s' target='_blank'>User Manual</a> to see how it works.", $link);
+            $isDemo = true;
         } elseif (defined('COMPILER_INCLUDE_PATH')) {
             $compilerUrl = version_compare(Mage::getVersion(), '1.5.0.0', '>=') ? Mage::helper('adminhtml')->getUrl('adminhtml/compiler_process/index/') : Mage::helper('adminhtml')->getUrl('compiler/process/index/');
             $message = Mage::helper('aitsys')->__('Before activating or deactivating the extension please turn off the compiler at <br /><a href="%s">System > Tools > Compilation</a>', $compilerUrl);
@@ -64,13 +72,27 @@ class Aitoc_Aitsys_Block_Form extends Mage_Adminhtml_Block_Widget_Form
             $message = Mage::helper('aitsys')->__('File does not have write permissions: %s', $aModule['file']);
             $messageType = 'error-msg';
         }
-        
-        if ($message) {
-            $fieldset->addField('ignore_'.$aModule['key'], 'note', array(
+
+        if($module->getInfo()->getSerial())
+        {
+            $info = 'S/N: '.$module->getInfo()->getSerial();
+        }
+
+        if($aModule['key'] == 'Aitoc_Common')
+        {
+            $info = 'Used by other AITOC\'s modules. Do not disable.';
+        }
+        if ($message && $messageType != 'notice-msg' || $isDemo) {
+            $field = $fieldset->addField('ignore_'.$aModule['key'], 'note', array(
                 'name'  => 'ignore['.$aModule['key'].']',
                 'label' => $label,
-                'note'  => '<ul class="messages"><li class="'.$messageType.'"><ul><li>' . $message . '</li></ul></li></ul>'
+                'info'  => empty($info)?'':$info,
+                'note'  => '<ul class="messages"><li class="'.$messageType.'"><ul><li>' . $message . '</li></ul></li></ul>',
+                'module'  => $module
             ));
+            if(!$isDemo) {
+                $field->setRenderer($this->_elementRenderer);
+            }
             return;
         }
         
@@ -78,12 +100,14 @@ class Aitoc_Aitsys_Block_Form extends Mage_Adminhtml_Block_Widget_Form
             'name'  => 'enable['.$aModule['key'].']',
             'value' => 0,
         ));
-        
+
         $fieldset->addField('enable_'.$aModule['key'], 'checkbox', array(
             'name'    => ($module->getAccess() ? 'enable' : 'ignore') . '['.$aModule['key'].']',
             'label'   => $label,
             'value'   => 1,
             'checked' => $aModule['value'],
+            'note'  => $message?'<ul class="messages"><li class="'.$messageType.'"><ul><li>' . $message . '</li></ul></li></ul>':'',
+            'info'  => empty($info)?'':$info,
             'module'  => $module
         ))->setRenderer($this->_elementRenderer);
     }
