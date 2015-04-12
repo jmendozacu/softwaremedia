@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Aitoc_Aitcheckoutfields>
-            <version>10.5.3</version>
+            <version>10.5.7</version>
         </Aitoc_Aitcheckoutfields>
     </modules>
     
@@ -76,6 +76,10 @@
             
             <checkout>
                 <rewrite>
+                    <onepage_billing>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageBilling</onepage_billing>
+                    <onepage_shipping>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageShipping</onepage_shipping>
+                    <onepage_shipping_method>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageShippingMethod</onepage_shipping_method>
+                    <onepage_payment>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepagePayment</onepage_payment>
                     <onepage_review>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageReview</onepage_review>
                     <onepage_review_info>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageReviewInfo</onepage_review_info>
                     <multishipping_addresses>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutMultishippingAddresses</multishipping_addresses>
@@ -284,3 +288,15 @@
         </aitcheckoutfields>
     </default>
 </config>
+
+<!--
+/**
+ * Checkout Fields Manager
+ *
+ * @category:    Aitoc
+ * @package:     Aitoc_Aitcheckoutfields
+ * @version      10.5.7
+ * @license:     grDwoQqpctpZdS57isl8WpY91kLDyrRZ7i5S4ZKTe1
+ * @copyright:   Copyright (c) 2015 AITOC, Inc. (http://www.aitoc.com)
+ */
+-->
