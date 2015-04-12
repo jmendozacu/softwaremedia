@@ -60,6 +60,7 @@
                 <rewrite>
                     <sales_order_view_info>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderViewInfo</sales_order_view_info>
 <sales_order_create_form_account>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderCreateFormAccount</sales_order_create_form_account>
+                    <customer_edit_tabs>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminCustomerEditTabs</customer_edit_tabs>
                 </rewrite>
             </adminhtml>
             
@@ -283,15 +284,3 @@
         </aitcheckoutfields>
     </default>
 </config>
-
-<!--
-/**
- * Checkout Fields Manager
- *
- * @category:    Aitoc
- * @package:     Aitoc_Aitcheckoutfields
- * @version      10.5.3
- * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
- * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
- */
--->
