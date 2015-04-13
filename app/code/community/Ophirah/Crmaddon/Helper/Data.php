@@ -74,9 +74,10 @@ class Ophirah_Crmaddon_Helper_Data extends Mage_Core_Helper_Abstract
         
         foreach($DB_messages as $DB_message){
             // replace message tekst with Html stripped tekst
-            $newMsg = $this->stripHtmlTags($DB_message->getData('message'));
+            $newMsg = $DB_message->getData('message');
+            $newMsg1 = $this->stripHtmlTags($DB_message->getData('message'));
             // get short message
-            $shortMsg = $this->getShortMsg($newMsg);
+            $shortMsg = $this->getShortMsg($newMsg1);
             
             $DB_message->setData('message', $newMsg );
             $DB_message->setData('message_1', $shortMsg['message_1'] );
