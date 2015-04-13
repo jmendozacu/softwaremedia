@@ -59,8 +59,7 @@
             <adminhtml>
                 <rewrite>
                     <sales_order_view_info>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderViewInfo</sales_order_view_info>
-                    <sales_order_grid>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminhtmlSalesOrderGrid</sales_order_grid>
-                    <sales_order_create_form_account>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderCreateFormAccount</sales_order_create_form_account>
+<sales_order_create_form_account>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminSalesOrderCreateFormAccount</sales_order_create_form_account>
                     <customer_edit_tabs>Aitoc_Aitcheckoutfields_Block_Rewrite_AdminCustomerEditTabs</customer_edit_tabs>
                 </rewrite>
             </adminhtml>
@@ -289,15 +288,3 @@
         </aitcheckoutfields>
     </default>
 </config>
-
-<!--
-/**
- * Checkout Fields Manager
- *
- * @category:    Aitoc
- * @package:     Aitoc_Aitcheckoutfields
- * @version      10.5.7
- * @license:     grDwoQqpctpZdS57isl8WpY91kLDyrRZ7i5S4ZKTe1
- * @copyright:   Copyright (c) 2015 AITOC, Inc. (http://www.aitoc.com)
- */
--->
