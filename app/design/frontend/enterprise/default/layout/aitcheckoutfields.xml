@@ -27,32 +27,6 @@
 		</reference>
 	</customer_account_create>
 
-	<customer_account_edit translate="label">
-		<reference name="head">
-			<action method="addItem">
-				<type>js_css</type>
-				<name>calendar/calendar-win2k-1.css</name>
-				<params/>
-			</action>
-			<action method="addItem">
-				<type>js</type>
-				<name>calendar/calendar.js</name>
-			</action>
-			<action method="addItem">
-				<type>js</type>
-				<name>calendar/calendar-setup.js</name>
-			</action>
-		</reference>
-		<reference name="content">
-			<block type="core/html_calendar" name="head.calendar" as="html_calendar" template="aitcheckoutfields/js/calendar.phtml"/>
-		</reference>
-		<reference name="customer_edit">
-			<action method="setTemplate">
-				<template>aitcommonfiles/design--frontend--enterprise--default--template--customer--form--edit.phtml</template>
-			</action>
-		</reference>
-	</customer_account_edit>
-
 	<checkout_multishipping_addresses translate="label">
 		<reference name="head">
 			<action method="addItem">
