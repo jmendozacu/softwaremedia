@@ -155,7 +155,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	        $template->setTemplateSubject($vars['subject']);
 	        
 	        $send = $email;
-	        
+	 
 	        if (strpos($_SERVER['HTTP_HOST'], 'local') || strpos($_SERVER['HTTP_HOST'], 'dev') === 0) {
 	        	$send = 'jlosee@softwaremedia.com';
 			} else {
@@ -186,6 +186,11 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		}
 		
 		$orderItem = Mage::getModel('sales/order_item')->load($itemId);
+		if ($orderItem->getProductType() == 'configurable') {
+			$orderItemCollection = Mage::getModel('sales/order_item')->getCollection()->addAttributeToFilter('parent_item_id',$orderItem->getId());
+			if ($orderItemCollection->getFirstItem())
+				$orderItem = $orderItemCollection->getFirstItem();
+		}
 		$sku = $orderItem->getProductId();
 		
 		//echo $orderItem->getProductId();
