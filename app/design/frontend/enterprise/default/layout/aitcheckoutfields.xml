@@ -232,11 +232,11 @@
 		<reference name="content">
 			<block type="core/html_calendar" name="head.calendar" as="html_calendar" template="aitcheckoutfields/js/calendar.phtml"/>
 		</reference>
-		<reference name="paypal.express.review">
+		<!--reference name="paypal.express.review">
 			<action method="setTemplate">
 				<template>aitcommonfiles/design--frontend--base--default--template--paypal--express--review.phtml</template>
 			</action>
-		</reference>
+		</reference-->
 	</paypal_express_review>
 
 	<paypaluk_express_review>
