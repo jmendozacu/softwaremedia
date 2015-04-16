@@ -347,9 +347,9 @@ class Aitoc_Aitcheckoutfields_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	public function getPaypalReviewTemplate() {
 		if (version_compare(Mage::getVersion(), '1.12.0.0', 'ge')) {
-			return 'aitcommonfiles/design--frontend--base--default--template--paypaluk--express--review.phtml';
+			return 'paypal/express/review.phtml';
 		} else {
-			return 'aitcommonfiles/design--frontend--base--default--template--paypal--express--review.phtml';
+			return 'paypal/express/review.phtml';
 		}
 	}
 
