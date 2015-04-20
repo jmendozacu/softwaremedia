@@ -62,9 +62,9 @@
 					<?php $prod = $product->loadProduct(); ?>
 					<div class="product">
 						<?php if ($prod): ?>
-						<img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(150); ?>" />
+						<a href="<?php echo $prod->getProductUrl();?>"><img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(150); ?>" /></a>
 						<?php endif; ?>
-						<h3><?php echo $product->getName(); ?></h3>
+						<h3><a href="<?php echo $prod->getProductUrl();?>"><?php echo $product->getName(); ?></a></h3>
 						<p><?php echo $product->getDescription(); ?></p>
 						<?php if ($prod): ?>
 						 <span class="regular-price">
