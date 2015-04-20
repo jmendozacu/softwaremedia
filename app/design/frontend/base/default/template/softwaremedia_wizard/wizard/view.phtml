@@ -29,7 +29,7 @@
 </div>
 <div class="wizard-view">
     <?php if ($_wizard->getStaticBlock()): ?>
-	<div class="wizard_static">
+	<div class="wizard_static std">
 		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId($_wizard->getStaticBlock())->toHtml(); ?>
 	</div>
 	<?php endif; ?>
