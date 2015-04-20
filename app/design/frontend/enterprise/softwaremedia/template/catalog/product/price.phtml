@@ -7,6 +7,37 @@ $_taxHelper  = $this->helper('tax');
 /* @var $_taxHelper Mage_Tax_Helper_Data */
 
 $_product = $this->getProduct();
+
+
+
+//Get price of simple product from query string
+$prod = Mage::registry('product');
+if ($prod) {
+if ($prod->getTypeId() == 'configurable') {
+	$conf = Mage::getModel('catalog/product_type_configurable')->setProduct($prod);
+	$simple_collection = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
+	$attributes = array();
+	
+	foreach($_GET as $query => $val) {
+		$_attribute = Mage::getModel('eav/entity_attribute')->load($query);
+		if ($_attribute->getId()) {
+			$attributes[] = array('code' => $_attribute->getAttributeCode(), 'value' => $val);
+		}
+	}
+	foreach($simple_collection as $simple) {
+		$match = 1;
+		foreach($attributes as $att) {
+			if ($simple->getData($att['code']) != $att['value'])
+				$match = 0;
+		}
+		if ($match == 1 && count($attributes) > 0) {
+			$_product = $simple;
+			break;
+		}
+	}
+}
+}
+
 $_storeId = $_product->getStoreId();
 $_id = $_product->getId();
 $_weeeSeparator = '';
