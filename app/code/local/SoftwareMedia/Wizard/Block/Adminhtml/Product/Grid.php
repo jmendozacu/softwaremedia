@@ -83,7 +83,6 @@ class SoftwareMedia_Wizard_Block_Adminhtml_Product_Grid extends Mage_Adminhtml_B
         $wizards = Mage::getModel('softwaremedia_wizard/wizard')->getCollection();
         $values = array();
         foreach($wizards as $wizard) {
-        	echo $wizard->getTitle();
 	    	$values[$wizard->getId()] = $wizard->getTitle();    
         }
         
