@@ -1,0 +1,44 @@
+<?php 
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+/**
+ * Wizard list template
+ *
+ * @category    SoftwareMedia
+ * @package     SoftwareMedia_Wizard
+ * @author      Ultimate Module Creator
+ */
+?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $_wizards = $this->getWizards(); ?>
+<div class="page-title wizard-title">
+    <h1><?php echo Mage::helper('softwaremedia_wizard')->__('Wizards') ?></h1>
+</div>
+<?php if ($_wizards->getSize() > 0) :?>
+    <?php echo $this->getPagerHtml(); ?>
+    <div class="wizard-list-container">
+    <?php foreach ($_wizards as $_wizard) : ?>
+        <div class="wizard-list-item">
+            <a href="<?php echo $_wizard->getWizardUrl()?>">
+                <?php echo $_wizard->getTitle();?>
+            </a><br />
+        </div>
+    <?php endforeach;?>
+    </div>
+    <?php echo $this->getPagerHtml(); ?>
+<?php else : ?>
+    <?php echo Mage::helper('softwaremedia_wizard')->__('There are no wizards at this moment');?>
+<?php endif;?>

@@ -1,0 +1,80 @@
+<?php 
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+/**
+ * Wizard Question list template
+ *
+ * @category    SoftwareMedia
+ * @package     SoftwareMedia_Wizard
+ * @author      Ultimate Module Creator
+ */
+?>
+<?php $_questions = $this->getQuestions(); ?>
+<?php if ($_questions->getSize() > 0) :?>
+<div class="questions-list-container">
+    <?php foreach ($_questions as $_question) : ?>
+        <div class="question-list-item active" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";}?>>
+        	<?php if ($_question->getParentId()>1): ?>
+        		<div class="back"><a href="#" onclick="prevQuestion(<?php echo $_question->getParentId(); ?>); return false;">Previous</a></div>
+        	<?php endif; ?>
+            <h2 class="question"><?php echo $_question->getQuestion();?></h2>
+            
+            <?php $children = $_question->getChildrenQuestions(); ?>
+            
+            <?php if ($children): ?>
+            <div class="answers">
+            	<?php foreach($children as $child): ?>
+            	<div class="answer"><h2><a href="#" onclick="showQuestion(<?php echo $child->getId(); ?>); return false;"><?php echo $child->getAnswer(); ?></a></div>
+            	<?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            
+            <?php $products = $_question->getSelectedProductsCollection(); ?>
+			<?php if ($products): ?>
+			<div class="products">
+				<?php foreach($products as $product): ?>
+					<?php $prod = $product->loadProduct(); ?>
+					<div class="product">
+						<h3><?php echo $product->getName(); ?></h3>
+						<p><?php echo $product->getDescription(); ?></p>
+						<?php if ($prod): ?>
+						 <span class="regular-price">
+						 	<span class="price">$<?php echo $prod->getPrice(); ?></span>
+						 </span>
+						 
+						 <button onclick="setLocation('<?php echo $prod->getProductUrl();?>')" type="button" class="button btn-cart"><span><span>More Info</span></span></button>
+						 <?php endif; ?>
+					</div>
+				<?php endforeach; ?>
+			</div>
+			<?php endif; ?>
+        </div>
+    <?php endforeach;?>
+</div>
+<?php endif;?>
+
+<script>
+	function showQuestion(id) {
+		jQuery('.question-list-item.active').slideUp().removeClass('active');
+		jQuery('#question_' + id).fadeIn();
+		jQuery('#question_' + id).addClass('active');
+	}
+	function prevQuestion(id) {
+		jQuery('.question-list-item.active').slideUp().removeClass('active');
+		jQuery('#question_' + id).slideDown();
+		jQuery('#question_' + id).addClass('active');
+	}
+</script>

@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+--> 
+<layout>
+    <adminhtml_wizard_wizard_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>catalog/softwaremedia_wizard/wizard</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_wizard/adminhtml_wizard" name="wizard" />
+
+        </reference>
+    </adminhtml_wizard_wizard_index>
+    <adminhtml_wizard_wizard_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="softwaremedia_wizard/adminhtml_wizard_grid" name="wizard_grid"/>
+        </block>
+    </adminhtml_wizard_wizard_grid>
+    <!-- Wizard add/edit action -->
+    <adminhtml_wizard_wizard_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>catalog/softwaremedia_wizard/wizard</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_wizard/adminhtml_wizard_edit" name="wizard_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="softwaremedia_wizard/adminhtml_wizard_edit_tabs" name="wizard_tabs"></block>
+        </reference>
+    </adminhtml_wizard_wizard_edit>
+
+    <adminhtml_wizard_product_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>catalog/softwaremedia_wizard/product</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_wizard/adminhtml_product" name="product" />
+
+        </reference>
+    </adminhtml_wizard_product_index>
+    <adminhtml_wizard_product_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="softwaremedia_wizard/adminhtml_product_grid" name="product_grid"/>
+        </block>
+    </adminhtml_wizard_product_grid>
+    <!-- Product add/edit action -->
+    <adminhtml_wizard_product_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>catalog/softwaremedia_wizard/product</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_wizard/adminhtml_product_edit" name="product_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="softwaremedia_wizard/adminhtml_product_edit_tabs" name="product_tabs"></block>
+        </reference>
+    </adminhtml_wizard_product_edit>
+
+    <adminhtml_wizard_question_edit>
+        <update handle="editor"/>
+        <reference name="left">
+            <block name="question.tree" type="softwaremedia_wizard/adminhtml_question_tree" />
+        </reference>
+        <reference name="content">
+            <block name="question.edit" type="softwaremedia_wizard/adminhtml_question_edit" template="softwaremedia_wizard/question/edit.phtml" />
+        </reference>
+        <reference name="js">
+            <block type="core/template" template="catalog/wysiwyg/js.phtml" name="catalog.wysiwyg.js" />
+        </reference>
+    </adminhtml_wizard_question_edit>
+</layout>

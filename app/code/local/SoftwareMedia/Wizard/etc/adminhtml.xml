@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <softwaremedia_wizard translate="title" module="softwaremedia_wizard">
+                                        <title>Wizard</title>
+                                    </softwaremedia_wizard>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <catalog>
+                        <children>
+                            <softwaremedia_wizard translate="title" module="softwaremedia_wizard">
+                                <title>Wizard</title>
+                                <children>
+                                    <wizard translate="title" module="softwaremedia_wizard">
+                                        <title>Wizard</title>
+                                        <sort_order>0</sort_order>
+                                    </wizard>
+                                    <question translate="title" module="softwaremedia_wizard">
+                                        <title>Question</title>
+                                        <sort_order>10</sort_order>
+                                    </question>
+                                    <product translate="title" module="softwaremedia_wizard">
+                                        <title>Product</title>
+                                        <sort_order>20</sort_order>
+                                    </product>
+                                </children>
+                            </softwaremedia_wizard>                        </children>
+                    </catalog>
+
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <menu>
+        <catalog>
+            <children>
+                <softwaremedia_wizard translate="title" module="softwaremedia_wizard">
+                    <title>Wizard</title>
+                    <sort_order>540</sort_order>
+                    <children>
+                        <wizard translate="title" module="softwaremedia_wizard">
+                            <title>Wizard</title>
+                            <action>adminhtml/wizard_wizard</action>
+                            <sort_order>0</sort_order>
+                        </wizard>
+                        <question translate="title" module="softwaremedia_wizard">
+                            <title>Question</title>
+                            <action>adminhtml/wizard_question</action>
+                            <sort_order>10</sort_order>
+                        </question>
+                        <product translate="title" module="softwaremedia_wizard">
+                            <title>Product</title>
+                            <action>adminhtml/wizard_product</action>
+                            <sort_order>20</sort_order>
+                        </product>
+                    </children>
+                </softwaremedia_wizard>            </children>
+        </catalog>
+
+    </menu>
+</config>

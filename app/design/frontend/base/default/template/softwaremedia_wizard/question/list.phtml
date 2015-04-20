@@ -1,0 +1,54 @@
+<?php 
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+/**
+ * Question list template
+ *
+ * @category    SoftwareMedia
+ * @package     SoftwareMedia_Wizard
+ * @author      Ultimate Module Creator
+ */
+?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $_questions = $this->getQuestions(); ?>
+<div class="page-title question-title">
+    <h1><?php echo Mage::helper('softwaremedia_wizard')->__('Questions') ?></h1>
+</div>
+<?php if ($_questions->getSize() > 0) :?>
+    <?php if ($this->_getDisplayMode() == 0) : ?>
+        <?php echo $this->getPagerHtml(); ?>
+        <div class="question-list-container">
+            <?php foreach ($_questions as $_question) : ?>
+                <div class="question-list-item">
+            <?php echo $_question->getQuestion();?>
+<br />
+                </div>
+            <?php endforeach;?>
+        </div>
+        <?php echo $this->getPagerHtml(); ?>
+    <?php else : ?>
+        <ul id="questions-list">
+            <?php foreach ($_questions as $_question) : ?>
+                <?php echo $this->drawQuestion($_question);?>
+            <?php endforeach;?>
+        </ul>
+        <script type="text/javascript">
+            wizardTree('questions-list');
+        </script>
+    <?php endif;?>
+<?php else : ?>
+    <?php echo Mage::helper('softwaremedia_wizard')->__('There are no questions at this moment');?>
+<?php endif;?>

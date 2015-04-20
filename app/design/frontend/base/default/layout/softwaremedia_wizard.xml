@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<layout>
+    <default>
+    <reference name="head">
+        <action method="addCss"><js>css/softwaremedia_wizard/tree.css</js></action>
+    </reference>
+    </default>
+    <softwaremedia_wizard_wizard_index translate="label" module="softwaremedia_wizard">
+        <label>Wizards list</label>
+        <update handle="page_two_columns_left" />
+        <reference name="content">
+            <block type="softwaremedia_wizard/wizard_list" name="wizard_list" template="softwaremedia_wizard/wizard/list.phtml" />
+        </reference>
+    </softwaremedia_wizard_wizard_index>
+    <softwaremedia_wizard_question_index translate="label" module="softwaremedia_wizard">
+        <label>Questions list</label>
+        <update handle="page_two_columns_left" />
+        <reference name="head">
+            <action method="addItem" ifconfig="softwaremedia_wizard/question/tree"><type>skin_js</type><js>js/softwaremedia_wizard/tree.js</js></action>
+        </reference>
+        <reference name="content">
+            <block type="softwaremedia_wizard/question_list" name="question_list" template="softwaremedia_wizard/question/list.phtml" />
+        </reference>
+    </softwaremedia_wizard_question_index>
+    <softwaremedia_wizard_wizard_view translate="label" module="softwaremedia_wizard">
+        <label>Wizard view page</label>
+        <update handle="page_one_column" />
+        <reference name="content">
+            <block type="softwaremedia_wizard/wizard_view" name="wizard_view" template="softwaremedia_wizard/wizard/view.phtml" />
+            <block type="softwaremedia_wizard/wizard_question_list" name="wizard.question_list" as="wizard_wizards" template="softwaremedia_wizard/wizard/question/list.phtml" />
+        </reference>
+    </softwaremedia_wizard_wizard_view>
+</layout>

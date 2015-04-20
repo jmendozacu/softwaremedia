@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <modules>
+        <SoftwareMedia_Wizard>
+            <version>1.0.3</version>
+        </SoftwareMedia_Wizard>
+    </modules>
+    <global>
+        <resources>
+            <softwaremedia_wizard_setup>
+                <setup>
+                    <module>SoftwareMedia_Wizard</module>
+                    <class>SoftwareMedia_Wizard_Model_Resource_Setup</class>
+                </setup>
+            </softwaremedia_wizard_setup>
+        </resources>
+        <blocks>
+            <softwaremedia_wizard>
+                <class>SoftwareMedia_Wizard_Block</class>
+            </softwaremedia_wizard>
+        </blocks>
+        <helpers>
+            <softwaremedia_wizard>
+                <class>SoftwareMedia_Wizard_Helper</class>
+            </softwaremedia_wizard>
+        </helpers>
+        <models>
+            <softwaremedia_wizard>
+                <class>SoftwareMedia_Wizard_Model</class>
+                <resourceModel>softwaremedia_wizard_resource</resourceModel>
+            </softwaremedia_wizard>
+            <softwaremedia_wizard_resource>
+                <class>SoftwareMedia_Wizard_Model_Resource</class>
+                <entities>
+                    <wizard>
+                        <table>softwaremedia_wizard_wizard</table>
+                    </wizard>
+                    <question>
+                        <table>softwaremedia_wizard_question</table>
+                    </question>
+                    <product>
+                        <table>softwaremedia_wizard_product</table>
+                    </product>
+                </entities>
+            </softwaremedia_wizard_resource>
+        </models>
+        <events>
+            <controller_front_init_routers>
+                <observers>
+                    <softwaremedia_wizard>
+                        <class>SoftwareMedia_Wizard_Controller_Router</class>
+                        <method>initControllerRouters</method>
+                    </softwaremedia_wizard>
+                </observers>
+            </controller_front_init_routers>
+        </events>
+    </global>
+    <adminhtml>
+        <layout>
+            <updates>
+                <softwaremedia_wizard>
+                    <file>softwaremedia_wizard.xml</file>
+                </softwaremedia_wizard>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <SoftwareMedia_Wizard>
+                    <files>
+                        <default>SoftwareMedia_Wizard.csv</default>
+                    </files>
+                </SoftwareMedia_Wizard>
+            </modules>
+        </translate>
+    </adminhtml>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <SoftwareMedia_Wizard before="Mage_Adminhtml">SoftwareMedia_Wizard_Adminhtml</SoftwareMedia_Wizard>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <frontend>
+        <routers>
+            <softwaremedia_wizard>
+                <use>standard</use>
+                <args>
+                    <module>SoftwareMedia_Wizard</module>
+                    <frontName>wizard</frontName>
+                </args>
+            </softwaremedia_wizard>
+        </routers>
+        <layout>
+            <updates>
+                <softwaremedia_wizard>
+                    <file>softwaremedia_wizard.xml</file>
+                </softwaremedia_wizard>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <SoftwareMedia_Wizard>
+                    <files>
+                        <default>SoftwareMedia_Wizard.csv</default>
+                    </files>
+                </SoftwareMedia_Wizard>
+            </modules>
+        </translate>
+    </frontend>
+    <default>
+        <softwaremedia_wizard>
+            <wizard>
+                <breadcrumbs>1</breadcrumbs>
+            </wizard>
+            <question>
+                <breadcrumbs>1</breadcrumbs>
+                <tree>1</tree>
+                <recursion>0</recursion>
+            </question>
+            <product>
+                <breadcrumbs>1</breadcrumbs>
+            </product>
+        </softwaremedia_wizard>
+    </default>
+</config>
