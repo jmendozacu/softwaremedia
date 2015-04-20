@@ -1,6 +1,7 @@
 .questions-list-container {
-
+	padding: 20px;
 	margin: 15px auto;
+	width: 70%;
 }
 
 .questions-list-container .products {
