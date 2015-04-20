@@ -66,8 +66,7 @@ class SoftwareMedia_Wizard_Block_Adminhtml_Wizard_Edit_Tab_Form extends Mage_Adm
             'text',
             array(
                 'label' => Mage::helper('softwaremedia_wizard')->__('Static Block'),
-                'name'  => 'static_block',
-                'note'  => Mage::helper('softwaremedia_wizard')->__('Relative to Website Base URL')
+                'name'  => 'static_block'
             )
         );
         $fieldset->addField(

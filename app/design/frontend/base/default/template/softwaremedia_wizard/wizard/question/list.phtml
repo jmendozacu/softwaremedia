@@ -24,13 +24,23 @@
 ?>
 <?php $_questions = $this->getQuestions(); ?>
 <?php if ($_questions->getSize() > 0) :?>
+<div class="std">
 <div class="questions-list-container">
     <?php foreach ($_questions as $_question) : ?>
         <div class="question-list-item active" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";}?>>
-        	<?php if ($_question->getParentId()>1): ?>
-        		<div class="back"><a href="#" onclick="prevQuestion(<?php echo $_question->getParentId(); ?>); return false;">Previous</a></div>
-        	<?php endif; ?>
-            <h2 class="question"><?php echo $_question->getQuestion();?></h2>
+        	<?php $products = $_question->getSelectedProductsCollection(); ?>
+        	
+            <?php if ($_question->getQuestion() && $products->getSize()<1): ?>
+            	<div class="title-orange"><h3>Question <?php echo $_question->getLevel();?></h3></div>
+            	<h2><?php echo $_question->getQuestion();?></h2>
+            	
+			<?php elseif($_question->getQuestion()): ?>
+				<div class="title-orange"><h3><?php echo $_question->getQuestion();?></h3></div>
+            <?php endif; ?>
+            
+            <?php if ($_question->getComment()): ?>
+            	<p><?php echo $_question->getComment();?></p>
+            <?php endif; ?>
             
             <?php $children = $_question->getChildrenQuestions(); ?>
             
@@ -42,12 +52,18 @@
             </div>
             <?php endif; ?>
             
-            <?php $products = $_question->getSelectedProductsCollection(); ?>
+            <?php if ($_question->getParentId()>1 && $products->getSize()<1): ?>
+        		<div class="back"><a href="#" onclick="prevQuestion(<?php echo $_question->getParentId(); ?>); return false;">Previous</a></div>
+        	<?php endif; ?>
+            
 			<?php if ($products): ?>
 			<div class="products">
 				<?php foreach($products as $product): ?>
 					<?php $prod = $product->loadProduct(); ?>
 					<div class="product">
+						<?php if ($prod): ?>
+						<img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(150); ?>" />
+						<?php endif; ?>
 						<h3><?php echo $product->getName(); ?></h3>
 						<p><?php echo $product->getDescription(); ?></p>
 						<?php if ($prod): ?>
@@ -60,13 +76,14 @@
 						 <?php endif; ?>
 					</div>
 				<?php endforeach; ?>
+				<div style="clear: both;"></div>
 			</div>
 			<?php endif; ?>
         </div>
     <?php endforeach;?>
 </div>
 <?php endif;?>
-
+</div>
 <script>
 	function showQuestion(id) {
 		jQuery('.question-list-item.active').slideUp().removeClass('active');

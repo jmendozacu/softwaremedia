@@ -1,0 +1,14 @@
+.questions-list-container {
+
+	margin: 15px auto;
+}
+
+.questions-list-container .products {
+	clear: both;
+}
+
+.questions-list-container .products .product {
+	width: 280px;
+	float: left;
+	margin-right: 20px;
+}
