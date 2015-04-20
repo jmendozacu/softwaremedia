@@ -52,10 +52,11 @@
 						<p><?php echo $product->getDescription(); ?></p>
 						<?php if ($prod): ?>
 						 <span class="regular-price">
-						 	<span class="price">$<?php echo $prod->getPrice(); ?></span>
+						 	<span class="price">$<?php echo number_format($prod->getPrice(),2); ?></span>
 						 </span>
-						 
+						 <div class="more-info">
 						 <button onclick="setLocation('<?php echo $prod->getProductUrl();?>')" type="button" class="button btn-cart"><span><span>More Info</span></span></button>
+						 </div>
 						 <?php endif; ?>
 					</div>
 				<?php endforeach; ?>

@@ -76,7 +76,8 @@ class SoftwareMedia_Wizard_Model_Product extends Mage_Core_Model_Abstract
     }
 
 	public function loadProduct() {
-		$product = Mage::getModel('catalog/product')>setStoreId(1)->loadByAttribute('sku',$this->getSku());
+		//return false;
+		$product = Mage::getModel('catalog/product')->setStoreId(1)->loadByAttribute('sku',$this->getSku());
 		return $product;
 	}
     /**
