@@ -12,3 +12,10 @@
 	float: left;
 	margin-right: 20px;
 }
+
+.softwaremedia-wizard-wizard-view .std {
+	font-family: 'Carrois Gothic', 'Duru Sans',sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+}
