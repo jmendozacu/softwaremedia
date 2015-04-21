@@ -42,7 +42,11 @@
 	clear: both;
 	margin-bottom: 15px;
 }
-
+.questions-list-container .btn-cart span span,.questions-list-container .btn-cart {
+	background: #CC6731 !important;
+	font-weight: bold !important;
+	color: #fff !important;
+}
 .questions-list-container .products .product {
 	width: 280px;
 	float: left;
@@ -61,7 +65,28 @@
 	background: none !important;
 }
 .question-list-item .title-orange h3 { margin-left: 0 !important; padding-left: 0 !important; }
-
+.questions-list-container .prod-title {
+	font-size: 18px;
+}
 .questions-list-container .back {
 	margin-top: 8px;
+}
+.questions-list-container .msrp {
+	font-weight: bold;
+	font-size: 16px;
+}
+.questions-list-container .msrp .save {
+	font-weight: normal;
+	font-size: 14px;
+}
+.questions-list-container .strike {
+	text-decoration: line-through;
+}
+.questions-list-container .more-info {
+	margin-top : 6px;
+}
+.questions-list-container .regular-price .price {
+	  color: #CE6633;
+  font-size: 36px;
+  line-height: 36px;
 }
