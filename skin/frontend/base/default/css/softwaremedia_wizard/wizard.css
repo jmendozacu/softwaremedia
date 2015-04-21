@@ -42,13 +42,14 @@
 	clear: both;
 	margin-bottom: 15px;
 }
-.questions-list-container .btn-cart span span,.questions-list-container .btn-cart {
+.questions-list-container .btn-add span span,.questions-list-container .btn-add {
 	background: #CC6731 !important;
 	font-weight: bold !important;
+	margin-right: 8px;
 	color: #fff !important;
 }
 .questions-list-container .products .product {
-	width: 280px;
+	width: 340px;
 	float: left;
 	margin-right: 20px;
 }
@@ -66,6 +67,7 @@
 }
 .question-list-item .title-orange h3 { margin-left: 0 !important; padding-left: 0 !important; }
 .questions-list-container .prod-title {
+margin-top: 5px;
 	font-size: 18px;
 }
 .questions-list-container .back {
