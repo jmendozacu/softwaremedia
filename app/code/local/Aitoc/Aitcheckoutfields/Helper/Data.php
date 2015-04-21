@@ -277,7 +277,7 @@ class Aitoc_Aitcheckoutfields_Helper_Data extends Mage_Core_Helper_Abstract {
 		if ($aFieldList = $this->getCustomFieldList($stepName, $tplPlaceId, $type)) {
 			$result .= "\n<fieldset class=\"aitcfm-fieldset aitcfm_" . $stepName . '_' . $tplPlaceId . "\"><ul class=\"form-list\">\n";
 			foreach ($aFieldList as $aField) {
-				if ($display_all || !in_array($aField['attribute_code'], $license_only_arr)) {
+				if ($display_all && in_array($aField['attribute_code'], $license_only_arr)) {
 					$result .= $this->getFieldHtml($aField, $setName) . "\n";
 				}
 			}
@@ -347,9 +347,9 @@ class Aitoc_Aitcheckoutfields_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	public function getPaypalReviewTemplate() {
 		if (version_compare(Mage::getVersion(), '1.12.0.0', 'ge')) {
-			return 'aitcommonfiles/design--frontend--base--default--template--paypaluk--express--review.phtml';
+			return 'paypal/express/review.phtml';
 		} else {
-			return 'aitcommonfiles/design--frontend--base--default--template--paypal--express--review.phtml';
+			return 'paypal/express/review.phtml';
 		}
 	}
 

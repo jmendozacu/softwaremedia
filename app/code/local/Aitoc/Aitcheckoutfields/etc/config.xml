@@ -92,7 +92,6 @@
             <customer>
                 <rewrite>
                     <form_register>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCustomerFormRegister</form_register>
-                    <form_edit>Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCustomerFormEdit</form_edit>
                 </rewrite>
             </customer>
             

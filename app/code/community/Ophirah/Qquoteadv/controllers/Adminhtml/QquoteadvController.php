@@ -1993,13 +1993,27 @@ function hideBox() {
                     "created_time" => now()
                    );
                     
+                $step = Mage::getModel('softwaremedia_campaign/step')->load($step_id);
                 $lastNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customer_id)->addFieldToFilter('update_time', array('null' => true));
 
                 foreach($lastNote as $lNote) {
 					$lNote->setUpdateTime(now());
 					$lNote->save();
                 }
-               
+                
+                $message = 'User: <strong>' .  Mage::getSingleton('admin/session')->getUser()->getUsername() . '</strong><br /><strong>Contact Method: </strong>' . $contact_method  . '<br /><strong>Step: </strong>: ' . $step->getName();
+                
+                if ($this->getRequest()->getParam('note'))
+					$message .= "<br /><strong>Note: </strong>" . $this->getRequest()->getParam('note');
+					
+				$model = Mage::getModel('crmaddon/crmaddonmessages')->setQuoteId($quoteId);
+				$model->setCreatedAt(now());
+				$model->setTemplateId(2);
+				$model->setSubject('Customer Contacted');
+				$model->setCustomerNotified(0);
+				$model->setMessage($message);
+				$model->save();
+					
                 $model = Mage::getModel('customernotes/notes');
                 $model->setData($data);
                 $model->save();

@@ -15,6 +15,7 @@
         </reference>
     </customer_account_create>
 
+<<<<<<< HEAD
     <customer_account_edit translate="label">
     	<reference name="head">
             <action method="addItem"><type>js_css</type><name>calendar/calendar-win2k-1.css</name><params/></action>
@@ -29,6 +30,8 @@
         </reference>
     </customer_account_edit>
 
+=======
+>>>>>>> master
 	<checkout_multishipping_addresses translate="label">
 		<reference name="head">
             <action method="addItem"><type>js_css</type><name>calendar/calendar-win2k-1.css</name><params/></action>
@@ -137,6 +140,7 @@
             <action method="setTemplate"><template>aitcommonfiles/design--frontend--base--default--template--sales--order--print.phtml</template></action>
         </reference>
 	</sales_order_print>
+<<<<<<< HEAD
     
     <paypal_express_review>        
         <reference name="head">
@@ -168,6 +172,67 @@
         </reference>   
     </paypaluk_express_review>
 	
+=======
+
+	<paypal_express_review>
+		<reference name="head">
+			<action method="addCss">
+				<file>css/aitcheckoutfields/paypal_express_review.css</file>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>calendar/calendar-win2k-1.css</name>
+				<params/>
+			</action>
+			<action method="addItem">
+				<type>js</type>
+				<name>calendar/calendar.js</name>
+			</action>
+			<action method="addItem">
+				<type>js</type>
+				<name>calendar/calendar-setup.js</name>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="core/html_calendar" name="head.calendar" as="html_calendar" template="aitcheckoutfields/js/calendar.phtml"/>
+		</reference>
+		<!--reference name="paypal.express.review">
+			<action method="setTemplate">
+				<template>aitcommonfiles/design--frontend--base--default--template--paypal--express--review.phtml</template>
+			</action>
+		</reference-->
+	</paypal_express_review>
+
+	<paypaluk_express_review>
+		<reference name="head">
+			<action method="addCss">
+				<file>css/aitcheckoutfields/paypal_express_review.css</file>
+			</action>
+			<action method="addItem">
+				<type>js_css</type>
+				<name>calendar/calendar-win2k-1.css</name>
+				<params/>
+			</action>
+			<action method="addItem">
+				<type>js</type>
+				<name>calendar/calendar.js</name>
+			</action>
+			<action method="addItem">
+				<type>js</type>
+				<name>calendar/calendar-setup.js</name>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="core/html_calendar" name="head.calendar" as="html_calendar" template="aitcheckoutfields/js/calendar.phtml"/>
+		</reference>
+		<reference name="paypal.express.review">
+			<action method="setTemplate">
+				<template helper="aitcheckoutfields/data/getPaypalReviewTemplate"></template>
+			</action>
+		</reference>
+	</paypaluk_express_review>
+
+>>>>>>> master
 	<sales_recurring_profile_view>
 	    <reference name="sales.recurring.profile.view">
 		    <block type="sales/recurring_profile_view" name="sales.recurring.profile.view.aitcfm" as="aitcfm" template="sales/recurring/profile/view/info.phtml">
