@@ -69,7 +69,7 @@
 						 <div class="regular-price">
 						 	<span class="price">$<?php echo number_format($prod->getPrice(),2); ?></span>
 						 </div>
-						 <?php if ($prod->getMsrp()): ?>
+						 <?php if ($prod->getMsrp() && $prod->getPrice() < $prod->getPrice()): ?>
 						 <div class="msrp">
 						 	MSRP: <span class="strike">$<?php echo number_format($prod->getMsrp(),2); ?></span>
 						 	<div class="save">You save <?php echo floor((1 - ($prod->getPrice() / $prod->getMsrp())) * 100); ?>%</div>
