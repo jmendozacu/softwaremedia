@@ -60,10 +60,11 @@
 			<div class="products">
 				<?php foreach($products as $product): ?>
 					<?php $prod = $product->loadProduct(); ?>
+					<?php if ($prod): ?>
 					<div class="product">
-						<?php if ($prod): ?>
+						
 						<a href="<?php echo $prod->getProductUrl();?>"><img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(150); ?>" /></a>
-						<?php endif; ?>
+						
 						<h3><a href="<?php echo $prod->getProductUrl();?>"><?php echo $product->getName(); ?></a></h3>
 						<p><?php echo $product->getDescription(); ?></p>
 						<?php if ($prod): ?>
@@ -75,6 +76,7 @@
 						 </div>
 						 <?php endif; ?>
 					</div>
+					<?php endif; ?>
 				<?php endforeach; ?>
 				<div style="clear: both;"></div>
 			</div>
