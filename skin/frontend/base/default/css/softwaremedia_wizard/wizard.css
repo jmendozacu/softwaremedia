@@ -1,11 +1,46 @@
 .questions-list-container {
-	padding: 20px;
-	margin: 15px auto;
-	width: 900px;
+	margin: 15px 0;
 }
-
+.questions-list-container h2 {
+	font-size: 18px;
+	margin-bottom: 5px;
+	margin-top: 10px;
+}
+.questions-list-container h4 {
+	font-size: 16px;
+	margin-left: 20px;
+	margin-bottom: 5px;
+}
+	.questions-list-container h4 a {
+		text-decoration: none;
+		display: inline-block;
+		width: 200px;
+		padding: 4px 6px;
+		background: #f8f8f8;
+		border: 1px solid #e5e5e5;
+	}
+		.questions-list-container h4 a .check {
+			display: inline-block; width: 12px; height: 12px;
+			border: 1px solid #e5e5e5;
+			border-radius: 3px;
+			margin-right: 8px;
+			background: #fff;
+			
+		}
+	.questions-list-container h4 a:hover {
+		background: #e9e9e9;
+		border: 1px solid #e9e9e9;
+	}
+	.questions-list-container h4 a:hover .check {
+		
+	}
+.questions-list-container .answers {
+	margin-top: 5px;
+	padding-top: 5px;
+}
 .questions-list-container .products {
 	clear: both;
+	margin-bottom: 15px;
 }
 
 .questions-list-container .products .product {
@@ -23,4 +58,10 @@
 
 .question-list-item .title-orange {
 	margin-bottom: 15px;
+	background: none !important;
+}
+.question-list-item .title-orange h3 { margin-left: 0 !important; padding-left: 0 !important; }
+
+.questions-list-container .back {
+	margin-top: 8px;
 }

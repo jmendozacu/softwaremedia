@@ -27,7 +27,8 @@
 <div class="std">
 <div class="questions-list-container">
     <?php foreach ($_questions as $_question) : ?>
-        <div class="question-list-item active" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";}?>>
+    	<?php if ($_question->getParentId() == 1) { $top = $_question->getId(); } ?>
+        <div class="question-list-item active" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";} ?>>
         	<?php $products = $_question->getSelectedProductsCollection(); ?>
         	
             <?php if ($_question->getQuestion() && $products->getSize()<1): ?>
@@ -47,14 +48,10 @@
             <?php if ($children): ?>
             <div class="answers">
             	<?php foreach($children as $child): ?>
-            	<div class="answer"><h2><a href="#" onclick="showQuestion(<?php echo $child->getId(); ?>); return false;"><?php echo $child->getAnswer(); ?></a></div>
+            	<div class="answer"><h4><a href="#" onclick="showQuestion(<?php echo $child->getId(); ?>); return false;"><span class="check"></span><?php echo $child->getAnswer(); ?></a></h4></div>
             	<?php endforeach; ?>
             </div>
             <?php endif; ?>
-            
-            <?php if ($_question->getParentId()>1 && $products->getSize()<1): ?>
-        		<div class="back"><a href="#" onclick="prevQuestion(<?php echo $_question->getParentId(); ?>); return false;">Previous</a></div>
-        	<?php endif; ?>
             
 			<?php if ($products): ?>
 			<div class="products">
@@ -81,6 +78,15 @@
 				<div style="clear: both;"></div>
 			</div>
 			<?php endif; ?>
+			
+			<?php if ($_question->getParentId()>1): ?>
+        		<div class="back">
+        			<a href="#" onclick="prevQuestion(<?php echo $_question->getParentId(); ?>); return false;">Previous</a>
+					<?php if ($products->getSize()>0): ?>
+					 | <a href="#" onclick="resetQuestion(); return false;">Start Over</a>
+					<?php endif; ?>
+        		</div>
+        	<?php endif; ?>
         </div>
     <?php endforeach;?>
 </div>
@@ -93,6 +99,12 @@
 		jQuery('#question_' + id).addClass('active');
 	}
 	function prevQuestion(id) {
+		jQuery('.question-list-item.active').slideUp().removeClass('active');
+		jQuery('#question_' + id).slideDown();
+		jQuery('#question_' + id).addClass('active');
+	}
+	function resetQuestion() {
+		var id = <?php echo $top; ?>;
 		jQuery('.question-list-item.active').slideUp().removeClass('active');
 		jQuery('#question_' + id).slideDown();
 		jQuery('#question_' + id).addClass('active');
