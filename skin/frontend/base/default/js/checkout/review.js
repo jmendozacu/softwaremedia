@@ -445,10 +445,10 @@ OrderReviewController.prototype = {
     {
         button.disabled = disable;
         button.removeClassName('no-checkout');
-        button.setStyle({opacity:1});
+        button.setStyle({display:'none'});
         if (disable) {
             button.addClassName('no-checkout');
-            button.setStyle({opacity:.5});
+            button.setStyle({display:'block'});
         }
     }
 };

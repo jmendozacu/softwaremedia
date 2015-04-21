@@ -279,7 +279,7 @@ class Aitoc_Aitcheckoutfields_Helper_Data extends Mage_Core_Helper_Abstract {
 			<div id="end_user_form_header">
 				<table style="border: 1px solid;">
 					<p id ="form_header" style="font-size: 22px; font-weight:bold;">End User Information</p>
-					<p id = "form_header_content" style="">There are products on your order that require End User Information. Providing this information now can help expedite your order. The information you provide below will indicate who the following licenses will be registered to. <p/>
+					<p id = "form_header_content" style="">There are products on your order that require End User Information. The information you provide below will indicate who the following licenses will be registered to. Click \'Update Order\' after entering your information <p/>
 				</table>
 			</div>
 		</div>';
