@@ -90,13 +90,13 @@ $cfmHelper = Mage::helper('aitcheckoutfields');
 
     <div class="info-set">
         <h2 class="legend"><?php echo $this->__('Items in Your Shopping Cart') ?><span class="separator"> | </span><a href="<?php echo $this->getUrl('checkout/cart') ?>"><?php echo $this->__('Edit Shopping Cart') ?></a></h2>
-    <?php echo  $cfmHelper->getStepFieldsCode('review', 1, 'onepage', 'aitpaypalexpress'); ?>
+    <?php //echo  $cfmHelper->getStepFieldsCode('review', 1, 'onepage', 'aitpaypalexpress'); ?>
     
         <div id="details-reload">
             <?php echo $this->getChildHtml('details') ?>
         </div>
     
-    <?php echo  $cfmHelper->getStepFieldsCode('review', 2, 'onepage', 'aitpaypalexpress'); ?>
+    <?php //echo  $cfmHelper->getStepFieldsCode('review', 2, 'onepage', 'aitpaypalexpress'); ?>
     </div>
         <?php echo $this->getChildHtml('agreements'); ?>
         <div class="buttons-set buttons-set-order" id="review-buttons-container">
