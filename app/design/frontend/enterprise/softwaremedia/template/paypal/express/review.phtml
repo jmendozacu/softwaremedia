@@ -27,6 +27,7 @@
 
 $billingBlock = $this->getChild('billing')->setFieldNamePrefix('billing')->setHideEmailAddress(true);
 $shippingAddress = $this->getShippingAddress();
+$cfmHelper = Mage::helper('aitcheckoutfields');
 ?>
 <div class="page-title">
     <h1><?php echo $this->__('Review Order') ?></h1>
@@ -89,9 +90,13 @@ $shippingAddress = $this->getShippingAddress();
 
     <div class="info-set">
         <h2 class="legend"><?php echo $this->__('Items in Your Shopping Cart') ?><span class="separator"> | </span><a href="<?php echo $this->getUrl('checkout/cart') ?>"><?php echo $this->__('Edit Shopping Cart') ?></a></h2>
+    <?php echo  $cfmHelper->getStepFieldsCode('review', 1, 'onepage', 'aitpaypalexpress'); ?>
+    
         <div id="details-reload">
             <?php echo $this->getChildHtml('details') ?>
         </div>
+    
+    <?php echo  $cfmHelper->getStepFieldsCode('review', 2, 'onepage', 'aitpaypalexpress'); ?>
     </div>
         <?php echo $this->getChildHtml('agreements'); ?>
         <div class="buttons-set buttons-set-order" id="review-buttons-container">
@@ -155,6 +160,8 @@ if ($('update_shipping_method_submit')) {
             });
         }
     }
+    
+
 <?php endif ?>
 PayPalExpressAjax = new OrderReviewController($('order_review_form'), $('review_button'),
     'shipping_method', null, 'details-reload'
