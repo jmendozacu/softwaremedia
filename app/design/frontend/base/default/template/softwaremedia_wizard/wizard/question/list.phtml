@@ -39,9 +39,11 @@
 				<div class="title-orange"><h3><?php echo $_question->getQuestion();?></h3></div>
             <?php endif; ?>
             
-            <?php if ($_question->getComment()): ?>
+            <?php if ($_question->getComment() && $products->getSize()<1): ?>
             	<p style="display: none" id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
             	<a id="comment_question_<?php echo $_question->getId();?>" onclick="jQuery('#comment_<?php echo $_question->getId();?>').slideDown(); jQuery('#comment_question_<?php echo $_question->getId();?>').fadeOut();return false;" href="#">+More Info</a>
+            <?php elseif($_question->getComment() && $products->getSize()>0): ?>
+            	<p id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
             <?php endif; ?>
             
             <?php $children = $_question->getChildrenQuestions(); ?>
