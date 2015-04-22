@@ -40,7 +40,8 @@
             <?php endif; ?>
             
             <?php if ($_question->getComment()): ?>
-            	<p><?php echo $_question->getComment();?></p>
+            	<p style="display: none" id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
+            	<a id="comment_question_<?php echo $_question->getId();?>" onclick="jQuery('#comment_<?php echo $_question->getId();?>').slideDown(); jQuery('#comment_question_<?php echo $_question->getId();?>').fadeOut();return false;" href="#">+More Info</a>
             <?php endif; ?>
             
             <?php $children = $_question->getChildrenQuestions(); ?>
