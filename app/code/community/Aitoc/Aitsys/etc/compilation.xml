@@ -47,9 +47,7 @@
         </default>
     </includes>
     <!-- Classes to remove from compilation after batch copy -->
-    <exclude_files>
-        <Aitoc_Aitsys_Model_Rewriter_Mage_Core_Block_Template/>
-    </exclude_files>
+    <exclude_files/>
     <!-- Classes to remove from compilation before merge into scope files -->
     <exclude_classes>
         <default>
@@ -64,9 +62,7 @@
     <remove_scope/>
     <rename_scope/>
     <!-- Classes to replace with abstract rewrites after batch copy -->
-    <replace>
-        <Mage_Core_Block_Template/>
-    </replace>
+    <replace/>
     <modules_rules>
         <Aitoc_Aitcheckout>
             <rename_scope>

@@ -279,7 +279,8 @@ final class Aitoc_Aitsys_Abstract_Service
      */
     public function getSetupHelper($module)
     {
-    	if ($module && is_string($module) && file_exists($this->filesystem()->getLocalDir().str_replace('_', DS, $module) . DS . 'Helper' . DS . 'License.php')) {
+        $moduleDir = $this->filesystem()->getModuleDir($module);
+    	if ($moduleDir && file_exists($moduleDir . DS . 'Helper' . DS . 'License.php')) {
         	$key = $module;
         } else {
             $key = 'Aitoc_Aitsys';

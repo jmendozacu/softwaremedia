@@ -131,7 +131,8 @@ class Aitoc_Aitsys_Model_Aitpatch extends Aitoc_Aitsys_Abstract_Model
                 }
 
                 $currentModulePath = $sMod;
-                $currentModuleName = str_replace(array('/','\\'),'_',substr($sMod, 6 + strrpos($sMod, 'local')));
+                //$currentModuleName = str_replace(array('/','\\'),'_',substr($sMod, 6 + strrpos($sMod, 'local')));
+                $currentModuleName = basename(dirname($sMod)) . '_' . basename($sMod);
             }
             $oPatcher->parsePatch($sPatch);
             
@@ -146,16 +147,16 @@ class Aitoc_Aitsys_Model_Aitpatch extends Aitoc_Aitsys_Abstract_Model
 
             if (!$oPatcher->canApplyChanges($sFileToPatch))
             {
-                //$aErrors[] = array('file' => $sFileToPatch, 'type' => 'file_uncompatible');
+                $aErrors[] = array('file' => $sFileToPatch, 'type' => 'file_uncompatible');
                 // adding session data for instructions page
-                //$uncompatibleList[$currentModuleName][] = array(
-                //    'file'      => $sFileToPatch,
-                //    'mod'       => $currentModulePath,
-                //    'patchfile' => $sFile,
-                //    'modkey'    => $this->_getModuleKey($currentModuleName),
-                //);
+                $uncompatibleList[$currentModuleName][] = array(
+                    'file'      => $sFileToPatch,
+                    'mod'       => $currentModulePath,
+                    'patchfile' => $sFile,
+                    'modkey'    => $this->_getModuleKey($currentModuleName),
+                );
             }
-            
+
             if (!$bDryRun)
             {
                 // apply patch

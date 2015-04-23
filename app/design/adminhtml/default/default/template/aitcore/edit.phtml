@@ -4,9 +4,9 @@
  *
  * @category:    Aitoc
  * @package:     Aitoc_Aitcheckoutfields
- * @version      10.5.3
- * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
- * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
+ * @version      10.5.7
+ * @license:     grDwoQqpctpZdS57isl8WpY91kLDyrRZ7i5S4ZKTe1
+ * @copyright:   Copyright (c) 2015 AITOC, Inc. (http://www.aitoc.com)
  */
 /* @var $this Aitoc_Aitsys_Block_Edit */
 $_helper = Mage::helper('aitsys');
@@ -20,6 +20,10 @@ $_helper = Mage::helper('aitsys');
     </table>
 </div>
 <div class="entry-edit">
+
+    <div class="notifications">
+        <?php echo $this->getChildHtml('aitsys.news')?>
+    </div>
     <?php echo $this->getInstallText()?>
     <table class="aitsys-list">
       <tr>
@@ -37,12 +41,10 @@ $_helper = Mage::helper('aitsys');
               [ <a href="<?php echo $this->getUrl('*/debug/index')?>"><?php echo $_helper->__('Debug')?></a> ]
           <?php } ?>
         </td>
-        <td class="notifications">
-            <?php echo $this->getChildHtml('aitsys.news')?>
-        </td>
       </tr>
     </table>
 </div>
+
 <script type="text/javascript">
     var configForm = new varienForm('config_edit_form');
 </script>

@@ -3,7 +3,7 @@
 <config>
     <modules>
         <Aitoc_Aitsys>
-            <version>3.0.1</version>
+            <version>3.2.1</version>
         </Aitoc_Aitsys>
     </modules>
     
@@ -78,6 +78,18 @@
             </controller_action_predispatch>
         </events>
         -->
+
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <ambase_upds>
+                        <type>singleton</type>
+                        <class>aitsys/observer</class>
+                        <method>updateNotification</method>
+                    </ambase_upds>
+                </observers>
+            </controller_action_predispatch>
+        </events>
     </adminhtml>
     
     <global>
@@ -134,7 +146,27 @@
                 </observers>
             </controller_action_predispatch_adminhtml_cache_massRefresh>
             <!-- cache cleaning end -->
-            
+
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <aitsys_rewriter_observer>
+                        <type>singleton</type>
+                        <class>aitsys/observer</class>
+                        <method>coreBlockAbstractToHtmlBefore</method>
+                    </aitsys_rewriter_observer>
+                </observers>
+            </core_block_abstract_to_html_before>
+
+            <aitoc_module_set_template_after>
+                <observers>
+                    <aitsys_aitpatch_observer>
+                        <type>singleton</type>
+                        <class>aitsys/aitpatch_observer</class>
+                        <method>pathTemplateReplaceBeforeToHtml</method>
+                    </aitsys_aitpatch_observer>
+                </observers>
+            </aitoc_module_set_template_after>
+
             <controller_front_init_routers>
                 <observers>
                     <aitsys_debuger_init>
@@ -160,7 +192,7 @@
                     <aitsys_compatibility>
                         <type>singleton</type>
                         <class>aitsys/observer</class>
-                        <method>compatibility</method>
+                        <method>coreBlockAbstractToHtmlAfter</method>
                     </aitsys_compatibility>
                 </observers>
             </core_block_abstract_to_html_after>
@@ -181,8 +213,10 @@
                         <u3>2.7.3-2.7.4</u3>
                         <u4>2.14.6-2.15.0</u4>
                         <u6>2.15.5-2.15.6</u6>
-                        <u6>2.20.1-2.21.0</u6>
-                        <u6>2.99.0-3.0.0</u6>
+                        <u7>2.20.1-2.21.0</u7>
+                        <u8>2.99.0-3.0.0</u8>
+                        <u9>3.0.3-3.1.0</u9>
+                        <u10>3.1.4-3.2.0</u10>
                     </upgrade>
                     <install>
                         <i1>3.0.0</i1>
@@ -232,13 +266,6 @@
             <aitsys>
                 <class>Aitoc_Aitsys_Block</class>
             </aitsys>
-            
-            <!-- rewriteabstract is our installer tag (for internal use) -->
-            <core>
-                <rewriteabstract>
-                    <template>Aitoc_Aitsys_Model_Rewriter_Mage_Core_Block_Template</template>
-                </rewriteabstract>
-            </core>
         </blocks>
         
         <helpers>
@@ -258,69 +285,21 @@
         </cache>
         
     </global>
-    
+
     <default>
         <aitsys>
+            <feed>
+                <feed_url>http://www.aitoc.com/en/feedrss</feed_url>
+                <store_url>http://www.aitoc.com/en/shopfeed</store_url>
+                <frequency>86400</frequency>
+                <interests>PROMO,EXTENSION_UPDATE_CUSTOMER,EXTENSION_UPDATE,NEW_EXTENSION,NEWS</interests>
+            </feed>
             <service>
                 <url>https://www.aitoc.com/api/xmlrpc</url>
             </service>
             <settings>
                 <use_dynamic_patches>0</use_dynamic_patches>
             </settings>
-            <errors>
-                <seg_exceed_limit>
-                    <code>1001</code>
-                    <text><![CDATA[License Rule "%s" violated. Available License value: %s; Currently Used value: %s. %s]]></text>
-                </seg_exceed_limit>
-                <seg_config_stores_module_not_found>
-                    <code>1002</code>
-                    <text><![CDATA[Module with key "%s" was not found. Please make sure that module package is placed in correct location.]]></text>
-                </seg_config_stores_module_not_found>
-                <seg_config_stores_exceed_limit>
-                    <code>1003</code>
-                    <text><![CDATA[You can't assign more than %d store(s) to use with "%s" module. Read AITOC License agreement for details. %s]]></text>
-                </seg_config_stores_exceed_limit>
-                <seg_config_stores_cant_disable>
-                    <code>1004</code>
-                    <text><![CDATA[You can't unassign store(s) to use with "%s" module. Refer to AITOC License agreement for details. %s]]></text>
-                </seg_config_stores_cant_disable>
-                <seg_config_module_license_not_found>
-                    <code>1005</code>
-                    <text><![CDATA[The module with key "%s" has no license. Please make sure the module and license  are installed.]]></text>
-                </seg_config_module_license_not_found>
-                <seg_config_module_disabled_for_store>
-                    <code>1006</code>
-                    <text><![CDATA[You should enable module for store %s  in System/Configuration/Aitoc Module Manager. %s]]></text>
-                </seg_config_module_disabled_for_store>
-                <seg_config_module_disabled_for_website>
-                    <code>1007</code>
-                    <text><![CDATA[You should enable module for all stores of website %s in System/Configuration/Aitoc Module Manager. %s]]></text>
-                </seg_config_module_disabled_for_website>
-                <seg_config_module_disabled_for_all_stores>
-                    <code>1008</code>
-                    <text><![CDATA[You should enable module for all stores in System/Configuration/Aitoc Module Manager. %s]]></text>
-                </seg_config_module_disabled_for_all_stores>
-                <seg_config_admins_exceed_limit>
-                    <code>1009</code>
-                    <text><![CDATA[You can't apply features of "%s" module for more than %d administrator(s). To save the settings, please remove excess users from the Role. Read AITOC License agreement for details. %s]]></text>
-                </seg_config_admins_exceed_limit>
-                <seg_store_access_denied>
-                    <code>1010</code>
-                    <text><![CDATA[The module "%s" is disabled for current store]]></text>
-                </seg_store_access_denied>
-                <seg_config_admins_module_cant_enable>
-                    <code>1011</code>
-                    <text><![CDATA[You can't enable "%s" module because you exceed the limit of %d administrators. Read AITOC License agreement for details. %s]]></text>
-                </seg_config_admins_module_cant_enable>
-                <seg_license_violated>
-                    <code>1012</code>
-                    <text><![CDATA[The license for module "%s" has been violated. Module has been disabled.]]></text>
-                </seg_license_violated>
-                <seg_config_products_exceed_limit>
-                    <code>1013</code>
-                    <text><![CDATA[You can't apply features of "%s" module for more than %d product(s). Read AITOC License agreement for details. %s]]></text>
-                </seg_config_products_exceed_limit>
-            </errors>
         </aitsys>
     </default>
     

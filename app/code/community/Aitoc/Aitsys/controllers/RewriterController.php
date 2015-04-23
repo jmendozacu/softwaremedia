@@ -80,4 +80,30 @@ class Aitoc_Aitsys_RewriterController extends Mage_Adminhtml_Controller_Action
     {
         return Mage::getSingleton('admin/session')->isAllowed('system/aitsys');
     }
+
+
+    public function disableAction()
+    {
+        Mage::getModel('core/config')->saveConfig('aitsys/rewriter_status', 0 );
+        Mage::app()->cleanCache();
+        Mage::getSingleton('adminhtml/session')->addSuccess(
+            Mage::helper('compiler')->__('Rewriter is disabled.')
+        );
+        $this->_redirect('*/*/');
+    }
+
+    public function enableAction()
+    {
+        Mage::getModel('core/config')->saveConfig('aitsys/rewriter_status', 1 );
+        Mage::app()->cleanCache();
+        Mage::getSingleton('adminhtml/session')->addSuccess(
+            Mage::helper('compiler')->__('Rewriter is enabled.')
+        );
+        //flash rewriter cache
+        $rewriter = new Aitoc_Aitsys_Model_Rewriter();
+        $rewriter->prepare();
+
+        $this->_redirect('*/*/');
+    }
+
 }

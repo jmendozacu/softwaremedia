@@ -4,9 +4,9 @@
  *
  * @category:    Aitoc
  * @package:     Aitoc_Aitcheckoutfields
- * @version      10.5.3
- * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
- * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
+ * @version      10.5.7
+ * @license:     grDwoQqpctpZdS57isl8WpY91kLDyrRZ7i5S4ZKTe1
+ * @copyright:   Copyright (c) 2015 AITOC, Inc. (http://www.aitoc.com)
  */
 class Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageReviewInfo extends Mage_Checkout_Block_Onepage_Review_Info
 {
@@ -31,6 +31,7 @@ class Aitoc_Aitcheckoutfields_Block_Rewrite_FrontCheckoutOnepageReviewInfo exten
         if (version_compare(Mage::getVersion(), '1.10.0.0', 'ge'))
         {
             $this->setTemplate('aitcheckoutfields/checkout/review.phtml');
+            Mage::dispatchEvent('aitoc_module_set_template_after', array('block' => $this));
         }
         return parent::_beforeToHtml();
     }

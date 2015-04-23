@@ -13,6 +13,10 @@ class Aitoc_Aitsys_Model_Rewriter_Observer
     
     public function clearCache($observer)
     {
+        //not clear if rewriter is disabled
+        if(Mage::getConfig()->getNode('default/aitsys/rewriter_status') != 1){
+            return false;
+        }
         // this part for flush magento cache
         $tags = $observer->getTags();
         $rewriter = new Aitoc_Aitsys_Model_Rewriter();
@@ -37,6 +41,22 @@ class Aitoc_Aitsys_Model_Rewriter_Observer
         // this part is for flush cache storage
         if (null === $cacheTypes && null === $tags) {
             return $rewriter->prepare();
+        }
+    }
+
+    public function hideCacheOnPage($observer)
+    {
+        if(($block = $observer->getBlock()) instanceof Mage_Adminhtml_Block_Cache_Grid && !Mage::helper('aitsys/rewriter')->getRewriterStatus())
+        {
+            $config = Mage::getConfig()->getNode('global/cache/types');
+            if ($config) {
+                foreach ($config->children() as $type=>$node) {
+                    if($type == 'aitsys'){
+                        $dom=dom_import_simplexml($node);
+                        $dom->parentNode->removeChild($dom);
+                    }
+                }
+            }
         }
     }
 }

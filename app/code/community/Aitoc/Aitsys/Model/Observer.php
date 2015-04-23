@@ -28,7 +28,27 @@ class Aitoc_Aitsys_Model_Observer extends Aitoc_Aitsys_Abstract_Model
     {
         $this->tool()->platform()->renderAdminError(true);
     }
-    
+
+    /**
+     * @param Varien_Object $observer
+     */
+    public function coreBlockAbstractToHtmlAfter($observer)
+    {
+        $this->compatibility($observer);
+        Mage::getSingleton('aitsys/aitpatch_observer')->replaceDesignPath($observer);
+
+    }
+
+    /**
+     * @param Varien_Object $observer
+     */
+    public function coreBlockAbstractToHtmlBefore($observer)
+    {
+        Mage::getSingleton('aitsys/rewriter_observer')->hideCacheOnPage($observer);
+        Mage::getSingleton('aitsys/aitpatch_observer')->pathTemplateReplaceBeforeToHtml($observer);
+
+    }
+
     /**
      * Replacement for an old abstract rewrite necessary for some extensions.
      * Compatible with Magento CE 1.4.1+
@@ -52,5 +72,10 @@ class Aitoc_Aitsys_Model_Observer extends Aitoc_Aitsys_Abstract_Model
         
         $important = new Aitoc_Aitsys_Model_News_Important();
         $important->loadData();
+    }
+
+    public function updateNotification()
+    {
+        return Mage::getModel('aitsys/feed')->checkUpdate();
     }
 }

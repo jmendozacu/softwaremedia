@@ -14,7 +14,22 @@ final class Aitoc_Aitsys_Model_Module extends Aitoc_Aitsys_Abstract_Model
 {
     const PACKAGE_FILE = 'package.xml';
     const DEFAULT_CODEPOOL = 'local';
-    
+
+    /**
+     * @var array
+     */
+    protected $_conflictClassArray = array();
+
+    /**
+     * @var array
+     */
+    protected $_conflictModuleArray = array();
+
+    /**
+     * @var bool
+     */
+    protected $_isIgnore = false;
+
     /**
      * Errors storage
      * 
@@ -259,5 +274,51 @@ final class Aitoc_Aitsys_Model_Module extends Aitoc_Aitsys_Abstract_Model
             }
         }
         return $this->_info;
+    }
+
+    /**
+     * @param $aitClass
+     * @param $moduleClass
+     */
+    public function addConflict($aitClass, $moduleClass, $module)
+    {
+        $this->_conflictClassArray[$aitClass][]=$moduleClass;
+        $this->_conflictModuleArray[]=$module;
+        return;
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function getConflictClasses()
+    {
+        if(empty($this->_conflictClassArray))
+        {
+            return false;
+        }
+        return $this->_conflictClassArray;
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function getConflictModules()
+    {
+        if(empty($this->_conflictModuleArray))
+        {
+            return false;
+        }
+        return $this->_conflictModuleArray;
+    }
+
+    public function setIgnore($bool = true)
+    {
+        $this->_isIgnore = $bool;
+        return $this;
+    }
+
+    public function isIgnore()
+    {
+        return $this->_isIgnore;
     }
 }

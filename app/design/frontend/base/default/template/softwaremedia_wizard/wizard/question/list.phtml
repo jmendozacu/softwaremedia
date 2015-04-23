@@ -1,0 +1,124 @@
+<?php 
+/**
+ * SoftwareMedia_Wizard extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       SoftwareMedia
+ * @package        SoftwareMedia_Wizard
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+/**
+ * Wizard Question list template
+ *
+ * @category    SoftwareMedia
+ * @package     SoftwareMedia_Wizard
+ * @author      Ultimate Module Creator
+ */
+?>
+<?php $_questions = $this->getQuestions(); ?>
+<?php if ($_questions->getSize() > 0) :?>
+<div class="std">
+<div class="questions-list-container">
+    <?php foreach ($_questions as $_question) : ?>
+    	<?php if ($_question->getParentId() == 1) { $top = $_question->getId(); } ?>
+        <div class="question-list-item active" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";} ?>>
+        	<?php $products = $_question->getSelectedProductsCollection(); ?>
+        	
+            <?php if ($_question->getQuestion() && $products->getSize()<1): ?>
+            	<h3 class="question-title">Question <?php echo $_question->getLevel();?></h3>
+            	<h2><?php echo $_question->getQuestion();?></h2>
+            	
+			<?php elseif($_question->getQuestion()): ?>
+				<div class="title-orange"><h3><?php echo $_question->getQuestion();?></h3></div>
+            <?php endif; ?>
+            
+            <?php if ($_question->getComment() && $products->getSize()<1): ?>
+            	<p style="display: none" id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
+            	<a id="comment_question_<?php echo $_question->getId();?>" onclick="jQuery('#comment_<?php echo $_question->getId();?>').slideDown(); jQuery('#comment_question_<?php echo $_question->getId();?>').fadeOut();return false;" href="#">+More Info</a>
+            <?php elseif($_question->getComment() && $products->getSize()>0): ?>
+            	<p id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
+            <?php endif; ?>
+            
+            <?php $children = $_question->getChildrenQuestions(); ?>
+            
+            <?php if ($children): ?>
+            <div class="answers">
+            	<?php foreach($children as $child): ?>
+            	<div class="answer"><h4><a href="#" onclick="showQuestion(<?php echo $child->getId(); ?>); return false;"><span class="check"></span><?php echo $child->getAnswer(); ?></a></h4></div>
+            	<?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            
+			<?php if ($products): ?>
+			<div class="products">
+				<?php foreach($products as $product): ?>
+					<?php $prod = $product->loadProduct(); ?>
+					<?php if ($prod): ?>
+					<div class="product">
+						
+						<a href="<?php echo $prod->getProductUrl();?>"><img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(200); ?>" /></a>
+						
+						<h3 class="prod-title"><a href="<?php echo $prod->getProductUrl();?>"><?php echo $product->getName(); ?></a></h3>
+						<p><?php echo $product->getDescription(); ?> <a class="info-link" href="<?php echo $prod->getProductUrl();?>">More Info</a></p>
+						<?php if ($prod): ?>
+						
+						 <div class="regular-price">
+						 	<span class="price">$<?php echo number_format($prod->getPrice(),2); ?></span>
+						 </div>
+						 <?php if ($prod->getMsrp() && $prod->getPrice() < $prod->getMsrp()): ?>
+						 <div class="msrp">
+						 	MSRP: <span class="strike">$<?php echo number_format($prod->getMsrp(),2); ?></span>
+						 	<div class="save">You save <?php echo floor((1 - ($prod->getPrice() / $prod->getMsrp())) * 100); ?>%</div>
+						 </div>
+						 <?php endif; ?>
+						 <div class="more-info">
+						 <button onclick="setLocation('/checkout/cart/add/product/<?php echo $prod->getId(); ?>')" type="button" class="button btn-add"><span><span>Add to Cart</span></span></button>
+						 
+						 
+						 </div>
+						 <?php endif; ?>
+					</div>
+					<?php endif; ?>
+				<?php endforeach; ?>
+				<div style="clear: both;"></div>
+			</div>
+			<?php endif; ?>
+			
+			<?php if ($_question->getParentId()>1): ?>
+        		<div class="back">
+        			<a href="#" onclick="prevQuestion(<?php echo $_question->getParentId(); ?>); return false;">Previous</a>
+					<?php if ($products->getSize()>0): ?>
+					 | <a href="#" onclick="resetQuestion(); return false;">Start Over</a>
+					<?php endif; ?>
+        		</div>
+        	<?php endif; ?>
+        </div>
+    <?php endforeach;?>
+</div>
+<?php endif;?>
+</div>
+<script>
+	function showQuestion(id) {
+		jQuery('.question-list-item.active').slideUp().removeClass('active');
+		jQuery('#question_' + id).fadeIn();
+		jQuery('#question_' + id).addClass('active');
+	}
+	function prevQuestion(id) {
+		jQuery('.question-list-item.active').slideUp().removeClass('active');
+		jQuery('#question_' + id).slideDown();
+		jQuery('#question_' + id).addClass('active');
+	}
+	function resetQuestion() {
+		var id = <?php echo $top; ?>;
+		jQuery('.question-list-item.active').slideUp().removeClass('active');
+		jQuery('#question_' + id).slideDown();
+		jQuery('#question_' + id).addClass('active');
+	}
+</script>

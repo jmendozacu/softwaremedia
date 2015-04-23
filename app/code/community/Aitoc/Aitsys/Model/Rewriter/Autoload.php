@@ -72,6 +72,10 @@ class Aitoc_Aitsys_Model_Rewriter_Autoload
     
     static public function register($stopProcessing = false)
     {
+        if(Mage::getConfig()->getNode('default/aitsys/rewriter_status') != 1){
+            self::$_registered = true;
+            return ;
+        }
         if (!$stopProcessing && !self::$_registered) {
             $rewriter = new Aitoc_Aitsys_Model_Rewriter();
             $rewriter->preRegisterAutoloader();

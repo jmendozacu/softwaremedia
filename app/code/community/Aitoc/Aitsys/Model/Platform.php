@@ -297,13 +297,12 @@ final class Aitoc_Aitsys_Model_Platform extends Aitoc_Aitsys_Abstract_Model
                         }
                         
                         $moduleKey  = basename($aitocModuleDir) . "_" . $aitocModuleSubdir->getFilename();
-                        if (!$this->isIgnoredModule($moduleKey)) {
-                            $moduleFile = $this->tool()->filesystem()->getEtcDir() . "/{$moduleKey}.xml";
-                            $this->_modulesList[$moduleKey] = array(
-                                'module_path' => $aitocModuleSubdir->getPathname(),
-                                'module_file' => @is_file($moduleFile) ? $moduleFile : null
-                            );
-                        }
+                        $moduleFile = $this->tool()->filesystem()->getEtcDir() . "/{$moduleKey}.xml";
+                        $this->_modulesList[$moduleKey] = array(
+                            'module_path' => $aitocModuleSubdir->getPathname(),
+                            'module_file' => @is_file($moduleFile) ? $moduleFile : null,
+                            'is_ignore' => $this->isIgnoredModule($moduleKey)
+                        );
                     }
                 }
             }
@@ -333,9 +332,10 @@ final class Aitoc_Aitsys_Model_Platform extends Aitoc_Aitsys_Abstract_Model
     protected function _loadAllModules()
     {
         foreach ($this->_modulesList as $moduleKey => $moduleData) {
-            if($moduleData['module_file']) { // only if the config file for this module in /app/etc/modules does exist
-                $this->_makeModuleByModuleFile($moduleKey, $moduleData['module_file']);
+            if(!$moduleData['module_file']) { // only if the config file for this module in /app/etc/modules does exist
+                $moduleData['is_ignore'] = true;
             }
+            $this->_makeModuleByModuleFile($moduleKey, $moduleData['module_file'], $moduleData['is_ignore']);
         }
         return $this;
     }
@@ -348,11 +348,12 @@ final class Aitoc_Aitsys_Model_Platform extends Aitoc_Aitsys_Abstract_Model
      * 
      * @return Aitoc_Aitsys_Model_Module
      */
-    protected function _makeModuleByModuleFile($moduleKey, $moduleFile)
+    protected function _makeModuleByModuleFile($moduleKey, $moduleFile, $ignore = false)
     {
         $this->tool()->testMsg('Load module: ' . $moduleKey);
         $module = new Aitoc_Aitsys_Model_Module();
         $module->loadByModuleFile($moduleFile, $moduleKey);
+        $module->setIgnore($ignore);
 
         return $this->_modules[$moduleKey] = $module;
     }

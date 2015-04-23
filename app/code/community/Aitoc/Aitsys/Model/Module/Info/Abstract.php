@@ -8,13 +8,15 @@ abstract class Aitoc_Aitsys_Model_Module_Info_Abstract
     
     const PLATFORM_CE    = 'community';
     const PLATFORM_EE    = 'enterprise';
+    const PLATFORM_ANY    = 'any';
     
     /**
      * @var array
      */
     protected $_platforms = array(
         self::PLATFORM_CE,
-        self::PLATFORM_EE
+        self::PLATFORM_EE,
+        self::PLATFORM_ANY
     );
     
     /**
@@ -121,10 +123,18 @@ abstract class Aitoc_Aitsys_Model_Module_Info_Abstract
     /**
      * @return bool
      */
+    public function isAnyVersion()
+    {
+        return $this->getPlatform() == self::PLATFORM_ANY;
+    }
+
+    /**
+     * @return bool
+     */
     public function isMagentoCompatible()
     {
         $isMagentoEE = Aitoc_Aitsys_Model_Platform::getInstance()->isMagentoEnterprise();
-        return ((!$isMagentoEE && $this->isCommunityVersion()) || ($isMagentoEE && $this->isEnterpriseVersion()));
+        return ($this->isAnyVersion() || (!$isMagentoEE && $this->isCommunityVersion()) || ($isMagentoEE && $this->isEnterpriseVersion()));
     }
     
     /**

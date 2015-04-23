@@ -4,25 +4,43 @@
  *
  * @category:    Aitoc
  * @package:     Aitoc_Aitcheckoutfields
- * @version      10.5.3
- * @license:     x8JlL6PzUPBtvXBsIIWQy9KjFdhME32yIbvID6DGHQ
- * @copyright:   Copyright (c) 2014 AITOC, Inc. (http://www.aitoc.com)
+ * @version      10.5.7
+ * @license:     grDwoQqpctpZdS57isl8WpY91kLDyrRZ7i5S4ZKTe1
+ * @copyright:   Copyright (c) 2015 AITOC, Inc. (http://www.aitoc.com)
  */
-class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage extends Mage_Checkout_Model_Type_Onepage
+/* AITOC static rewrite inserts start */
+/* $meta=%default,AdjustWare_Deliverydate,Aitoc_Aitcheckout% */
+if(Mage::helper('core')->isModuleEnabled('Aitoc_Aitcheckout')){
+    class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage_Aittmp extends Aitoc_Aitcheckout_Model_Rewrite_Checkout_Type_Onepage {} 
+ }elseif(Mage::helper('core')->isModuleEnabled('AdjustWare_Deliverydate')){
+    class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage_Aittmp extends AdjustWare_Deliverydate_Model_Rewrite_FrontCheckoutTypeOnepage {} 
+ }else{
+    /* default extends start */
+    class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage_Aittmp extends Mage_Checkout_Model_Type_Onepage {}
+    /* default extends end */
+}
+
+/* AITOC static rewrite inserts end */
+class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage extends Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage_Aittmp
 {
-    // overwrite parent
-    public function saveBilling($data, $customerAddressId)
+    protected function _saveCustomData($data)
     {
         if ($data)
         {
             $oAttribute = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
-            
+
             foreach ($data as $sKey => $sVal)
             {
                 $oAttribute->setCustomValue($sKey, $sVal, 'onepage');
             }
         }
+        return $this;
+    }
 
+    // overwrite parent
+    public function saveBilling($data, $customerAddressId)
+    {
+        $this->_saveCustomData($data);
         return parent::saveBilling($data, $customerAddressId);
     }
 
@@ -36,16 +54,7 @@ class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage extends Mag
             $canSave = empty($billing['use_for_shipping']);
             
         }
-        if ($data)
-        {
-            $oAttribute = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
-            
-            foreach ($data as $sKey => $sVal)
-            {
-                $oAttribute->setCustomValue($sKey, $sVal, 'onepage');
-            }
-        }
-
+        $this->_saveCustomData($data);
         return ($canSave ? parent::saveShipping($data, $customerAddressId) : array());
     }
 
@@ -55,16 +64,7 @@ class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage extends Mag
         $oReq = Mage::app()->getFrontController()->getRequest();
         
         $data = $oReq->getPost('shippmethod');
-        
-        if ($data)
-        {
-            $oAttribute = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
-            
-            foreach ($data as $sKey => $sVal)
-            {
-                $oAttribute->setCustomValue($sKey, $sVal, 'onepage');
-            }
-        }
+        $this->_saveCustomData($data);
         
     /************** AITOC DELIVERY DATE COMPATIBILITY MODE: START ********************/
         
@@ -85,16 +85,7 @@ class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage extends Mag
     public function savePayment($data)
     {
         $return = parent::savePayment($data);
-        
-        if ($data)
-        {
-            $oAttribute = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
-            
-            foreach ($data as $sKey => $sVal)
-            {
-                $oAttribute->setCustomValue($sKey, $sVal, 'onepage');
-            }
-        }
+        $this->_saveCustomData($data);
 
         return $return;
     }
@@ -113,16 +104,7 @@ class Aitoc_Aitcheckoutfields_Model_Rewrite_FrontCheckoutTypeOnepage extends Mag
             }
         }
         $data = $oReq->getPost('customreview');
-        
-        if ($data)
-        {
-            $oAttribute = Mage::getModel('aitcheckoutfields/aitcheckoutfields');
-            
-            foreach ($data as $sKey => $sVal)
-            {
-                $oAttribute->setCustomValue($sKey, $sVal, 'onepage');
-            }
-        }
+        $this->_saveCustomData($data);
        
         $oResult = parent::saveOrder();
 

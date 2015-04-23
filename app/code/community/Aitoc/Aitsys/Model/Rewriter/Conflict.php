@@ -44,7 +44,6 @@ class Aitoc_Aitsys_Model_Rewriter_Conflict extends Aitoc_Aitsys_Model_Rewriter_A
         $fileConfig = new Varien_Simplexml_Config();
 
         $_finalResult = array();
-        $_finalResultAbstract = array();
 
         foreach($sortedConfig->getNode('modules')->children() as $moduleName => $moduleNode) {
             $codePool = (string)$moduleNode->codePool;
@@ -78,32 +77,12 @@ class Aitoc_Aitsys_Model_Rewriter_Conflict extends Aitoc_Aitsys_Model_Rewriter_A
                         }
                     }
                 }
-                
-                if($rewrites = $fileConfig->getXpath('global/' . $param . '/*/rewriteabstract')) {
-                    foreach ($rewrites as $rewrite) {
-                        $parentElement = $rewrite->xpath('../..');
-                        foreach($parentElement[0] as $moduleKey => $moduleItems) {
-                            if($moduleItems->rewriteabstract) {
-                                $list = array();
-                                foreach ($moduleItems->rewriteabstract->children() as $key => $value)
-                                {
-                                    $list[$key] = (string)$value;
-                                }
-                                #echo "<pre>--".print_r($list,1)."</pre>";
-                                #echo "<pre>++".print_r($moduleItems->asArray(),1)."</pre>";
-                                $_finalResultAbstract[$param][$moduleKey] = array('rewriteabstract' => $list);
-                            }
-                        }
-                    }
-                }
             }
         }
 
         $_finalResult = $this->_fillAllClassesToRewrite($_finalResult);
         $_finalResult = $this->_clearEmptyRows($_finalResult);
         $_finalResult = $this->_recoverDeletedClassRewrites($_finalResult);
-
-        $_finalResultAbstract = $this->_workWithAbstractResult($_finalResultAbstract);
 
         // filter aitoc modules
         foreach ($_finalResult as $type => $data)
@@ -133,7 +112,7 @@ class Aitoc_Aitsys_Model_Rewriter_Conflict extends Aitoc_Aitsys_Model_Rewriter_A
             }
         }           
        
-        return array($_finalResult, $_finalResultAbstract);
+        return $_finalResult;
     }
 
     /**
@@ -280,37 +259,5 @@ class Aitoc_Aitsys_Model_Rewriter_Conflict extends Aitoc_Aitsys_Model_Rewriter_A
         }
 
         return $_finalResult;
-    }
-
-    /**
-     * Clears rewrites without conflicts from rewrites array
-     *
-     * @param array $_finalResult
-     * @return array
-     */
-    protected function _workWithAbstractResult($_finalResultAbstract)
-    {
-        foreach(array_keys($_finalResultAbstract) as $groupType) {
-            foreach(array_keys($_finalResultAbstract[$groupType]) as $key) {
-                // remove some repeating elements after merging all parents 
-                foreach($_finalResultAbstract[$groupType][$key]['rewriteabstract'] as $key1 => $value) {
-                    if(is_array($value)) {
-                        $_finalResultAbstract[$groupType][$key]['rewriteabstract'][$key1] = array_unique($value);
-                    }
-                } 
-                
-                // clear empty elements
-                if(count($_finalResultAbstract[$groupType][$key]['rewriteabstract']) < 1) {
-                    unset($_finalResultAbstract[$groupType][$key]);
-                }
-            }
-            
-            // clear empty elements
-            if(count($_finalResultAbstract[$groupType]) < 1) {
-                unset($_finalResultAbstract[$groupType]);
-            }
-        }
-
-        return $_finalResultAbstract;
     }
 }

@@ -22,4 +22,6 @@ $this->run("
     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 ");
+$this->setConfigData('aitsys/rewriter_status', 0);
+
 $this->endSetup();
