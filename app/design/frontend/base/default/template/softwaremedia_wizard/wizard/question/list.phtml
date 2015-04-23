@@ -32,7 +32,7 @@
         	<?php $products = $_question->getSelectedProductsCollection(); ?>
         	
             <?php if ($_question->getQuestion() && $products->getSize()<1): ?>
-            	<div class="title-orange"><h3>Question <?php echo $_question->getLevel();?></h3></div>
+            	<h3 class="question-title">Question <?php echo $_question->getLevel();?></h3>
             	<h2><?php echo $_question->getQuestion();?></h2>
             	
 			<?php elseif($_question->getQuestion()): ?>

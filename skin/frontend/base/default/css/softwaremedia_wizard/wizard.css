@@ -2,9 +2,13 @@
 	margin: 15px 0;
 }
 .questions-list-container h2 {
-	font-size: 18px;
+	font-size: 20px;
 	margin-bottom: 5px;
-	margin-top: 10px;
+	margin-top: 0px;
+}
+.questions-list-container .question-title {
+		font-size: 14px;
+	
 }
 .questions-list-container h4 {
 	font-size: 16px;
