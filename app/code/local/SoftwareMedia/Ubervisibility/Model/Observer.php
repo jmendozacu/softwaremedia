@@ -260,7 +260,8 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
 			$collection->getSelect()->where('manage_stock = 1');
 			$collection->getSelect()->where('sku IN (?)', $sku_list);
-
+			$collection->getSelect()->limit(200);
+			
 			Mage::log('# of Magento to update: ' . count($collection), null, 'ubervis.log');
 			$csv_content[] = array('Magento Updated:', count($collection));
 			$csv_content[] = array('ID', 'SKU', 'Title', 'Old CPC', 'New CPC', 'Old Site', 'New Site');
