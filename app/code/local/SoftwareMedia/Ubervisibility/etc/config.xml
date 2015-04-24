@@ -39,7 +39,7 @@
 			</SoftwareMedia_Ubervisibility>
 			<SoftwareMedia_Ubervisibility_Retrieve>
 				<schedule>
-					<cron_expr>0 17 * * *</cron_expr>
+					<cron_expr>10 17,18,19,20,21,22,23,24 * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ubervisibility/observer::retrieveProducts</model>
