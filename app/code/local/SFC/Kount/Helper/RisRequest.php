@@ -65,9 +65,9 @@ class SFC_Kount_Helper_RisRequest extends Mage_Core_Helper_Abstract {
 		// Valid?
 		switch ($oMethod->getCode()) {
 			case self::RIS_PAYTYPE_PPEXPRESS:
-				Mage::log('Paypal Enabled', Zend_Log::ERR, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
-				return true;
-				break;
+				//Mage::log('Paypal Enabled', Zend_Log::ERR, SFC_Kount_Helper_Paths::KOUNT_LOG_FILE);
+				//return true;
+				//break;
 			case self::RIS_PAYTYPE_CHASE:
 			case self::RIS_PAYTYPE_AUTH:
 			case self::RIS_PAYTYPE_AUTHDP:
