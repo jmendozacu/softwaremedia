@@ -225,7 +225,32 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		Mage::log('Finished Updating Ubervis', null, 'ubervis.log');
 	}
 
-	public function retrieveProducts() {
+	public function retrieveProducts2() {
+		$this->retrieveProducts(2);
+		
+	}
+	
+	public function retrieveProducts3() {
+		$this->retrieveProducts(3);
+		
+	}
+	
+	public function retrieveProducts3() {
+		$this->retrieveProducts(4);
+		
+	}
+	
+	public function retrieveProducts4() {
+		$this->retrieveProducts(5);
+		
+	}
+	
+	public function retrieveProducts5() {
+		$this->retrieveProducts(6);
+		
+	}
+	
+	public function retrieveProducts($page = 1) {
 		$api = new SoftwareMedia_Ubervisibility_Helper_Api();
 		$csv_content = array();
 
@@ -260,7 +285,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
 			$collection->getSelect()->where('manage_stock = 1');
 			$collection->getSelect()->where('sku IN (?)', $sku_list);
-			$collection->getSelect()->limit(200);
+			$collection->setPageSize(350)->setCurPage($page);
 			
 			Mage::log('# of Magento to update: ' . count($collection), null, 'ubervis.log');
 			$csv_content[] = array('Magento Updated:', count($collection));

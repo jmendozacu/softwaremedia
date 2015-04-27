@@ -39,12 +39,44 @@
 			</SoftwareMedia_Ubervisibility>
 			<SoftwareMedia_Ubervisibility_Retrieve>
 				<schedule>
-					<cron_expr>10 17,18,19,20,21,22,23,24 * * *</cron_expr>
+					<cron_expr>10 17 * * *</cron_expr>
 				</schedule>
 				<run>
 					<model>ubervisibility/observer::retrieveProducts</model>
 				</run>
 			</SoftwareMedia_Ubervisibility_Retrieve>
+			<SoftwareMedia_Ubervisibility_Retrieve_2>
+				<schedule>
+					<cron_expr>10 18 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ubervisibility/observer::retrieveProducts2</model>
+				</run>
+			</SoftwareMedia_Ubervisibility_Retrieve_2>
+			<SoftwareMedia_Ubervisibility_Retrieve_3>
+				<schedule>
+					<cron_expr>10 19 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ubervisibility/observer::retrieveProducts3</model>
+				</run>
+			</SoftwareMedia_Ubervisibility_Retrieve_3>
+			<SoftwareMedia_Ubervisibility_Retrieve_4>
+				<schedule>
+					<cron_expr>10 20 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ubervisibility/observer::retrieveProducts4</model>
+				</run>
+			</SoftwareMedia_Ubervisibility_Retrieve_4>
+			<SoftwareMedia_Ubervisibility_Retrieve_5>
+				<schedule>
+					<cron_expr>10 21 * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>ubervisibility/observer::retrieveProducts5</model>
+				</run>
+			</SoftwareMedia_Ubervisibility_Retrieve_5>
 		</jobs>
 	</crontab>
 </config>
