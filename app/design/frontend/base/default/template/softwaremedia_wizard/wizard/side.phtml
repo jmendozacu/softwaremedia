@@ -1,0 +1,10 @@
+<div class="wizard_static_side std">
+ <?php $_wizard = $this->getCurrentWizard();?>
+    <?php if ($_wizard->getStaticBlockSide()): ?>
+	
+		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId($_wizard->getStaticBlockSide())->toHtml(); ?>
+	</div>
+	<?php endif; ?>
+	
+</div>
+<div style="clear: both:"></div>
