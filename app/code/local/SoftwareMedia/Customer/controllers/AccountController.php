@@ -4,6 +4,47 @@ require_once('Mage/Customer/controllers/AccountController.php');
 
 class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountController {
 
+
+	/**
+	 * Action predispatch
+	 *
+	 * Check customer authentication for some actions
+	 */
+	public function preDispatch() {
+		// a brute-force protection here would be nice
+
+		parent::preDispatch();
+
+		if (!$this->getRequest()->isDispatched()) {
+			return;
+		}
+
+		$action = $this->getRequest()->getActionName();
+		$openActions = array(
+			'create',
+			'login',
+			'logoutsuccess',
+			'forgotpassword',
+			'forgotpasswordpost',
+			'resetpassword',
+			'resetpasswordpost',
+			'confirm',
+			'confirmation',
+			'opt'
+		);
+		$pattern = '/^(' . implode('|', $openActions) . ')/i';
+
+		if (!preg_match($pattern, $action)) {
+			if (!$this->_getSession()->authenticate($this)) {
+				$this->setFlag('', 'no-dispatch', true);
+			}
+			$this->_getSession()->setNoReferer(false);
+		} else {
+			$this->setFlag('', 'no-dispatch', false);
+			$this->_getSession()->setNoReferer(true);
+		}
+	}
+	
 	/**
 	 * Success Registration
 	 *
@@ -78,6 +119,17 @@ class SoftwareMedia_Customer_AccountController extends Mage_Customer_AccountCont
 		return $successUrl;
 	}
 
+	public function optAction() {
+		$customer_id = $this->getRequest()->getParam('id');
+		$customer = Mage::getModel('customer/customer')->load($customer_id);
+        if ($customer && $customer->getId()) {
+            $customer->setAbandonedEmail(true);
+            $customer->save();
+        }
+           
+		$this->_redirect('opt-out');
+	}
+	
 	/**
 	 * Create customer account action
 	 */
