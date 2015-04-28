@@ -48,6 +48,7 @@
         <reference name="content">
             <block type="softwaremedia_wizard/wizard_view" name="wizard_view" template="softwaremedia_wizard/wizard/view.phtml" />
             <block type="softwaremedia_wizard/wizard_question_list" name="wizard.question_list" as="wizard_wizards" template="softwaremedia_wizard/wizard/question/list.phtml" />
+            <block type="softwaremedia_wizard/wizard_view" name="wizard_view_side" template="softwaremedia_wizard/wizard/side.phtml" />
         </reference>
     </softwaremedia_wizard_wizard_view>
 </layout>

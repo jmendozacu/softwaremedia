@@ -70,6 +70,14 @@ class SoftwareMedia_Wizard_Block_Adminhtml_Wizard_Edit_Tab_Form extends Mage_Adm
             )
         );
         $fieldset->addField(
+            'static_block_side',
+            'text',
+            array(
+                'label' => Mage::helper('softwaremedia_wizard')->__('Static Block Side'),
+                'name'  => 'static_block_side'
+            )
+        );
+        $fieldset->addField(
             'status',
             'select',
             array(
