@@ -288,6 +288,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$collection->getSelect()->limit($pageSize,($page -1) * $pageSize);
 			
 			Mage::log('New # of Magento to update: ' . count($collection), null, 'ubervis.log');
+			die();
 			$csv_content[] = array('Magento Updated:', count($collection));
 			$csv_content[] = array('ID', 'SKU', 'Title', 'Old CPC', 'New CPC', 'Old Site', 'New Site');
 
