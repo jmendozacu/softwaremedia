@@ -235,17 +235,17 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		
 	}
 	
-	public function retrieveProducts3() {
+	public function retrieveProducts4() {
 		$this->retrieveProducts(4);
 		
 	}
 	
-	public function retrieveProducts4() {
+	public function retrieveProducts5() {
 		$this->retrieveProducts(5);
 		
 	}
 	
-	public function retrieveProducts5() {
+	public function retrieveProducts6() {
 		$this->retrieveProducts(6);
 		
 	}
