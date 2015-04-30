@@ -336,7 +336,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					$csv_content[] = $csv_row;
 				}
 			}
-
+			Mage::log('FINISHED MAGENTO ' . count($collection), null, 'ubervis.log');
 			$results = $this->generateCsv($csv_content);
 
 			if (!empty($results)) {
