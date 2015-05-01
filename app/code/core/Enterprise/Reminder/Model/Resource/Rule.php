@@ -360,6 +360,7 @@ class Enterprise_Reminder_Model_Resource_Rule extends Mage_Rule_Model_Resource_A
         }
 
         $sql = $_helper->getQueryUsingAnalyticFunction($select);
+        Mage::log($sql,NULL,'aban.log');
         return $adapter->fetchAll($sql);
     }
 
