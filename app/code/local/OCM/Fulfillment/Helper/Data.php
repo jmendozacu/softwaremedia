@@ -99,7 +99,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			if (is_numeric($product->getData($warehouse_name.'_qty')) || is_numeric($product->getData($warehouse_name.'_price')))
 				$hasResult = true;
 				
-			if($product->getData($warehouse_name.'_qty') > 0) {
+			if($product->getData($warehouse_name.'_qty') > 0 || ($product->getData('package_id')==1084 && $product->getData($warehouse_name.'_price'))) {
 				$price_array[] = $product->getData($warehouse_name.'_price');
 				$qty += $product->getData($warehouse_name.'_qty');
 			} else {
