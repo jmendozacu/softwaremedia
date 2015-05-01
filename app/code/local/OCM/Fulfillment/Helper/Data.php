@@ -134,12 +134,11 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 			//If no prices from warehouses with QTY, use all prices
 			if (count($price_array) == 0 && count($all_price) > 0) {
 				$price_array = $all_price;
-				Mage::log('all array ' . $price_array[0],NULL,'warehouse-t.log');
 				}
 			asort($price_array);
-			Mage::log('price array ' . $price_array[0],NULL,'warehouse-t.log');
 			foreach($price_array as $p) {
-				Mage::log('p ' . $p,NULL,'warehouse-t.log');
+				$lowest_cost = $p;
+				break;
 			}
 			$lowest_cost = $price_array[0];
 			if ($lowest_cost > 0)
