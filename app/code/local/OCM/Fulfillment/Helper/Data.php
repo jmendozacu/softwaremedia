@@ -100,17 +100,13 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$hasResult = true;
 				
 			if($product->getData($warehouse_name.'_qty') > 0) {
-				Mage::log('qty' . $warehouse_name,NULL,'warehouse-t.log');
 				$price_array[] = $product->getData($warehouse_name.'_price');
 				$qty += $product->getData($warehouse_name.'_qty');
 			} else {
-				Mage::log('No qty' . $warehouse_name,NULL,'warehouse-t.log');
 				if ($product->getData($warehouse_name.'_price')) {
-					Mage::log('has price' . $warehouse_name,NULL,'warehouse-t.log');
 					
 					$all_price[] = $product->getData($warehouse_name.'_price');
 					if ($product->getData('package_id')==1084) {
-						Mage::log('price elec ' . $warehouse_name . ' ' . $product->getData($warehouse_name.'_price'),NULL,'warehouse-t.log');
 						$price_array[] = $product->getData($warehouse_name.'_price');
 					}
 				}
@@ -136,11 +132,11 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$price_array = $all_price;
 				}
 			asort($price_array);
+			
 			foreach($price_array as $p) {
 				$lowest_cost = $p;
 				break;
 			}
-			$lowest_cost = $price_array[0];
 			if ($lowest_cost > 0)
 				$cost = $lowest_cost;
 		} else {
