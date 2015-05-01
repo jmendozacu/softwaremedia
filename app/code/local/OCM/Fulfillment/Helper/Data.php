@@ -136,7 +136,7 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$price_array = $all_price;
 				Mage::log('all price array ' . $price_array[0],NULL,'warehouse-t.log');
 				}
-			asort($price_array);
+			arsort($price_array);
 			Mage::log('price array ' . $price_array[0],NULL,'warehouse-t.log');
 			$lowest_cost = $price_array[0];
 			if ($lowest_cost > 0)
