@@ -103,8 +103,11 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$price_array[] = $product->getData($warehouse_name.'_price');
 				$qty += $product->getData($warehouse_name.'_qty');
 			} else {
-				if ($product->getData($warehouse_name.'_price'))
+				if ($product->getData($warehouse_name.'_price')) {
 					$all_price[] = $product->getData($warehouse_name.'_price');
+					if ($product->getData('package_id')==1084)
+						$price_array[] = $product->getData($warehouse_name.'_price');
+				}
 			}  
 		}
 		

@@ -235,17 +235,17 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		
 	}
 	
-	public function retrieveProducts3() {
+	public function retrieveProducts4() {
 		$this->retrieveProducts(4);
 		
 	}
 	
-	public function retrieveProducts4() {
+	public function retrieveProducts5() {
 		$this->retrieveProducts(5);
 		
 	}
 	
-	public function retrieveProducts5() {
+	public function retrieveProducts6() {
 		$this->retrieveProducts(6);
 		
 	}
@@ -275,7 +275,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		}
 
 		Mage::log('# of updated: ' . count($sku_list), null, 'ubervis.log');
-
+		$pageSize = 350;
 		if (!empty($sku_list)) {
 			$collection = Mage::getModel('catalog/product')->getCollection();
 			$collection->addAttributeToSelect('ubervis_updated', 'left');
@@ -285,9 +285,10 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 			$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
 			$collection->getSelect()->where('manage_stock = 1');
 			$collection->getSelect()->where('sku IN (?)', $sku_list);
-			$collection->setPageSize(350)->setCurPage($page);
+			$collection->getSelect()->limit($pageSize,($page -1) * $pageSize);
 			
-			Mage::log('# of Magento to update: ' . count($collection), null, 'ubervis.log');
+			Mage::log('New # of Magento to update: ' . count($collection), null, 'ubervis.log');
+
 			$csv_content[] = array('Magento Updated:', count($collection));
 			$csv_content[] = array('ID', 'SKU', 'Title', 'Old CPC', 'New CPC', 'Old Site', 'New Site');
 
@@ -335,7 +336,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 					$csv_content[] = $csv_row;
 				}
 			}
-
+			Mage::log('FINISHED MAGENTO ' . count($collection), null, 'ubervis.log');
 			$results = $this->generateCsv($csv_content);
 
 			if (!empty($results)) {

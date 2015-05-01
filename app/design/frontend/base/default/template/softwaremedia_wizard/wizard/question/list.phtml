@@ -63,7 +63,7 @@
 					<?php $prod = $product->loadProduct(); ?>
 					<?php if ($prod): ?>
 					<?php $count++; 
-					if ($count == 3) { echo '<div style="clear: both;"></div>'; } ?>
+					if ($count == 3) { echo '<div style="clear: both; height: 12px;"></div>'; } ?>
 					<div class="product">
 						
 						<a href="<?php echo $prod->getProductUrl();?>"><img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(200); ?>" /></a>
