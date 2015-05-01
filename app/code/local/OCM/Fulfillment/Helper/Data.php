@@ -104,9 +104,11 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 				$qty += $product->getData($warehouse_name.'_qty');
 			} else {
 				if ($product->getData($warehouse_name.'_price')) {
+					
 					$all_price[] = $product->getData($warehouse_name.'_price');
-					if ($product->getData('package_id')==1084)
+					if ($product->getData('package_id')==1084) {
 						$price_array[] = $product->getData($warehouse_name.'_price');
+					}
 				}
 			}  
 		}
@@ -126,10 +128,15 @@ class OCM_Fulfillment_Helper_Data extends Mage_Core_Helper_Abstract {
 		//If no peachtree cost, or no pt qty, use cost from warehouse if available
 		if (!is_numeric($product->getData('pt_avg_cost')) || (!$product->getData('pt_qty') || $product->getData('pt_qty') <= 0)) {
 			//If no prices from warehouses with QTY, use all prices
-			if (count($price_array) == 0 && count($all_price) > 0)
+			if (count($price_array) == 0 && count($all_price) > 0) {
 				$price_array = $all_price;
+				}
 			asort($price_array);
-			$lowest_cost = $price_array[0];
+			
+			foreach($price_array as $p) {
+				$lowest_cost = $p;
+				break;
+			}
 			if ($lowest_cost > 0)
 				$cost = $lowest_cost;
 		} else {

@@ -163,6 +163,7 @@ class Enterprise_Reminder_Model_Rule extends Mage_Rule_Model_Abstract
             /* @var $customer Mage_Customer_Model_Customer */
             $customer = Mage::getModel('customer/customer')->load($recipient['customer_id']);
             if (!$customer || !$customer->getId() || $customer->getAbandonedEmail()) {
+            	Mage::log('CONTINUE ' . $customer->getId() . ' - ' . $customer->getAbandonedEmail(),NULL,'aband.log');
                 continue;
             }
 
