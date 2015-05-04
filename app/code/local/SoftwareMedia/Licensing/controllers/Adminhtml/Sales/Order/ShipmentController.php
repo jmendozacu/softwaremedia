@@ -260,7 +260,7 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 	}
 	
 	protected function _getIngramEmail($productId) {
-		$manLookup = array('Microsoft Open Value' => 'Open.Value', 'Trend Micro' => 'trend-licensing','Microsoft' => 'microsoft-licensing','Microsoft Open Government' => 'microsoft-licensing','VMware Academic' => 'VMware'); 
+		$manLookup = array('Microsoft Open Value' => 'Open.Value', 'Trend Micro' => 'trend-licensing','Microsoft' => 'microsoft-licensing','Microsoft Open Government' => 'microsoft-licensing','VMware Academic' => 'VMware-licensing','CA' => 'ARCServe-licensing'); 
 		
 		$product = Mage::getModel('catalog/product')->load($productId);
 		$cats = $product->getCategoryIds();
