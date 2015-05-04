@@ -392,6 +392,9 @@
         </jobs>
     </crontab>
     <frontend>
+    	<secure_url>
+            <qquoteadv>/qquoteadv/</qquoteadv>
+        </secure_url>
         <routers>
             <directory>
                 <args>
