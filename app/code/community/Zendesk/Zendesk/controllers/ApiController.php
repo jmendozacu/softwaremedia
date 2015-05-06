@@ -107,10 +107,11 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         if(!$this->_authorise()) {
             return $this;
         }
-
+		Mage::log('OID: ' . $orderId,NULL,'zen.log');
         $sections = explode('/', trim($this->getRequest()->getPathInfo(), '/'));
         $orderId = $sections[3];
-
+		Mage::log('OID1: ' . $orderId,NULL,'zen.log');
+		
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 
         if(!$order && !$order->getId()) {
