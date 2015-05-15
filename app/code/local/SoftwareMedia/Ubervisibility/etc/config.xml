@@ -37,14 +37,14 @@
 					<model>ubervisibility/observer::updateProduct</model>
 				</run>
 			</SoftwareMedia_Ubervisibility>
-			<SoftwareMedia_Ubervisibility_Retrieve>
+			<SoftwareMedia_Ubervisibility_Retrieve_1>
 				<schedule>
-					<cron_expr>10 17 * * *</cron_expr>
+					<cron_expr>10 18 * * *</cron_expr>
 				</schedule>
 				<run>
-					<model>ubervisibility/observer::retrieveProducts</model>
+					<model>ubervisibility/observer::retrieveProducts1</model>
 				</run>
-			</SoftwareMedia_Ubervisibility_Retrieve>
+			</SoftwareMedia_Ubervisibility_Retrieve_1>
 			<SoftwareMedia_Ubervisibility_Retrieve_2>
 				<schedule>
 					<cron_expr>10 18 * * *</cron_expr>

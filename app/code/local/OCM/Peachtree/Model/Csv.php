@@ -7,6 +7,7 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 	const ACCOUNT_RECEIVABLE = '11000';
 	const SALES_TAX_ID = 'SLC';
 	const GL_ACCOUNT_ITEM = 40000;
+	const GL_ACCOUNT_LICENSING = 40015;
 	const GL_ACCOUNT_TAX = 21550;
 	const GL_ACCOUNT_FRIEGHT = 41050;
 	const GL_ACCOUNT_PROMO = 40100;
@@ -84,6 +85,11 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					array('product_type' => 'type_id')
 				)
 				->joinLeft(
+					'catalog_product_entity_int',
+					'catalog_product_entity_int.entity_id = main_table.product_id AND attribute_id = 1455', 
+					array('licensing' => 'value')
+				)
+				->joinLeft(
 					'sales_flat_shipment as shipment', 'shipment_item.parent_id = shipment.entity_id', array('item_ship_date' => 'created_at')
 				)->group('main_table.entity_id');
 			
@@ -112,10 +118,15 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					array('product_type' => 'type_id')
 				)
 				->joinLeft(
+					'catalog_product_entity_int',
+					'catalog_product_entity_int.entity_id = main_table.product_id AND attribute_id = 1455', 
+					array('licensing' => 'value')
+				)
+				->joinLeft(
 					'sales_flat_shipment as shipment', 'shipment_item.parent_id = shipment.entity_id', array('item_ship_date' => 'created_at')
 				)->group('main_table.item_id')
 			;
-				
+			
 			//$order = Mage::getModel('sales/order')->load($invoice->getOrderId());
 			$has_points_line = false;
 			$points = $order->getAssociatedTransfers();
@@ -339,7 +350,14 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 					'tax_type' => self::TAX_TYPE_ITEM,
 					'amount' => $rowTotal * -1,
 				);
-				
+
+				if ($item->getLicensing() == 1210) {
+					$item_values['item_id'] = substr($item->getSku(),0,2) . "-LICENSING";
+					$item_values['gl_account'] = self::GL_ACCOUNT_LICENSING;
+				} else {
+					$item_values['gl_account'] = self::GL_ACCOUNT_ITEM;
+				}
+
 				$i++;
 				//Split up grouped products into their associated products
 				if( $item->getProductType() == 'grouped' ) {
@@ -359,6 +377,12 @@ class OCM_Peachtree_Model_Csv extends Mage_Core_Model_Abstract {
 						$item_values['qty'] = $qty * $orderItem->getQtyOrdered();
 						$item_values['invoice_cm_distributions'] = $i;
 						$item_values['unit_price'] = number_format($item_values['amount'] / $item_values['qty'],2,'.','');
+						if ($item->getLicensing() == 1210) {
+							$item_values['item_id'] = substr($groupSubProd->getSku(),0,2) . "-LICENSING";
+							$item_values['gl_account'] = self::GL_ACCOUNT_LICENSING;
+						} else {
+							$item_values['gl_account'] = self::GL_ACCOUNT_ITEM;
+						}
 						
 						if ($hasPrice) {
 							$item_values['unit_price'] = 0;

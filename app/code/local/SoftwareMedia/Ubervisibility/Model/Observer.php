@@ -225,6 +225,11 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		Mage::log('Finished Updating Ubervis', null, 'ubervis.log');
 	}
 
+	public function retrieveProducts1() {
+		$this->retrieveProducts(1);
+		
+	}
+	
 	public function retrieveProducts2() {
 		$this->retrieveProducts(2);
 		

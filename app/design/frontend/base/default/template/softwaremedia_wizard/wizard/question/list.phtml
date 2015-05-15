@@ -22,14 +22,18 @@
  * @author      Ultimate Module Creator
  */
 ?>
+
+<?php $_wizard = $this->getWizard(); ?>
+
 <?php $_questions = $this->getQuestions(); ?>
 <?php if ($_questions->getSize() > 0) :?>
 <div class="std">
 <div class="questions-list-container">
     <?php foreach ($_questions as $_question) : ?>
     	<?php if ($_question->getParentId() == 1) { $top = $_question->getId(); } ?>
-        <div class="question-list-item active" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";} ?>>
-        	<?php $products = $_question->getSelectedProductsCollection(); ?>
+    	<?php $products = $_question->getSelectedProductsCollection(); ?>
+        <div class="question-list-item active<?php if (count($products)>0): ?> question-list-products<?php endif;?>" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";} ?>>
+        	
         	
             <?php if ($_question->getQuestion() && $products->getSize()<1): ?>
             	<h3 class="question-title">Question <?php echo $_question->getLevel();?></h3>
@@ -56,42 +60,49 @@
             </div>
             <?php endif; ?>
             
-			<?php if ($products): ?>
-			<div class="products">
-				<?php $count = 0; ?>
-				<?php foreach($products as $product): ?>
-					<?php $prod = $product->loadProduct(); ?>
-					<?php if ($prod): ?>
-					<?php $count++; 
-					if ($count == 3) { echo '<div style="clear: both; height: 12px;"></div>'; } ?>
-					<div class="product">
-						
-						<a href="<?php echo $prod->getProductUrl();?>"><img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(200); ?>" /></a>
-						
-						<h3 class="prod-title"><a href="<?php echo $prod->getProductUrl();?>"><?php echo $product->getName(); ?></a></h3>
-						<p><?php echo $product->getDescription(); ?> <a class="info-link" href="<?php echo $prod->getProductUrl();?>">More Info</a></p>
+			<?php if (count($products)>0): ?>
+				<div class="products">
+					<?php $count = 0; ?>
+					<?php foreach($products as $product): ?>
+						<?php $prod = $product->loadProduct(); ?>
 						<?php if ($prod): ?>
-						
-						 <div class="regular-price">
-						 	<span class="price">$<?php echo number_format($prod->getPrice(),2); ?></span>
-						 </div>
-						 <?php if ($prod->getMsrp() && $prod->getPrice() < $prod->getMsrp()): ?>
-						 <div class="msrp">
-						 	MSRP: <span class="strike">$<?php echo number_format($prod->getMsrp(),2); ?></span>
-						 	<div class="save">You save <?php echo floor((1 - ($prod->getPrice() / $prod->getMsrp())) * 100); ?>%</div>
-						 </div>
-						 <?php endif; ?>
-						 <div class="more-info">
-						 <button onclick="setLocation('/checkout/cart/add/product/<?php echo $prod->getId(); ?>')" type="button" class="button btn-add"><span><span>Add to Cart</span></span></button>
-						 
-						 
-						 </div>
-						 <?php endif; ?>
-					</div>
-					<?php endif; ?>
-				<?php endforeach; ?>
-				<div style="clear: both;"></div>
-			</div>
+						<?php $count++; 
+						if ($count == 3) { echo '<div style="clear: both; height: 12px;"></div>'; } ?>
+						<div class="product">
+							
+							<a href="<?php echo $prod->getProductUrl();?>"><img src="<?php echo Mage::helper('catalog/image')->init($prod, 'image')->resize(200); ?>" /></a>
+							
+							<h3 class="prod-title"><a href="<?php echo $prod->getProductUrl();?>"><?php echo $product->getName(); ?></a></h3>
+							<p><?php echo $product->getDescription(); ?> <a class="info-link" href="<?php echo $prod->getProductUrl();?>">More Info</a></p>
+							<?php if ($prod): ?>
+							
+							 <div class="regular-price">
+							 	<span class="price">$<?php echo number_format($prod->getPrice(),2); ?></span>
+							 </div>
+							 <?php if ($prod->getMsrp() && $prod->getPrice() < $prod->getMsrp()): ?>
+							 <div class="msrp">
+							 	MSRP: <span class="strike">$<?php echo number_format($prod->getMsrp(),2); ?></span>
+							 	<div class="save">You save <?php echo floor((1 - ($prod->getPrice() / $prod->getMsrp())) * 100); ?>%</div>
+							 </div>
+							 <?php endif; ?>
+							 <div class="more-info">
+							 <button onclick="setLocation('/checkout/cart/add/product/<?php echo $prod->getId(); ?>')" type="button" class="button btn-add"><span><span>Add to Cart</span></span></button>
+							 
+							 
+							 </div>
+							 <?php endif; ?>
+						</div>
+						<?php endif; ?>
+					<?php endforeach; ?>
+					<div style="clear: both;"></div>
+				</div>
+				<?php if ($_wizard->getStaticBlockSide()): ?>
+				<!--div class="additional">
+					<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId($_wizard->getStaticBlockSide())->toHtml(); ?>
+				</div-->
+				<?php endif; ?>
+			
+			
 			<?php endif; ?>
 			
 			<?php if ($_question->getParentId()>1): ?>
