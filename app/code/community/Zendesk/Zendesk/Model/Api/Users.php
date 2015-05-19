@@ -20,7 +20,8 @@ class Zendesk_Zendesk_Model_Api_Users extends Zendesk_Zendesk_Model_Api_Abstract
     public function find($email)
     {
         if(!Zend_Validate::is($email, 'EmailAddress')) {
-            throw new InvalidArgumentException('Invalid email address provided');
+            //throw new InvalidArgumentException('Invalid email address provided');
+            return false;
         }
 
         $response = $this->_call('users/search.json', array('query' => $email, 'per_page' => 30));
