@@ -34,7 +34,9 @@
     	<?php $products = $_question->getSelectedProductsCollection(); ?>
         <div class="question-list-item active<?php if (count($products)>0): ?> question-list-products<?php endif;?>" id="question_<?php echo $_question->getId();?>" <?php if ($_question->getParentId() != 1) { echo " style='display: none'";} ?>>
         	
-        	
+        	<?php if ($_question->getParentId() == 1): ?>
+        	<div class="title-orange"><h3>Let's Get Started</h3></div>
+        	<?php endif; ?>
             <?php if ($_question->getQuestion() && $products->getSize()<1): ?>
             	<h3 class="question-title">Question <?php echo $_question->getLevel();?></h3>
             	<h2><?php echo $_question->getQuestion();?></h2>
@@ -44,7 +46,7 @@
             <?php endif; ?>
             
             <?php if ($_question->getComment() && $products->getSize()<1): ?>
-            	<p style="display: none" id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
+            	<p style="display: none" class="comment" id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
             	<a id="comment_question_<?php echo $_question->getId();?>" onclick="jQuery('#comment_<?php echo $_question->getId();?>').slideDown(); jQuery('#comment_question_<?php echo $_question->getId();?>').fadeOut();return false;" href="#">+More Info</a>
             <?php elseif($_question->getComment() && $products->getSize()>0): ?>
             	<p id="comment_<?php echo $_question->getId();?>"><?php echo $_question->getComment();?></p>
@@ -96,14 +98,24 @@
 					<?php endforeach; ?>
 					<div style="clear: both;"></div>
 				</div>
+				
+				<?php if ($_question->getParentId()>1): ?>
+        		<div class="back">
+        			<a href="#" onclick="prevQuestion(<?php echo $_question->getParentId(); ?>); return false;">Previous</a>
+					<?php if ($products->getSize()>0): ?>
+					 | <a href="#" onclick="resetQuestion(); return false;">Start Over</a>
+					<?php endif; ?>
+        		</div>
+        	<?php endif; ?>
+        	
 				<?php if ($_wizard->getStaticBlockSide()): ?>
-				<!--div class="additional">
+				<div class="additional">
 					<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId($_wizard->getStaticBlockSide())->toHtml(); ?>
-				</div-->
+				</div>
 				<?php endif; ?>
 			
 			
-			<?php endif; ?>
+			<?php else: ?>
 			
 			<?php if ($_question->getParentId()>1): ?>
         		<div class="back">
@@ -112,6 +124,8 @@
 					 | <a href="#" onclick="resetQuestion(); return false;">Start Over</a>
 					<?php endif; ?>
         		</div>
+        	<?php endif; ?>
+        	
         	<?php endif; ?>
         </div>
     <?php endforeach;?>
