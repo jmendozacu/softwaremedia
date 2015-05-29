@@ -349,6 +349,7 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 				$mailTemplate->setFrom('customerservice@softwaremedia.com', 'Uberviz');
 				$mailTemplate->setSubject('Uberviz To Magento Updates!');
 				$mailTemplate->addTo('lisa@softwaremedia.com');
+				$mailTemplate->addCc('jlosee@softwaremedia.com');
 				$mailTemplate->setBodyHTML(file_get_contents($results['value']));
 
 				$mailTemplate->createAttachment(file_get_contents($results['value']), Zend_Mime::TYPE_OCTETSTREAM, Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, 'uber_to_magento_update.csv');
