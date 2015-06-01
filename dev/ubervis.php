@@ -6,6 +6,27 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
 
+$api = new SoftwareMedia_Ubervisibility_Helper_Api();
+$csv_content = array();
+
+$ubervis_updated_site_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/site', array(), 999);
+
+$ubervis_updated_cpc_prods = $api->callApi(Zend_Http_Client::GET, 'product/updated-price/cpc', array(), 999);
+		
+
+$sku_list = array();
+
+if (!empty($ubervis_updated_site_prods)) {
+	foreach ($ubervis_updated_site_prods as $prod) {
+		$prod_arr = (array) $prod;
+		$sku_list[$prod_arr['sku']] = $prod_arr['sku'];
+	}
+}
+		
+var_dump($ubervis_updated_site_prods);
+
+/*
+
 $noteList = Mage::getModel('customernotes/notes')->getCollection();
 $noteList->setOrder('created_time','DESC');
 $notes = array();
@@ -32,3 +53,5 @@ foreach($notes as $customerNote) {
 		}
 	}
 }
+
+*/
