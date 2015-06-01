@@ -19,7 +19,7 @@
 	.questions-list-container .comment {
 		width: 400px;
 		text-align: left;
-		margin: 0 auto;
+		margin: 8px auto;
 	}
 .questions-list-container .question-title {
 		font-size: 16px;
