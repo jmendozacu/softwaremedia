@@ -146,6 +146,9 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 			if (!$qtyHTML)
 				continue;
 				
+			$data = $this->getRequest()->getPost('shipment');
+			$vars['comment'] = $data['comment_text'];
+			
 			$vars['qty'] = $qtyHTML;
 			$template = Mage::getModel('core/email_template');
 			
@@ -219,6 +222,8 @@ class SoftwareMedia_Licensing_Adminhtml_Sales_Order_ShipmentController extends M
 		else 
 			$email = $subjectDist[$dist]['email'];
 		
+		$data = $this->getRequest()->getPost('shipment');
+		$vars['comment'] = $data['comment_text'];
 		$vars['order'] = $order;	
 		$vars['order_id'] = $order->getId();
 		$vars['increment_id'] = $order->getIncrementId();
