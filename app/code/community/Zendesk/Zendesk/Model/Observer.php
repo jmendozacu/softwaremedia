@@ -201,9 +201,23 @@ class Zendesk_Zendesk_Model_Observer
         }
         
         if(isset($user['id'])) {
+        		Mage::log('sync user',null,'zen.log');
+        		$data['identity'] = array(
+                    'type'      =>  'phone_number',
+                    'value'     =>  $telephone,
+                    'verified'  =>  true
+                );
+                $identity = Mage::getModel('zendesk/api_users')->addIdentity($user['id'],$data);
+                if(isset($identity['id'])) {
+                	Mage::log('Identity ',null,'zen.log');
+                    Mage::getModel('zendesk/api_users')->setPrimaryIdentity($user['id'], $identity['id']);
+                }
+
+
             $this->syncData($user['id'], $info);
         } else {
             $info['user']['verified'] = true;
+            Mage::log('create user',null,'zen.log');
             $this->createAccount($info);
         }
     }
