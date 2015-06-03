@@ -200,6 +200,10 @@ class Zendesk_Zendesk_Model_Observer
             $user = Mage::getModel('zendesk/api_users')->find($email);
         }
         
+        $telephone = str_replace('(','',$telephone);
+        $telephone = str_replace(')','',$telephone);
+        $telephone = str_replace('-','',$telephone);
+        
         if(isset($user['id'])) {
         		Mage::log('sync user',null,'zen.log');
         		$data['identity'] = array(
