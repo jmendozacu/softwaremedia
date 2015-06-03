@@ -125,6 +125,9 @@ class Zendesk_Zendesk_Model_Observer
         if ($address->getId())	
         	$telephone = $address->getTelephone();
         
+        Mage::log("update customer " . $customer->getId(),NULL,'zen.log');
+        Mage::log("customer add " . $address->getId() . " - " . $telephone,NULL,'zen.log');
+        
         $email = $customer->getEmail();
         $orig_email = $customer->getOrigData();
         $orig_email = $orig_email['email'];
