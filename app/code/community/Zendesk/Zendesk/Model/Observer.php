@@ -125,8 +125,7 @@ class Zendesk_Zendesk_Model_Observer
         if ($address->getId())	
         	$telephone = $address->getTelephone();
         
-        Mage::log("update customer " . $customer->getId(),NULL,'zen.log');
-        Mage::log("customer add " . $address->getId() . " - " . $telephone,NULL,'zen.log');
+        
         
         $email = $customer->getEmail();
         $orig_email = $customer->getOrigData();
@@ -203,6 +202,8 @@ class Zendesk_Zendesk_Model_Observer
         $telephone = str_replace('(','',$telephone);
         $telephone = str_replace(')','',$telephone);
         $telephone = str_replace('-','',$telephone);
+        Mage::log("update customer " . $customer->getId(),NULL,'zen.log');
+        Mage::log("customer add " . $address->getId() . " - " . $telephone,NULL,'zen.log');
         
         if(isset($user['id'])) {
         		Mage::log('sync user',null,'zen.log');
