@@ -168,6 +168,7 @@ class Zendesk_Zendesk_Model_Observer
         $telephone = str_replace('(','',$telephone);
         $telephone = str_replace(')','',$telephone);
         $telephone = str_replace('-','',$telephone);
+        $telephone = str_replace('+','',$telephone);
         
         $info['user'] = array(
                 "name"          =>  $customer->getFirstname() . " " . $customer->getLastname(),
