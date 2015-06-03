@@ -118,6 +118,13 @@ class Zendesk_Zendesk_Model_Observer
         
         $user = null;
         $customer = $event->getCustomer();
+        $address = $customer->getDefaultBillingAddress();
+        if (!$address->getId())
+        	$address = $customer->getDefaultShippingAddress();
+        
+        if ($address->getId())	
+        	$telephone = $address->getTelephone();
+        
         $email = $customer->getEmail();
         $orig_email = $customer->getOrigData();
         $orig_email = $orig_email['email'];
@@ -159,6 +166,7 @@ class Zendesk_Zendesk_Model_Observer
         $info['user'] = array(
                 "name"          =>  $customer->getFirstname() . " " . $customer->getLastname(),
                 "email"         =>  $email,
+                "phone"			=>  $telephone,
                 "user_fields"       =>  array(
                     "group"         =>  $group->getCode(),
                     "name"          =>  $customer->getFirstname() . " " . $customer->getLastname(),
