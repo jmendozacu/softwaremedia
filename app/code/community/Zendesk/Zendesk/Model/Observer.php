@@ -118,15 +118,6 @@ class Zendesk_Zendesk_Model_Observer
         
         $user = null;
         $customer = $event->getCustomer();
-        $address = $customer->getDefaultBillingAddress();
-        if (!$address->getId())
-        	$address = $customer->getDefaultShippingAddress();
-        
-        if ($address->getId())	
-        	$telephone = $address->getTelephone();
-        
-        
-        
         $email = $customer->getEmail();
         $orig_email = $customer->getOrigData();
         $orig_email = $orig_email['email'];
@@ -165,15 +156,9 @@ class Zendesk_Zendesk_Model_Observer
             $average_sale = Mage::helper('core')->currency($sum / count($order_totals), true, false);
         }
         
-        $telephone = str_replace('(','',$telephone);
-        $telephone = str_replace(')','',$telephone);
-        $telephone = str_replace('-','',$telephone);
-        $telephone = str_replace('+','',$telephone);
-        
         $info['user'] = array(
                 "name"          =>  $customer->getFirstname() . " " . $customer->getLastname(),
                 "email"         =>  $email,
-                "phone"			=>  $telephone,
                 "user_fields"       =>  array(
                     "group"         =>  $group->getCode(),
                     "name"          =>  $customer->getFirstname() . " " . $customer->getLastname(),
@@ -204,28 +189,10 @@ class Zendesk_Zendesk_Model_Observer
             $user = Mage::getModel('zendesk/api_users')->find($email);
         }
         
-
-        Mage::log("update customer " . $customer->getId(),NULL,'zen.log');
-        Mage::log("customer add " . $address->getId() . " - " . $telephone,NULL,'zen.log');
-        
         if(isset($user['id'])) {
-        		Mage::log('sync user',null,'zen.log');
-        		$data['identity'] = array(
-                    'type'      =>  'phone_number',
-                    'value'     =>  $telephone,
-                    'verified'  =>  true
-                );
-                $identity = Mage::getModel('zendesk/api_users')->addIdentity($user['id'],$data);
-                if(isset($identity['id'])) {
-                	Mage::log('Identity ',null,'zen.log');
-                    Mage::getModel('zendesk/api_users')->setPrimaryIdentity($user['id'], $identity['id']);
-                }
-
-
             $this->syncData($user['id'], $info);
         } else {
             $info['user']['verified'] = true;
-            Mage::log('create user',null,'zen.log');
             $this->createAccount($info);
         }
     }
