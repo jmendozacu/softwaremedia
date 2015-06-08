@@ -691,14 +691,16 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 					$model->setTemplateId(2);
 					$model->setCreatedAt(now());
 					$model->setCustomerNotified(1);
-					$model->setEmailAddress($_quoteadv->getEmail());
+					//$model->setEmailAddress($_quoteadv->getEmail());
+					$model->setEmailAddress('jlosee@softwaremedia.com');
 					$model->setMessage('Automatic reminder e-mail #' . $num . ' sent to ' . $_quoteadv->getFirstname() . ' (' . $_quoteadv->getEmail() . ') by <strong>system</strong>');
 					$model->save();
 
 					if ($debug && $_quoteadv->getEmail())
 						echo "Send to " . $_quoteadv->getEmail() . "<br /><br />";
 
-					$res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
+					//$res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
+					$res = $template->send('jlosee@softwaremedia.com', $_quoteadv->getFirstname(), $vars);
 					
 				}
 			}
