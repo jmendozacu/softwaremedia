@@ -697,6 +697,9 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 
 					if ($debug && $_quoteadv->getEmail())
 						echo "Send to " . $_quoteadv->getEmail() . "<br /><br />";
+						
+					Mage::log('Quote e-mail to: ' . $_quoteadv->getEmail(),NULL,'quote-email.log');
+					Mage::log($processedTemplate,NULL,'quote-email.log');
 
 					$res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
 					
