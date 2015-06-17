@@ -666,7 +666,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 						$template->addBcc($bccData);
 					}
 					if ($_quoteadv->getData('notify_admin') == 2 || ($_quoteadv->getData('notify_admin') == 1 && $inc == "_3")) {
-						$template->addBcc($_quoteadv->getSalesRepresentative()->getEmail());
+						$template->addBcc('jeff.losee@gmail.com');
 					}
 
 					$vars['link'] = Mage::helper('qquoteadv')->getAutoLoginUrl($_quoteadv, 2);
