@@ -75,6 +75,10 @@
 								<title>CSSR Ratings</title>
 								<action>swmreports/adminhtml_customerratings</action>
 							</customerratings>
+							<download>
+								<title>Download Orders</title>
+								<action>swmreports/adminhtml_download</action>
+							</download>
 						</children>
 					</swmreports>
 				</children>
