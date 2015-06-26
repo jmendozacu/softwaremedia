@@ -1,0 +1,361 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Template for Mage_Adminhtml_Block_Widget_Grid
+ *
+ *  getId()
+ *  getCollection()
+ *  getColumns()
+ *  getPagerVisibility()
+ *  getVarNamePage()
+ */
+$numColumns = sizeof($this->getColumns());
+error_reporting(E_ALL);
+?>
+
+<?php
+$from = $this->getRequest()->getParam('from');
+$to = $this->getRequest()->getParam('to');
+$campaign = $this->getRequest()->getParam('campaign_id');
+$step = $this->getRequest()->getParam('step_id');
+
+$collection = $this->getCollection();
+$collection->setPageSize(1000);
+
+?>
+
+	<?php if ($this->canDisplayContainer()): ?>
+		<?php if ($this->getGridHeader()): ?>
+		<div class="content-header">
+		    <table cellspacing="0">
+		        <tbody><tr>
+		            <td style="width:50%;"><h3 class="icon-head head-adminhtml-accountreceivable"><?php echo $this->getGridHeader(); ?></h3></td>
+		            <td class="form-buttons"><button id="id_e21e71f7479f3778da404bce2675de7b" title="Show Report" type="button" class="scalable " onclick="$('note_filter').submit()" style=""><span><span><span>Show Report</span></span></span></button></td>
+		        </tr>
+		    </tbody></table>
+		</div>
+		<?php endif ?>
+
+
+		<div id="<?php echo $this->getId() ?>">
+		<?php else: ?>
+			<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+		<?php endif; ?>
+		<?php if ($this->getPagerVisibility() || $this->getExportTypes() || $this->getFilterVisibility()): ?>
+			<?php if ($this->getCustomHeader()): ?>
+		<div class="content-header">
+		    <table cellspacing="0">
+		        <tbody><tr>
+		            <td style="width:50%;"><h3 class="icon-head head-adminhtml-accountreceivable"><?php echo $this->getCustomHeader(); ?></h3></td>
+		            <td class="form-buttons"><button id="id_e21e71f7479f3778da404bce2675de7b" title="Show Report" type="button" class="scalable " onclick="$('note_filter').submit()" style=""><span><span><span>Show Report</span></span></span></button></td>
+		        </tr>
+		    </tbody></table>
+		</div>
+			<?php endif ?>
+			
+			<div class="entry-edit">
+				
+				<div class="entry-edit-head">
+	                <h4 class="icon-head head-edit-form fieldset-legend">Filter</h4>
+	                <div class="form-buttons"></div>
+	            </div>
+<div class="fieldset">
+                <div class="hor-scroll">
+                	<form method="get" id="note_filter">
+                    <table cellspacing="0" class="form-list">
+                        <tbody>
+                            <!--<tr>
+                                <td class="label"><label for="sales_report_period_type">Period</label></td>
+                                <td class="value">
+                                    <select class=" select" title="Period" name="period_type" id="sales_report_period_type">
+                                        <option value="day">Day</option>
+                                        <option value="month">Month</option>
+                                        <option value="year">Year</option>
+                                    </select>
+                                </td>
+                            </tr>-->
+                            <tr>
+                                <td class="label"><label for="ar_report_from">From</label></td>
+                                <td class="value">
+                                    <input type="text" style="width:110px !important;" class=" required-entry input-text" title="From" value="<?php echo $from ?>" id="ar_report_from" name="from" />
+                                    <img style="" title="Select Date" id="ar_report_from_trig" class="v-middle" alt="" src="<?php echo '/skin/adminhtml/default/default/images/grid-cal.gif'; ?>">
+                                    <script type="text/javascript">
+                                        //<![CDATA[
+                                        Calendar.setup({
+                                            inputField: "ar_report_from",
+                                            ifFormat: "%m/%e/%Y",
+                                            showsTime: false,
+                                            button: "ar_report_from_trig",
+                                            align: "Bl",
+                                            singleClick : true
+                                        });
+                                        //]]>
+                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><label for="ar_report_to">To</label></td>
+                                <td class="value">
+                                    <input type="text" style="width:110px !important;" class=" required-entry input-text" title="To" value="<?php echo $to ?>" id="ar_report_to" name="to" />
+                                    <img style="" title="Select Date" id="ar_report_to_trig" class="v-middle" alt="" src="<?php echo '/skin/adminhtml/default/default/images/grid-cal.gif'; ?>">
+                                    <script type="text/javascript">
+                                        //<![CDATA[
+                                        Calendar.setup({
+                                            inputField: "ar_report_to",
+                                            ifFormat: "%m/%e/%Y",
+                                            showsTime: false,
+                                            button: "ar_report_to_trig",
+                                            align: "Bl",
+                                            singleClick : true
+                                        });
+                                        //]]>
+                                    </script>
+                                </td>
+                            </tr>
+                            <!--
+                            <tr>
+                                <td class="label"><label for="ar_report_to">Campaign</label></td>
+                                <td class="value">
+                                	<select onchange="updateSteps();" name="campaign_id" id="campaign_id">
+                            		<option value=""></option>
+                            		<?php foreach(Mage::helper('customernotes')->getCampaigns() as $option) {
+	                            	
+	                            		echo "<option value=\"" . $option->getId() . "\"";
+	                            		if ($campaign == $option->getId())
+	                            			echo " selected=\"selected\"";
+	                            			
+	                            		echo ">" . $option->getName() . "</option>";
+									}
+                            		?>
+                            	</select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><label for="ar_report_to">Step</label></td>
+                                <td class="value">
+                                    <select name="step_id" id="step_id">
+                                    	<option value=""></option>
+                                    <?php 
+                                    	if ($campaign) {
+                                    		$stepLoaded = Mage::helper('customernotes')->getStepsCampaign($campaign);
+                                    		foreach($stepLoaded as $stepItem) {
+	                                    		echo "<option value=\"" . $stepItem->getId() . "\"";
+	                                    		if ($step == $stepItem->getId())
+													echo " selected=\"selected\"";
+	                                    		echo ">" . $stepItem->getName() . "</option>";
+                                    		}
+                                    		
+	                            		} ?>
+									</select>	
+                                </td>
+                            </tr>
+                            -->
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+			</div>
+<?php if ($collection->getSize()>0): ?>
+			<table cellspacing="0" class="actions">
+				<tr>
+					<?php if ($this->getExportTypes()): ?>
+						<td class="export a-right">
+							<img src="<?php echo $this->getSkinUrl('images/icon_export.gif') ?>" alt="" class="v-middle"/>&nbsp; <?php echo $this->__('Export to:') ?>
+							<select name="<?php echo $this->getId() ?>_export" id="<?php echo $this->getId() ?>_export" style="width:8em;">
+								<?php foreach ($this->getExportTypes() as $_type): ?>
+									<option value="<?php echo $_type->getUrl() ?>"><?php echo $_type->getLabel() ?></option>
+								<?php endforeach; ?>
+							</select>
+							<?php echo $this->getExportButtonHtml() ?>
+						</td>
+					<?php endif; ?>
+				</tr>
+			</table>
+		<?php endif; ?>
+		<?php if ($this->getMassactionBlock()->isAvailable()): ?>
+			<?php echo $this->getMassactionBlockHtml() ?>
+		<?php endif ?>
+		<div class="grid">
+			<div class="hor-scroll">
+				<table cellspacing="0" class="data" id="<?php echo $this->getId() ?>_table">
+					<?php foreach ($this->getColumns() as $_column): ?>
+						<col <?php echo $_column->getHtmlProperty() ?> />
+					<?php endforeach; ?>
+					<?php if ($this->getHeadersVisibility() || $this->getFilterVisibility()): ?>
+						<thead>
+							<?php if ($this->getHeadersVisibility()): ?>
+								<tr class="headings">
+									<?php foreach ($this->getColumns() as $_column): ?>
+										<th<?php echo $_column->getHeaderHtmlProperty() ?>><span class="nobr"><?php echo $_column->getHeaderHtml() ?></span></th>
+									<?php endforeach; ?>
+								</tr>
+							<?php endif; ?>
+							<?php if ($this->getFilterVisibility()): ?>
+								<tr class="filter">
+									<?php
+									$i = 0;
+									foreach ($this->getColumns() as $_column):
+										?>
+										<th<?php echo $_column->getHeaderHtmlProperty() ?>><?php echo $_column->getFilterHtml() ?></th>
+								<?php endforeach; ?>
+								</tr>
+						<?php endif ?>
+						</thead>
+					<?php endif; ?>
+	<?php if ($this->getCountTotals()): ?>
+						<tfoot>
+							<tr class="totals">
+								<?php foreach ($this->getColumns() as $_column): ?>
+									<th class="<?php echo $_column->getCssProperty() ?>"><?php echo ($_column->hasTotalsLabel()) ? $_column->getTotalsLabel() : $_column->getRowField($_column->getGrid()->getTotals()) ?>&nbsp;</th>
+		<?php endforeach; ?>
+							</tr>
+						</tfoot>
+	<?php endif; ?>
+
+					<tbody>
+						<?php $totals = array(); ?>
+						<?php if (($collection->getSize() > 0) && (!$this->getIsCollapsed())): ?>
+								<?php foreach ($collection as $_index => $_item): ?>
+								<tr title="<?php echo $this->getRowUrl($_item) ?>"<?php if ($_class = $this->getRowClass($_item)): ?> class="<?php echo $_class; ?>"<?php endif; ?> >
+									<?php
+									$i = 0;
+									foreach ($this->getColumns() as $_column):
+										?>
+											
+											<?php if ($this->shouldRenderCell($_item, $_column)): ?>
+												<?php $_rowspan = $this->getRowspan($_item, $_column); ?>
+											<td <?php echo ($_rowspan ? 'rowspan="' . $_rowspan . '" ' : '') ?>class="<?php echo $_column->getCssProperty() ?> <?php echo ++$i == $numColumns ? 'last' : '' ?>">
+											<?php $totals[$i] += $_column->getRowField($_item); ?>
+											<?php echo (($_html = $_column->getRowField($_item)) != '' ? $_html : '&nbsp;') ?>
+											</td>
+											<?php if ($this->shouldRenderEmptyCell($_item, $_column)): ?>
+												<td colspan="<?php echo $this->getEmptyCellColspan($_item) ?>" class="last"><?php echo $this->getEmptyCellLabel() ?></td>
+											<?php endif; ?>
+										<?php endif; ?>
+
+								<?php endforeach; ?>
+								</tr>
+									<?php if ($_multipleRows = $this->getMultipleRows($_item)): ?>
+										<?php foreach ($_multipleRows as $_i): ?>
+										<tr>
+											<?php
+											$i = 0;
+											foreach ($this->getMultipleRowColumns($_i) as $_column):
+												?>
+												<td class="<?php echo $_column->getCssProperty() ?> <?php echo ++$i == $numColumns - 1 ? 'last' : '' ?>">
+											<?php echo (($_html = $_column->getRowField($_i)) != '' ? $_html : '&nbsp;') ?>
+												</td>
+										<?php endforeach; ?>
+										</tr>
+									<?php endforeach; ?>
+									<?php endif; ?>
+<?php endforeach; ?>
+									
+									<tr class="subtotals">
+											<?php
+											$i = 0;
+											foreach ($this->getColumns() as $_column):
+												$i++
+												?>
+											<td>
+												<?php
+												if ($i > 2) {
+												echo floor($totals[$i] / count($collection));
+												}
+												?>
+											</td>
+									<?php endforeach; ?>
+									</tr>
+			
+							
+						<?php elseif ($this->getEmptyText()): ?>
+							<tr>
+								<td class="empty-text <?php echo $this->getEmptyTextClass() ?>" colspan="<?php echo $numColumns ?>"><?php echo $this->getEmptyText() ?></td>
+							</tr>
+	<?php endif; ?>
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+	<?php if ($this->canDisplayContainer()): ?>
+		</div>
+		<script type="text/javascript">
+					//<![CDATA[
+		<?php echo $this->getJsObjectName() ?> = new varienGrid('<?php echo $this->getId() ?>', '<?php echo $this->getGridUrl() ?>', '<?php echo $this->getVarNamePage() ?>', '<?php echo $this->getVarNameSort() ?>', '<?php echo $this->getVarNameDir() ?>', '<?php echo $this->getVarNameFilter() ?>');
+		<?php echo $this->getJsObjectName() ?>.useAjax = '<?php echo $this->getUseAjax() ?>';
+		<?php if ($this->getRowClickCallback()): ?>
+			<?php echo $this->getJsObjectName() ?>.rowClickCallback = <?php echo $this->getRowClickCallback() ?>;
+		<?php endif; ?>
+		<?php if ($this->getCheckboxCheckCallback()): ?>
+			<?php echo $this->getJsObjectName() ?>.checkboxCheckCallback = <?php echo $this->getCheckboxCheckCallback() ?>;
+		<?php endif; ?>
+		<?php if ($this->getRowInitCallback()): ?>
+			<?php echo $this->getJsObjectName() ?>.initRowCallback = <?php echo $this->getRowInitCallback() ?>;
+			<?php echo $this->getJsObjectName() ?>.initGridRows();
+		<?php endif; ?>
+		<?php if ($this->getMassactionBlock()->isAvailable()): ?>
+			<?php echo $this->getMassactionBlock()->getJavaScript() ?>
+		<?php endif ?>
+		<?php echo $this->getAdditionalJavaScript(); ?>
+			//]]>
+		</script>
+	<?php endif; ?>
+	<?php
+
+
+ endif ?>
+ 
+ <script>
+
+	var steps = <?php echo Mage::helper('customernotes')->getJSONSteps(); ?>;
+	var json = Object.toJSON( {"COUNTRIES":[{"COUNTRY":"Hong Kong","ID":1},{"COUNTRY":"Japan","ID":2}]} );
+	
+	function updateSteps() {
+		//setDropDown($('step_id'),[]);
+		//alert($('step_id').options.length);
+		$('step_id').update('');
+		if ($('campaign_id').value) {
+			$('step_id').options.add(new Option('', ''));
+			steps[$('campaign_id').value].forEach(function(entry) {
+				$('step_id').options.add(new Option(entry.name, entry.id));
+			});		
+		} 
+	
+	}
+
+	function setDropDown(field, data, method, index) {
+	  field.options.length = index == null ? 1 : index;
+	  data.each(
+	    function(e) {
+	      field.options.add(method(e));
+	    }
+	  );
+	}
+</script>
+

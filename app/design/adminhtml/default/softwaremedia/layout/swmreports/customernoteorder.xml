@@ -5,4 +5,17 @@
 			<block type="swmreports/adminhtml_customernoteorder_grid" name="customernote" template="reports/grid.phtml" />
 		</reference>
 	</swmreports_adminhtml_customernoteorder_index>
+	
+	<swmreports_adminhtml_download_index>
+		<reference name="content">
+			<block type="swmreports/adminhtml_download_grid" name="download" template="reports/download.phtml" />
+		</reference>
+	</swmreports_adminhtml_download_index>
+	
+	<swmreports_adminhtml_licensing_index>
+		<reference name="content">
+			<block type="swmreports/adminhtml_licensing_grid" name="licensing" template="reports/download.phtml" />
+		</reference>
+	</swmreports_adminhtml_licensing_index>
+	
 </layout>

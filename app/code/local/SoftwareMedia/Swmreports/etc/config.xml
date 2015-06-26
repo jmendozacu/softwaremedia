@@ -75,6 +75,14 @@
 								<title>CSSR Ratings</title>
 								<action>swmreports/adminhtml_customerratings</action>
 							</customerratings>
+							<download>
+								<title>Download Orders</title>
+								<action>swmreports/adminhtml_download</action>
+							</download>
+							<licensing>
+								<title>Licensing Orders</title>
+								<action>swmreports/adminhtml_licensing</action>
+							</licensing>
 						</children>
 					</swmreports>
 				</children>
@@ -132,6 +140,14 @@
 											<title>Quotes CSSR Stats</title>
 											<action>swmreports/adminhtml_quotestat</action>
 										</quotestat>
+										<download>
+											<title>Download Orders</title>
+											<action>swmreports/adminhtml_download</action>
+										</download>
+										<licensing>
+											<title>Licensing Orders</title>
+											<action>swmreports/adminhtml_licensing</action>
+										</licensing>
 									</children>
 								</swmreports>
 							</children>

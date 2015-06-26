@@ -666,7 +666,7 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 						$template->addBcc($bccData);
 					}
 					if ($_quoteadv->getData('notify_admin') == 2 || ($_quoteadv->getData('notify_admin') == 1 && $inc == "_3")) {
-						$template->addBcc($_quoteadv->getSalesRepresentative()->getEmail());
+						$template->addBcc('jeff.losee@gmail.com');
 					}
 
 					$vars['link'] = Mage::helper('qquoteadv')->getAutoLoginUrl($_quoteadv, 2);
@@ -697,6 +697,9 @@ class Ophirah_Qquoteadv_Model_Qqadvcustomer extends Mage_Sales_Model_Quote {
 
 					if ($debug && $_quoteadv->getEmail())
 						echo "Send to " . $_quoteadv->getEmail() . "<br /><br />";
+						
+					Mage::log('Quote e-mail to: ' . $_quoteadv->getEmail(),NULL,'quote-email.log');
+					Mage::log($processedTemplate,NULL,'quote-email.log');
 
 					$res = $template->send($_quoteadv->getEmail(), $_quoteadv->getFirstname(), $vars);
 					
