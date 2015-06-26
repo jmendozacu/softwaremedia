@@ -11,7 +11,7 @@
  *
  * @author david
  */
-class SoftwareMedia_Swmreports_Block_Adminhtml_Download_Grid extends Mage_Adminhtml_Block_Widget_Grid {
+class SoftwareMedia_Swmreports_Block_Adminhtml_Licensing_Grid extends Mage_Adminhtml_Block_Widget_Grid {
 
 	public function __construct() {
 		parent::__construct();
@@ -19,7 +19,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Download_Grid extends Mage_Adminh
 		$this->setDefaultDir('DESC');
 		$this->setSaveParametersInSession(true);
 		$this->setSubReportSize(false);
-		$this->setCustomHeader('Download Orders');
+		$this->setCustomHeader('Licensing Orders');
 	}
 
 	protected function _prepareCollection() {
@@ -30,14 +30,13 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Download_Grid extends Mage_Adminh
 		$collection->getSelect()->joinLeft(
 				'customer_entity', '`customer_entity`.entity_id=`main_table`.customer_id', array('email')
 			);
-			
 		$collection->getSelect()->joinLeft(
 				'sales_flat_order_payment', '`sales_flat_order_payment`.parent_id=`main_table`.entity_id', array('method' => 'method')
 			);
 			
 		$this->addFilters($collection);
 		
-		$subquery = new Zend_Db_Expr("(SELECT parent_id, MIN(created_at) download_date FROM mage.sales_flat_order_status_history WHERE status='download' GROUP BY parent_id,status)");
+		$subquery = new Zend_Db_Expr("(SELECT parent_id, MIN(created_at) download_date FROM mage.sales_flat_order_status_history WHERE status='needslicense' GROUP BY parent_id,status)");
 
 		$collection->getSelect()->joinInner(array('download_table' =>$subquery),'`download_table`.parent_id=`main_table`.entity_id',array('download_date'));
 	
@@ -48,15 +47,13 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Download_Grid extends Mage_Adminh
 		$collection->getSelect()->columns(array('download_time' => 'FLOOR(TIME_TO_SEC(TIMEDIFF(completed_date,download_date))/60)'));
 		$collection->getSelect()->columns(array('completed_time' => 'FLOOR(TIME_TO_SEC(TIMEDIFF(completed_date,main_table.created_at))/60)'));
 
-		
+
 		$collection->getSelect()->group('main_table.entity_id');
 		$collection->addFieldToFilter('sales_flat_order_payment.method',array('neq'=>'purchaseorder'));
-		//echo $collection->getSelect();
-		//die();
-		//echo $collection->getSelect();
 		$collection->setPageSize(2000);
 	
 		count($collection);
+		
 		
 		//die();
 		/*
@@ -74,7 +71,27 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Download_Grid extends Mage_Adminh
 		$this->setCollection($collection);
 		return parent::_prepareCollection();
 	}
-	
+//Add following function
+protected function _prepareTotals($columns = null){
+  $columns=explode(',',$columns);
+  if(!$columns){
+    return;
+  }
+  $this->_countTotals = true;   
+  $totals = new Varien_Object();
+  $fields = array();
+  foreach($columns as $column){
+    $fields[$column]    = 0;    
+  } 
+  foreach ($this->getCollection() as $item) {
+    foreach($fields as $field=>$value){
+      $fields[$field]+=$item->getData($field);
+    }
+  }
+  $totals->setData($fields);
+  $this->setTotals($totals);
+  return;
+}
 	public function addFilters($col) {
 		if ($this->getRequest()->getParam('from'))
 			$from = date('Y-m-d 00:00:00',strtotime($this->getRequest()->getParam('from')));
@@ -152,7 +169,7 @@ class SoftwareMedia_Swmreports_Block_Adminhtml_Download_Grid extends Mage_Adminh
 		));		
 		
 		$this->addColumn('download_time', array(
-			'header' => Mage::helper('coupon')->__('Download -> Complete'),
+			'header' => Mage::helper('coupon')->__('Needs License -> Complete'),
 			'sortable' => false,
 			 'filter' => false,
 			'index' => 'download_time',

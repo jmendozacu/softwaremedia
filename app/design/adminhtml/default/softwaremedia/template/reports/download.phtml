@@ -44,6 +44,9 @@ $to = $this->getRequest()->getParam('to');
 $campaign = $this->getRequest()->getParam('campaign_id');
 $step = $this->getRequest()->getParam('step_id');
 
+$collection = $this->getCollection();
+$collection->setPageSize(1000);
+
 ?>
 
 	<?php if ($this->canDisplayContainer()): ?>
@@ -177,7 +180,7 @@ $step = $this->getRequest()->getParam('step_id');
                     </form>
                 </div>
 			</div>
-<?php if ($this->getCollection()->getSize()>0): ?>
+<?php if ($collection->getSize()>0): ?>
 			<table cellspacing="0" class="actions">
 				<tr>
 					<?php if ($this->getExportTypes()): ?>
@@ -235,17 +238,19 @@ $step = $this->getRequest()->getParam('step_id');
 	<?php endif; ?>
 
 					<tbody>
-						<?php if (($this->getCollection()->getSize() > 0) && (!$this->getIsCollapsed())): ?>
-								<?php foreach ($this->getCollection() as $_index => $_item): ?>
+						<?php $totals = array(); ?>
+						<?php if (($collection->getSize() > 0) && (!$this->getIsCollapsed())): ?>
+								<?php foreach ($collection as $_index => $_item): ?>
 								<tr title="<?php echo $this->getRowUrl($_item) ?>"<?php if ($_class = $this->getRowClass($_item)): ?> class="<?php echo $_class; ?>"<?php endif; ?> >
 									<?php
 									$i = 0;
 									foreach ($this->getColumns() as $_column):
 										?>
-
+											
 											<?php if ($this->shouldRenderCell($_item, $_column)): ?>
 												<?php $_rowspan = $this->getRowspan($_item, $_column); ?>
 											<td <?php echo ($_rowspan ? 'rowspan="' . $_rowspan . '" ' : '') ?>class="<?php echo $_column->getCssProperty() ?> <?php echo ++$i == $numColumns ? 'last' : '' ?>">
+											<?php $totals[$i] += $_column->getRowField($_item); ?>
 											<?php echo (($_html = $_column->getRowField($_item)) != '' ? $_html : '&nbsp;') ?>
 											</td>
 											<?php if ($this->shouldRenderEmptyCell($_item, $_column)): ?>
@@ -269,24 +274,25 @@ $step = $this->getRequest()->getParam('step_id');
 										</tr>
 									<?php endforeach; ?>
 									<?php endif; ?>
-
-									<?php if ($this->shouldRenderSubTotal($_item)): ?>
+<?php endforeach; ?>
+									
 									<tr class="subtotals">
 											<?php
 											$i = 0;
-											foreach ($this->getSubTotalColumns() as $_column):
+											foreach ($this->getColumns() as $_column):
+												$i++
 												?>
-											<td class="<?php echo $_column->getCssProperty() ?> <?php echo ++$i == $numColumns ? 'last' : '' ?>">
+											<td>
 												<?php
-												echo ($_column->hasSubtotalsLabel() ? $_column->getSubtotalsLabel() :
-													$_column->getRowField($this->getSubTotalItem($_item))
-												);
+												if ($i > 2) {
+												echo floor($totals[$i] / count($collection));
+												}
 												?>
 											</td>
 									<?php endforeach; ?>
 									</tr>
-			<?php endif; ?>
-							<?php endforeach; ?>
+			
+							
 						<?php elseif ($this->getEmptyText()): ?>
 							<tr>
 								<td class="empty-text <?php echo $this->getEmptyTextClass() ?>" colspan="<?php echo $numColumns ?>"><?php echo $this->getEmptyText() ?></td>
