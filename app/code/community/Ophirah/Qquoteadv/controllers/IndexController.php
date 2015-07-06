@@ -1274,7 +1274,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
             /*
              * getProcessedTemplate is called inside send()
              */
-            $res = $template->send('support@softwaremedia.com', 'SoftwareMedia', $vars);
+            $res = $template->send('support@softwaremedia.zendesk.com', 'SoftwareMedia', $vars);
 		
             if (empty($res)) {
      
