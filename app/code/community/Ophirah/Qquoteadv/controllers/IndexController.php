@@ -1227,7 +1227,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
          * to create a config for this and use xml path to fetch
          * email template info (whatever from file/db).
          */
-        $template = Mage::getModel('qquoteadv/core_email_template');
+        $template = Mage::getModel('core/email_template');
 
         $disabledEmail  = Ophirah_Qquoteadv_Model_System_Config_Source_Email_Templatedisable::VALUE_DISABLED_EMAIL;
         $quoteadv_param = Mage::getStoreConfig('qquoteadv/emails/request');
@@ -1260,7 +1260,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
                 $template->addBcc($bccData);
             }
 
-			$template->addBcc('jlosee@softwaremedia.com');
+			$template->addBcc('support@softwaremedia.com');
             if((bool) Mage::getStoreConfig('qquoteadv/emails/send_linked_sale_bcc', $_quoteadv->getStoreId())) {
                 $template->addBcc(Mage::getModel('admin/user')->load($_quoteadv->getUserId())->getEmail());
             }
@@ -1274,7 +1274,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
             /*
              * getProcessedTemplate is called inside send()
              */
-            $res = $template->send('support@softwaremedia.zendesk.com', 'SoftwareMedia', $vars);
+            $res = $template->send($recipientEmail, $recipientName, $vars);
 		
             if (empty($res)) {
      
