@@ -1231,8 +1231,9 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
 
         $disabledEmail  = Ophirah_Qquoteadv_Model_System_Config_Source_Email_Templatedisable::VALUE_DISABLED_EMAIL;
         $quoteadv_param = Mage::getStoreConfig('qquoteadv/emails/request');
+ 
         if($quoteadv_param != $disabledEmail):
-        
+    
             if($quoteadv_param){
                 $templateId = $quoteadv_param;
             } else {
@@ -1248,8 +1249,9 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
             $subject	= $template['template_subject'];
             $sender     = $_quoteadv->getEmailSenderInfo();
 
-            $template->setSenderName(@$sender['name']);
-            $template->setSenderEmail(@$sender['email']);
+			
+            $template->setSenderName('SoftwareMedia');
+            $template->setSenderEmail('customerservice@softwaremedia.com');
             $template->setTemplateSubject($subject);
 
             $bcc = Mage::getStoreConfig('qquoteadv/emails/bcc', $_quoteadv->getStoreId());
@@ -1258,6 +1260,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
                 $template->addBcc($bccData);
             }
 
+			$template->addBcc('jlosee@softwaremedia.com');
             if((bool) Mage::getStoreConfig('qquoteadv/emails/send_linked_sale_bcc', $_quoteadv->getStoreId())) {
                 $template->addBcc(Mage::getModel('admin/user')->load($_quoteadv->getUserId())->getEmail());
             }
@@ -1272,14 +1275,15 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
              * getProcessedTemplate is called inside send()
              */
             $res = $template->send($recipientEmail, $recipientName, $vars);
-
+		
             if (empty($res)) {
+     
                 $message = $this->__("Qquote request email was't sent to admin for quote #%s", $quoteId);
                 Mage::log($message);
             }
         
         endif;
-        
+
     }
     
 	protected function _getPass( $length ) {
