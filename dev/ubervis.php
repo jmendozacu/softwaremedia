@@ -6,6 +6,11 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
 
+//$uber = new SoftwareMedia_Ubervisibility_Model_Observer();
+//$uber->retrieveProducts1();
+
+
+
 $api = new SoftwareMedia_Ubervisibility_Helper_Api();
 $csv_content = array();
 
@@ -23,8 +28,9 @@ if (!empty($ubervis_updated_site_prods)) {
 	}
 }
 		
-var_dump($ubervis_updated_site_prods);
+var_dump($sku_list);
 
+die();
 /*
 
 $noteList = Mage::getModel('customernotes/notes')->getCollection();

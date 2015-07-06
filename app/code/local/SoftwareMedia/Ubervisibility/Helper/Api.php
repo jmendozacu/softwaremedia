@@ -36,6 +36,8 @@ class SoftwareMedia_Ubervisibility_Helper_Api extends Mage_Core_Helper_Abstract 
 		$data = preg_split('/^\r\n/m', $data, 2);
 		$data = trim($data[1]);
 
+		//var_dump(json_decode($data));
+		
 		return json_decode($data);
 	}
 
