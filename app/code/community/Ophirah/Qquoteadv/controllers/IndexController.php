@@ -1260,7 +1260,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
                 $template->addBcc($bccData);
             }
 
-			$template->addBcc('support@softwaremedia.com');
+			$template->addBcc('jlosee@softwaremedia.com');
             if((bool) Mage::getStoreConfig('qquoteadv/emails/send_linked_sale_bcc', $_quoteadv->getStoreId())) {
                 $template->addBcc(Mage::getModel('admin/user')->load($_quoteadv->getUserId())->getEmail());
             }
@@ -1274,7 +1274,7 @@ class Ophirah_Qquoteadv_IndexController extends Mage_Core_Controller_Front_Actio
             /*
              * getProcessedTemplate is called inside send()
              */
-            $res = $template->send($recipientEmail, $recipientName, $vars);
+            $res = $template->send('support@softwaremedia.com', 'SoftwareMedia', $vars);
 		
             if (empty($res)) {
      
