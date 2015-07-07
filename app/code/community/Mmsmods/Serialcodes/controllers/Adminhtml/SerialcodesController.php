@@ -21,6 +21,11 @@
 
 class Mmsmods_Serialcodes_Adminhtml_SerialcodesController extends Mage_Adminhtml_Controller_Action {
 
+	protected function _isAllowed()
+    {
+        return true;
+    }
+    
 	protected function _initAction() {
 		$this->loadLayout()
 			->_setActiveMenu('catalog/serialcodes')
