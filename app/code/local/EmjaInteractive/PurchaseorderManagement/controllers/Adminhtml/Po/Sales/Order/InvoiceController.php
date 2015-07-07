@@ -5,6 +5,10 @@ require_once 'app/code/core/Mage/Adminhtml/controllers/Sales/Order/InvoiceContro
 class EmjaInteractive_PurchaseorderManagement_Adminhtml_Po_Sales_Order_InvoiceController
     extends Mage_Adminhtml_Sales_Order_InvoiceController
 {
+	protected function _isAllowed()
+    {
+        return true;
+    }
     protected function _checkIfNoPartialInvoicing($invoice)
     {
         $qtys = $this->_getItemQtys();
