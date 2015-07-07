@@ -3,7 +3,10 @@
 class EmjaInteractive_PurchaseorderManagement_Adminhtml_Po_Sales_OrderController
     extends Mage_Adminhtml_Controller_Action
 {
-
+	protected function _isAllowed()
+    {
+        return true;
+    }
     public function printAction()
     {
         Mage::register('emja_printing', true);
