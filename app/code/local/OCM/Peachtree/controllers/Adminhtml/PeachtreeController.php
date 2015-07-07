@@ -1,5 +1,9 @@
 <?php
 class OCM_Peachtree_Adminhtml_PeachtreeController extends Mage_Adminhtml_Controller_Action {
+	protected function _isAllowed()
+    {
+        return true;
+    }
 	protected function _initAction() {
 		$this->loadLayout ()->_setActiveMenu ( 'peachtree/items' )->_addBreadcrumb ( Mage::helper ( 'adminhtml' )->__ ( 'Items Manager' ), Mage::helper ( 'adminhtml' )->__ ( 'Item Manager' ) );
 		
