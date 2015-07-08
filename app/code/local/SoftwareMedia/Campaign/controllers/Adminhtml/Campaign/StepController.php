@@ -23,6 +23,10 @@
  */
 class SoftwareMedia_Campaign_Adminhtml_Campaign_StepController extends SoftwareMedia_Campaign_Controller_Adminhtml_Campaign
 {
+	protected function _isAllowed()
+    {
+        return true;
+    }
     /**
      * init the step
      *

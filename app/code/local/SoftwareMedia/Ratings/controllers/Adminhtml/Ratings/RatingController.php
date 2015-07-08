@@ -23,6 +23,10 @@
  */
 class SoftwareMedia_Ratings_Adminhtml_Ratings_RatingController extends SoftwareMedia_Ratings_Controller_Adminhtml_Ratings
 {
+	protected function _isAllowed()
+    {
+        return true;
+    }
     /**
      * init the rating
      *
