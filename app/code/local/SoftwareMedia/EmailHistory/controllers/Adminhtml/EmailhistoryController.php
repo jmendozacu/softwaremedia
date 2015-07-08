@@ -1,6 +1,10 @@
 <?php
 class SoftwareMedia_EmailHistory_Adminhtml_EmailhistoryController extends Mage_Adminhtml_Controller_Action
 {
+	protected function _isAllowed()
+    {
+        return true;
+    }
     public function viewAction()
     {
     	$id = $this->getRequest()->getParam('id');
