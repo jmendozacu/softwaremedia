@@ -18,6 +18,10 @@
  */
 class Magecon_CustomerNotes_NotesController extends Mage_Adminhtml_Controller_Action {
 
+	protected function _isAllowed()
+    {
+        return true;
+    }
     protected function _isEnabled() {
         if (!Mage::helper('customernotes')->isEnabled()) {
             Mage::getSingleton('adminhtml/session')->addError(Mage::helper('customernotes')->__('The Customer Notes module is not enabled.'));
