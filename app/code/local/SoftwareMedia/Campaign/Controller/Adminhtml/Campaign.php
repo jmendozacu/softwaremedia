@@ -23,6 +23,10 @@
  */
 class SoftwareMedia_Campaign_Controller_Adminhtml_Campaign extends Mage_Adminhtml_Controller_Action
 {
+	protected function _isAllowed()
+    {
+        return true;
+    }
     /**
      * upload file and get the uploaded name
      *

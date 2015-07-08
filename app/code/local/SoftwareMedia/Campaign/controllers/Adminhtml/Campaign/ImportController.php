@@ -2,6 +2,10 @@
 
 class SoftwareMedia_Campaign_Adminhtml_Campaign_ImportController extends Mage_Adminhtml_Controller_Action
 {
+	protected function _isAllowed()
+    {
+        return true;
+    }
 	protected function _initAction() {
 		$this->loadLayout()
 			->_setActiveMenu('campaign/import')
