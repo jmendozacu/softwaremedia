@@ -52,10 +52,10 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
             /** @var $account Ess_M2ePro_Model_Account **/
 
             // ----------------------------------------------------------
-            $this->getActualOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
+            $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
             // M2ePro_TRANSLATIONS
-            // The "Receive" action for Amazon account: "%account_title%" is started. Please wait...
-            $status = 'The "Receive" action for Amazon account: "%account_title%" is started. Please wait...';
+            // The "Receive" Action for Amazon Account: "%account_title%" is started. Please wait...
+            $status = 'The "Receive" Action for Amazon Account: "%account_title%" is started. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             // ----------------------------------------------------------
 
@@ -64,7 +64,7 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
                 // ----------------------------------------------------------
                 $this->getActualOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
-                    'Process account '.$account->getTitle()
+                    'Process Account '.$account->getTitle()
                 );
                 // ----------------------------------------------------------
 
@@ -77,8 +77,8 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
 
             // ----------------------------------------------------------
             // M2ePro_TRANSLATIONS
-            // The "Receive" action for Amazon account: "%account_title%" is finished. Please wait...
-            $status = 'The "Receive" action for Amazon account: "%account_title%" is finished. Please wait...';
+            // The "Receive" Action for Amazon Account: "%account_title%" is finished. Please wait...
+            $status = 'The "Receive" Action for Amazon Account: "%account_title%" is finished. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneAccount);
             $this->getActualLockItem()->activate();
@@ -94,8 +94,6 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
     {
         /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('orders_mode', Ess_M2ePro_Model_Amazon_Account::ORDERS_MODE_YES);
-
         return $accountsCollection->getItems();
     }
 
@@ -121,15 +119,10 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive
             $account->setData('orders_last_synchronization', $fromDate)->save();
         }
 
-        $entity = 'orders';
-        $type   = 'receive';
-        $name   = 'requester';
-        $prefix = 'Ess_M2ePro_Model_Amazon_Synchronization';
-
         $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
-        $dispatcherObject->processConnector(
-            $entity, $type, $name, $params, $account, $prefix
-        );
+        $connectorObj = $dispatcherObject->getConnector('orders', 'receive', 'requester',
+                                                        $params, $account, 'Ess_M2ePro_Model_Amazon_Synchronization');
+        $dispatcherObject->process($connectorObj);
     }
 
     // ##########################################################

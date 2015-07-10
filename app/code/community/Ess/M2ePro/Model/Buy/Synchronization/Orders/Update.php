@@ -71,10 +71,10 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders_Update
             /** @var Ess_M2ePro_Model_Account $account */
 
             // ----------------------------------------------------------
-            $this->getActualOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
+            $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
             // M2ePro_TRANSLATIONS
-            // The "Update" action for Rakuten.com account: "%account_title%" is started. Please wait...
-            $status = 'The "Update" action for Rakuten.com account: "%account_title%" is started. Please wait...';
+            // The "Update" Action for Rakuten.com Account: "%account_title%" is started. Please wait...
+            $status = 'The "Update" Action for Rakuten.com Account: "%account_title%" is started. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             // ----------------------------------------------------------
 
@@ -83,7 +83,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders_Update
                 // ----------------------------------------------------------
                 $this->getActualOperationHistory()->addTimePoint(
                     __METHOD__.'process'.$account->getId(),
-                    'Process account '.$account->getTitle()
+                    'Process Account '.$account->getTitle()
                 );
                 // ----------------------------------------------------------
 
@@ -96,8 +96,8 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders_Update
 
             // ----------------------------------------------------------
             // M2ePro_TRANSLATIONS
-            // The "Update" action for Rakuten.com account: "%account_title%" is finished. Please wait...
-            $status = 'The "Update" action for Rakuten.com account: "%account_title%" is finished. Please wait...';
+            // The "Update" Action for Rakuten.com Account: "%account_title%" is finished. Please wait...
+            $status = 'The "Update" Action for Rakuten.com Account: "%account_title%" is finished. Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep);
             $this->getActualLockItem()->activate();
@@ -113,8 +113,6 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders_Update
     {
         /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Buy')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('orders_mode', Ess_M2ePro_Model_Buy_Account::ORDERS_MODE_YES);
-
         return $accountsCollection->getItems();
     }
 
@@ -164,9 +162,9 @@ final class Ess_M2ePro_Model_Buy_Synchronization_Orders_Update
 
         /** @var $dispatcherObject Ess_M2ePro_Model_Connector_Buy_Dispatcher */
         $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
-        $dispatcherObject->processConnector(
-            'orders', 'update', 'shipping', array('items' => $items), $account
-        );
+        $connectorObj = $dispatcherObject->getConnector('orders', 'update', 'shippingRequester',
+                                                        array('items' => $items), $account);
+        $dispatcherObject->process($connectorObj);
     }
 
     // ##########################################################

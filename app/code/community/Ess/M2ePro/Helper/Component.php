@@ -13,16 +13,14 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         return array(
             Ess_M2ePro_Helper_Component_Ebay::NICK,
             Ess_M2ePro_Helper_Component_Amazon::NICK,
-            Ess_M2ePro_Helper_Component_Buy::NICK,
-            Ess_M2ePro_Helper_Component_Play::NICK
+            Ess_M2ePro_Helper_Component_Buy::NICK
         );
     }
 
     public function getRakutenComponents()
     {
         return array(
-            Ess_M2ePro_Helper_Component_Buy::NICK,
-            Ess_M2ePro_Helper_Component_Play::NICK
+            Ess_M2ePro_Helper_Component_Buy::NICK
         );
     }
 
@@ -30,21 +28,17 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
     public function getComponentsTitles()
     {
-        $helper = Mage::helper('M2ePro');
         return array(
-            Ess_M2ePro_Helper_Component_Ebay::NICK   => $helper->__(Ess_M2ePro_Helper_Component_Ebay::TITLE),
-            Ess_M2ePro_Helper_Component_Amazon::NICK => $helper->__(Ess_M2ePro_Helper_Component_Amazon::TITLE),
-            Ess_M2ePro_Helper_Component_Buy::NICK    => $helper->__(Ess_M2ePro_Helper_Component_Buy::TITLE),
-            Ess_M2ePro_Helper_Component_Play::NICK   => $helper->__(Ess_M2ePro_Helper_Component_Play::TITLE)
+            Ess_M2ePro_Helper_Component_Ebay::NICK   => Mage::helper('M2ePro/Component_Ebay')->getTitle(),
+            Ess_M2ePro_Helper_Component_Amazon::NICK => Mage::helper('M2ePro/Component_Amazon')->getTitle(),
+            Ess_M2ePro_Helper_Component_Buy::NICK    => Mage::helper('M2ePro/Component_Buy')->getTitle()
         );
     }
 
     public function getRakutenComponentsTitles()
     {
-        $helper = Mage::helper('M2ePro');
         return array(
-            Ess_M2ePro_Helper_Component_Buy::NICK  => $helper->__(Ess_M2ePro_Helper_Component_Buy::TITLE),
-            Ess_M2ePro_Helper_Component_Play::NICK => $helper->__(Ess_M2ePro_Helper_Component_Play::TITLE)
+            Ess_M2ePro_Helper_Component_Buy::NICK  => Mage::helper('M2ePro/Component_Buy')->getTitle()
         );
     }
 
@@ -63,9 +57,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
         }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
-        }
 
         return $components;
     }
@@ -76,9 +67,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
         }
 
         return $components;
@@ -91,24 +79,13 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Ebay')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Ebay::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Amazon::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -119,14 +96,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -147,9 +117,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
         }
-        if (!Mage::helper('M2ePro/Component_Play')->isEnabled()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
-        }
 
         return $components;
     }
@@ -160,9 +127,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isEnabled()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
         }
 
         return $components;
@@ -175,24 +139,13 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Ebay')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Ebay::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Amazon')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Amazon::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -203,14 +156,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Buy')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isEnabled()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -231,9 +177,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
         }
-        if (Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
-        }
 
         return $components;
     }
@@ -244,9 +187,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
         }
 
         return $components;
@@ -259,24 +199,13 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Ebay::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Amazon::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -287,14 +216,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -315,9 +237,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
         }
-        if (!Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
-        }
 
         return $components;
     }
@@ -328,9 +247,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
         }
 
         return $components;
@@ -343,24 +259,13 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Ebay')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Ebay::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Amazon')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Amazon::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -371,14 +276,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Buy')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isAllowed()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -399,9 +297,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
         }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
-        }
 
         return $components;
     }
@@ -412,9 +307,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
         }
 
         return $components;
@@ -427,24 +319,13 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Ebay::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Amazon::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -455,14 +336,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -483,9 +357,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
         }
-        if (!Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
-        }
 
         return $components;
     }
@@ -496,9 +367,6 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
             $components[] = Ess_M2ePro_Helper_Component_Buy::NICK;
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[] = Ess_M2ePro_Helper_Component_Play::NICK;
         }
 
         return $components;
@@ -511,24 +379,13 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Ebay')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Ebay::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Ebay::NICK] = Mage::helper('M2ePro/Component_Ebay')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Amazon')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Amazon::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Amazon::NICK] = Mage::helper('M2ePro/Component_Amazon')->getTitle();
         }
         if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -539,14 +396,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $components = array();
 
         if (!Mage::helper('M2ePro/Component_Buy')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Buy::TITLE
-            );
-        }
-        if (!Mage::helper('M2ePro/Component_Play')->isActive()) {
-            $components[Ess_M2ePro_Helper_Component_Play::NICK] = Mage::helper('M2ePro')->__(
-                Ess_M2ePro_Helper_Component_Play::TITLE
-            );
+            $components[Ess_M2ePro_Helper_Component_Buy::NICK] = Mage::helper('M2ePro/Component_Buy')->getTitle();
         }
 
         return $components;
@@ -584,20 +434,17 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
 
         switch ($component) {
             case Ess_M2ePro_Helper_Component_Ebay::NICK:
-                $title = Ess_M2ePro_Helper_Component_Ebay::TITLE;
+                $title = Mage::helper('M2ePro/Component_Ebay')->getTitle();
                 break;
             case Ess_M2ePro_Helper_Component_Amazon::NICK:
-                $title = Ess_M2ePro_Helper_Component_Amazon::TITLE;
+                $title = Mage::helper('M2ePro/Component_Amazon')->getTitle();
                 break;
             case Ess_M2ePro_Helper_Component_Buy::NICK:
-                $title = Ess_M2ePro_Helper_Component_Buy::TITLE;
-                break;
-            case Ess_M2ePro_Helper_Component_Play::NICK:
-                $title = Ess_M2ePro_Helper_Component_Play::TITLE;
+                $title = Mage::helper('M2ePro/Component_Buy')->getTitle();
                 break;
         }
 
-        return Mage::helper('M2ePro')->__($title);
+        return $title;
     }
 
     // ########################################
@@ -688,7 +535,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         }
 
         $cacheKey = strtoupper('component_'.$mode.'_'.$modelName.'_data_'.$field.'_'.$value);
-        $cacheData = Mage::helper('M2ePro/Data_Cache')->getValue($cacheKey);
+        $cacheData = Mage::helper('M2ePro/Data_Cache_Permanent')->getValue($cacheKey);
 
         if ($cacheData !== false) {
             return $cacheData;
@@ -703,7 +550,7 @@ class Ess_M2ePro_Helper_Component extends Mage_Core_Helper_Abstract
         $cacheData = $this->getComponentObject($mode,$modelName,$value,$field);
 
         if (!empty($cacheData)) {
-            Mage::helper('M2ePro/Data_Cache')->setValue($cacheKey,$cacheData,$tags,60*60*24);
+            Mage::helper('M2ePro/Data_Cache_Permanent')->setValue($cacheKey,$cacheData,$tags,60*60*24);
         }
 
         return $cacheData;

@@ -22,7 +22,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization
 
         // Set header text
         //------------------------------
-        $this->_headerText = Mage::helper('M2ePro')->__('Synchronization Templates');
+        $this->_headerText = Mage::helper('M2ePro')->__('Synchronization Policies');
         //------------------------------
 
         // Set buttons actions
@@ -55,7 +55,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization
 
         //------------------------------
         $this->_addButton('add', array(
-            'label'     => Mage::helper('M2ePro')->__('Add Synchronization Template'),
+            'label'     => Mage::helper('M2ePro')->__('Add Synchronization Policy'),
             'onclick'   => $this->getAddButtonOnClickAction(),
             'class'     => 'add add-button-drop-down'
         ));
@@ -74,9 +74,12 @@ class Ess_M2ePro_Block_Adminhtml_Common_Template_Synchronization
         return $this->getUrl('*/adminhtml_common_buy_template_synchronization/new');
     }
 
-    protected function getPlayNewUrl()
+    // ########################################
+
+    public function getGridHtml()
     {
-        return $this->getUrl('*/adminhtml_common_play_template_synchronization/new');
+        $helpBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_common_template_synchronization_help');
+        return $helpBlock->toHtml() . parent::getGridHtml();
     }
 
     // ########################################

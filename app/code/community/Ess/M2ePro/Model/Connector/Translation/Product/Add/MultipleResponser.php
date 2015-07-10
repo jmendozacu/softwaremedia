@@ -18,9 +18,9 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
 
     // ########################################
 
-    public function __construct(Ess_M2ePro_Model_Processing_Request $processingRequest)
+    public function __construct(array $params = array())
     {
-        parent::__construct($processingRequest);
+        parent::__construct($params);
 
         foreach ($this->params['products'] as $listingProductId => $listingProductData) {
             try {
@@ -30,46 +30,53 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         }
     }
 
-    protected function unsetLocks($fail = false, $message = NULL)
+    public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
     {
-        $tempListings = array();
+        parent::unsetProcessingLocks($processingRequest);
+
+        $alreadyUnlockedListings = array();
         foreach ($this->listingsProducts as $listingProduct) {
 
             /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
 
-            $listingProduct->deleteObjectLocks(NULL,$this->hash);
-            $listingProduct->deleteObjectLocks('in_action',$this->hash);
-            $listingProduct->deleteObjectLocks('translation_action',$this->hash);
+            $listingProduct->deleteObjectLocks(NULL, $processingRequest->getHash());
+            $listingProduct->deleteObjectLocks('in_action', $processingRequest->getHash());
+            $listingProduct->deleteObjectLocks('translation_action', $processingRequest->getHash());
 
-            if (isset($tempListings[$listingProduct->getListingId()])) {
+            if (isset($alreadyUnlockedListings[$listingProduct->getListingId()])) {
                 continue;
             }
 
-            $listingProduct->getListing()->deleteObjectLocks(NULL,$this->hash);
-            $listingProduct->getListing()->deleteObjectLocks('products_in_action',$this->hash);
-            $listingProduct->getListing()->deleteObjectLocks('products_translation_action',$this->hash);
+            $listingProduct->getListing()->deleteObjectLocks(NULL, $processingRequest->getHash());
 
-            $tempListings[$listingProduct->getListingId()] = true;
+            $alreadyUnlockedListings[$listingProduct->getListingId()] = true;
         }
+    }
 
-        $this->getAccount()->deleteObjectLocks('products_in_action',$this->hash);
-        $this->getAccount()->deleteObjectLocks('products_translation_action',$this->hash);
+    public function eventFailedExecuting($message)
+    {
+        parent::eventFailedExecuting($message);
 
-        $this->getMarketplace()->deleteObjectLocks('products_in_action',$this->hash);
-        $this->getMarketplace()->deleteObjectLocks('products_translation_action',$this->hash);
+        $alreadyLoggedListings = array();
+        foreach ($this->listingsProducts as $listingProduct) {
 
-        if ($fail) {
+            $listingProduct->getChildObject()->setData(
+                'translation_status', Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_PENDING
+            )->save();
 
-            foreach ($this->listingsProducts as $listingProduct) {
-
-                $listingProduct->getChildObject()->setData(
-                    'translation_status', Ess_M2ePro_Model_Ebay_Listing_Product::TRANSLATION_STATUS_PENDING
-                )->save();
-
-                $this->addListingsProductsLogsMessage($listingProduct,$message,
-                                                      Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                                                      Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH);
+            /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
+            if (isset($alreadyLoggedListings[$listingProduct->getListingId()])) {
+                continue;
             }
+
+            $this->addListingsProductsLogsMessage(
+                $listingProduct,
+                $message,
+                Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+
+            $alreadyLoggedListings[$listingProduct->getListingId()] = true;
         }
     }
 
@@ -89,6 +96,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
             $initiator = Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION;
         }
 
+        /** @var  $logModel Ess_M2ePro_Model_Listing_Log */
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
 
@@ -170,8 +178,8 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
             }
 
             // M2ePro_TRANSLATIONS
-            // 'Product has been successfully translated.',
-            $this->addListingsProductsLogsMessage($listingProduct, 'Product has been successfully translated.',
+            // 'Product has been successfully Translated.',
+            $this->addListingsProductsLogsMessage($listingProduct, 'Product has been successfully Translated.',
                 Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
                 Ess_M2ePro_Model_Log_Abstract::PRIORITY_MEDIUM);
         }
@@ -189,21 +197,6 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
             trim($descriptionTemplate->getData('title_template'))       != '#ebay_translated_title#'    ||
             trim($descriptionTemplate->getData('subtitle_template'))    != '#ebay_translated_subtitle#' ||
             trim($descriptionTemplate->getData('description_template')) != '#ebay_translated_description#')) {
-
-            $this->checkAndCreateMagentoAttributes(array(
-                'ebay_translated_title'    => 'Ebay Translated Title',
-                'ebay_translated_subtitle' => 'Ebay Translated Subtitle',
-            ), 'text');
-
-            $this->checkAndCreateMagentoAttributes(array(
-                'ebay_translated_description' => 'Ebay Translated Description',
-            ), 'textarea');
-
-            $this->checkAndCreateMagentoProductAttributes($listingProduct->getMagentoProduct(), array(
-                'ebay_translated_title',
-                'ebay_translated_subtitle',
-                'ebay_translated_description'
-            ));
 
             $data = $descriptionTemplate->getDataSnapshot();
             unset($data['id'], $data['update_date'], $data['create_date']);
@@ -229,6 +222,21 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
             $productData['template_description_custom_id'] = $this->descriptionTemplatesIds[$oldDescriptionTemplateId];
             $productData['template_description_mode']      = Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM;
         }
+
+        $this->checkAndCreateMagentoAttributes(array(
+            'ebay_translated_title'    => 'Ebay Translated Title',
+            'ebay_translated_subtitle' => 'Ebay Translated Subtitle',
+        ), 'text');
+
+        $this->checkAndCreateMagentoAttributes(array(
+            'ebay_translated_description' => 'Ebay Translated Description',
+        ), 'textarea');
+
+        $this->checkAndCreateMagentoProductAttributes($listingProduct->getMagentoProduct(), array(
+            'ebay_translated_title',
+            'ebay_translated_subtitle',
+            'ebay_translated_description'
+        ));
 
         $listingProduct->getMagentoProduct()
                        ->setAttributeValue('ebay_translated_title',       $response['title'])
@@ -354,19 +362,26 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
 
     // ########################################
 
-    private function checkAndCreateMagentoAttributes($attributes, $frontendInput = 'text')
+    private function checkAndCreateMagentoAttributes(array $attributes, $frontendInput = 'text')
     {
+        /** @var $helpAttribute Ess_M2ePro_Helper_Magento_Attribute */
+        $helpAttribute = Mage::helper('M2ePro/Magento_Attribute');
+
         foreach ($attributes as $code => $label) {
-            if (!Mage::helper('M2ePro/Magento_Attribute')->getByCode($code)) {
-                Mage::helper('M2ePro/Magento_Attribute')->create($code, array($label), $frontendInput, 0);
+            if (!$helpAttribute->getByCode($code)) {
+                $helpAttribute->create($code, array($label), $frontendInput, 0);
             }
         }
+
         return true;
     }
 
-    private function checkAndCreateMagentoProductAttributes($magentoProduct, $attributes)
+    private function checkAndCreateMagentoProductAttributes($magentoProduct, array $attributes)
     {
-        $helpAttribute    = Mage::helper('M2ePro/Magento_Attribute');
+        /** @var $helpAttribute Ess_M2ePro_Helper_Magento_Attribute */
+        $helpAttribute = Mage::helper('M2ePro/Magento_Attribute');
+
+        /** @var $helpAttributeSet Ess_M2ePro_Helper_Magento_AttributeSet */
         $helpAttributeSet = Mage::helper('M2ePro/Magento_AttributeSet');
 
         $attributeSetId = $magentoProduct->getProduct()->getAttributeSetId();
@@ -390,6 +405,7 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
 
     private function getAttributeGroupId($attributeSetId, $groupName = 'Ebay')
     {
+        /** @var $attributeGroupModel Mage_Eav_Model_Entity_Attribute_Group */
         $attributeGroupModel = Mage::getModel('eav/entity_attribute_group')
             ->setAttributeGroupName($groupName)
             ->setAttributeSetId($attributeSetId);
@@ -419,8 +435,6 @@ class Ess_M2ePro_Model_Connector_Translation_Product_Add_MultipleResponser
         foreach ($responseSpecifics as $responseSpecific) {
             $data[] = array(
                 'mode'                  => Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_CUSTOM_ITEM_SPECIFICS,
-                'mode_relation_id'      => 0,
-                'attribute_id'          => $responseSpecific['name'],
                 'attribute_title'       => $responseSpecific['name'],
                 'value_mode'            => Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_VALUE,
                 'value_ebay_recommended'=> json_encode(array()),

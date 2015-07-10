@@ -1,5 +1,5 @@
 <div id="block_notice_ebay_listing_other_synchronization_revise" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('Revise Rules'); ?>">
-    <?php echo Mage::helper('M2ePro')->__('Specify the product details you want to keep up to date on eBay.'); ?>
+    <?php echo Mage::helper('M2ePro')->__('Specify the Product details you want to keep up to date on eBay.'); ?>
 </div>
 
 <?php
@@ -16,6 +16,14 @@
     $formData = array_merge($defaults, $formData);
 ?>
 
+<script type="text/javascript">
+
+    Event.observe(window, 'load', function() {
+        $('ebayListingOtherSynchronizationEditTabs_revise')
+            .observe('click', EbayListingOtherSynchronizationHandlerObj.check_synchronization_mode);
+    });
+</script>
+
 <div class="entry-edit" id="magento_block_ebay_listing_other_synchronization_revise_products">
 
     <div class="entry-edit-head">
@@ -29,7 +37,7 @@
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Item Quantity'); ?>: <span class="required">*</span></label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Item Quantity'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_qty" name="revise_update_qty" class="required-entry">
@@ -37,14 +45,14 @@
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_QTY_YES; ?>" <?php if ($formData['revise_update_qty'] == Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_QTY_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay listing quantity when it changes in Magento.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay Listing Quantity when it changes in Magento.'); ?></span>
                         </p>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Item Price'); ?>: <span class="required">*</span></label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Item Price'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_price" name="revise_update_price" class="required-entry">
@@ -52,14 +60,14 @@
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_PRICE_YES; ?>" <?php if ($formData['revise_update_price'] == Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_PRICE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay listing price when it changes in Magento.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay Listing Price when it changes in Magento.'); ?></span>
                         </p>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Item Title'); ?>: <span class="required">*</span></label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Item Title'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_title" name="revise_update_title" class="required-entry">
@@ -67,14 +75,14 @@
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_TITLE_YES; ?>" <?php if ($formData['revise_update_title'] == Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_TITLE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay listing title when it changes in Magento.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay Listing Title when it changes in Magento.'); ?></span>
                         </p>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Item Subtitle'); ?>: <span class="required">*</span></label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Item Subtitle'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_sub_title" name="revise_update_sub_title" class="required-entry">
@@ -82,14 +90,14 @@
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_SUB_TITLE_YES; ?>" <?php if ($formData['revise_update_sub_title'] == Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_SUB_TITLE_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay listing subtitle when it changes in Magento.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay Listing Subtitle when it changes in Magento.'); ?></span>
                         </p>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Item Description'); ?>: <span class="required">*</span></label>
+                        <label><?php echo Mage::helper('M2ePro')->__('Item Description'); ?>: </label>
                     </td>
                     <td class="value" style="width: auto;">
                         <select id="revise_update_description" name="revise_update_description" class="required-entry">
@@ -97,7 +105,7 @@
                             <option value="<?php echo Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_DESCRIPTION_YES; ?>" <?php if ($formData['revise_update_description'] == Ess_M2ePro_Model_Ebay_Listing_Other_Synchronization::REVISE_UPDATE_DESCRIPTION_YES): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Yes'); ?></option>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay listing description when it changes in Magento.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('Updates eBay Listing Description when it changes in Magento.'); ?></span>
                         </p>
                     </td>
                 </tr>

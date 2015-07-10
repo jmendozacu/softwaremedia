@@ -55,7 +55,11 @@
         <li>
             <label>
                 <span class="label">
-                    <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('eBay User ID')); ?>:&nbsp;
+                    <?php if($this->getListing()->isComponentModeEbay()): ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('eBay User ID')); ?>:&nbsp;
+                    <?php else: ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Account')); ?>:&nbsp;
+                    <?php endif; ?>
                 </span>
                 <span class="value">
                     <?php echo Mage::helper('M2ePro')->escapeHtml($this->getAccountTitle()); ?>
@@ -65,7 +69,11 @@
         <li>
             <label>
                 <span class="label">
-                    <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('eBay Site')); ?>:&nbsp;
+                    <?php if($this->getListing()->isComponentModeEbay()): ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__(' eBay Site')); ?>:&nbsp;
+                    <?php else: ?>
+                        <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Marketplace')); ?>:&nbsp;
+                    <?php endif; ?>
                 </span>
                 <span class="value">
                     <?php echo Mage::helper('M2ePro')->escapeHtml($this->getMarketplaceTitle()); ?>
@@ -77,7 +85,7 @@
                 <span class="label">
                     <?php echo Mage::helper('M2ePro')->escapeHtml(Mage::helper('M2ePro')->__('Magento Store View')); ?>:&nbsp;
                 </span>
-                <span class="value" title="<?php echo Mage::helper('M2ePro')->escapeHtml($this->getStoreViewBreadcrumb(false)); ?>">
+                <span class="value">
                     <?php echo Mage::helper('M2ePro')->escapeHtml($this->getStoreViewBreadcrumb()); ?>
                 </span>
             </label>

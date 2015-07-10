@@ -278,10 +278,11 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveDuplicates
                 foreach ($itemsParts as $itemsPart) {
                     try {
 
-                        Mage::getModel('M2ePro/Connector_Ebay_Dispatcher')
-                            ->processVirtual('item','update','ends',
-                                             array('items'=>$itemsPart),NULL,
-                                             $marketplaceId,$accountId,NULL);
+                        $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
+                        $connectorObj = $dispatcherObj->getVirtualConnector('item','update','ends',
+                                                                            array('items' => $itemsPart),NULL,
+                                                                            $marketplaceId,$accountId,NULL);
+                        $dispatcherObj->process($connectorObj);
 
                     } catch (Exception $e) {}
                 }
@@ -321,29 +322,27 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveDuplicates
 
     private function getEbayItemInfo($itemId, $accountId)
     {
-        $responseData = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher')
-                                    ->processVirtual('item','get','info',
-                                                     array('item_id'=>$itemId),NULL,
-                                                     NULL,$accountId,NULL);
+        $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
+        $connectorObj = $dispatcherObj->getVirtualConnector('item','get','info',
+                                                            array('item_id' => $itemId),NULL,
+                                                            NULL,$accountId,NULL);
 
+        $responseData = $dispatcherObj->process($connectorObj);
         return isset($responseData['result']) ? $responseData['result'] : array();
     }
 
     private function getEbayItemsByStartTimeInterval($timeFrom, $timeTo, $accountId)
     {
-        if (is_object($timeFrom)) {
-            $timeFrom = $timeFrom->format('Y-m-d H:i:s');
-        }
+        is_object($timeFrom) && $timeFrom = $timeFrom->format('Y-m-d H:i:s');
+        is_object($timeTo)   && $timeTo = $timeTo->format('Y-m-d H:i:s');
 
-        if (is_object($timeTo)) {
-            $timeTo = $timeTo->format('Y-m-d H:i:s');
-        }
+        $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
+        $connectorObj = $dispatcherObj->getVirtualConnector('item','get','all',
+                                                            array('since_time'=>$timeFrom,
+                                                                  'to_time'=>$timeTo),NULL,
+                                                            NULL,$accountId,NULL);
 
-        $responseData = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher')
-                    ->processVirtual('item','get','all',
-                                     array('since_time'=>$timeFrom, 'to_time'=>$timeTo),NULL,
-                                     NULL,$accountId,NULL);
-
+        $responseData = $dispatcherObj->process($connectorObj);
         return isset($responseData['items']) ? $responseData['items'] : array();
     }
 
@@ -396,7 +395,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveDuplicates
         $logModel = Mage::getModel('M2ePro/Listing_Log');
         $logModel->setComponentMode(Ess_M2ePro_Helper_Component_Ebay::NICK);
 
-        $logActionId = $logModel->getNextActionId();
+        $logsActionId = $logModel->getNextActionId();
 
         $statusLogMessage = $this->getStatusLogMessage($status);
 
@@ -405,7 +404,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveDuplicates
             $listingProduct->getData('product_id'),
             $listingProduct->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-            $logActionId,
+            $logsActionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_STATUS_ON_CHANNEL,
             $statusLogMessage,
             Ess_M2ePro_Model_Log_Abstract::TYPE_SUCCESS,
@@ -417,8 +416,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveDuplicates
         }
 
         // M2ePro_TRANSLATIONS
-        // Duplicated item %item_id% was found and stopped on eBay.;
-        $textToTranslate = 'Duplicated item %item_id% was found and stopped on eBay.';
+        // Duplicated Item %item_id% was found and Stopped on eBay.;
+        $textToTranslate = 'Duplicated Item %item_id% was found and Stopped on eBay.';
         $duplicateDeletedMessage = Mage::helper('M2ePro')->__($textToTranslate, $duplicateItemId);
 
         $logModel->addProductMessage(
@@ -426,7 +425,7 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveDuplicates
             $listingProduct->getData('product_id'),
             $listingProduct->getId(),
             Ess_M2ePro_Helper_Data::INITIATOR_EXTENSION,
-            $logActionId,
+            $logsActionId,
             Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_STATUS_ON_CHANNEL,
             $duplicateDeletedMessage,
             Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING,
@@ -468,9 +467,9 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Defaults_RemoveDuplicates
         }
 
         // M2ePro_TRANSLATIONS
-        // Duplicated item %item_id% was found and stopped on eBay.
+        // Duplicated Item %item_id% was found and Stopped on eBay.
 
-        $textToTranslate = 'Duplicated item %item_id% was found and stopped on eBay.';
+        $textToTranslate = 'Duplicated Item %item_id% was found and Stopped on eBay.';
         $duplicateDeletedMessage = Mage::helper('M2ePro')->__($textToTranslate, $duplicateItemId);
 
         $logModel->addProductMessage(

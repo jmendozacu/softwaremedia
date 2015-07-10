@@ -12,6 +12,10 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
 
     public function getLabel()
     {
+        if ($this->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK) {
+            return Mage::helper('M2ePro')->__('eBay Site');
+        }
+
         return Mage::helper('M2ePro')->__($this->getComponentLabel('%component% Marketplace'));
     }
 
@@ -20,7 +24,7 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
         $collection = Mage::getModel('M2ePro/Marketplace')->getCollection()
             ->addFieldToFilter('status', Ess_M2ePro_Model_Marketplace::STATUS_ENABLE)
             ->setOrder('component_mode', 'ASC')
-            ->setOrder('title', 'ASC');
+            ->setOrder('sorder', 'ASC');
 
         if (!is_null($this->componentMode)) {
             $collection->addFieldToFilter('component_mode', $this->componentMode);
@@ -58,6 +62,10 @@ class Ess_M2ePro_Block_Adminhtml_Marketplace_Switcher extends Ess_M2ePro_Block_A
 
     public function getDefaultOptionName()
     {
+        if ($this->getData('component_mode') == Ess_M2ePro_Helper_Component_Ebay::NICK) {
+            return Mage::helper('M2ePro')->__('All Sites');
+        }
+
         return Mage::helper('M2ePro')->__('All Marketplaces');
     }
 

@@ -4,7 +4,7 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping extends Mage_Adminhtml_Block_Widget_Container
+class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
     public function __construct()
     {
@@ -23,17 +23,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping extends Mage_Adminhtml_Bl
         );
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('mapping_submit_button',$buttonBlock);
-        //------------------------------
-
-        //------------------------------
-        $data = array(
-            'id'      => 'mapping_advancedSearch_button',
-            'label'   => Mage::helper('M2ePro')->__('Advanced Search'),
-            'class'   => 'mapping_advancedSearch_button submit',
-            'onclick' => '$(\'help_grid\').toggle()'
-        );
-        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('mapping_advancedSearch_button',$buttonBlock);
         //------------------------------
 
         //------------------------------

@@ -27,6 +27,32 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 
     // ########################################
 
+    public function getPageNavigationPath($pathNick, $tabName = NULL, $additionalEnd = NULL)
+    {
+        $resultPath = array();
+
+        $rootMenuNode = Mage::getConfig()->getNode('adminhtml/menu/m2epro_ebay');
+        $menuLabel = Mage::helper('M2ePro/View')->getMenuPath($rootMenuNode, $pathNick, $this->getMenuRootNodeLabel());
+
+        if (!$menuLabel) {
+            return '';
+        }
+
+        $resultPath['menu'] = $menuLabel;
+
+        if ($tabName) {
+            $resultPath['tab'] = $tabName . ' ' . Mage::helper('M2ePro')->__('Tab');
+        }
+
+        if ($additionalEnd) {
+            $resultPath['additional'] = $additionalEnd;
+        }
+
+        return join($resultPath, ' > ');
+    }
+
+    // ########################################
+
     public function getWizardInstallationNick()
     {
         return self::WIZARD_INSTALLATION_NICK;

@@ -4,7 +4,8 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific extends Mage_Adminhtml_Block_Widget_Container
+class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific
+    extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
     // ####################################
 
@@ -40,11 +41,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific extends Mag
     }
 
     // ####################################
-
-    public function getHeaderCssClass()
-    {
-        return 'icon-head ' . parent::getHeaderCssClass();
-    }
 
     public function getHeaderWidth()
     {
@@ -98,7 +94,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Same_Specific extends Mag
             );
         } else {
             $attributeLabel = Mage::helper('M2ePro/Magento_Attribute')->getAttributeLabel($categoryValue);
-            $this->_selectedCategoryPath = Mage::helper('M2ePro')->__('Magento Attribute') . ' -> ' . $attributeLabel;
+            $this->_selectedCategoryPath = Mage::helper('M2ePro')->__('Magento Attribute') . ' > ' . $attributeLabel;
         }
         // --------------------------------------
     }

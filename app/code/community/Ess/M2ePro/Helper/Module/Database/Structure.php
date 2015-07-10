@@ -28,6 +28,8 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_cache_config',
             'm2epro_synchronization_config',
 
+            'm2epro_registry',
+
             'm2epro_lock_item',
             'm2epro_locked_object',
             'm2epro_product_change',
@@ -35,8 +37,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_processing_request',
             'm2epro_synchronization_log',
 
-            'm2epro_attribute_set',
-            'm2epro_exceptions_filters',
             'm2epro_stop_queue',
             'm2epro_migration_v6',
             'm2epro_wizard',
@@ -44,11 +44,13 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_account',
             'm2epro_marketplace',
 
+            'm2epro_template_description',
             'm2epro_template_selling_format',
             'm2epro_template_synchronization',
 
             'm2epro_listing',
-            'm2epro_listing_category',
+            'm2epro_listing_auto_category',
+            'm2epro_listing_auto_category_group',
             'm2epro_listing_log',
             'm2epro_listing_other',
             'm2epro_listing_other_log',
@@ -64,7 +66,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
             'm2epro_ebay_account',
             'm2epro_ebay_account_store_category',
-            'm2epro_ebay_account_policy',
             'm2epro_ebay_dictionary_category',
             'm2epro_ebay_dictionary_marketplace',
             'm2epro_ebay_dictionary_motor_specific',
@@ -75,7 +76,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_ebay_feedback_template',
             'm2epro_ebay_item',
             'm2epro_ebay_listing',
-            'm2epro_ebay_listing_auto_category',
             'm2epro_ebay_listing_auto_category_group',
             'm2epro_ebay_listing_other',
             'm2epro_ebay_listing_product',
@@ -91,7 +91,6 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_ebay_template_other_category',
             'm2epro_ebay_template_payment',
             'm2epro_ebay_template_payment_service',
-            'm2epro_ebay_template_policy',
             'm2epro_ebay_template_return',
             'm2epro_ebay_template_shipping',
             'm2epro_ebay_template_shipping_calculated',
@@ -105,6 +104,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_amazon_dictionary_specific',
             'm2epro_amazon_item',
             'm2epro_amazon_listing',
+            'm2epro_amazon_listing_auto_category_group',
             'm2epro_amazon_listing_other',
             'm2epro_amazon_listing_product',
             'm2epro_amazon_listing_product_variation',
@@ -113,9 +113,9 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_amazon_order',
             'm2epro_amazon_order_item',
             'm2epro_amazon_processed_inventory',
-            'm2epro_amazon_template_new_product',
-            'm2epro_amazon_template_new_product_description',
-            'm2epro_amazon_template_new_product_specific',
+            'm2epro_amazon_template_description',
+            'm2epro_amazon_template_description_definition',
+            'm2epro_amazon_template_description_specific',
             'm2epro_amazon_template_selling_format',
             'm2epro_amazon_template_synchronization',
 
@@ -123,6 +123,7 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_buy_dictionary_category',
             'm2epro_buy_item',
             'm2epro_buy_listing',
+            'm2epro_buy_listing_auto_category_group',
             'm2epro_buy_listing_other',
             'm2epro_buy_listing_product',
             'm2epro_buy_listing_product_variation',
@@ -134,51 +135,8 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
             'm2epro_buy_template_new_product_core',
             'm2epro_buy_template_new_product_attribute',
             'm2epro_buy_template_selling_format',
-            'm2epro_buy_template_synchronization',
-
-            'm2epro_play_account',
-            'm2epro_play_item',
-            'm2epro_play_listing',
-            'm2epro_play_listing_other',
-            'm2epro_play_listing_product',
-            'm2epro_play_listing_product_variation',
-            'm2epro_play_listing_product_variation_option',
-            'm2epro_play_marketplace',
-            'm2epro_play_order',
-            'm2epro_play_order_item',
-            'm2epro_play_processed_inventory',
-            'm2epro_play_template_selling_format',
-            'm2epro_play_template_synchronization'
+            'm2epro_buy_template_synchronization'
         );
-    }
-
-    public function getGroupedMySqlTables()
-    {
-        $mySqlGroups = array(
-            self::TABLE_GROUP_CONFIGS        => '/_config$/',
-            self::TABLE_GROUP_ACCOUNTS       => '/_account/',
-            self::TABLE_GROUP_MARKETPLACES   => '/(?<!dictionary)_marketplace$/',
-            self::TABLE_GROUP_LISTINGS       => '/_listing$/',
-            self::TABLE_GROUP_LISTINGS_OTHER => '/_listing_other$/',
-            self::TABLE_GROUP_LOGS           => '/_log$/',
-            self::TABLE_GROUP_ITEMS          => '/(?<!lock)(?<!order)_item$/',
-            self::TABLE_GROUP_DICTIONARY     => '/_dictionary_/',
-            self::TABLE_GROUP_ORDERS         => '/_order/',
-            self::TABLE_GROUP_TEMPLATES      => '/_template_/',
-            self::TABLE_GROUP_OTHER          => '/.+/'
-        );
-
-        $result = array();
-        foreach ($this->getMySqlTables() as $table) {
-            foreach ($mySqlGroups as $group => $expression) {
-
-                if (preg_match($expression, $table)) {
-                    $result[$table] = $group;
-                    break;
-                }
-            }
-        }
-        return $result;
     }
 
     public function getHorizontalTables()
@@ -212,6 +170,73 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         }
 
         return $result;
+    }
+
+    // --------------------------------------------
+
+    public function getTableComponent($tableName)
+    {
+        foreach (Mage::helper('M2ePro/Component')->getComponents() as $component) {
+
+            if (strpos(strtolower($tableName),strtolower($component)) !== false) {
+                return $component;
+            }
+        }
+
+        return 'general';
+    }
+
+    public function getTableGroup($tableName)
+    {
+        $mySqlGroups = array(
+            self::TABLE_GROUP_CONFIGS        => '/_config$/',
+            self::TABLE_GROUP_ACCOUNTS       => '/_account/',
+            self::TABLE_GROUP_MARKETPLACES   => '/(?<!dictionary)_marketplace$/',
+            self::TABLE_GROUP_LISTINGS       => '/_listing$/',
+            self::TABLE_GROUP_LISTINGS_OTHER => '/_listing_other$/',
+            self::TABLE_GROUP_LOGS           => '/_log$/',
+            self::TABLE_GROUP_ITEMS          => '/(?<!lock)(?<!order)_item$/',
+            self::TABLE_GROUP_DICTIONARY     => '/_dictionary_/',
+            self::TABLE_GROUP_ORDERS         => '/_order/',
+            self::TABLE_GROUP_TEMPLATES      => '/_template_/',
+        );
+
+        foreach ($mySqlGroups as $group => $expression) {
+
+            if (preg_match($expression, $tableName)) {
+                return $group;
+            }
+        }
+
+        return self::TABLE_GROUP_OTHER;
+    }
+
+    // --------------------------------------------
+
+    public function isModuleTable($tableName)
+    {
+        return strpos($tableName, 'm2epro_') !== false;
+    }
+
+    public function isTableHorizontal($tableName)
+    {
+        return $this->isTableHorizontalChild($tableName) || $this->isTableHorizontalParent($tableName);
+    }
+
+    public function isTableHorizontalChild($tableName)
+    {
+        $horizontalTables = $this->getHorizontalTables();
+
+        $modifiedTableName = str_replace(Mage::helper('M2ePro/Component')->getComponents(), '', $tableName);
+        $modifiedTableName = str_replace('__', '_', $modifiedTableName);
+
+        return !array_key_exists($tableName, $horizontalTables) &&
+                array_key_exists($modifiedTableName, $horizontalTables);
+    }
+
+    public function isTableHorizontalParent($tableName)
+    {
+        return array_key_exists($tableName, $this->getHorizontalTables());
     }
 
     // --------------------------------------------
@@ -307,6 +332,8 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
 
     public function getTableInfo($tableName)
     {
+        $tableName = str_replace(Mage::helper('M2ePro/Magento')->getDatabaseTablesPrefix(), '', $tableName);
+
         if (!$this->isTableExists($tableName)) {
             return false;
         }
@@ -338,6 +365,12 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return $result;
     }
 
+    public function getColumnInfo($table, $columnName)
+    {
+        $info = $this->getTableInfo($table);
+        return isset($info[$columnName]) ? $info[$columnName] : null;
+    }
+
     public function getTableModel($tableName)
     {
         $tableModels = Mage::getConfig()->getNode('global/models/M2ePro_mysql4/entities');
@@ -351,12 +384,22 @@ class Ess_M2ePro_Helper_Module_Database_Structure extends Mage_Core_Helper_Abstr
         return null;
     }
 
+    // --------------------------------------------
+
     public function getIdColumn($table)
     {
         $tableModel = $this->getTableModel($table);
         $tableModel = Mage::getModel('M2ePro/'.$tableModel);
 
         return $tableModel->getIdFieldName();
+    }
+
+    public function isIdColumnAutoIncrement($table)
+    {
+        $idColumn = $this->getIdColumn($table);
+        $columnInfo = $this->getColumnInfo($table, $idColumn);
+
+        return isset($columnInfo['extra']) && strpos($columnInfo['extra'], 'increment') !== false;
     }
 
     // --------------------------------------------

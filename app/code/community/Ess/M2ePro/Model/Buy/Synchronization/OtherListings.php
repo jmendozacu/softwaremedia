@@ -7,7 +7,6 @@
 final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings
     extends Ess_M2ePro_Model_Buy_Synchronization_Abstract
 {
-    const INTERVAL_COEFFICIENT_VALUE = 10000;
     const LOCK_ITEM_PREFIX = 'synchronization_buy_other_listings';
 
     //####################################
@@ -53,14 +52,16 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings
             return false;
         }
 
-        $totalProducts = (int)Mage::helper('M2ePro/Component_Buy')->getCollection('Listing_Product')->getSize();
-        $totalProducts += (int)Mage::helper('M2ePro/Component_Buy')->getCollection('Listing_Other')->getSize();
-        $intervalCoefficient = ($totalProducts > 0) ? (int)ceil($totalProducts/self::INTERVAL_COEFFICIENT_VALUE) : 1;
+        if (!in_array(Ess_M2ePro_Model_Synchronization_Task_Abstract::DEFAULTS, $this->getAllowedTasksTypes())) {
+            return parent::intervalIsLocked();
+        }
 
-        $lastTime = strtotime($this->getConfigValue($this->getFullSettingsPath(),'last_time'));
-        $interval = (int)$this->getConfigValue($this->getFullSettingsPath(),'interval') * $intervalCoefficient;
+        $synchronizationStartTime = $this->getParentOperationHistory()->getObject()->getData('start_date');
+        $updateListingsProductsLastTime = $this->getConfigValue(
+            '/buy/defaults/update_listings_products/', 'last_time'
+        );
 
-        return $lastTime + $interval > Mage::helper('M2ePro')->getCurrentGmtDate(true);
+        return strtotime($synchronizationStartTime) > strtotime($updateListingsProductsLastTime);
     }
 
     //####################################
@@ -134,10 +135,10 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings
 
     private function processAccountInventory(Ess_M2ePro_Model_Account $account)
     {
-        $this->getActualOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
+        $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
         // M2ePro_TRANSLATIONS
-        // The "3rd Party Listings" action for Rakuten.com account: "%account_title%" is started. Please wait...
-        $status = 'The "3rd Party Listings" action for Rakuten.com account: "%account_title%" is started.';
+        // The "3rd Party Listings" Action for Rakuten.com Account: "%account_title%" is started. Please wait...
+        $status = 'The "3rd Party Listings" Action for Rakuten.com Account: "%account_title%" is started.';
         $status .= ' Please wait...';
         $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
 
@@ -145,20 +146,21 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings
 
             $this->getActualOperationHistory()->addTimePoint(
                 __METHOD__.'process'.$account->getId(),
-                'Process account '.$account->getTitle()
+                'Process Account '.$account->getTitle()
             );
 
             $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
-            $dispatcherObject->processConnector('synchronization', 'otherListings' ,'requester',
-                                                array(), $account,
-                                                'Ess_M2ePro_Model_Buy');
+            $connectorObj = $dispatcherObject->getConnector('synchronization', 'otherListings' ,'requester',
+                                                            array(), $account, 'Ess_M2ePro_Model_Buy');
+
+            $dispatcherObject->process($connectorObj);
 
             $this->getActualOperationHistory()->saveTimePoint(__METHOD__.'process'.$account->getId());
         }
 
         // M2ePro_TRANSLATIONS
-        // The "3rd Party Listings" action for Rakuten.com account: "%account_title%" is finished. Please wait...
-        $status = 'The "3rd Party Listings" action for Rakuten.com account: "%account_title%" is finished.';
+        // The "3rd Party Listings" Action for Rakuten.com Account: "%account_title%" is finished. Please wait...
+        $status = 'The "3rd Party Listings" Action for Rakuten.com Account: "%account_title%" is finished.';
         $status .= ' Please wait...';
         $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
     }
@@ -166,7 +168,7 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings
     private function processAccountInventoryTitle(Ess_M2ePro_Model_Account $account)
     {
         $this->getActualOperationHistory()->addTimePoint(__METHOD__.'get'.$account->getId(),
-                                                         'Get and process titles for Account '.$account->getTitle());
+                                                         'Get and process Titles for Account '.$account->getTitle());
 
         if (!$this->isPossibleProcessAccountTitles($account)) {
             return;
@@ -211,10 +213,12 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings
             $inputData['necessary_page'] = (int)$settings['next_page'];
         }
 
-        $responseData = Mage::getModel('M2ePro/Connector_Buy_Dispatcher')
-                                    ->processVirtual('inventory','get','pagesTitles',
-                                                     $inputData,NULL,
-                                                     $account->getId());
+        $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
+        $connectorObj = $dispatcherObject->getVirtualConnector('inventory','get','pagesTitles',
+                                                               $inputData,NULL,
+                                                               $account->getId());
+
+        $responseData = $dispatcherObject->process($connectorObj);
 
         $this->updateReceivedTitles($responseData, $account);
         $pagesSettings = $this->calculateNextPagesSettings($responseData, $inputData);
@@ -279,11 +283,12 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings
             $neededItems[] = $tempItem->getData('general_id');
         }
 
-        $responseData = Mage::getModel('M2ePro/Connector_Buy_Dispatcher')
-                                    ->processVirtual('inventory','get','skusTitles',
-                                                     array('items'=>$neededItems),NULL,
-                                                     $account->getId());
+        $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
+        $connectorObj = $dispatcherObject->getVirtualConnector('inventory','get','skusTitles',
+                                                               array('items'=>$neededItems),NULL,
+                                                               $account->getId());
 
+        $responseData = $dispatcherObject->process($connectorObj);
         $this->updateReceivedTitles($responseData, $account);
     }
 

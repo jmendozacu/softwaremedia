@@ -1,6 +1,8 @@
 EbayMotorSpecificHandler = Class.create();
 EbayMotorSpecificHandler.prototype = Object.extend(new CommonHandler(), {
 
+    //----------------------------------
+
     listingId: null,
     specificsGridId: null,
     productsGridId: null,
@@ -37,8 +39,8 @@ EbayMotorSpecificHandler.prototype = Object.extend(new CommonHandler(), {
             grid.massaction = eval(self.specificsGridId + '_massactionJsObject');
         }
 
-        grid.massaction.updateCount = grid.massaction.updateCount.wrap(
-            function(callOriginal) {
+        grid.massaction.updateCount = grid.massaction.updateCount.wrap(function(callOriginal) {
+
                 callOriginal();
 
                 $('attribute_content').value = grid.massaction.getCheckedValues()
@@ -49,9 +51,9 @@ EbayMotorSpecificHandler.prototype = Object.extend(new CommonHandler(), {
             }
         );
 
-        grid.massaction.apply = function () {
+        grid.massaction.apply = function() {
             if (this.getCheckedValues() == '') {
-                alert(M2ePro.translator.translate('Please select items.'));
+                alert(M2ePro.translator.translate('Please select Items.'));
                 return;
             }
 
@@ -80,13 +82,12 @@ EbayMotorSpecificHandler.prototype = Object.extend(new CommonHandler(), {
     {
         var self = this;
 
-        new Ajax.Request( M2ePro.url.get('adminhtml_ebay_listing/motorSpecificGrid') ,
-        {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing/motorSpecificGrid'), {
             method: 'post',
-            asynchronous : false,
-            parameters : {},
-            onSuccess: function (transport)
-            {
+            asynchronous: false,
+            parameters: {},
+            onSuccess: function(transport) {
+
                 var responseText = transport.responseText.replace(/>\s+</g, '><');
                 $('specifics_grid_container').update(responseText);
                 setTimeout(function() {
@@ -113,7 +114,7 @@ EbayMotorSpecificHandler.prototype = Object.extend(new CommonHandler(), {
         MagentoMessageObj.clearAll();
 
         if (self.isEmptySpecificsAttribute) {
-            MagentoMessageObj.addError(M2ePro.translator.translate('Please specify eBay motors compatibility attribute in %s > Configuration > <a target="_blank" href="%s">General</a>'));
+            MagentoMessageObj.addError(M2ePro.translator.translate('Please specify eBay Motors compatibility Attribute in %menu_label% <a target="_blank" href="%url%">General</a>'));
             return;
         }
 
@@ -138,10 +139,9 @@ EbayMotorSpecificHandler.prototype = Object.extend(new CommonHandler(), {
             width: 1000,
             height: 550,
             zIndex: 100,
-            recenterAuto: false,
             hideEffect: Element.hide,
             showEffect: Element.show,
-            closeCallback: function () { self.closeCallback(); return true; }
+            closeCallback: function() { self.closeCallback(); return true; }
         });
 
         $('modal_dialog_message').appendChild($(self.popUpBlockId).show());
@@ -180,18 +180,17 @@ EbayMotorSpecificHandler.prototype = Object.extend(new CommonHandler(), {
         var specificsGrid = eval(self.specificsGridId + 'JsObject');
         var productsGrid = eval(self.productsGridId + 'JsObject');
 
-        new Ajax.Request( M2ePro.url.get('adminhtml_ebay_listing/updateMotorsSpecificsAttributes') ,
-        {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_listing/updateMotorsSpecificsAttributes'), {
             method: 'post',
-            asynchronous : true,
-            parameters : {
+            asynchronous: true,
+            parameters: {
                 listing_id: this.listingId,
                 listing_product_ids: EbayListingSettingsGridHandlerObj.selectedProductsIds.toString(),
                 epids: specificsGrid.massaction.getCheckedValues(),
                 overwrite: overwrite ? 'yes' : 'no'
             },
-            onSuccess: function (transport)
-            {
+            onSuccess: function(transport) {
+
                 specificsGrid.massaction.unselectAll();
                 self.closePopUp();
 

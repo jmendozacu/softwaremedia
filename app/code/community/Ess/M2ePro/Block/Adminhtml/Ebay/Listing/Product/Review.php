@@ -4,7 +4,7 @@
  * @copyright  Copyright (c) 2011 by  ESS-UA.
  */
 
-class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Mage_Adminhtml_Block_Widget_Container
+class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
     // ####################################
 
@@ -23,11 +23,6 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Mage_Adminh
     }
 
     // ####################################
-
-    public function getHeaderCssClass()
-    {
-        return 'icon-head ' . parent::getHeaderCssClass();
-    }
 
     public function getHeaderWidth()
     {
@@ -62,7 +57,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Mage_Adminh
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData( array(
-                'label'   => Mage::helper('M2ePro')->__('Review Your Items'),
+                'label'   => Mage::helper('M2ePro')->__('Review Your Products'),
                 'onclick' => 'setLocation(\''.$url.'\');',
                 'class' => 'save'
             ) );
@@ -77,7 +72,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Product_Review extends Mage_Adminh
         $buttonBlock = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData( array(
-                'label' => Mage::helper('M2ePro')->__('List Your Items Now'),
+                'label' => Mage::helper('M2ePro')->__('List Added Products Now'),
                 'onclick' => 'setLocation(\''.$url.'\');',
                 'class' => 'save'
             ) );

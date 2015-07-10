@@ -103,25 +103,31 @@ class Ess_M2ePro_Model_Ebay_Feedback extends Ess_M2ePro_Model_Component_Abstract
         $this->setData('last_response_attempt_date', Mage::helper('M2ePro')->getCurrentGmtDate())->save();
 
         try {
-            $response = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher')
-                                ->processVirtual('feedback', 'add', 'entity',
-                                                 $paramsConnector, NULL, NULL,
-                                                 $this->getAccount()
-            );
+
+            $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
+            $connectorObj = $dispatcherObj->getVirtualConnector('feedback', 'add', 'entity',
+                                                                $paramsConnector, NULL, NULL,
+                                                                $this->getAccount());
+
+            $response = $dispatcherObj->process($connectorObj);
+
         } catch (Exception $e) {
             Mage::helper('M2ePro/Module_Exception')->process($e);
-            return;
+            return false;
         }
 
         if (!isset($response['feedback_id'])) {
-            return;
+            return false;
         }
 
         $this->setData('seller_feedback_id', $response['feedback_id']);
         $this->setData('seller_feedback_type', $type);
         $this->setData('seller_feedback_text', $text);
+        $this->setData('seller_feedback_date', $response['feedback_date']);
 
         $this->save();
+
+        return true;
     }
 
     /**

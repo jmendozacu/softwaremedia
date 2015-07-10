@@ -22,22 +22,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Log extends Mage_Adminhtml
         $otherListingData = Mage::helper('M2ePro/Data_Global')->getValue('temp_data');
 
         if (isset($otherListingData['id'])) {
-
-            if (!Mage::helper('M2ePro/View_Common_Component')->isSingleActiveComponent()) {
-                $component =  Mage::helper('M2ePro/Component')->getComponentTitle($otherListingData['component_mode']);
-                $headerText = Mage::helper('M2ePro')->__("Log For %component_name% 3rd Party Listing", $component);
-            } else {
-                $headerText = Mage::helper('M2ePro')->__("Log For 3rd Party Listing");
-            }
-
             $tempTitle = Mage::helper('M2ePro/Component_'.ucfirst($otherListingData['component_mode']))
                 ->getObject('Listing_Other',$otherListingData['id'])
                 ->getChildObject()->getTitle();
 
-            $this->_headerText = $headerText;
+            $this->_headerText = Mage::helper('M2ePro')->__("Log For ");
             $this->_headerText .= ' "' . $this->escapeHtml($tempTitle) . '"';
         } else {
-            $this->_headerText = Mage::helper('M2ePro')->__('3rd Party Listings Log');
+            $this->_headerText = '';
         }
         //------------------------------
 
@@ -51,75 +43,18 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Other_Log extends Mage_Adminhtml
         $this->removeButton('edit');
         //------------------------------
 
-        if (!is_null($this->getRequest()->getParam('back'))) {
-            //------------------------------
-            $url = Mage::helper('M2ePro')->getBackUrl('*/adminhtml_common_listing_other/index');
-            $this->_addButton('back', array(
-                'label'     => Mage::helper('M2ePro')->__('Back'),
-                'onclick'   => 'CommonHandlerObj.back_click(\''.$url.'\')',
-                'class'     => 'back'
-            ));
-            //------------------------------
-        }
-
-        //------------------------------
-        $url = $this->getUrl('*/adminhtml_common_listing_other/index');
-        $this->_addButton('goto_listings_other', array(
-            'label'     => Mage::helper('M2ePro')->__('3rd Party Listings'),
-            'onclick'   => 'setLocation(\'' . $url .'\')',
-            'class'     => 'button_link'
-        ));
-        //------------------------------
-
-        //------------------------------
-        $this->_addButton('reset', array(
-            'label'     => Mage::helper('M2ePro')->__('Refresh'),
-            'onclick'   => 'CommonHandlerObj.reset_click()',
-            'class'     => 'reset'
-        ));
-        //------------------------------
-
-        //------------------------------
-        if (isset($otherListingData['id'])) {
-            $url = $this->getUrl('*/*/*');
-            $this->_addButton('show_general_log', array(
+        if ($this->_headerText != '') {
+            $this->addButton('show_general_log', array(
                 'label'     => Mage::helper('M2ePro')->__('Show General Log'),
-                'onclick'   => 'setLocation(\'' . $url .'\')',
-                'class'     => 'show_general_log'
+                'onclick'   => 'setLocation(\'' .$this->getUrl('*/adminhtml_common_log/listingOther', array(
+                        'channel' => $this->getRequest()->getParam('channel',
+                            Mage::helper('M2ePro/View_Common_Component')->getDefaultComponent())
+                    )).'\')',
+                'class'     => 'button_link'
             ));
+        } else {
+            $this->setTemplate('M2ePro/widget/grid/container/only_content.phtml');
         }
-        //------------------------------
-    }
-
-    // ########################################
-
-    public function getGridHtml()
-    {
-        $helpBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_other_log_help');
-        return $helpBlock->toHtml() . parent::getGridHtml();
-    }
-
-    protected function _toHtml()
-    {
-        $translations = json_encode(array(
-            'Description' => Mage::helper('M2ePro')->__('Description')
-        ));
-
-        $javascript = <<<JAVASCIRPT
-
-<script type="text/javascript">
-
-    M2ePro.translator.add({$translations});
-
-    Event.observe(window, 'load', function() {
-        LogHandlerObj = new LogHandler();
-    });
-
-</script>
-
-JAVASCIRPT;
-
-        return $javascript . parent::_toHtml();
     }
 
     // ########################################

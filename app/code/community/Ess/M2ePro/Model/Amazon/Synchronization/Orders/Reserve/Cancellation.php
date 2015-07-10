@@ -51,11 +51,11 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Reserve_Cancellation
             /** @var $account Ess_M2ePro_Model_Account **/
 
             // ----------------------------------------------------------
-            $this->getActualOperationHistory()->addText('Starting account "'.$account->getTitle().'"');
+            $this->getActualOperationHistory()->addText('Starting Account "'.$account->getTitle().'"');
 
             // M2ePro_TRANSLATIONS
-            // The "Reserve Cancellation" action for Amazon account: "%account_title%" is started. Please wait...
-            $status = 'The "Reserve Cancellation" action for Amazon account: "%account_title%" is started.'.
+            // The "Reserve Cancellation" Action for Amazon Account: "%account_title%" is started. Please wait...
+            $status = 'The "Reserve Cancellation" Action for Amazon Account: "%account_title%" is started.'.
                 ' Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             // ----------------------------------------------------------
@@ -64,9 +64,9 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Reserve_Cancellation
 
             // ----------------------------------------------------------
             // M2ePro_TRANSLATIONS
-            // The "Reserve Cancellation" action for Amazon account: "%account_title%" is finished. Please wait...
+            // The "Reserve Cancellation" Action for Amazon Account: "%account_title%" is finished. Please wait...
 
-            $status = 'The "Reserve Cancellation" action for Amazon account: "%account_title%" is finished.'.
+            $status = 'The "Reserve Cancellation" Action for Amazon Account: "%account_title%" is finished.'.
                 ' Please wait...';
             $this->getActualLockItem()->setStatus(Mage::helper('M2ePro')->__($status, $account->getTitle()));
             $this->getActualLockItem()->setPercents($this->getPercentsStart() + $iteration * $percentsForOneStep);
@@ -83,8 +83,6 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Reserve_Cancellation
     {
         /** @var $accountsCollection Mage_Core_Model_Mysql4_Collection_Abstract */
         $accountsCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Account');
-        $accountsCollection->addFieldToFilter('orders_mode', Ess_M2ePro_Model_Amazon_Account::ORDERS_MODE_YES);
-
         return $accountsCollection->getItems();
     }
 
@@ -109,14 +107,12 @@ final class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Reserve_Cancellation
             ->addFieldToFilter('reservation_state', Ess_M2ePro_Model_Order_Reserve::STATE_PLACED);
 
         $reservationDays = (int)$account->getChildObject()->getQtyReservationDays();
-        if ($reservationDays > 0) {
-            $minReservationStartDate = new DateTime(Mage::helper('M2ePro')->getCurrentGmtDate(),
-                                                    new DateTimeZone('UTC'));
-            $minReservationStartDate->modify('- ' . $reservationDays . ' days');
-            $minReservationStartDate = $minReservationStartDate->format('Y-m-d H:i');
 
-            $collection->addFieldToFilter('reservation_start_date', array('lteq' => $minReservationStartDate));
-        }
+        $minReservationStartDate = new DateTime(Mage::helper('M2ePro')->getCurrentGmtDate(), new DateTimeZone('UTC'));
+        $minReservationStartDate->modify('- ' . $reservationDays . ' days');
+        $minReservationStartDate = $minReservationStartDate->format('Y-m-d H:i');
+
+        $collection->addFieldToFilter('reservation_start_date', array('lteq' => $minReservationStartDate));
 
         return $collection->getItems();
     }
