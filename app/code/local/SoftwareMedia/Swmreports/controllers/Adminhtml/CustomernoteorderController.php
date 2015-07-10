@@ -12,7 +12,10 @@
  * @author david
  */
 class SoftwareMedia_Swmreports_Adminhtml_CustomernoteorderController extends Mage_Adminhtml_Controller_Action {
-
+	protected function _isAllowed()
+    {
+        return true;
+    }
 	protected function _initAction() {
 		$this->loadLayout();
 		return $this;
