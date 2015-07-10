@@ -4,7 +4,7 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Mage_Adminhtml_Block_Widget_Container
+class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
     /** @var $magentoProduct Ess_M2ePro_Model_Magento_Product */
     private $magentoProduct = null;
@@ -90,12 +90,12 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Options_Mapping extends Mage
         $this->magentoProduct = $this->getOrderItem()->getMagentoProduct();
 
         $magentoOptions = array();
-        $magentoVariations = $this->magentoProduct->getProductVariationsForOrder();
+        $magentoVariations = $this->magentoProduct->getVariationInstance()->getVariationsTypeRaw();
 
         if ($this->magentoProduct->isGroupedType()) {
 
             $magentoOptionLabel = Mage::helper('M2ePro')
-                ->__(Ess_M2ePro_Model_Magento_Product::GROUPED_PRODUCT_ATTRIBUTE_LABEL);
+                ->__(Ess_M2ePro_Model_Magento_Product_Variation::GROUPED_PRODUCT_ATTRIBUTE_LABEL);
 
             $magentoOption = array(
                 'option_id' => 0,

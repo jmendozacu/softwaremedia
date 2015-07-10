@@ -65,7 +65,7 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Mapping_Grid extends Mage_Ad
         ));
 
         $this->addColumn('title', array(
-            'header'       => Mage::helper('M2ePro')->__('Product Title / SKU'),
+            'header'       => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
             'align'        => 'left',
             'type'         => 'text',
             'width'        => '350px',
@@ -140,10 +140,6 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Mapping_Grid extends Mage_Ad
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        if (strlen($value) > 60) {
-            $value = substr($value, 0, 60) . '...';
-        }
-
         $value = '<div style="margin-left: 3px">'.Mage::helper('M2ePro')->escapeHtml($value);
 
         $sku = $row->getData('sku');
@@ -174,10 +170,11 @@ class Ess_M2ePro_Block_Adminhtml_Order_Item_Product_Mapping_Grid extends Mage_Ad
     public function callbackColumnActions($value, $row, $column, $isExport)
     {
         $productId = (int)$row->getId();
+        $productSku = $row->getSku();
         $label = Mage::helper('M2ePro')->__('Map To This Product');
 
         $js = <<<JS
-$('product_id').setValue('{$productId}'); $('sku').setValue(''); $$('#product_mapping_submit_button')[0].click();
+OrderEditItemHandlerObj.assignProduct('{$productId}', '{$productSku}');
 JS;
 
         $html = <<<HTML

@@ -14,8 +14,46 @@ class Ess_M2ePro_Model_Buy_Synchronization_Orders_Receive_Responser
 
     // ##########################################################
 
-    protected function unsetLocks($fail = false, $message = NULL)
+    protected function processResponseMessages(array $messages = array())
     {
+        parent::processResponseMessages($messages);
+
+        foreach ($this->messages as $message) {
+
+            if (!$this->isMessageError($message) && !$this->isMessageWarning($message)) {
+                continue;
+            }
+
+            $logType = $this->isMessageError($message) ? Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR
+                                                       : Ess_M2ePro_Model_Log_Abstract::TYPE_WARNING;
+
+            $this->getSynchronizationLog()->addMessage(
+                Mage::helper('M2ePro')->__($message[Ess_M2ePro_Model_Connector_Protocol::MESSAGE_TEXT_KEY]),
+                $logType,
+                Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
+            );
+        }
+    }
+
+    protected function isNeedToParseResponseData($responseBody)
+    {
+        if (!parent::isNeedToParseResponseData($responseBody)) {
+            return false;
+        }
+
+        if ($this->hasErrorMessages()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // ########################################
+
+    public function unsetProcessingLocks(Ess_M2ePro_Model_Processing_Request $processingRequest)
+    {
+        parent::unsetProcessingLocks($processingRequest);
+
         /** @var $lockItem Ess_M2ePro_Model_LockItem */
         $lockItem = Mage::getModel('M2ePro/LockItem');
         $lockItemPrefix = Ess_M2ePro_Model_Buy_Synchronization_Orders_Receive::LOCK_ITEM_PREFIX;
@@ -25,43 +63,30 @@ class Ess_M2ePro_Model_Buy_Synchronization_Orders_Receive_Responser
         $lockItem->setMaxInactiveTime(Ess_M2ePro_Model_Processing_Request::MAX_LIFE_TIME_INTERVAL);
         $lockItem->remove();
 
-        // --------------------
-
-        $tempObjects = array(
-            $this->getAccount(),
-            Mage::helper('M2ePro/Component_Buy')->getMarketplace()
+        $this->getAccount()->deleteObjectLocks(NULL, $processingRequest->getHash());
+        $this->getAccount()->deleteObjectLocks('synchronization', $processingRequest->getHash());
+        $this->getAccount()->deleteObjectLocks('synchronization_buy', $processingRequest->getHash());
+        $this->getAccount()->deleteObjectLocks(
+            Ess_M2ePro_Model_Buy_Synchronization_Orders_Receive::LOCK_ITEM_PREFIX, $processingRequest->getHash()
         );
+    }
 
-        $tempLocks = array(
-            NULL,
-            'synchronization', 'synchronization_buy',
-            $lockItemPrefix
+    public function eventFailedExecuting($message)
+    {
+        parent::eventFailedExecuting($message);
+
+        $this->getSynchronizationLog()->addMessage(
+            Mage::helper('M2ePro')->__($message),
+            Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
+            Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH
         );
-
-        /* @var Ess_M2ePro_Model_Abstract $object */
-        foreach ($tempObjects as $object) {
-            foreach ($tempLocks as $lock) {
-                $object->deleteObjectLocks($lock,$this->hash);
-            }
-        }
-
-        $fail && $this->getSynchronizationLog()->addMessage(Mage::helper('M2ePro')->__($message),
-                                                       Ess_M2ePro_Model_Log_Abstract::TYPE_ERROR,
-                                                       Ess_M2ePro_Model_Log_Abstract::PRIORITY_HIGH);
     }
 
     protected function processResponseData($response)
     {
-        $response = parent::processResponseData($response);
-
         try {
 
-            $account = $this->getAccount();
-            if (!$account->getChildObject()->isOrdersModeEnabled()) {
-                return;
-            }
-
-            $buyOrders = $this->processBuyOrders($response, $account);
+            $buyOrders = $this->processBuyOrders($response, $this->getAccount());
             if (empty($buyOrders)) {
                 return;
             }

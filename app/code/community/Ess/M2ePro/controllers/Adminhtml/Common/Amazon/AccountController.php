@@ -51,6 +51,13 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
             return $this->indexAction();
         }
 
+        $marketplaces = Mage::helper('M2ePro/Component_Amazon')->getMarketplacesAvailableForApiCreation();
+        if ($marketplaces->getSize() <= 0) {
+            $message = 'You should select and update at least one Amazon marketplace.';
+            $this->_getSession()->addError(Mage::helper('M2ePro')->__($message));
+            return $this->indexAction();
+        }
+
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $model);
 
         $this->_initAction()
@@ -168,15 +175,6 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
 
         // tab: orders
         //--------------------
-        $keys = array(
-            'orders_mode'
-        );
-        foreach ($keys as $key) {
-            if (isset($post[$key])) {
-                $data[$key] = $post[$key];
-            }
-        }
-
         $data['magento_orders_settings'] = array();
 
         // m2e orders settings
@@ -244,6 +242,22 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
 
         $keys = array(
             'days',
+        );
+        foreach ($keys as $key) {
+            if (isset($tempSettings[$key])) {
+                $data['magento_orders_settings'][$tempKey][$key] = $tempSettings[$key];
+            }
+        }
+        //--------------------
+
+        // refund & cancellation
+        //--------------------
+        $tempKey = 'refund_and_cancellation';
+        $tempSettings = !empty($post['magento_orders_settings'][$tempKey])
+            ? $post['magento_orders_settings'][$tempKey] : array();
+
+        $keys = array(
+            'refund_mode',
         );
         foreach ($keys as $key) {
             if (isset($tempSettings[$key])) {
@@ -403,7 +417,9 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
                         'related_store_id' => (int)$post['related_store_id']
                     );
 
-                    $dispatcherObject->processConnector('account', 'add' ,'entity', $params, $id);
+                    $connectorObj = $dispatcherObject->getConnector('account', 'add' ,'entityRequester',
+                                                                    $params, $id);
+                    $dispatcherObject->process($connectorObj);
 
                 } else {
 
@@ -418,7 +434,9 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
                     $params = array_diff_assoc($newData, $oldData);
 
                     if (!empty($params)) {
-                        $dispatcherObject->processConnector('account', 'update' ,'entity', $params, $id);
+                        $connectorObj = $dispatcherObject->getConnector('account', 'update' ,'entityRequester',
+                                                                        $params, $id);
+                        $dispatcherObject->process($connectorObj);
                     }
                 }
             }
@@ -429,9 +447,9 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
             Mage::helper('M2ePro/Module_Exception')->process($exception);
 
             // M2ePro_TRANSLATIONS
-            // The Amazon access obtaining is currently unavailable.<br />Reason: %error_message%
+            // The Amazon access obtaining is currently unavailable.<br/>Reason: %error_message%
 
-            $error = 'The Amazon access obtaining is currently unavailable.<br />Reason: %error_message%';
+            $error = 'The Amazon access obtaining is currently unavailable.<br/>Reason: %error_message%';
             $error = Mage::helper('M2ePro')->__($error, $exception->getMessage());
 
             $this->_getSession()->addError($error);
@@ -487,9 +505,11 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
             try {
 
                 $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
-                $response = $dispatcherObject->processVirtual('account','check','access',$params);
+                $connectorObj = $dispatcherObject->getVirtualConnector('account','check','access',$params);
+                $response = $dispatcherObject->process($connectorObj);
 
-                $result['result'] = isset($response['status']) ? $response['status'] : null;
+                $result['result'] = isset($response['status']) ? $response['status']
+                                                               : null;
                 if (isset($response['reason'])) {
                     $result['reason'] = Mage::helper('M2ePro')->escapeJs($response['reason']);
                 }

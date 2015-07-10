@@ -9,7 +9,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
     // ########################################
 
     /** @var Ess_M2ePro_Model_Ebay_Order_Item|Ess_M2ePro_Model_Amazon_Order_Item|
-     * Ess_M2ePro_Model_Buy_Order_Item|Ess_M2ePro_Model_Play_Order_Item */
+     * Ess_M2ePro_Model_Buy_Order_Item */
     protected $item = NULL;
 
     protected $qty = NULL;
@@ -142,7 +142,7 @@ abstract class Ess_M2ePro_Model_Order_Item_Proxy
     public function setQty($qty)
     {
         if ((int)$qty <= 0) {
-            throw new InvalidArgumentException('Qty cannot be less than zero.');
+            throw new InvalidArgumentException('QTY cannot be less than zero.');
         }
 
         $this->qty = (int)$qty;

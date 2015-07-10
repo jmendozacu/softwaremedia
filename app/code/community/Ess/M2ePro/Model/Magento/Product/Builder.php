@@ -25,7 +25,6 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
 
     private function createProduct()
     {
-    	Mage::log('Create Product: ' . $this->getData('sku'),NULL,'m2eProd.log');
         // --------
         $this->product = Mage::getModel('catalog/product');
         $this->product->setTypeId(Ess_M2ePro_Model_Magento_Product::TYPE_SIMPLE);
@@ -41,7 +40,7 @@ class Ess_M2ePro_Model_Magento_Product_Builder extends Mage_Core_Model_Abstract
 
         // --------
         $this->product->setPrice($this->getData('price'));
-        $this->product->setVisibility(1);
+        $this->product->setVisibility(Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE);
         $this->product->setTaxClassId($this->getData('tax_class_id'));
         $this->product->setStatus(Mage_Catalog_Model_Product_Status::STATUS_ENABLED);
         // --------

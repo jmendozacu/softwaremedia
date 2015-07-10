@@ -111,9 +111,9 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
         new Ajax.Request(M2ePro.url.get('adminhtml_order/editItem'), {
             method: 'get',
             parameters: {
-                item_id : itemId
+                item_id: itemId
             },
-            onSuccess: function (transport) {
+            onSuccess: function(transport) {
                 if (typeof callback == 'function') {
                     callback(transport);
                 }
@@ -145,30 +145,26 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
 
     //----------------------------------
 
-    assignProduct: function()
+    assignProduct: function(id, productSku)
     {
         var self = this;
-        var productId = $('product_id').value;
-        var sku = $('sku').value;
+        var productId = +id || '';
+        var sku = productSku || '';
         var orderItemId = self.orderItemId;
 
         MagentoMessageObj.clearAll();
 
-        if (orderItemId == '' || (/^\s*(\d)*\s*$/i).test(orderItemId) == false){
+        if (orderItemId == '' || (/^\s*(\d)*\s*$/i).test(orderItemId) == false) {
             return;
         }
 
         if (sku == '' && productId == '') {
-            $('product_id').focus();
-            alert(M2ePro.translator.translate('Please enter correct product ID or SKU.'));
+            alert(M2ePro.translator.translate('Please enter correct Product ID or SKU.'));
             return;
         }
 
         if (((/^\s*(\d)*\s*$/i).test(productId) == false)) {
-            alert(M2ePro.translator.translate('Please enter correct product ID.'));
-            $('product_id').focus();
-            $('product_id').value = '';
-            $('sku').value = '';
+            alert(M2ePro.translator.translate('Please enter correct Product ID.'));
             return;
         }
 
@@ -176,14 +172,12 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
             return;
         }
 
-        $('help_grid').hide();
-
         new Ajax.Request(M2ePro.url.get('adminhtml_order/assignProduct'), {
             method: 'post',
             parameters: {
-                product_id : productId,
-                sku : sku,
-                order_item_id : orderItemId
+                product_id: productId,
+                sku: sku,
+                order_item_id: orderItemId
             },
             onSuccess: self.afterActionCallback.bind(self)
         });
@@ -239,5 +233,4 @@ OrderEditItemHandler.prototype = Object.extend(new CommonHandler(), {
     }
 
     //----------------------------------
-
 });

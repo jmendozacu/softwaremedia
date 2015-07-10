@@ -19,7 +19,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
         //------------------------------
         $this->setDefaultSort('product_id');
         $this->setDefaultDir('DESC');
-        $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
         //------------------------------
     }
@@ -29,7 +28,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
         $collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('name')
-            ->addAttributeToSelect('attribute_set_id')
             ->addAttributeToSelect('type_id')
             ->joinField('qty',
                         'cataloginventory/stock_item',
@@ -62,7 +60,7 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
         ));
 
         $this->addColumn('title', array(
-            'header'       => Mage::helper('M2ePro')->__('Product Title / SKU'),
+            'header'       => Mage::helper('M2ePro')->__('Product Title / Product SKU'),
             'align'        => 'left',
             'type'         => 'text',
             'width'        => '200px',
@@ -70,21 +68,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
             'filter_index' => 'name',
             'frame_callback' => array($this, 'callbackColumnTitle'),
             'filter_condition_callback' => array($this, 'callbackFilterTitle')
-        ));
-
-        $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
-            ->setEntityTypeFilter(Mage::getModel('catalog/product')->getResource()->getTypeId())
-            ->load()
-            ->toOptionHash();
-
-        $this->addColumn('set_name',array(
-            'header'=> Mage::helper('catalog')->__('Attrib. Set Name'),
-            'width' => '120px',
-            'index' => 'attribute_set_id',
-            'filter_index' => 'attribute_set_id',
-            'type'  => 'options',
-            'options' => $sets,
-            'frame_callback' => array($this, 'callbackColumnAttrSet')
         ));
 
         $tempTypes = Mage::getSingleton('catalog/product_type')->getOptionArray();
@@ -101,6 +84,20 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
             'index'     => 'type_id',
             'filter_index' => 'type_id',
             'options' => $tempTypes
+        ));
+
+        $this->addColumn('stock_availability', array(
+            'header'=> Mage::helper('M2ePro')->__('Stock Availability'),
+            'width' => '100px',
+            'index' => 'is_in_stock',
+            'filter_index' => 'is_in_stock',
+            'type'  => 'options',
+            'sortable'  => false,
+            'options' => array(
+                1 => Mage::helper('M2ePro')->__('In Stock'),
+                0 => Mage::helper('M2ePro')->__('Out of Stock')
+            ),
+            'frame_callback' => array($this, 'callbackColumnStockAvailability')
         ));
 
         $this->addColumn('actions', array(
@@ -146,10 +143,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
 
     public function callbackColumnTitle($value, $row, $column, $isExport)
     {
-        if (strlen($value) > 60) {
-            $value = substr($value, 0, 60) . '...';
-        }
-
         $value = '<div style="margin-left: 3px">'.Mage::helper('M2ePro')->escapeHtml($value);
 
         $tempSku = $row->getData('sku');
@@ -168,6 +161,15 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
         return '<div style="margin-left: 3px">'.Mage::helper('M2ePro')->escapeHtml($value).'</div>';
     }
 
+    public function callbackColumnStockAvailability($value, $row, $column, $isExport)
+    {
+        if ((int)$row->getData('is_in_stock') <= 0) {
+            return '<span style="color: red;">'.$value.'</span>';
+        }
+
+        return $value;
+    }
+
     public function callbackColumnActions($value, $row, $column, $isExport)
     {
         $return = '&nbsp;<a href="javascript:void(0);" ';
@@ -177,11 +179,6 @@ class Ess_M2ePro_Block_Adminhtml_Listing_Other_Mapping_Grid extends Mage_Adminht
         $return .= Mage::helper('M2ePro')->__('Map To This Product');
         $return .= '</a>';
         return $return;
-    }
-
-    public function callbackColumnAttrSet($value, $row, $column, $isExport)
-    {
-        return '&nbsp;'.$value;
     }
 
     protected function callbackFilterTitle($collection, $column)

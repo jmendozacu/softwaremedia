@@ -4,25 +4,16 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
 {
     // ########################################
 
+    protected $_marketplaceId = null;
     protected $_categoryMode = null;
-
     protected $_categoryValue = null;
 
-    protected $_attributes = array();
-
-    protected $_divId = null;
-
-    protected $_marketplaceId = null;
-
-    protected $_selectedSpecifics = array();
-
-    protected $_categoryData = array();
-
     protected $_internalData = array();
-
     protected $_uniqueId = '';
-
     protected $_isCompactMode = false;
+
+    protected $_attributes = array();
+    protected $_selectedSpecifics = array();
 
     // ########################################
 
@@ -60,29 +51,26 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
             ->createBlock('adminhtml/widget_button')
             ->setData( array(
                 'label'   => Mage::helper('M2ePro')->__('Add Custom Specific'),
-                'onclick' => 'EbayListingCategorySpecificHandler'.$uniqueId.'Obj.addRow();',
+                'onclick' => 'EbayListingCategorySpecificHandler'.$uniqueId.'Obj.addCustomSpecificRow();',
                 'class' => 'add add_custom_specific_button'
             ) );
         $this->setChild('add_custom_specific_button',$buttonBlock);
         //------------------------------
+
+        //------------------------------
+        $buttonBlock = $this->getLayout()
+            ->createBlock('adminhtml/widget_button')
+            ->setData( array(
+                'label'   => '',
+                'onclick' => 'EbayListingCategorySpecificHandler'.$uniqueId.'Obj.removeItemSpecificsCustomValue(this);',
+                'class'   => 'scalable delete remove_item_specifics_custom_value_button',
+                'style'   => 'padding-bottom:1px; padding-right:0px; padding-left:4px;'
+            ) );
+        $this->setChild('remove_item_specifics_custom_value_button',$buttonBlock);
+        //------------------------------
     }
 
     // ########################################
-
-    public function getDivId()
-    {
-        if (is_null($this->_divId)) {
-            $this->_divId = Mage::helper('core/data')->uniqHash('category_specific_');
-        }
-
-        return $this->_divId;
-    }
-
-    public function setDivId($divId)
-    {
-        $this->_divId = $divId;
-        return $this;
-    }
 
     public function getMarketplaceId()
     {
@@ -95,10 +83,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
-    public function getAttributes()
-    {
-        return Mage::helper('M2ePro/Magento_Attribute')->getAll();
-    }
+    // ----------------------------------------
 
     public function getCategoryMode()
     {
@@ -111,6 +96,8 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
+    // ----------------------------------------
+
     public function getCategoryValue()
     {
         return $this->_categoryValue;
@@ -122,16 +109,58 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
-    public function getCategoryData()
+    // ########################################
+
+    public function setInternalData(array $data)
     {
-        if ($this->getCategoryMode() == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE) {
-            return array();
+        $this->_internalData = $data;
+        return $this;
+    }
+
+    public function getInternalData()
+    {
+        return $this->_internalData;
+    }
+
+    // ----------------------------------------
+
+    public function setUniqueId($id)
+    {
+        $this->_uniqueId = $id;
+        return $this;
+    }
+
+    public function getUniqueId()
+    {
+        return $this->_uniqueId;
+    }
+
+    // ----------------------------------------
+
+    public function setCompactMode($isMode = true)
+    {
+        $this->_isCompactMode = $isMode;
+        return $this;
+    }
+
+    public function isCompactMode()
+    {
+        return $this->_isCompactMode;
+    }
+
+    // ########################################
+
+    public function getAttributes()
+    {
+        $attributes = array();
+        if (Mage::helper('M2ePro/View_Ebay')->isAdvancedMode()) {
+            $attributes = Mage::helper('M2ePro/Magento_Attribute')->getAll();
         }
 
-        return Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getData(
-            $this->getCategoryValue(), $this->getMarketplaceId()
-        );
+        return $attributes;
     }
+
+    // ----------------------------------------
 
     public function getSelectedSpecifics()
     {
@@ -143,6 +172,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         foreach ($specifics as $specific) {
 
             if ($specific['mode'] == Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_CUSTOM_ITEM_SPECIFICS) {
+                $specific['value_custom_value'] = json_decode($specific['value_custom_value'],true);
                 $this->_selectedSpecifics[] = $specific;
                 continue;
             }
@@ -154,7 +184,7 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
             unset($specific['value_ebay_recommended']);
 
             if ($specific['value_mode'] == Ess_M2ePro_Model_Ebay_Template_Category_Specific::VALUE_MODE_CUSTOM_VALUE) {
-                $specific['value_data'] = $specific['value_custom_value'];
+                $specific['value_data'] = json_decode($specific['value_custom_value'],true);
             }
             unset($specific['value_custom_value']);
 
@@ -180,65 +210,52 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Category_Specific extends Mage_Adm
         return $this;
     }
 
-    public function getCustomSpecifics()
+    // ########################################
+
+    public function getDictionarySpecifics()
+    {
+        if ($this->getCategoryMode() == Ess_M2ePro_Model_Ebay_Template_Category::CATEGORY_MODE_ATTRIBUTE) {
+            return array();
+        }
+
+        return Mage::helper('M2ePro/Component_Ebay_Category_Ebay')->getSpecifics(
+            $this->getCategoryValue(), $this->getMarketplaceId()
+        );
+    }
+
+    public function getEbaySelectedSpecifics()
+    {
+        return $this->filterSelectedSpecificsByMode(
+            Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_ITEM_SPECIFICS
+        );
+    }
+
+    public function getCustomSelectedSpecifics()
+    {
+        return $this->filterSelectedSpecificsByMode(
+            Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_CUSTOM_ITEM_SPECIFICS
+        );
+    }
+
+    // ----------------------------------------
+
+    protected function filterSelectedSpecificsByMode($mode)
     {
         if (count($this->getSelectedSpecifics()) == 0) {
-            return array(
-                'mode' => Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_CUSTOM_ITEM_SPECIFICS,
-                'mode_relation_id' => 0,
-                'specifics' => array()
-            );
+            return array();
         }
 
         $customSpecifics = array();
         foreach ($this->getSelectedSpecifics() as $selectedSpecific) {
-            if ($selectedSpecific['mode'] !=
-                    Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_CUSTOM_ITEM_SPECIFICS) {
-
+            if ($selectedSpecific['mode'] != $mode) {
                 continue;
             }
 
+            unset($selectedSpecific['mode']);
             $customSpecifics[] = $selectedSpecific;
         }
 
-        return array(
-            'mode' => Ess_M2ePro_Model_Ebay_Template_Category_Specific::MODE_CUSTOM_ITEM_SPECIFICS,
-            'mode_relation_id' => 0,
-            'specifics' => $customSpecifics
-        );
-    }
-
-    public function setInternalData(array $data)
-    {
-        $this->_internalData = $data;
-        return $this;
-    }
-
-    public function getInternalData()
-    {
-        return $this->_internalData;
-    }
-
-    public function setUniqueId($id)
-    {
-        $this->_uniqueId = $id;
-        return $this;
-    }
-
-    public function getUniqueId()
-    {
-        return $this->_uniqueId;
-    }
-
-    public function setCompactMode($isMode = true)
-    {
-        $this->_isCompactMode = $isMode;
-        return $this;
-    }
-
-    public function isCompactMode()
-    {
-        return $this->_isCompactMode;
+        return $customSpecifics;
     }
 
     // ########################################

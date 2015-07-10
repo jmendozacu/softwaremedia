@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * @copyright  Copyright (c) 2013 by  ESS-UA.
+ */
+
 class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
     extends Ess_M2ePro_Model_Ebay_Template_Builder_Abstract
 {
@@ -35,6 +39,8 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
 
         return $template;
     }
+
+    // ########################################
 
     protected function prepareData(array &$data)
     {
@@ -129,6 +135,16 @@ class Ess_M2ePro_Model_Ebay_Template_Synchronization_Builder
 
         if (isset($data['revise_update_price'])) {
             $prepared['revise_update_price'] = (int)$data['revise_update_price'];
+        }
+
+        $key = 'revise_update_price_max_allowed_deviation_mode';
+        if (isset($data[$key])) {
+            $prepared[$key] = (int)$data[$key];
+        }
+
+        $key = 'revise_update_price_max_allowed_deviation';
+        if (isset($data[$key])) {
+            $prepared[$key] = (int)$data[$key];
         }
 
         if (isset($data['revise_update_title'])) {

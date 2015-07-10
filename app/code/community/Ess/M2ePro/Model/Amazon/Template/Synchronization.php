@@ -28,24 +28,32 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
     const REVISE_UPDATE_QTY_YES  = 1;
 
     const REVISE_MAX_AFFECTED_QTY_MODE_OFF = 0;
-    const REVISE_MAX_AFFECTED_QTY_MODE_ON = 1;
+    const REVISE_MAX_AFFECTED_QTY_MODE_ON  = 1;
 
-    const REVISE_UPDATE_QTY_MAX_APPLIED_VALUE_DEFAULT = 10;
+    const REVISE_UPDATE_QTY_MAX_APPLIED_VALUE_DEFAULT = 5;
 
     const REVISE_UPDATE_PRICE_NONE = 0;
     const REVISE_UPDATE_PRICE_YES  = 1;
 
-    const REVISE_UPDATE_TITLE_NONE = 0;
-    const REVISE_UPDATE_TITLE_YES  = 1;
+    const REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF = 0;
+    const REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON  = 1;
 
-    const REVISE_UPDATE_DESCRIPTION_NONE = 0;
-    const REVISE_UPDATE_DESCRIPTION_YES  = 1;
+    const REVISE_UPDATE_PRICE_MAX_ALLOWED_DEVIATION_DEFAULT = 3;
 
-    const REVISE_UPDATE_SUB_TITLE_NONE = 0;
-    const REVISE_UPDATE_SUB_TITLE_YES  = 1;
+    const REVISE_UPDATE_DETAILS_NONE = 0;
+    const REVISE_UPDATE_DETAILS_YES  = 1;
+
+    const REVISE_UPDATE_IMAGES_NONE = 0;
+    const REVISE_UPDATE_IMAGES_YES  = 1;
+
+    const REVISE_CHANGE_DESCRIPTION_TEMPLATE_NONE = 0;
+    const REVISE_CHANGE_DESCRIPTION_TEMPLATE_YES  = 1;
 
     const RELIST_FILTER_USER_LOCK_NONE = 0;
     const RELIST_FILTER_USER_LOCK_YES  = 1;
+
+    const RELIST_SEND_DATA_NONE = 0;
+    const RELIST_SEND_DATA_YES  = 1;
 
     const RELIST_MODE_NONE = 0;
     const RELIST_MODE_YES  = 1;
@@ -154,6 +162,31 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
 
     //------------------------
 
+    public function getReviseUpdatePriceMaxAllowedDeviationMode()
+    {
+        return (int)$this->getData('revise_update_price_max_allowed_deviation_mode');
+    }
+
+    public function isReviseUpdatePriceMaxAllowedDeviationModeOn()
+    {
+        return $this->getReviseUpdatePriceMaxAllowedDeviationMode() == self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_ON;
+    }
+
+    public function isReviseUpdatePriceMaxAllowedDeviationModeOff()
+    {
+        return $this->getReviseUpdatePriceMaxAllowedDeviationMode()
+                    == self::REVISE_MAX_ALLOWED_PRICE_DEVIATION_MODE_OFF;
+    }
+
+    //------------------------
+
+    public function getReviseUpdatePriceMaxAllowedDeviation()
+    {
+        return (int)$this->getData('revise_update_price_max_allowed_deviation');
+    }
+
+    //------------------------
+
     public function isReviseWhenChangeQty()
     {
         return $this->getData('revise_update_qty') != self::REVISE_UPDATE_QTY_NONE;
@@ -162,6 +195,23 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
     public function isReviseWhenChangePrice()
     {
         return $this->getData('revise_update_price') != self::REVISE_UPDATE_PRICE_NONE;
+    }
+
+    public function isReviseWhenChangeDetails()
+    {
+        return $this->getData('revise_update_details') != self::REVISE_UPDATE_DETAILS_NONE;
+    }
+
+    public function isReviseWhenChangeImages()
+    {
+        return $this->getData('revise_update_images') != self::REVISE_UPDATE_IMAGES_NONE;
+    }
+
+    //------------------------
+
+    public function isReviseDescriptionTemplate()
+    {
+        return $this->getData('revise_change_description_template') != self::REVISE_CHANGE_DESCRIPTION_TEMPLATE_NONE;
     }
 
     //------------------------
@@ -174,6 +224,11 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
     public function isRelistFilterUserLock()
     {
         return $this->getData('relist_filter_user_lock') != self::RELIST_FILTER_USER_LOCK_NONE;
+    }
+
+    public function isRelistSendData()
+    {
+        return $this->getData('relist_send_data') != self::RELIST_SEND_DATA_NONE;
     }
 
     public function isRelistStatusEnabled()
@@ -325,9 +380,10 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
     /**
      * @param bool $asArrays
      * @param string|array $columns
+     * @param bool $onlyPhysicalUnits
      * @return array
      */
-    public function getAffectedListingsProducts($asArrays = true, $columns = '*')
+    public function getAffectedListingsProducts($asArrays = true, $columns = '*', $onlyPhysicalUnits = false)
     {
         /** @var Ess_M2ePro_Model_Mysql4_Listing_Collection $listingCollection */
         $listingCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing');
@@ -338,6 +394,10 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
         /** @var Ess_M2ePro_Model_Mysql4_Listing_Product_Collection $listingProductCollection */
         $listingProductCollection = Mage::helper('M2ePro/Component_Amazon')->getCollection('Listing_Product');
         $listingProductCollection->addFieldToFilter('listing_id',array('in' => $listingCollection->getSelect()));
+
+        if ($onlyPhysicalUnits) {
+            $listingProductCollection->addFieldToFilter('is_variation_parent', 0);
+        }
 
         if (is_array($columns) && !empty($columns)) {
             $listingProductCollection->getSelect()->reset(Zend_Db_Select::COLUMNS);
@@ -361,13 +421,13 @@ class Ess_M2ePro_Model_Amazon_Template_Synchronization extends Ess_M2ePro_Model_
 
     public function save()
     {
-        Mage::helper('M2ePro/Data_Cache')->removeTagValues('template_synchronization');
+        Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('template_synchronization');
         return parent::save();
     }
 
     public function delete()
     {
-        Mage::helper('M2ePro/Data_Cache')->removeTagValues('template_synchronization');
+        Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues('template_synchronization');
         return parent::delete();
     }
 

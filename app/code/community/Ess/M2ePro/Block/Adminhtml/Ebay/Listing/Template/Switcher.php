@@ -7,7 +7,6 @@
 class Ess_M2ePro_Block_Adminhtml_Ebay_Listing_Template_Switcher extends Mage_Adminhtml_Block_Widget
 {
     private $templates = NULL;
-    private $policies = NULL;
 
     // ########################################
 
@@ -143,7 +142,7 @@ HTML;
         $templateMode = Mage::helper('M2ePro/Data_Global')->getValue('ebay_template_mode_' . $this->getTemplateNick());
 
         if (is_null($templateMode)) {
-            throw new LogicException('Template mode is not initialized.');
+            throw new LogicException('Template Mode is not initialized.');
         }
 
         return $templateMode;
@@ -196,11 +195,6 @@ HTML;
         return $this->getTemplateMode() == Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE;
     }
 
-    public function isTemplateModePolicy()
-    {
-        return $this->getTemplateMode() == Ess_M2ePro_Model_Ebay_Template_Manager::MODE_POLICY;
-    }
-
     // ########################################
 
     public function getFormDataBlock()
@@ -230,7 +224,7 @@ HTML;
 
         if (is_null($blockName)) {
             throw new LogicException(
-                sprintf('Form data block for template nick "%s" is unknown.', $this->getTemplateNick())
+                sprintf('Form data Block for Template nick "%s" is unknown.', $this->getTemplateNick())
             );
         }
 
@@ -272,9 +266,8 @@ HTML;
         }
 
         $templates = $this->getTemplates();
-        $policies  = $this->getPolicies();
 
-        if (count($templates) == 0 && count($policies) == 0 && !$this->canDisplayUseDefaultOption()) {
+        if (count($templates) == 0 && !$this->canDisplayUseDefaultOption()) {
             return false;
         }
 
@@ -304,7 +297,8 @@ HTML;
 
         $collection = $manager->getTemplateModel()
             ->getCollection()
-                ->addFieldToFilter('is_custom_template', 0);
+            ->addFieldToFilter('is_custom_template', 0)
+            ->setOrder('title', 'ASC');
 
         if ($manager->isMarketplaceDependentTemplate()) {
             $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
@@ -314,12 +308,6 @@ HTML;
         $this->templates = $collection->getItems();
 
         return $this->templates;
-    }
-
-    public function getPolicies()
-    {
-        // todo next
-        return array();
     }
 
     // ########################################

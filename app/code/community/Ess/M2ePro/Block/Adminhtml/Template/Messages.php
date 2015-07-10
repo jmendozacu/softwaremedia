@@ -24,9 +24,6 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
                 if ($componentMode == Ess_M2ePro_Helper_Component_Ebay::NICK) {
                     $block = $this->getLayout()
                         ->createBlock('M2ePro/adminhtml_ebay_template_sellingFormat_messages');
-                } else if ($componentMode == Ess_M2ePro_Helper_Component_Play::NICK) {
-                    $block = $this->getLayout()
-                        ->createBlock('M2ePro/adminhtml_common_play_template_sellingFormat_messages');
                 } else {
                     $block = $this->getLayout()
                         ->createBlock('M2ePro/adminhtml_template_sellingFormat_messages');
@@ -92,10 +89,10 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
         $attributeSetsNames = Mage::helper('M2ePro/Magento_AttributeSet')->getNames($attributeSets);
 
         // M2ePro_TRANSLATIONS
-        // Some attributes which are used in this policy were not found in products settings. Please, check if all of them are in [%set_name%] Attribute Set(s) as it can cause List, Revise or Relist issues.
+        // Some attributes which are used in this Policy were not found in Products Settings. Please, check if all of them are in [%set_name%] Attribute Set(s) as it can cause List, Revise or Relist issues.
         return
             Mage::helper('M2ePro')->__(
-                'Some attributes which are used in this policy were not found in products settings.'
+                'Some Attributes which are used in this Policy were not found in Products Settings.'
                 . ' Please, check if all of them are in [%set_name%] Attribute Set(s)'
                 . ' as it can cause List, Revise or Relist issues.'
             ,
@@ -147,7 +144,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
     public function getTemplateNick()
     {
         if (is_null($this->templateNick)) {
-            throw new LogicException('Template nick is not set.');
+            throw new LogicException('Policy nick is not set.');
         }
 
         return $this->templateNick;
@@ -164,7 +161,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
     public function getComponentMode()
     {
         if (is_null($this->componentMode)) {
-            throw new LogicException('Component mode is not set.');
+            throw new LogicException('Component Mode is not set.');
         }
 
         return $this->componentMode;
@@ -175,7 +172,7 @@ class Ess_M2ePro_Block_Adminhtml_Template_Messages extends Mage_Adminhtml_Block_
     protected function getTemplateData()
     {
         if (empty($this->_data['template_data']) || !is_array($this->_data['template_data'])) {
-            throw new LogicException('Template data is not set.');
+            throw new LogicException('Policy data is not set.');
         }
 
         return $this->_data['template_data'];

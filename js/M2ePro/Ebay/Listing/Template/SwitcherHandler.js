@@ -1,5 +1,7 @@
 EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
 
+    //----------------------------------
+
     storeId: null,
     marketplaceId: null,
     checkAttributesAvailability: false,
@@ -9,13 +11,15 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
 
     initialize: function()
     {
-        Validation.add('M2ePro-validate-ebay-template-title', M2ePro.translator.translate('Policy with the same title already exists.'), function(value, element) {
+        Validation.add('M2ePro-validate-ebay-template-title', M2ePro.translator.translate('Policy with the same Title already exists.'), function(value, element) {
+
             var templateNick = element.name.substr(0, element.name.indexOf('['));
 
             return EbayListingTemplateSwitcherHandlerObj.isTemplateTitleUnique(templateNick, value);
         });
 
         Validation.add('M2ePro-validate-ebay-template-switcher', M2ePro.translator.translate('This is a required field.'), function(value, element) {
+
             var mode = base64_decode(value).evalJSON().mode;
 
             return mode !== null;
@@ -75,11 +79,6 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         return this.getSwitcherValueMode(templateNick) == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::MODE_TEMPLATE');
     },
 
-    isSwitcherValueModePolicy: function(templateNick)
-    {
-        return this.getSwitcherValueMode(templateNick) == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::MODE_POLICY');
-    },
-
     isExistSynchronizationTab: function()
     {
         return typeof EbayTemplateSynchronizationHandlerObj != 'undefined';
@@ -115,9 +114,6 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
         switch (templateMode) {
             case M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::MODE_PARENT'):
                 EbayListingTemplateSwitcherHandlerObj.clearContent(templateNick);
-                break;
-
-            case M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::MODE_POLICY'):
                 break;
 
             case M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Template_Manager::MODE_CUSTOM'):
@@ -177,17 +173,16 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
                 }
             }.bind(this);
 
-        TemplateHandlerObj
-            .checkMessages(
-                id,
-                nick,
-                data,
-                storeId,
-                marketplaceId,
-                checkAttributesAvailability,
-                container,
-                callback
-            );
+        TemplateHandlerObj.checkMessages(
+            id,
+            nick,
+            data,
+            storeId,
+            marketplaceId,
+            checkAttributesAvailability,
+            container,
+            callback
+        );
     },
 
     //----------------------------------
@@ -226,23 +221,16 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
     {
         var labelContainer = $('template_' + templateNick + '_nick_label');
         var templateLabel  = labelContainer.down('span.template');
-        var policyLabel    = labelContainer.down('span.policy');
         var parentLabel    = labelContainer.down('span.parent');
 
         labelContainer.hide();
         templateLabel.hide();
-        policyLabel.hide();
 
         parentLabel && parentLabel.hide();
 
         if (this.isSwitcherValueModeTemplate(templateNick)) {
             labelContainer.show();
             templateLabel.show();
-        }
-
-        if (this.isSwitcherValueModePolicy(templateNick)) {
-            labelContainer.show();
-            policyLabel.show();
         }
 
         if (this.isSwitcherValueModeEmpty(templateNick) && parentLabel) {
@@ -283,6 +271,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
             asynchronous: true,
             parameters: {},
             onSuccess: function(transport) {
+
                 var response = transport.responseText.evalJSON();
 
                 response.each(function(template) {
@@ -313,16 +302,14 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
     {
         var unique = true;
 
-        new Ajax.Request( M2ePro.url.get('adminhtml_ebay_template/isTitleUnique') ,
-        {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_template/isTitleUnique'), {
             method: 'get',
-            asynchronous : false,
-            parameters : {
-                nick : templateNick,
-                title : templateTitle
+            asynchronous: false,
+            parameters: {
+                nick: templateNick,
+                title: templateTitle
             },
-            onSuccess: function (transport)
-            {
+            onSuccess: function(transport) {
                 unique = transport.responseText.evalJSON()['unique'];
             }
         });
@@ -360,14 +347,17 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
                 'name="'+templateNick+'[template_title]" ' +
                 'id="template_title" ' +
                 'style="width: 375px;" ' +
-                'placeholder="' + M2ePro.translator.translate('Please specify policy title') + '" ' +
+                'placeholder="' + M2ePro.translator.translate('Please specify Policy Title') + '" ' +
             '/>' +
             '</div>';
 
         var me = this;
         if(!me.isCreatedDialog) {
+            var html = template.innerHTML;
+            template.down('.dialog_confirm_content').remove();
             me.isCreatedDialog = true;
-            Dialog._openDialog(template.innerHTML, {
+
+            Dialog._openDialog(html, {
                 draggable: true,
                 resizable: true,
                 closable: true,
@@ -376,7 +366,6 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
                 width: 400,
                 height: 80,
                 zIndex: 2100,
-                recenterAuto: false,
                 destroyOnClose: true,
                 hideEffect: Element.hide,
                 showEffect: Element.show,
@@ -394,9 +383,10 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
                         method: 'post',
                         asynchronous: true,
                         parameters: {
-                            nick : templateNick
+                            nick: templateNick
                         },
                         onSuccess: function(transport) {
+
                             var response = transport.responseText.evalJSON();
 
                             response.each(function(template) {
@@ -413,6 +403,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
                 }.bind(this),
                 cancel: function() {},
                 onClose: function() {
+                    template.insert('<div class="dialog_confirm_content"></div>');
                     me.isCreatedDialog = false;
                 }
             });
@@ -471,16 +462,15 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
     {
         var id = this.getSwitcherValueId(templateNick);
 
-        new Ajax.Request( M2ePro.url.get('adminhtml_ebay_template/getTemplateHtml') ,
-        {
+        new Ajax.Request(M2ePro.url.get('adminhtml_ebay_template/getTemplateHtml'), {
             method: 'get',
-            asynchronous : true,
-            parameters : {
+            asynchronous: true,
+            parameters: {
                 id   : id,
                 nick : templateNick
             },
-            onSuccess: function (transport)
-            {
+            onSuccess: function(transport) {
+
                 this.getTemplateDataContainer(templateNick).replace(transport.responseText);
                 this.getTemplateDataContainer(templateNick).show();
 
@@ -530,7 +520,7 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
 
         optionGroup = document.createElement('optgroup');
         optionGroup.className = 'templates-group';
-        optionGroup.label = M2ePro.translator.translate('M2E Pro Policies');
+        optionGroup.label = M2ePro.translator.translate('Policies');
 
         switcher.appendChild(optionGroup);
 
@@ -538,5 +528,4 @@ EbayListingTemplateSwitcherHandler = Class.create(CommonHandler, {
     }
 
     //----------------------------------
-
 });

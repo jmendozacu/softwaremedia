@@ -12,9 +12,10 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
 {
     // ##########################################################
 
-    const ORDER_STATUS_ACTIVE    = 0;
-    const ORDER_STATUS_COMPLETED = 1;
-    const ORDER_STATUS_CANCELLED = 2;
+    const ORDER_STATUS_ACTIVE     = 0;
+    const ORDER_STATUS_COMPLETED  = 1;
+    const ORDER_STATUS_CANCELLED  = 2;
+    const ORDER_STATUS_INACTIVE   = 3;
 
     const CHECKOUT_STATUS_INCOMPLETE = 0;
     const CHECKOUT_STATUS_COMPLETED  = 1;
@@ -532,7 +533,11 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
     public function afterCreateMagentoOrder()
     {
         if ($this->getEbayAccount()->isMagentoOrdersCustomerNewNotifyWhenOrderCreated()) {
-            $this->getParentObject()->getMagentoOrder()->sendNewOrderEmail();
+            if (method_exists($this->getParentObject()->getMagentoOrder(), 'queueNewOrderEmail')) {
+                $this->getParentObject()->getMagentoOrder()->queueNewOrderEmail(false);
+            } else {
+                $this->getParentObject()->getMagentoOrder()->sendNewOrderEmail();
+            }
         }
     }
 
@@ -813,10 +818,12 @@ class Ess_M2ePro_Model_Ebay_Order extends Ess_M2ePro_Model_Component_Child_Ebay_
             'transaction_id' => $firstItem->getChildObject()->getTransactionId(),
         );
 
-        $buyerInfo = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher')
-            ->processVirtual('sales', 'get', 'itemTransactions',
-                $params, 'buyer_info',
-                NULL, $this->getParentObject()->getAccount(), NULL);
+        $dispatcherObj = Mage::getModel('M2ePro/Connector_Ebay_Dispatcher');
+        $connectorObj = $dispatcherObj->getVirtualConnector('sales', 'get', 'itemTransactions',
+                                                            $params, 'buyer_info',
+                                                            NULL, $this->getParentObject()->getAccount(), NULL);
+
+        $buyerInfo = $dispatcherObj->process($connectorObj);
 
         return $buyerInfo;
     }

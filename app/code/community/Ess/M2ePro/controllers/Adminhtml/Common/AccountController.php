@@ -31,8 +31,12 @@ class Ess_M2ePro_Adminhtml_Common_AccountController
     public function indexAction()
     {
         $this->_initAction()
-             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_account'))
-             ->renderLayout();
+            ->_addContent(
+                $this->getLayout()->createBlock(
+                    'M2ePro/adminhtml_common_configuration', '',
+                    array('active_tab' => Ess_M2ePro_Block_Adminhtml_Common_Configuration_Tabs::TAB_ID_ACCOUNT)
+                )
+            )->renderLayout();
     }
 
     public function editAction()
@@ -60,55 +64,68 @@ class Ess_M2ePro_Adminhtml_Common_AccountController
             return;
         }
 
+        /** @var Ess_M2ePro_Model_Mysql4_Account_Collection $accountCollection */
+        $accountCollection = Mage::getModel('M2ePro/Account')->getCollection();
+        $accountCollection->addFieldToFilter('id', array('in' => $ids));
+
+        $accounts = $accountCollection->getItems();
+
+        if (empty($accounts)) {
+            $this->_redirect('*/*/index');
+            return;
+        }
+
         $deleted = $locked = 0;
-        foreach ($ids as $id) {
+        foreach ($accounts as $account) {
 
             /** @var $account Ess_M2ePro_Model_Account */
-            $account = Mage::getModel('M2ePro/Account')->loadInstance($id);
 
             if ($account->isLocked(true)) {
                 $locked++;
-            } else {
+                continue;
+            }
 
-                try {
+            try {
 
-                    if ($account->isComponentModeAmazon()) {
+                $dispatcherObject = null;
 
-                        $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
-                        $dispatcherObject->processConnector('account', 'delete' ,'entity', array(), $account);
+                if ($account->isComponentModeAmazon()) {
 
-                    } else if ($account->isComponentModeBuy()) {
+                    $dispatcherObject = Mage::getModel('M2ePro/Connector_Amazon_Dispatcher');
 
-                        $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
-                        $dispatcherObject->processConnector('account', 'delete' ,'entity', array(), $account);
+                } else if ($account->isComponentModeBuy()) {
 
-                    } else if ($account->isComponentModePlay()) {
+                    $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
 
-                        $dispatcherObject = Mage::getModel('M2ePro/Connector_Play_Dispatcher');
-                        $dispatcherObject->processConnector('account', 'delete' ,'entity', array(), $account);
-                    }
-
-                } catch (Exception $e) {
-
-                    $account->deleteProcessingRequests();
-                    $account->deleteObjectLocks();
-                    $account->deleteInstance();
-
-                    throw $e;
                 }
+
+                if ($dispatcherObject) {
+
+                    $connectorObj = $dispatcherObject->getConnector('account','delete','entityRequester',
+                                                                    array(), $account);
+                    $dispatcherObject->process($connectorObj);
+                }
+
+            } catch (Exception $e) {
 
                 $account->deleteProcessingRequests();
                 $account->deleteObjectLocks();
                 $account->deleteInstance();
 
-                $deleted++;
+                throw $e;
             }
+
+            $account->deleteProcessingRequests();
+            $account->deleteObjectLocks();
+            $account->deleteInstance();
+
+            $deleted++;
         }
 
         $tempString = Mage::helper('M2ePro')->__('%amount% record(s) were successfully deleted.', $deleted);
         $deleted && $this->_getSession()->addSuccess($tempString);
 
-        $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Listing(s).', $locked) . ' ';
+        $tempString  = Mage::helper('M2ePro')->__('%amount% record(s) are used in M2E Pro Listing(s).', $locked) . ' ';
         $tempString .= Mage::helper('M2ePro')->__('Account must not be in use to be deleted.');
         $locked && $this->_getSession()->addError($tempString);
 

@@ -19,6 +19,10 @@ abstract class Ess_M2ePro_Model_Cron_Type_Abstract
 
     public function process()
     {
+        if ($this->isDisabledByDeveloper()) {
+            return false;
+        }
+
         $this->initialize();
         $this->updateLastAccess();
 
@@ -35,7 +39,7 @@ abstract class Ess_M2ePro_Model_Cron_Type_Abstract
         try {
 
             // local tasks
-            $result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_LogsCleaning::NICK) ? false : $result;
+            $result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_LogsClearing::NICK) ? false : $result;
 
             // request tasks
             $result = !$this->processTask(Ess_M2ePro_Model_Cron_Task_Servicing::NICK) ? false : $result;
@@ -96,6 +100,11 @@ abstract class Ess_M2ePro_Model_Cron_Type_Abstract
     }
 
     //####################################
+
+    protected function isDisabledByDeveloper()
+    {
+        return false;
+    }
 
     protected function initialize()
     {

@@ -4,7 +4,8 @@
  * @copyright  Copyright (c) 2013 by  ESS-UA.
  */
 
-class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Main extends Mage_Adminhtml_Block_Widget_Container
+class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Main
+    extends Ess_M2ePro_Block_Adminhtml_Widget_Container
 {
     public function __construct()
     {
@@ -27,16 +28,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Main extend
 
         //------------------------------
         $data = array(
-            'id'    => 'productSearch_reset_button',
-            'label' => Mage::helper('M2ePro')->__('Reset'),
-            'class' => 'productSearch_reset_button submit'
-        );
-        $buttonSubmitBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
-        $this->setChild('productSearch_reset_button', $buttonSubmitBlock);
-        //------------------------------
-
-        //------------------------------
-        $data = array(
             'id'    => 'productSearch_back_button',
             'label' => Mage::helper('M2ePro')->__('Back'),
             'class' => 'productSearch_back_button'
@@ -53,6 +44,17 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_ProductSearch_Main extend
         );
         $buttonCancelBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
         $this->setChild('productSearch_cancel_button', $buttonCancelBlock);
+        //------------------------------
+
+        //------------------------------
+        $data = array(
+            'id'      => 'productSearch_cleanSuggest_button',
+            'label'   => Mage::helper('M2ePro')->__('Clear Search Results'),
+            'class'   => 'productSearch_cleanSuggest_button',
+            'onclick' =>  'ListingGridHandlerObj.productSearchHandler.clearSearchResultsAndOpenSearchMenu()'
+        );
+        $buttonResetBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $this->setChild('productSearch_cleanSuggest_button', $buttonResetBlock);
         //------------------------------
 
         parent::_beforeToHtml();
