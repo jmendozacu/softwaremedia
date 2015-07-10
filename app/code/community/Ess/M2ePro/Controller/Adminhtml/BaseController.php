@@ -7,6 +7,10 @@
 abstract class Ess_M2ePro_Controller_Adminhtml_BaseController
     extends Mage_Adminhtml_Controller_Action
 {
+	protected function _isAllowed()
+    {
+        return true;
+    }
     protected $generalBlockWasAppended = false;
 
     //#############################################
