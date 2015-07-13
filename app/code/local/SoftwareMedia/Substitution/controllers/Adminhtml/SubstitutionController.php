@@ -10,6 +10,10 @@
 
 class SoftwareMedia_Substitution_Adminhtml_SubstitutionController extends Mage_Adminhtml_Controller_Action
 {
+		protected function _isAllowed()
+    {
+        return true;
+    }
 	public function addAction() {
 		$invoiceId = $this->getRequest()->getParam('invoiceId');
 		$productId = $this->getRequest()->getParam('productId');

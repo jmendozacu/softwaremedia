@@ -10,7 +10,10 @@
 require_once Mage::getModuleDir('controllers', 'Mage_Adminhtml') . DS . 'Catalog' . DS . 'ProductController.php';
 
 class SoftwareMedia_Substitution_Adminhtml_Catalog_SubstitutionController extends Mage_Adminhtml_Catalog_ProductController {
-
+	protected function _isAllowed()
+    {
+        return true;
+    }
 	/**
 	 * Product substitution page
 	 */
