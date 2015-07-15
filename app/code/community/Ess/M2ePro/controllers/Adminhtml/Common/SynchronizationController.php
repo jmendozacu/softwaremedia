@@ -8,7 +8,7 @@ class Ess_M2ePro_Adminhtml_Common_SynchronizationController
     extends Ess_M2ePro_Controller_Adminhtml_Common_MainController
 {
     //#############################################
-
+	
     protected function _initAction()
     {
         $this->loadLayout()
@@ -30,7 +30,8 @@ class Ess_M2ePro_Adminhtml_Common_SynchronizationController
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration/synchronization');
+        return true;
+        //return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration/synchronization');
     }
 
     //#############################################
