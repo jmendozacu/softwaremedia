@@ -10,6 +10,10 @@
 
 class OCM_ChasePaymentTech_Adminhtml_ChaseController extends Mage_Adminhtml_Controller_Action
 {
+		protected function _isAllowed()
+    {
+        return true;
+    }
 	public function deleteAction() {
 		$customerId = $this->getRequest()->getParam('customer');
 		$paymentId = $this->getRequest()->getParam('pid');
