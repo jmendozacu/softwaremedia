@@ -1,6 +1,10 @@
 <?php
 class OCM_ChasePaymentTech_CustomerController extends Mage_Core_Controller_Front_Action
 {
+		protected function _isAllowed()
+    {
+        return true;
+    }
 	public function indexAction()
 	{
         $this->loadLayout();
