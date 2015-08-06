@@ -15,8 +15,10 @@ class SoftwareMedia_Ubervisibility_Model_Observer extends Varien_Event_Observer 
 		$collection->addAttributeToSelect('ubervis_updated', 'left');
 		$collection->addAttributeToSelect('*');
 		$collection->joinTable('cataloginventory/stock_item', 'product_id=entity_id', array('manage_stock', 'min_sale_qty'));
-		$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
-		$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
+		//$collection->getSelect()->where('(at_ubervis_updated.value < \'' . $from . '\' AND e.updated_at > at_ubervis_updated.value) OR at_ubervis_updated.value IS NULL');
+		//$collection->getSelect()->where('sku NOT LIKE "%HOME" AND sku NOT LIKE "%FBA"');
+		$collection->getSelect()->where('sku="MS-38103107"');
+		
 		$collection->getSelect()->where('type_id != "bundle"');
 //		$collection->getSelect()->where('sku = "MS-T5D01575"');
 		$collection->setOrder('ubervis_updated', 'ASC');
