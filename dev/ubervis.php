@@ -6,10 +6,10 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
 error_reporting(-1);
 
-//$uber = new SoftwareMedia_Ubervisibility_Model_Observer();
-//$uber->retrieveProducts1();
+$uber = new SoftwareMedia_Ubervisibility_Model_Observer();
+$uber->updateProduct();
 
-
+/*
 
 $api = new SoftwareMedia_Ubervisibility_Helper_Api();
 $csv_content = array();
