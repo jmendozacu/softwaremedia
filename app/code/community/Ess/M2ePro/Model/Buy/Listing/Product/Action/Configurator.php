@@ -5,91 +5,110 @@
  */
 
 class Ess_M2ePro_Model_Buy_Listing_Product_Action_Configurator
+    extends Ess_M2ePro_Model_Listing_Product_Action_Configurator
 {
-    const ALL_DATA_KEY      = 'all_data';
-    const ONLY_DATA_KEY     = 'only_data';
-
-    const TYPE_DETAILS      = 'details';
-    const TYPE_SELLING      = 'selling';
-    const TYPE_SHIPPING     = 'shipping';
-    const TYPE_NEW_PRODUCT  = 'new_product';
-
-    /**
-     * @var array
-     */
-    private $params = array();
+    const DATA_TYPE_QTY          = 'qty';
+    const DATA_TYPE_PRICE        = 'price';
+    const DATA_TYPE_DETAILS      = 'details';
+    const DATA_TYPE_SHIPPING     = 'shipping';
+    const DATA_TYPE_NEW_PRODUCT  = 'new_product';
 
     // ########################################
 
-    public function setParams(array $params = array())
+    public function getAllDataTypes()
     {
-        $this->params = $params;
-    }
-
-    public function getParams()
-    {
-        return $this->params;
+        return array(
+            self::DATA_TYPE_QTY,
+            self::DATA_TYPE_PRICE,
+            self::DATA_TYPE_DETAILS,
+            self::DATA_TYPE_SHIPPING,
+            self::DATA_TYPE_NEW_PRODUCT,
+        );
     }
 
     // ########################################
 
-    public function isAll()
+    public function isQtyAllowed()
     {
-        return isset($this->params[self::ALL_DATA_KEY]) &&
-               (bool)$this->params[self::ALL_DATA_KEY];
+        return $this->isAllowed(self::DATA_TYPE_QTY);
     }
 
-    public function isOnly()
+    public function allowQty()
     {
-        return isset($this->params[self::ONLY_DATA_KEY]) &&
-               is_array($this->params[self::ONLY_DATA_KEY]) &&
-               count($this->params[self::ONLY_DATA_KEY]) > 0;
+        return $this->allow(self::DATA_TYPE_QTY);
+    }
+
+    public function disallowQty()
+    {
+        return $this->disallow(self::DATA_TYPE_QTY);
     }
 
     // ----------------------------------------
 
-    public function isAllPermitted()
+    public function isPriceAllowed()
     {
-        return $this->isShipping() && $this->isSelling() &&
-               $this->isDetails() && $this->isNewProduct();
+        return $this->isAllowed(self::DATA_TYPE_PRICE);
     }
 
-    // ########################################
-
-    public function isDetails()
+    public function allowPrice()
     {
-        return $this->isAllowed(self::TYPE_DETAILS);
+        return $this->allow(self::DATA_TYPE_PRICE);
     }
 
-    public function isSelling()
+    public function disallowPrice()
     {
-        return $this->isAllowed(self::TYPE_SELLING);
+        return $this->disallow(self::DATA_TYPE_PRICE);
     }
 
-    public function isShipping()
+    // ----------------------------------------
+
+    public function isDetailsAllowed()
     {
-        return $this->isAllowed(self::TYPE_SHIPPING);
+        return $this->isAllowed(self::DATA_TYPE_DETAILS);
     }
 
-    public function isNewProduct()
+    public function allowDetails()
     {
-        return $this->isAllowed(self::TYPE_NEW_PRODUCT);
+        return $this->allow(self::DATA_TYPE_DETAILS);
     }
 
-    // ########################################
-
-    private function isAllowed($type)
+    public function disallowDetails()
     {
-        if ($this->isAll()) {
-            return true;
-        }
+        return $this->disallow(self::DATA_TYPE_DETAILS);
+    }
 
-        if (!$this->isOnly()) {
-            return true;
-        }
+    // ----------------------------------------
 
-        return isset($this->params[self::ONLY_DATA_KEY][$type]) &&
-               (bool)$this->params[self::ONLY_DATA_KEY][$type];
+    public function isShippingAllowed()
+    {
+        return $this->isAllowed(self::DATA_TYPE_SHIPPING);
+    }
+
+    public function allowShipping()
+    {
+        return $this->allow(self::DATA_TYPE_SHIPPING);
+    }
+
+    public function disallowShipping()
+    {
+        return $this->disallow(self::DATA_TYPE_SHIPPING);
+    }
+
+    // ----------------------------------------
+
+    public function isNewProductAllowed()
+    {
+        return $this->isAllowed(self::DATA_TYPE_NEW_PRODUCT);
+    }
+
+    public function allowNewProduct()
+    {
+        return $this->allow(self::DATA_TYPE_NEW_PRODUCT);
+    }
+
+    public function disallowNewProduct()
+    {
+        return $this->disallow(self::DATA_TYPE_NEW_PRODUCT);
     }
 
     // ########################################

@@ -1,4 +1,4 @@
-NewAsinTemplateDescriptionGridHandler = Class.create(CommonListingGridHandler, {
+CommonAmazonListingNewAsinTemplateDescriptionGridHandler = Class.create(CommonListingGridHandler, {
 
     //----------------------------------
 
@@ -9,7 +9,6 @@ NewAsinTemplateDescriptionGridHandler = Class.create(CommonListingGridHandler, {
 
     //----------------------------------
 
-    // todo getSelectedItemsParts
     getMaxProductsInPart: function()
     {
         return 1000;
@@ -20,8 +19,8 @@ NewAsinTemplateDescriptionGridHandler = Class.create(CommonListingGridHandler, {
     prepareActions: function($super)
     {
         $super();
-        this.actionHandler = new AmazonListingActionHandler(this);
-        this.templateDescriptionHandler = new AmazonListingTemplateDescriptionHandler(this);
+        this.actionHandler = new CommonAmazonListingActionHandler(this);
+        this.templateDescriptionHandler = new CommonAmazonListingTemplateDescriptionHandler(this);
 
         this.actions = Object.extend(this.actions, {
 

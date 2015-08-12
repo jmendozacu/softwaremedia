@@ -5,95 +5,91 @@
  */
 
 class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Configurator
+    extends Ess_M2ePro_Model_Listing_Product_Action_Configurator
 {
-    const ALL_DATA_KEY     = 'all_data';
-    const ONLY_DATA_KEY    = 'only_data';
-
-    const TYPE_GENERAL     = 'general';
-
-    const TYPE_QTY         = 'qty';
-    const TYPE_PRICE       = 'price';
-    const TYPE_IMAGES      = 'images';
-    const TYPE_DETAILS     = 'details';
-
-    /**
-     * @var array
-     */
-    private $params = array();
+    const DATA_TYPE_QTY     = 'qty';
+    const DATA_TYPE_PRICE   = 'price';
+    const DATA_TYPE_IMAGES  = 'images';
+    const DATA_TYPE_DETAILS = 'details';
 
     // ########################################
 
-    public function setParams(array $params = array())
+    public function getAllDataTypes()
     {
-        $this->params = $params;
-    }
-
-    public function getParams()
-    {
-        return $this->params;
+        return array(
+            self::DATA_TYPE_QTY,
+            self::DATA_TYPE_PRICE,
+            self::DATA_TYPE_DETAILS,
+            self::DATA_TYPE_IMAGES,
+        );
     }
 
     // ########################################
 
-    public function isAll()
+    public function isQtyAllowed()
     {
-        return isset($this->params[self::ALL_DATA_KEY]) &&
-               (bool)$this->params[self::ALL_DATA_KEY];
+        return $this->isAllowed(self::DATA_TYPE_QTY);
     }
 
-    public function isOnly()
+    public function allowQty()
     {
-        return isset($this->params[self::ONLY_DATA_KEY]) &&
-               is_array($this->params[self::ONLY_DATA_KEY]) &&
-               count($this->params[self::ONLY_DATA_KEY]) > 0;
+        return $this->allow(self::DATA_TYPE_QTY);
+    }
+
+    public function disallowQty()
+    {
+        return $this->disallow(self::DATA_TYPE_QTY);
     }
 
     // ----------------------------------------
 
-    public function isAllPermitted()
+    public function isPriceAllowed()
     {
-        return $this->isQty() && $this->isPrice() &&
-               $this->isImages() && $this->isDetails();
+        return $this->isAllowed(self::DATA_TYPE_PRICE);
     }
 
-    // ########################################
-
-    public function isQty()
+    public function allowPrice()
     {
-        return $this->isAllowed(self::TYPE_QTY);
+        return $this->allow(self::DATA_TYPE_PRICE);
     }
 
-    public function isPrice()
+    public function disallowPrice()
     {
-        return $this->isAllowed(self::TYPE_PRICE);
+        return $this->disallow(self::DATA_TYPE_PRICE);
     }
 
-    // -----------------------------------------
+    // ----------------------------------------
 
-    public function isImages()
+    public function isDetailsAllowed()
     {
-        return $this->isAllowed(self::TYPE_IMAGES);
+        return $this->isAllowed(self::DATA_TYPE_DETAILS);
     }
 
-    public function isDetails()
+    public function allowDetails()
     {
-        return $this->isAllowed(self::TYPE_DETAILS);
+        return $this->allow(self::DATA_TYPE_DETAILS);
     }
 
-    // ########################################
-
-    private function isAllowed($type)
+    public function disallowDetails()
     {
-        if ($this->isAll()) {
-            return true;
-        }
+        return $this->disallow(self::DATA_TYPE_DETAILS);
+    }
 
-        if (!$this->isOnly()) {
-            return true;
-        }
+    // ----------------------------------------
 
-        return isset($this->params[self::ONLY_DATA_KEY][$type]) &&
-               (bool)$this->params[self::ONLY_DATA_KEY][$type];
+    public function isImagesAllowed()
+    {
+        return $this->isAllowed(self::DATA_TYPE_IMAGES);
+    }
+
+    public function allowImages()
+    {
+        return $this->allow(self::DATA_TYPE_IMAGES);
+    }
+
+    public function disallowImages()
+    {
+        return $this->disallow(self::DATA_TYPE_IMAGES);
     }
 
     // ########################################

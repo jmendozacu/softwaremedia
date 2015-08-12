@@ -18,12 +18,14 @@ class Ess_M2ePro_Adminhtml_Common_AccountController
         $this->getLayout()->getBlock('head')->addJs('M2ePro/Plugin/DropDown.js')
                                             ->addCss('M2ePro/css/Plugin/DropDown.css');
 
+        $this->setComponentPageHelpLink('Accounts');
+
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration/account');
+        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
     //#############################################

@@ -12,6 +12,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
     protected $usedProductVariations = null;
 
     protected $listingProductId;
+
+    // ####################################
+
     /**
      * @param mixed $listingProductId
      */
@@ -73,8 +76,26 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         $collection->getSelect()->where("`second_table`.`variation_parent_id` = ?",(int)$this->getListingProductId());
         //----------------------------
 
+        $collection->getSelect()->joinLeft(
+            new Zend_Db_Expr('(
+                SELECT
+                    mlpv.listing_product_id,
+                    GROUP_CONCAT(`mlpvo`.`attribute`, \'=\', `mlpvo`.`product_id` SEPARATOR \'|\') as products_ids
+                FROM `'. Mage::getResourceModel('M2ePro/Listing_Product_Variation')->getMainTable() .'` as mlpv
+                INNER JOIN `'. Mage::getResourceModel('M2ePro/Listing_Product_Variation_Option')->getMainTable() .
+                    '` AS `mlpvo` ON (`mlpvo`.`listing_product_variation_id`=`mlpv`.`id`)
+                WHERE `mlpv`.`component_mode` = \'amazon\'
+                GROUP BY `mlpv`.`listing_product_id`
+            )'),
+            'main_table.id=t.listing_product_id',
+            array(
+                'products_ids' => 'products_ids',
+            )
+        );
+
         // Set collection to grid
         $this->setCollection($collection);
+//        exit($collection->getSelect()->__toString());
 
         return parent::_prepareCollection();
     }
@@ -243,13 +264,30 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
         $html .= '<div class="product-options-main" style="font-size: 11px; color: grey; margin-left: 7px">';
         $productOptions = $typeModel->getProductOptions();
         if (!empty($productOptions)) {
-            $html .= '<div class="product-options-list">';
+            $productsIds = $this->parseGroupedData($row->getData('products_ids'));
+            $uniqueProductsIds = count(array_unique($productsIds)) > 1;
+
+            $html .= '<div class="m2ePro-variation-attributes product-options-list">';
+            if (!$uniqueProductsIds) {
+                $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => reset($productsIds)));
+                $html .= '<a href="' . $url . '" target="_blank">';
+            }
             foreach ($productOptions as $attribute => $option) {
                 !$option && $option = '--';
-                $html .= '<span class="attribute-row"><span class="attribute"><strong>' .
+                $optionHtml = '<span class="attribute-row"><span class="attribute"><strong>' .
                     Mage::helper('M2ePro')->escapeHtml($attribute) .
                     '</strong></span>:&nbsp;<span class="value">' . Mage::helper('M2ePro')->escapeHtml($option) .
-                    '</span></span><br/>';
+                    '</span></span>';
+
+                if ($uniqueProductsIds && $option !== '--') {
+                    $url = $this->getUrl('adminhtml/catalog_product/edit', array('id' => $productsIds[$attribute]));
+                    $html .= '<a href="' . $url . '" target="_blank">' . $optionHtml . '</a><br/>';
+                } else {
+                    $html .= $optionHtml . '<br>';
+                }
+            }
+            if (!$uniqueProductsIds) {
+                $html .= '</a>';
             }
             $html .= '</div>';
         }
@@ -358,6 +396,10 @@ HTML;
 
     public function callbackColumnAmazonSku($value, $row, $column, $isExport)
     {
+        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
+        }
+
         if (is_null($value) || $value === '') {
             $value = Mage::helper('M2ePro')->__('N/A');
         }
@@ -408,14 +450,27 @@ HTML;
 
     public function callbackColumnAvailableQty($qty, $row, $column, $isExport)
     {
+        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
+        }
+
+        if ((bool)$row->getData('is_afn_channel')) {
+            return Mage::helper('M2ePro')->__('N/A');
+        }
+
         if (is_null($qty) || $qty === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
+
         return $qty;
     }
 
     public function callbackColumnPrice($value, $row, $column, $isExport)
     {
+        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
+        }
+
         if (is_null($value) || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
@@ -441,9 +496,9 @@ HTML;
             $startDateTimestamp = strtotime($row->getData('online_sale_price_start_date'));
             $endDateTimestamp   = strtotime($row->getData('online_sale_price_end_date'));
 
-            if ($currentTimestamp < $endDateTimestamp) {
-                $iconHelpPath = $this->getSkinUrl('M2ePro/images/help.png');
-                $toolTipIconPath = $this->getSkinUrl('M2ePro/images/tool-tip-icon.png');
+            if ($currentTimestamp <= $endDateTimestamp) {
+                $iconHelpPath = $this->getSkinUrl('M2ePro/images/i_logo.png');
+                $toolTipIconPath = $this->getSkinUrl('M2ePro/images/i_icon.png');
 
                 $dateFormat = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM);
 
@@ -456,8 +511,10 @@ HTML;
 
                 $intervalHtml = '<img class="tool-tip-image"
                                  style="vertical-align: middle;"
-                                 src="'.$toolTipIconPath.'">
-                            <span class="tool-tip-message" style="display:none; text-align: left; width: 110px;">
+                                 src="'.$toolTipIconPath.'"><span class="tool-tip-message" style="display:none;
+                                                                  text-align: left;
+                                                                  width: 120px;
+                                                                  background: #E3E3E3;">
                                 <img src="'.$iconHelpPath.'">
                                 <span style="color:gray;">
                                     <strong>From:</strong> '.$fromDate.'<br/>
@@ -472,10 +529,11 @@ HTML;
                     $salePrice < (float)$value
                 ) {
                     $resultHtml .= '<span style="color: grey; text-decoration: line-through;">'.$priceValue.'</span>';
-                    $resultHtml .= '<br/>'.$intervalHtml.$salePriceValue;
+                    $resultHtml .= '<br/>'.$intervalHtml.'&nbsp;'.$salePriceValue;
                 } else {
                     $resultHtml .= $priceValue;
-                    $resultHtml .= '<br/>'.$intervalHtml.'<span style="color:gray;">'.$salePriceValue.'</span>';
+                    $resultHtml .= '<br/>'.$intervalHtml.
+                        '<span style="color:gray;">'.'&nbsp;'.$salePriceValue.'</span>';
                 }
             }
         }
@@ -781,8 +839,8 @@ HTML;
             case Ess_M2ePro_Model_Listing_Log::ACTION_DELETE_AND_REMOVE_PRODUCT:
                 $string = Mage::helper('M2ePro')->__('Remove from Channel & Listing');
                 break;
-            case Ess_M2ePro_Model_Listing_Log::ACTION_CHANGE_STATUS_ON_CHANNEL:
-                $string = Mage::helper('M2ePro')->__('Status Change');
+            case Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE:
+                $string = Mage::helper('M2ePro')->__('Channel Change');
                 break;
         }
 
@@ -1213,7 +1271,7 @@ HTML;
 
         CommonHandler.prototype.scroll_page_to_top = function() { return; }
 
-        ListingGridHandlerObj = new AmazonListingVariationProductManageVariationsGridHandler(
+        ListingGridHandlerObj = new CommonAmazonListingVariationProductManageVariationsGridHandler(
             'amazonVariationProductManageGrid',
             {$listingId}
         );
@@ -1239,7 +1297,7 @@ HTML;
 </script>
 JAVASCRIPT;
 
-        $additionalCss = <<<CSS
+        $additionalCss = <<<HTML
 <style>
     body {
         background: none;
@@ -1267,7 +1325,7 @@ JAVASCRIPT;
     }
 
 </style>
-CSS;
+HTML;
 
         return  '<div id="messages"></div>' .
                 '<div id="listing_view_progress_bar"></div>' .
@@ -1580,6 +1638,21 @@ HTML;
         return <<<HTML
 <a href="{$url}" target="_blank" title="{$generalId}" >{$generalId}</a>
 HTML;
+    }
+
+    // ####################################
+
+    private function parseGroupedData($data)
+    {
+        $result = array();
+
+        $variationData = explode('|', $data);
+        foreach ($variationData as $variationAttribute) {
+            $value = explode('=', $variationAttribute);
+            $result[$value[0]] = $value[1];
+        }
+
+        return $result;
     }
 
     // ####################################

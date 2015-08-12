@@ -7,31 +7,54 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Configurator
     extends Ess_M2ePro_Model_Ebay_Listing_Action_Configurator
 {
-    const TYPE_IMAGES      = 'images';
-    const TYPE_VARIATIONS  = 'variations';
+    const DATA_TYPE_IMAGES      = 'images';
+    const DATA_TYPE_VARIATIONS  = 'variations';
 
     // ########################################
 
-    public function isAllPermitted()
+    public function getAllDataTypes()
     {
-        return $this->isGeneral() && $this->isVariations() &&
-               $this->isQty() && $this->isPrice() &&
-               $this->isTitle() && $this->isSubtitle() &&
-               $this->isDescription() && $this->isImages();
+        return array_merge(
+            parent::getAllDataTypes(),
+            array(
+                self::DATA_TYPE_IMAGES,
+                self::DATA_TYPE_VARIATIONS,
+            )
+        );
     }
 
     // ########################################
 
-    public function isVariations()
+    public function isImagesAllowed()
     {
-        return $this->isAllowed(self::TYPE_VARIATIONS);
+        return $this->isAllowed(self::DATA_TYPE_IMAGES);
+    }
+
+    public function allowImages()
+    {
+        return $this->allow(self::DATA_TYPE_IMAGES);
+    }
+
+    public function disallowImages()
+    {
+        return $this->disallow(self::DATA_TYPE_IMAGES);
     }
 
     // ----------------------------------------
 
-    public function isImages()
+    public function isVariationsAllowed()
     {
-        return $this->isAllowed(self::TYPE_IMAGES);
+        return $this->isAllowed(self::DATA_TYPE_VARIATIONS);
+    }
+
+    public function allowVariations()
+    {
+        return $this->allow(self::DATA_TYPE_VARIATIONS);
+    }
+
+    public function disallowVariations()
+    {
+        return $this->disallow(self::DATA_TYPE_VARIATIONS);
     }
 
     // ########################################

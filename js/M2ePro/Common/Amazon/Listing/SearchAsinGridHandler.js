@@ -1,4 +1,4 @@
-SearchAsinGridHandler = Class.create(CommonListingGridHandler, {
+CommonAmazonListingSearchAsinGridHandler = Class.create(CommonListingGridHandler, {
 
     //----------------------------------
 
@@ -9,7 +9,6 @@ SearchAsinGridHandler = Class.create(CommonListingGridHandler, {
 
     //----------------------------------
 
-    // todo getSelectedItemsParts
     getMaxProductsInPart: function()
     {
         return 1000;
@@ -20,8 +19,8 @@ SearchAsinGridHandler = Class.create(CommonListingGridHandler, {
     prepareActions: function($super)
     {
         $super();
-        this.actionHandler = new AmazonListingActionHandler(this);
-        this.productSearchHandler = new AmazonListingProductSearchHandler(this);
+        this.actionHandler = new CommonAmazonListingActionHandler(this);
+        this.productSearchHandler = new CommonAmazonListingProductSearchHandler(this);
 
         this.actions = Object.extend(this.actions, {
 

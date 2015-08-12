@@ -9,7 +9,10 @@
 
 </style>
 <div id="block_notice_buy_listing_add_general_settings" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General Settings'); ?>">
-    <?php echo Mage::helper('M2ePro')->__('This Page sets the Rakuten.com details and Magento Store View you want to use for this M2E Pro Listing.'); ?>
+    <?php echo Mage::helper('M2ePro')->__('This Page sets the Rakuten.com details and Magento Store View you want to use for this M2E Pro Listing.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Buy::NICK, 'Step+1%3A+General+Settings')
+    ); ?>
 </div>
 
 <script type="text/javascript">
@@ -90,7 +93,7 @@
 <div class="entry-edit" id="magento_block_buy_listing_buy_settings">
 
     <div class="entry-edit-head">
-        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Buy Settings'); ?></h4>
+        <h4 class="icon-head head-edit-form fieldset-legend"><?php echo Mage::helper('M2ePro')->__('Rakuten.com Settings'); ?></h4>
     </div>
 
     <div class="fieldset">

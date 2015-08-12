@@ -5,6 +5,8 @@
     $uniqueId      = $this->getUniqueId();
     $internalData  = $this->getInternalData();
 
+    $requiredDetailsFields = $this->getRequiredDetailsFields();
+
     $dictionarySpecifics       = json_encode($this->getDictionarySpecifics());
     $ebaySelectedSpecifics     = json_encode($this->getEbaySelectedSpecifics());
     $customSelectedSpecifics   = json_encode($this->getCustomSelectedSpecifics());
@@ -72,6 +74,22 @@
 
 </script>
 
+<?php if ($requiredDetailsFields) : ?>
+    <ul class="messages">
+        <li class="notice-msg">
+            <span>
+                <?php echo Mage::helper('M2ePro')->__('
+                    You selected an eBay Category where %UPC% Value is required.<br/>
+
+                    <strong>Note:</strong> also do not forget to check setting in eBay Catalog Identifiers block of
+                    Description Policy you are using.',
+                    implode(', ', $requiredDetailsFields)
+                ); ?>
+            </span>
+        </li>
+    </ul>
+<?php endif; ?>
+
 <form id="<?php echo $uniqueId; ?>category_specific_form">
 
 <div id="<?php echo $uniqueId; ?>listing_category_specific_item_specifics_container">
@@ -107,7 +125,10 @@
                         <b>None</b>
                         <br/>You choose not to offer potential Buyers any Item specific information. Be aware that this may hamper your Items appearing in eBay Search results.
                     </li>
-                </ul>'
+                </ul>
+                </br>
+                More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+                Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(Ess_M2ePro_Helper_Component_Ebay::NICK, 'Set+Item+Specifics')
             ); ?>
         </div>
 
@@ -175,6 +196,10 @@
             </div>
         </div>
     <?php endif; ?>
+
+    <div style="display: none;" class="validation-advice" id="<?php echo $uniqueId; ?>maximum_specifics_error" >
+        <?php echo Mage::helper('M2ePro')->__('You can select not more than 25 specifics.'); ?>
+    </div>
 
 </div>
 

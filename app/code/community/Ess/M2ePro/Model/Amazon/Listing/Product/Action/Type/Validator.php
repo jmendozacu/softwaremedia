@@ -223,10 +223,10 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
         if ($this->getListingProduct()->isBlocked()) {
 
 // M2ePro_TRANSLATIONS
-// The Action can not be executed as the Item was Closed, Incomplete or Blocked on Amazon. Please, go to Amazon Seller Central and Active the Item. After the next Synchronization the Item will be available.
+// The Action can not be executed as the Item was Closed, Incomplete or Blocked on Amazon. Please, go to Amazon Seller Central and activate the Item. After the next Synchronization the Item will be available.
             $this->addMessage(
                 'The Action can not be executed as the Item was Closed, Incomplete or Blocked on Amazon.
-                 Please, go to Amazon Seller Central and Active the Item.
+                 Please, go to Amazon Seller Central and activate the Item.
                  After the next Synchronization the Item will be available.'
             );
 
@@ -240,7 +240,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 
     protected function validateQty()
     {
-        if (!$this->getConfigurator()->isQty()) {
+        if (!$this->getConfigurator()->isQtyAllowed()) {
             return true;
         }
 
@@ -263,7 +263,7 @@ abstract class Ess_M2ePro_Model_Amazon_Listing_Product_Action_Type_Validator
 
     protected function validatePrice()
     {
-        if (!$this->getConfigurator()->isPrice()) {
+        if (!$this->getConfigurator()->isPriceAllowed()) {
             return true;
         }
 

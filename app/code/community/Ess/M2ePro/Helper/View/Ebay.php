@@ -10,7 +10,6 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
     // Sell On eBay
 
     const NICK  = 'ebay';
-    const TITLE = 'Sell On eBay';
 
     const WIZARD_INSTALLATION_NICK = 'installationEbay';
     const MENU_ROOT_NODE_NICK = 'm2epro_ebay';
@@ -20,9 +19,16 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 
     // ########################################
 
+    public function getTitle()
+    {
+        return Mage::helper('M2ePro')->__('Sell On eBay');
+    }
+
+    // ########################################
+
     public function getMenuRootNodeLabel()
     {
-        return Mage::helper('M2ePro')->__(self::TITLE);
+        return $this->getTitle();
     }
 
     // ########################################
@@ -41,11 +47,11 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
         $resultPath['menu'] = $menuLabel;
 
         if ($tabName) {
-            $resultPath['tab'] = $tabName . ' ' . Mage::helper('M2ePro')->__('Tab');
+            $resultPath['tab'] = Mage::helper('M2ePro')->__($tabName) . ' ' . Mage::helper('M2ePro')->__('Tab');
         }
 
         if ($additionalEnd) {
-            $resultPath['additional'] = $additionalEnd;
+            $resultPath['additional'] = Mage::helper('M2ePro')->__($additionalEnd);
         }
 
         return join($resultPath, ' > ');
@@ -95,20 +101,6 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
 
     // ########################################
 
-    public function getDocumentationUrl()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()
-                    ->getGroupValue('/view/ebay/support/', 'documentation_url');
-    }
-
-    public function getVideoTutorialsUrl()
-    {
-        return Mage::helper('M2ePro/Module')->getConfig()
-                    ->getGroupValue('/view/ebay/support/', 'video_tutorials_url');
-    }
-
-    // ########################################
-
     public function prepareMenu(array $menuArray)
     {
         if (!Mage::getSingleton('admin/session')->isAllowed(self::MENU_ROOT_NODE_NICK)) {
@@ -143,6 +135,60 @@ class Ess_M2ePro_Helper_View_Ebay extends Mage_Core_Helper_Abstract
         $menuArray[self::MENU_ROOT_NODE_NICK]['last'] = true;
 
         return $menuArray;
+    }
+
+    // ########################################
+
+    public function isFeedbacksShouldBeShown($accountId = NULL)
+    {
+        $accountCollection = Mage::getModel('M2ePro/Ebay_Account')->getCollection();
+        $accountCollection->addFieldToFilter(
+            'feedbacks_receive', Ess_M2ePro_Model_Ebay_Account::FEEDBACKS_RECEIVE_YES
+        );
+
+        $feedbackCollection = Mage::getModel('M2ePro/Ebay_Feedback')->getCollection();
+
+        if (!is_null($accountId)) {
+            $accountCollection->addFieldToFilter(
+                'account_id', $accountId
+            );
+            $feedbackCollection->addFieldToFilter(
+                'account_id', $accountId
+            );
+        }
+
+        return $accountCollection->getSize() || $feedbackCollection->getSize();
+    }
+
+    public function is3rdPartyShouldBeShown()
+    {
+        $sessionCache = Mage::helper('M2ePro/Data_Cache_Session');
+
+        if (!is_null($sessionCache->getValue('is_3rd_party_should_be_shown'))) {
+            return $sessionCache->getValue('is_3rd_party_should_be_shown');
+        }
+
+        $accountCollection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Account');
+        $accountCollection->addFieldToFilter(
+            'other_listings_synchronization', Ess_M2ePro_Model_Ebay_Account::OTHER_LISTINGS_SYNCHRONIZATION_YES
+        );
+
+        if ((bool)$accountCollection->getSize()) {
+            $result = true;
+        } else {
+            $collection = Mage::helper('M2ePro/Component_Ebay')->getCollection('Listing_Other');
+
+            $logCollection = Mage::getModel('M2ePro/Listing_Other_Log')->getCollection();
+            $logCollection->addFieldToFilter(
+                'component_mode', Ess_M2ePro_Helper_Component_Ebay::NICK
+            );
+
+            $result = $collection->getSize() || $logCollection->getSize();
+        }
+
+        $sessionCache->setValue('is_3rd_party_should_be_shown', $result);
+
+        return $result;
     }
 
     // ########################################

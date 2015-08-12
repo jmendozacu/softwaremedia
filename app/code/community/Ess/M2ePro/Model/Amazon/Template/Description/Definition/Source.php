@@ -379,6 +379,10 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
             ? $src['custom_value']
             : $this->getMagentoProduct()->getAttributeValue($src['custom_attribute']);
 
+        if ($weight === '') {
+            return '';
+        }
+
         $weight = str_replace(',', '.', $weight);
         $weight = round((float)$weight, 2);
 
@@ -443,7 +447,7 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
         return $imageLink;
     }
 
-    public function getImages()
+    public function getGalleryImages()
     {
         if ($this->getDescriptionDefinitionTemplate()->isImageMainModeNone()) {
             return array();
@@ -499,6 +503,30 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
 
         $galleryImages = array_slice($galleryImages,0,$limitGalleryImages);
         return array_merge($mainImage, $galleryImages);
+    }
+
+    public function getVariationDifferenceImages()
+    {
+        if ($this->getDescriptionDefinitionTemplate()->isImageVariationDifferenceModeNone()) {
+            return array();
+        }
+
+        $imageLink = '';
+
+        if ($this->getDescriptionDefinitionTemplate()->isImageVariationDifferenceModeProduct()) {
+            $imageLink = $this->getMagentoProduct()->getImageLink('image');
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isImageVariationDifferenceModeAttribute()) {
+            $src = $this->getDescriptionDefinitionTemplate()->getImageVariationDifferenceSource();
+            $imageLink = $this->getMagentoProduct()->getImageLink($src['attribute']);
+        }
+
+        if ($imageLink == '') {
+            return array();
+        }
+
+        return array($imageLink);
     }
 
     // ########################################

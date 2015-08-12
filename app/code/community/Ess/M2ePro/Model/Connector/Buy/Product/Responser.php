@@ -25,9 +25,9 @@ abstract class Ess_M2ePro_Model_Connector_Buy_Product_Responser
     protected $logger = NULL;
 
     /**
-     * @var Ess_M2ePro_Model_Buy_Listing_Product_Action_Configurator
+     * @var Ess_M2ePro_Model_Buy_Listing_Product_Action_Configurator[]
      */
-    protected $configurator = NULL;
+    protected $configurators = array();
 
     // ---------------------------------------
 
@@ -153,43 +153,36 @@ abstract class Ess_M2ePro_Model_Connector_Buy_Product_Responser
         $inspector = Mage::getModel('M2ePro/Buy_Synchronization_Templates_Inspector');
 
         foreach ($listingsProductsByStatus[Ess_M2ePro_Model_Listing_Product::STATUS_LISTED] as $listingProduct) {
-            if ($inspector->isMeetReviseQtyRequirements($listingProduct)) {
 
-                $actionParams = array('only_data'=>array('selling'=>true));
+            /** @var Ess_M2ePro_Model_Listing_Product $listingProduct */
 
+            $configurator = Mage::getModel('M2ePro/Buy_Listing_Product_Action_Configurator');
+
+            if ($inspector->isMeetStopRequirements($listingProduct)) {
                 $runner->addProduct(
-                    $listingProduct,
-                    Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
-                    $actionParams
+                    $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_STOP, $configurator
                 );
 
                 continue;
+            }
+
+            if ($inspector->isMeetReviseQtyRequirements($listingProduct)) {
+                $configurator->setPartialMode();
+                $configurator->allowQty();
+
+                $runner->addProduct(
+                    $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $configurator
+                );
             }
 
             if ($inspector->isMeetRevisePriceRequirements($listingProduct)) {
-
-                $actionParams = array('only_data'=>array('selling'=>true));
+                $configurator->setPartialMode();
+                $configurator->allowPrice();
 
                 $runner->addProduct(
-                    $listingProduct,
-                    Ess_M2ePro_Model_Listing_Product::ACTION_REVISE,
-                    $actionParams
+                    $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_REVISE, $configurator
                 );
-
-                continue;
             }
-
-            if (!$inspector->isMeetStopRequirements($listingProduct)) {
-                continue;
-            }
-
-            $actionParams = array('only_data'=>array('selling'=>true));
-
-            $runner->addProduct(
-                $listingProduct,
-                Ess_M2ePro_Model_Listing_Product::ACTION_STOP,
-                $actionParams
-            );
         }
 
         foreach ($listingsProductsByStatus[Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED] as $listingProduct) {
@@ -197,12 +190,10 @@ abstract class Ess_M2ePro_Model_Connector_Buy_Product_Responser
                 continue;
             }
 
-            $actionParams = array('only_data'=>array('selling'=>true));
+            $configurator = Mage::getModel('M2ePro/Buy_Listing_Product_Action_Configurator');
 
             $runner->addProduct(
-                $listingProduct,
-                Ess_M2ePro_Model_Listing_Product::ACTION_LIST,
-                $actionParams
+                $listingProduct, Ess_M2ePro_Model_Listing_Product::ACTION_LIST, $configurator
             );
         }
 
@@ -336,22 +327,17 @@ abstract class Ess_M2ePro_Model_Connector_Buy_Product_Responser
         return $this->logger;
     }
 
-    /**
-     * @return Ess_M2ePro_Model_Buy_Listing_Product_Action_Configurator
-     */
-    protected function getConfigurator()
+    protected function getConfigurator(Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
-        if (is_null($this->configurator)) {
-
-            /** @var Ess_M2ePro_Model_Buy_Listing_Product_Action_Configurator $configurator */
+        if (empty($this->configurators[$listingProduct->getId()])) {
 
             $configurator = Mage::getModel('M2ePro/Buy_Listing_Product_Action_Configurator');
-            $configurator->setParams($this->params['params']);
+            $configurator->setData($this->params['products'][$listingProduct->getId()]['configurator']);
 
-            $this->configurator = $configurator;
+            $this->configurators[$listingProduct->getId()] = $configurator;
         }
 
-        return $this->configurator;
+        return $this->configurators[$listingProduct->getId()];
     }
 
     // ########################################
@@ -371,7 +357,7 @@ abstract class Ess_M2ePro_Model_Connector_Buy_Product_Responser
 
             $response->setParams($this->params['params']);
             $response->setListingProduct($listingProduct);
-            $response->setConfigurator($this->getConfigurator());
+            $response->setConfigurator($this->getConfigurator($listingProduct));
             $response->setRequestData($this->getRequestDataObject($listingProduct));
 
             $this->responsesObjects[$listingProduct->getId()] = $response;
@@ -391,7 +377,7 @@ abstract class Ess_M2ePro_Model_Connector_Buy_Product_Responser
             /** @var Ess_M2ePro_Model_Buy_Listing_Product_Action_RequestData $requestData */
             $requestData = Mage::getModel('M2ePro/Buy_Listing_Product_Action_RequestData');
 
-            $requestData->setData($this->params['products'][$listingProduct->getId()]);
+            $requestData->setData($this->params['products'][$listingProduct->getId()]['request']);
             $requestData->setListingProduct($listingProduct);
 
             $this->requestsDataObjects[$listingProduct->getId()] = $requestData;

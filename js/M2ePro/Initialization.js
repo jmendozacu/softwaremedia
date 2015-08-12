@@ -11,6 +11,20 @@ ServerNoticeObj = new BlockNotice('Server');
 MagentoFieldTipObj = new MagentoFieldTip();
 // ----------------------------------
 
+function setPageHelpLink(url)
+{
+    if (!url) {
+        return;
+    }
+
+    var heplLink = $('page-help-link');
+
+    if (heplLink) {
+        heplLink.href = url;
+        heplLink.target = '_blank'
+    }
+}
+
 function initializationMagentoBlocks()
 {
     CommonHandlerObj.initCommonValidators();
@@ -87,6 +101,32 @@ function initializationMagentoBlocks()
     });
 }
 
+function prepareFloatingToolbarContent()
+{
+    var headerElements = $$('.content-header');
+
+    if (headerElements.length == 0) {
+        return;
+    }
+
+    var wasFirstFound = false;
+    for (var i = 0; i < headerElements.length; i++) {
+
+        if (headerElements[i].parentElement.hasClassName('content-header-floating')) {
+            continue;
+        }
+
+        if (!wasFirstFound) {
+            wasFirstFound = true;
+            continue;
+        }
+
+        headerElements[i].addClassName('skip-header');
+    }
+
+    updateTopButtonToolbarToggle();
+}
+
 // Set main observers
 // ----------------------------------
 Event.observe(window, 'load', function() {
@@ -101,6 +141,8 @@ Event.observe(window, 'load', function() {
         }
 
     };
+
+    prepareFloatingToolbarContent();
 
     Ajax.Responders.register(ajaxHandler);
 });
