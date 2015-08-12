@@ -283,10 +283,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View_Grid extends M
 
     public function callbackColumnProductTitle($value, $row, $column, $isExport)
     {
-        $value = '<span>' . Mage::helper('M2ePro')->escapeHtml($value) . '</span>';
+        if (is_null($value)) {
+            $value = '<i style="color:gray;">receiving...</i>';
+        } elseif ($value == '') {
+            $value = '<i style="color:gray;">none</i>';
+        } else {
+            $value = '<span>' . Mage::helper('M2ePro')->escapeHtml($value) . '</span>';
+        }
 
         $tempSku = $row->getData('sku');
-        empty($tempSku) && $tempSku = 'N/A';
+        empty($tempSku) && $tempSku = Mage::helper('M2ePro')->__('N/A');
 
         $value .= '<br/><strong>'
                   .Mage::helper('M2ePro')->__('SKU')
@@ -356,10 +362,6 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View_Grid extends M
         switch ($row->getData('status')) {
 
             case Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN:
-            case Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED:
-                $value = '<span style="color: gray;">' . $value . '</span>';
-                break;
-
             case Ess_M2ePro_Model_Listing_Product::STATUS_LISTED:
                 $value = '<span style="color: green;">' . $value . '</span>';
                 break;
@@ -480,8 +482,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Other_View_Grid extends M
         $string = '';
 
         switch ((int)$actionRows['action']) {
-            case Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANGE_STATUS_ON_CHANNEL:
-                $string = Mage::helper('M2ePro')->__('Status Change');
+            case Ess_M2ePro_Model_Listing_Other_Log::ACTION_CHANNEL_CHANGE:
+                $string = Mage::helper('M2ePro')->__('Channel Change');
                 break;
         }
 

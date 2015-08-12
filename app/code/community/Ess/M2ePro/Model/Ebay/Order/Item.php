@@ -9,8 +9,6 @@
  */
 class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_Ebay_Abstract
 {
-    // ##########################################################
-
     const UNPAID_ITEM_PROCESS_NOT_OPENED = 0;
     const UNPAID_ITEM_PROCESS_OPENED     = 1;
 
@@ -64,6 +62,9 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
 
     // ########################################
 
+    /**
+     * @return Ess_M2ePro_Model_Ebay_Item
+     */
     public function getChannelItem()
     {
         if (is_null($this->channelItem)) {
@@ -153,12 +154,6 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
         return $this->getSettings('variation_details');
     }
 
-    // todo remove after change product association logic
-    public function getVariation()
-    {
-        return $this->getVariationOptions();
-    }
-
     public function hasVariation()
     {
         return count($this->getVariationDetails()) > 0;
@@ -194,20 +189,27 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
 
     // ----------------------------------------------------------
 
-    // todo maybe remove (getVariationOptions instead)
-    public function getRepairInput()
+    public function getVariationProductOptions()
     {
-        $variation   = $this->getVariationDetails();
-        if (empty($variation)) {
-            return array();
+        $channelItem = $this->getChannelItem();
+        if (empty($channelItem)) {
+            return $this->getVariationChannelOptions();
         }
 
-        $repairInput = array();
-        foreach ($variation['options'] as $option => $value) {
-            $repairInput[trim($option)] = trim($value);
+        foreach ($channelItem->getVariations() as $variation) {
+            if ($variation['channel_options'] != $this->getVariationChannelOptions()) {
+                continue;
+            }
+
+            return $variation['product_options'];
         }
 
-        return $repairInput;
+        return $this->getVariationChannelOptions();
+    }
+
+    public function getVariationChannelOptions()
+    {
+        return $this->getVariationOptions();
     }
 
     // ########################################
@@ -348,8 +350,8 @@ class Ess_M2ePro_Model_Ebay_Order_Item extends Ess_M2ePro_Model_Component_Child_
     {
         if (!$this->hasVariation()) {
             Mage::dispatchEvent('m2epro_associate_ebay_order_item_to_product', array(
-                'product_id' => $product->getId(),
-                'item_id'    => $this->getItemId()
+                'product'    => $product,
+                'order_item' => $this->getParentObject(),
             ));
         }
     }

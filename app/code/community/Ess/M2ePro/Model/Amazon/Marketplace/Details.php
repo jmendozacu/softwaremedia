@@ -6,13 +6,9 @@
 
 class Ess_M2ePro_Model_Amazon_Marketplace_Details
 {
-    // ##########################################################
-
     private $marketplaceId = null;
 
     private $productData = array();
-
-    private $vocabularyData = array();
 
     // ##########################################################
 
@@ -30,38 +26,10 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Details
 
     // ##########################################################
 
-    public function getVocabularyAttributeNames($attribute)
+    public function getProductData()
     {
-        if (empty($this->vocabularyData[$attribute])) {
-            return array();
-        }
-
-        return $this->vocabularyData[$attribute]['names'];
+       return $this->productData;
     }
-
-    public function getVocabularyOptionNames($attribute, $option)
-    {
-        if (empty($this->vocabularyData[$attribute]['options'])) {
-            return array();
-        }
-
-        $resultNames = array();
-
-        foreach ($this->vocabularyData[$attribute]['options'] as $optionNames) {
-            $preparedOption      = strtolower($option);
-            $preparedOptionNames = array_map('strtolower', $optionNames);
-
-            if (!in_array($preparedOption, $preparedOptionNames)) {
-                continue;
-            }
-
-            $resultNames = array_merge($resultNames, $optionNames);
-        }
-
-        return $resultNames;
-    }
-
-    // ##########################################################
 
     public function getVariationThemes($productDataNick)
     {
@@ -101,7 +69,6 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Details
         }
 
         $this->productData    = json_decode($data['product_data'], true);
-        $this->vocabularyData = json_decode($data['vocabulary'], true);
     }
 
     // ##########################################################

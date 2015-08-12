@@ -71,7 +71,32 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
 
         is_string($result) && $result = trim($result);
 
+        if (!empty($result)) {
+            return $this->applySkuModification($result);
+        }
+
         return $result;
+    }
+
+    // ----------------------------------------
+
+    protected function applySkuModification($sku)
+    {
+        if ($this->getAmazonListing()->isSkuModificationModeNone()) {
+            return $sku;
+        }
+
+        $source = $this->getAmazonListing()->getSkuModificationSource();
+
+        if ($this->getAmazonListing()->isSkuModificationModePrefix()) {
+            $sku = $source['value'] . $sku;
+        } elseif ($this->getAmazonListing()->isSkuModificationModePostfix()) {
+            $sku = $sku . $source['value'];
+        } elseif ($this->getAmazonListing()->isSkuModificationModeTemplate()) {
+            $sku = str_replace('%value%', $sku, $source['value']);
+        }
+
+        return $sku;
     }
 
     // ----------------------------------------
@@ -201,7 +226,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Source
         return $imageLink;
     }
 
-    public function getImages()
+    public function getGalleryImages()
     {
         if ($this->getAmazonListing()->isImageMainModeNone()) {
             return array();

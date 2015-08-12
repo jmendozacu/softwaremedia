@@ -55,10 +55,6 @@ class Ess_M2ePro_Adminhtml_Common_LogController
 
     public function listingAction()
     {
-        if (!Mage::getSingleton('admin/session')->isAllowed('m2epro_common/logs/listing')) {
-            return $this->_forward('denied');
-        }
-
         $id = $this->getRequest()->getParam('id', false);
         if ($id) {
             $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing', $id);
@@ -78,8 +74,17 @@ class Ess_M2ePro_Adminhtml_Common_LogController
             );
         }
 
-        $this->_initAction()
-             ->_title(Mage::helper('M2ePro')->__('Listings Log'))
+        $this->_initAction();
+
+        $channel = $this->getRequest()->getParam('channel');
+
+        if (!is_null($channel) && $channel !== 'all') {
+            $this->setComponentPageHelpLink('Logs#Logs-ListingsLog', $channel);
+        } else {
+            $this->setComponentPageHelpLink('Logs#Logs-ListingsLog');
+        }
+
+        $this->_title(Mage::helper('M2ePro')->__('Listings Log'))
              ->_addContent($block)
              ->renderLayout();
     }
@@ -144,10 +149,6 @@ class Ess_M2ePro_Adminhtml_Common_LogController
 
     public function listingOtherAction()
     {
-        if (!Mage::getSingleton('admin/session')->isAllowed('m2epro_common/logs/listing_other')) {
-            return $this->_forward('denied');
-        }
-
         $id = $this->getRequest()->getParam('id');
         $model = Mage::getModel('M2ePro/Listing_Other')->load($id);
 
@@ -167,8 +168,17 @@ class Ess_M2ePro_Adminhtml_Common_LogController
             );
         }
 
-        $this->_initAction()
-             ->_title(Mage::helper('M2ePro')->__('3rd Party Listings Log'))
+        $this->_initAction();
+
+        $channel = $this->getRequest()->getParam('channel');
+
+        if (!is_null($channel) && $channel !== 'all') {
+            $this->setComponentPageHelpLink('Logs#Logs-3rdPartyListingsLog', $channel);
+        } else {
+            $this->setComponentPageHelpLink('Logs#Logs-3rdPartyListingsLog');
+        }
+
+        $this->_title(Mage::helper('M2ePro')->__('3rd Party Listings Log'))
              ->_addContent($block)
              ->renderLayout();
     }
@@ -195,13 +205,17 @@ class Ess_M2ePro_Adminhtml_Common_LogController
 
     public function synchronizationAction()
     {
-        if (!Mage::getSingleton('admin/session')->isAllowed('m2epro_common/logs/synchronization')) {
-            $this->_forward('denied');
-            return;
+        $this->_initAction();
+
+        $channel = $this->getRequest()->getParam('channel');
+
+        if (!is_null($channel) && $channel !== 'all') {
+            $this->setComponentPageHelpLink('Logs#Logs-SynchronizationLog', $channel);
+        } else {
+            $this->setComponentPageHelpLink('Logs#Logs-SynchronizationLog');
         }
 
-        $this->_initAction()
-             ->_title(Mage::helper('M2ePro')->__('Synchronization Log'))
+        $this->_title(Mage::helper('M2ePro')->__('Synchronization Log'))
              ->_addContent($this->getLayout()->createBlock(
                  'M2ePro/adminhtml_common_log', '',
                  array('active_tab' => Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::TAB_ID_SYNCHRONIZATION)
@@ -222,13 +236,17 @@ class Ess_M2ePro_Adminhtml_Common_LogController
 
     public function orderAction()
     {
-        if (!Mage::getSingleton('admin/session')->isAllowed('m2epro_common/logs/order')) {
-            $this->_forward('denied');
-            return;
+        $this->_initAction();
+
+        $channel = $this->getRequest()->getParam('channel');
+
+        if (!is_null($channel) && $channel !== 'all') {
+            $this->setComponentPageHelpLink('Logs#Logs-OrdersLog', $channel);
+        } else {
+            $this->setComponentPageHelpLink('Logs#Logs-OrdersLog');
         }
 
-        $this->_initAction()
-             ->_title(Mage::helper('M2ePro')->__('Orders Log'))
+        $this->_title(Mage::helper('M2ePro')->__('Orders Log'))
              ->_addContent($this->getLayout()->createBlock(
                  'M2ePro/adminhtml_common_log', '',
                  array('active_tab' => Ess_M2ePro_Block_Adminhtml_Common_Log_Tabs::TAB_ID_ORDER)

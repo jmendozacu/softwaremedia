@@ -10,13 +10,15 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
     protected $component;
     protected $sessionKeyPostfix = '_listing_product_add';
 
+    //#############################################
+
     protected function _initAction()
     {
-        $componentTitle = constant('Ess_M2ePro_Helper_Component_'.ucfirst($this->getComponent()).'::TITLE');
+        $componentTitle = Mage::helper('M2ePro/Component_'.ucfirst($this->getComponent()))->getTitle();
 
         $this->loadLayout()
             ->_title(Mage::helper('M2ePro')->__('Manage Listings'))
-            ->_title(Mage::helper('M2ePro')->__($componentTitle.' Listings'));
+            ->_title(Mage::helper('M2ePro')->__('%component_title% Listings', $componentTitle));
 
         $this->getLayout()->getBlock('head')
             ->setCanLoadExtJs(true)
@@ -32,7 +34,6 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
             ->addJs('M2ePro/Common/Listing/Category/Summary/GridHandler.js')
             ->addJs('M2ePro/Common/Listing/Category/TreeHandler.js')
-            ->addJs('M2ePro/Common/Listing/Category/Handler.js')
             ->addJs('M2ePro/Common/Listing/AddListingHandler.js');
 
         if ($this->getComponent() === Ess_M2ePro_Helper_Component_Amazon::NICK) {
@@ -40,6 +41,13 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         }
 
         $this->_initPopUp();
+
+        $component = $this->getRequest()->getParam('component');
+        if (!$component) {
+            $this->setComponentPageHelpLink('Add+Magento+Products');
+        } else {
+            $this->setPageHelpLink($component, 'Add+Magento+Products');
+        }
 
         return $this;
     }
@@ -141,10 +149,18 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
-        $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_add_sourceProduct', '',
+        $this->_initAction();
+
+        $component = $this->getComponent();
+        if (!$component) {
+            $this->setComponentPageHelpLink('Adding+Products+from+the+List');
+        } else {
+            $this->setPageHelpLink($component, 'Adding+Products+from+the+List');
+        }
+
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_add_sourceProduct', '',
                 array(
-                    'component' => $this->getComponent()
+                    'component' => $component
                 )
             ))
             ->renderLayout();
@@ -202,6 +218,13 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
         $this->_initAction();
 
+        $component = $this->getComponent();
+        if (!$component) {
+            $this->setComponentPageHelpLink('Adding+Products+from+Category');
+        } else {
+            $this->setPageHelpLink($component, 'Adding+Products+from+Category');
+        }
+
         $gridContainer = $this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_add_sourceCategory','',array(
             'component' => $this->getComponent()
         ));
@@ -209,7 +232,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
         /* @var $treeBlock Ess_M2ePro_Block_Adminhtml_Common_Listing_Category_Tree */
         $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_category_tree', '', array(
-            'component' => $this->getComponent(),
+            'component' => $component,
             'tree_settings' => array(
                 'show_products_amount' => true,
                 'hide_products_this_listing' => true
@@ -338,8 +361,6 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
         $isLastPart = $this->getRequest()->getParam('is_last_part');
         if ($isLastPart == 'yes') {
-
-            Mage::helper('M2ePro/Data_Session')->setValue('temp_listing_categories', array());
 
             $backUrl = $this->getUrl('*/*/index', array(
                 'id' => $listingId,

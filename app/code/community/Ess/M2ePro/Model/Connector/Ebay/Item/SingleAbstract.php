@@ -31,7 +31,15 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_SingleAbstract
 
     public function __construct(array $params = array(), Ess_M2ePro_Model_Listing_Product $listingProduct)
     {
+        if (!is_null($listingProduct->getActionConfigurator())) {
+            $actionConfigurator = $listingProduct->getActionConfigurator();
+        } else {
+            $actionConfigurator = Mage::getModel('M2ePro/Ebay_Listing_Product_Action_Configurator');
+        }
+
         $this->listingProduct = $listingProduct->loadInstance($listingProduct->getId());
+        $this->listingProduct->setActionConfigurator($actionConfigurator);
+
         parent::__construct($params,$this->listingProduct->getMarketplace(),$this->listingProduct->getAccount());
     }
 
@@ -89,6 +97,13 @@ abstract class Ess_M2ePro_Model_Connector_Ebay_Item_SingleAbstract
         $this->lockListingProduct();
 
         return $this->filterManualListingProduct();
+    }
+
+    protected function getRequestTimeout()
+    {
+        $requestDataObject = $this->getRequestDataObject($this->listingProduct);
+        $imagesTimeout = self::TIMEOUT_INCREMENT_FOR_ONE_IMAGE * $requestDataObject->getTotalImagesCount();
+        return parent::getRequestTimeout() + $imagesTimeout;
     }
 
     // -----------------------------------------

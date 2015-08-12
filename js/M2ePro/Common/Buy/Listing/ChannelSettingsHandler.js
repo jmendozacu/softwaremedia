@@ -1,5 +1,5 @@
-BuyListingChannelSettingsHandler = Class.create();
-BuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandler(), {
+CommonBuyListingChannelSettingsHandler = Class.create();
+CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandler(), {
 
     //----------------------------------
 
@@ -16,6 +16,36 @@ BuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandler(), 
 
         Validation.add('M2ePro-validate-shipping-value-positive', M2ePro.text.shipping_rate_error, function(value) {
             return value >= 0;
+        });
+
+        Validation.add('M2ePro-validate-sku-modification-custom-value', M2ePro.text.sku_modification_custom_value_error, function(value) {
+
+            var self = BuyListingChannelSettingsHandlerObj;
+
+            if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_NONE) {
+                return true;
+            }
+
+            if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_TEMPLATE) {
+                return value.match(/%value%/g);
+            }
+
+            return true;
+        });
+
+        Validation.add('M2ePro-validate-sku-modification-custom-value-max-length', M2ePro.text.sku_modification_custom_value_max_length_error, function(value) {
+
+            var self = BuyListingChannelSettingsHandlerObj;
+
+            if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_NONE) {
+                return true;
+            }
+
+            if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_TEMPLATE) {
+                value = value.replace('%value%', '');
+            }
+
+            return value.length < M2ePro.php.constant('Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Validator_Sku_General::SKU_MAX_LENGTH');
         });
     },
 
@@ -51,6 +81,25 @@ BuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandler(), 
         $('sku_custom_attribute').value = '';
         if (this.value == self.SKU_MODE_CUSTOM_ATTRIBUTE) {
             self.updateHiddenValue(this, $('sku_custom_attribute'));
+        }
+    },
+
+    //----------------------------------
+
+    sku_modification_mode_change: function()
+    {
+        var self = BuyListingChannelSettingsHandlerObj;
+
+        if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_TEMPLATE) {
+            $('sku_modification_custom_value').value = '%value%';
+        } else {
+            $('sku_modification_custom_value').value = '';
+        }
+
+        if ($('sku_modification_mode').value == self.SKU_MODIFICATION_MODE_NONE) {
+            $('sku_modification_custom_value_tr').hide();
+        } else {
+            $('sku_modification_custom_value_tr').show();
         }
     },
 

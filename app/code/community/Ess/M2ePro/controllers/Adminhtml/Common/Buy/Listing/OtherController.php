@@ -37,12 +37,14 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Listing_OtherController
 
         $this->_initPopUp();
 
+        $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Buy::NICK, '3rd+Party+Listings');
+
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings/listing_other');
+        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings');
     }
 
     //#############################################

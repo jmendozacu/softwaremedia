@@ -24,6 +24,12 @@ class Ess_M2ePro_Adminhtml_SupportController
         return $this;
     }
 
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('m2epro_ebay/help') ||
+               Mage::getSingleton('admin/session')->isAllowed('m2epro_common/help');
+    }
+
     public function loadLayout($ids=null, $generateBlocks=true, $generateXml=true)
     {
         $tempResult = parent::loadLayout($ids, $generateBlocks, $generateXml);
@@ -45,8 +51,23 @@ class Ess_M2ePro_Adminhtml_SupportController
 
     public function indexAction()
     {
-        $this->_initAction()
-             ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_support'))
+        $this->_initAction();
+
+        $referrer = $this->getRequest()->getParam('referrer');
+
+        if ($referrer == Ess_M2ePro_Helper_Component_Ebay::NICK) {
+
+            $this->setPageHelpLink(Ess_M2ePro_Helper_View_Ebay::NICK);
+
+        } elseif ($referrer == Ess_M2ePro_Helper_View_Common::NICK) {
+
+            $components = Mage::helper('M2ePro/View_Common_Component')->getActiveComponents();
+            if (count($components) == 1) {
+                $this->setPageHelpLink(array_shift($components));
+            }
+        }
+
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_support'))
              ->renderLayout();
     }
 
@@ -71,10 +92,21 @@ class Ess_M2ePro_Adminhtml_SupportController
     {
         $referrer = $this->getRequest()->getParam('referrer');
 
-        $url = Mage::helper('M2ePro/View_Ebay')->getDocumentationUrl();
+        $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl();
 
-        if (isset($referrer) && $referrer == Ess_M2ePro_Helper_View_Common::NICK) {
-            $url = Mage::helper('M2ePro/View_Common')->getDocumentationUrl();
+        if ($referrer == Ess_M2ePro_Helper_View_Ebay::NICK) {
+
+            $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(
+                Ess_M2ePro_Helper_Component_Ebay::NICK
+            );
+
+        } elseif ($referrer == Ess_M2ePro_Helper_View_Common::NICK) {
+
+            $activeComponents = Mage::helper('M2ePro/View_Common_Component')->getActiveComponents();
+
+            if (count($activeComponents) == 1) {
+                $url = Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(array_shift($activeComponents));
+            }
         }
 
         $html = '<iframe src="' .$url . '" width="100%" height="650"></iframe>';

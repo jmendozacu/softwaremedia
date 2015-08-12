@@ -15,12 +15,14 @@ class Ess_M2ePro_Adminhtml_Common_ConfigurationController
             ->_title(Mage::helper('M2ePro')->__('Configuration'))
             ->_title(Mage::helper('M2ePro')->__('Global'));
 
+        $this->setComponentPageHelpLink('Global+Settings');
+
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration/global');
+        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
     //#############################################

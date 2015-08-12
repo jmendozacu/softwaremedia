@@ -1,3 +1,84 @@
+* 6.3.5 (r9311) (09/08/2015)
+
+* Added: Hyperlinks to the certain documentation part into Help Block at the top of each Page Content
+* Added: "Get help for this page" (in magento admin panel header) redirects to appropriate documentations page
+* Added: Ability to send Tracking Number to the Channel by saving track model in programmatic way
+* Added: Ability to disable sending of Order Emails in Account settings for customers created by M2E Pro
+* Added: [eBay] Strike Through Price feature for all Canadian Marketplaces
+* Added: [eBay] Amount of Bids for auction Items and the bidding history
+* Added: [eBay] Ability to set Magento Attribute as source for Country/Postal Code/City in Shipping Policy
+* Added: [eBay] "Unbranded" or "Does not Apply" as value of Catalog Identifier (Brand/MPN/UPC/EAN/ISBN)
+* Added: [eBay] Status column in Manage Variations Pop-up for each Variation
+* Added: [Amazon] Settings view mode of Listing (management of Description Policy, Moving, etc.)
+* Added: [Amazon] Swatch image for Child Products in images block of Description Policy
+* Added: [Amazon] Ability to manage associations of Attributes/Options which were saved manually
+* Added: [Amazon] A lot of Categories which were not supported earlier (almost all of them)
+* Added: [Amazon] Ability to select any Product Type regardless of selected Category
+* Improvement: Fast navigation to the Magento Child Product(s) from Manage Variations Popup
+* Improvement: "Not Listed" label instead of "N/A" for Items/Products if their status is "Not Listed"
+* Improvement: [eBay] Replacement of Variation Attribute Label by Item Specific Label for Configurable Products
+* Improvement: [eBay] Automatic Mapping of 3rd party item if manual mapping for Order Item is performed
+* Improvement: [eBay] Added Validators for EAN/UPC/ISBN values in Manage Variations Pop-up
+* Improvement: [Amazon] AFN offers are not relisted and stopped (prevention of switching to MFN by revise of QTY)
+* Improvement: [Amazon] Warning if some Child Products are not matched to certain Magento Variation
+* Improvement: [Amazon] Manually selected Variations Themes will have priority for automatic matching in future
+* Improvement: [Amazon] Assigning ASIN/ISBN for products during Products adding process
+* Improvement: [Rakuten.com] Ability to revise QTY and Price separately (earlier only together)
+* Fix: "Access Denied" message on the some pages after applying a magento security patch
+* Fix: Notice ob_end_clean(): failed to delete buffer in the error_log during of synchronization
+* Fix: [eBay] Additional prevention of Marketplace Items duplicating
+* Fix: [eBay] Constant "This call resulted in [number] records, but on ..." error message
+* Fix: [eBay] Duplicate of Magento Products can be created during Magento Order Creation process
+* Fix: [Amazon] Ability to remember Variations Options association when Child Product Options are saved/changed
+* Fix: [Amazon] CAD currency instead of USD for Canada Marketplace (right usage of conversion tool)
+* Fix: [Amazon] Space at the beginning of some values in Description Policy (bullet point etc.)
+
+* 6.3.4 (r9154) (16/07/2015)
+
+* Added: Min-Max intervals for Variational Products Prices
+* Added: Logs about changes of Price/QTY/Status directly on channel
+* Added: [eBay] Popup with all Variations and their Prices/QTY/Statuses
+* Added: [eBay] Custom Import/Management Tool of ePIDs / kTypes records
+* Added: [eBay] Ability to set UPC/EAN/ISBN for each Variation manually
+* Added: [eBay] Current/Start/Reserve/"Buy It Now" Prices are shown for auction Items
+* Added: [Amazon] Ability to remember relations of Amazon and Magento Attributes/Options for variational Products
+* Added: [Amazon/Rakuten.com] Fully New / Updated Documentation (http://docs.m2epro.com/) + links from Pages
+* Added: [Amazon/Rakuten.com] Ability to set SKU modifications rules for List action
+* Added: [Amazon/Rakuten.com] Ability to search 3rd Party Listings and M2E Pro listings together
+* Improvement: Add record to Listing Log when product QTY was changed by QTY Reservation functionality
+* Improvement: Performance of QTY/Price updating ("Request wait timeout exceeded" error message)
+* Improvement: More stable connections with M2E Pro servers (connect time was reduced)
+* Improvement: More friendly and convenient installation and configuration Wizards
+* Improvement: Performance was increased during Synchronization and List/Relist/... actions
+* Improvement: [eBay] The note about UPC/EAN/ISBN requirements for selected Primary Category was added
+* Improvement: [eBay] UPC/EAN/ISBN/MPN identifiers for each Variation of the Item
+* Improvement: [eBay] Validation of not more than 25 Item Specifics for each Primary Category
+* Improvement: [eBay] Price for Fixed and Auction can be set separatelly if type is pulled from attribute
+* Improvement: [eBay] 3rd Party Listings / Parts Compatibility / Feedbacks data are hidden if they are disabled
+* Improvement: [eBay] Track changes of "images" and "media_gallery" Attributes in the Custom Description
+* Improvement: [eBay] The marketplaces were grouped by Parts of the Worlds
+* Fix: "Access Denied" message on the Amazon and Rakuten.com channels
+* Fix: [eBay] Useless revises of the Auction Items if there was a price bid on Channel
+* Fix: [eBay] Terapeak widget did not work if Search or Reset Filter of the grid was performed
+* Fix: [eBay] View Mode "Translation" was not shown if there were no any Translations of Products Data
+* Fix: [eBay] Payment transactions were not created in Magento during Magento Order creation
+* Fix: [eBay] Image Gallery was not added in the Custom Description if a customized theme has been chosen in Magento
+* Fix: [eBay] Fatal error if Listing Type source is Attribute and the value in it has wrong or empty value
+* Fix: [eBay] Empty shipping services dropdown for some marketplaces (for example Ireland)
+* Fix: [Amazon] Empty titles of 3rd Party Listings can be received in another way
+* Fix: [Amazon] ISBN/UPC/EAN search can return only one Product but there are several of them
+* Fix: [Amazon] Shipping/Package/Item weight or volume is not sent for Parent Products if they are not filled
+* Fix: [Amazon] Fatal error during sort of Amazon Orders by Promotion Amount column
+* Fix: [Amazon] Incorrect currency was shown on Amazon Order Page for Pending and Cancelled orders
+* Fix: [Amazon] Simple/Single Products could be listed with zero Quantity
+* Fix: [Amazon] Memory leak during the process of Parent/Child Products management
+* Fix: [Amazon / Rakuten.com] "Cannot retrieve entity config: M2ePro/Array" error in Orders Log
+* Fix: [Amazon/Rakuten.com] "Relist when Stopped Manually" feature did not work correctly (item could be relisted)
+* Fix: [Amazon/Rakuten.com] Undefined value instead of Default Channel name during installation wizard
+* Removed: Ability to disable / enable Orders/Feedbacks/3rd Party Listings synchronization, only for certain account
+* Removed: [eBay] GTIN from Description Policy (deprecated feature on eBay)
+* Removed: [eBay] "List if no Product" from Description Policy (deprecated feature on eBay)
+
 * 6.3.3 (r8915) (14/06/2015)
 
 * Added: Ability to set the value of Price Deviation in Synchronization Template (optimization)

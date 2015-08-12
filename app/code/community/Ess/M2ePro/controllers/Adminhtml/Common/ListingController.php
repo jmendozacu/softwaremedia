@@ -43,16 +43,17 @@ class Ess_M2ePro_Adminhtml_Common_ListingController
             ->addJs('M2ePro/Listing/Other/MappingHandler.js')
             ->addJs('M2ePro/Listing/Other/RemovingHandler.js')
             ->addJs('M2ePro/Listing/Other/UnmappingHandler.js');
-            ;
 
         $this->_initPopUp();
+
+        $this->setComponentPageHelpLink('Listings+Overview');
 
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings/listing');
+        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/listings');
     }
 
     //#############################################

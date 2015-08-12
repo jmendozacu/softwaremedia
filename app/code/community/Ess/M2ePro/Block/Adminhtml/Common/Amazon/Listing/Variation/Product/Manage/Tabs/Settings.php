@@ -23,6 +23,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
 
     protected $listingProductId;
 
+    // ####################################
+
     /**
      * @param mixed $listingProductId
      * @return $this
@@ -109,9 +111,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Variation_Product_Manage_
      */
     public function getMatcherAttributes()
     {
-        if(empty($this->matcherAttributes)) {
+        if (empty($this->matcherAttributes)) {
             $this->matcherAttributes = Mage::getModel('M2ePro/Amazon_Listing_Product_Variation_Matcher_Attribute');
-            $this->matcherAttributes->setMarketplaceId($this->getListingProduct()->getListing()->getMarketplaceId());
             $this->matcherAttributes->setMagentoProduct($this->getListingProduct()->getMagentoProduct());
             $this->matcherAttributes->setDestinationAttributes($this->getDestinationAttributes());
         }
@@ -192,6 +193,19 @@ HTML;
         $this->calculateWarnings();
 
         return parent::_beforeToHtml();
+    }
+
+    protected function _toHtml()
+    {
+        $vocabularyAttributesBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_common_amazon_listing_variation_product_vocabularyAttributesPopup'
+        );
+
+        $vocabularyOptionsBlock = $this->getLayout()->createBlock(
+            'M2ePro/adminhtml_common_amazon_listing_variation_product_vocabularyOptionsPopup'
+        );
+
+        return $vocabularyAttributesBlock->toHtml() . $vocabularyOptionsBlock->toHtml() . parent::_toHtml();
     }
 
     // ###########################################
@@ -288,10 +302,24 @@ HTML;
             return array();
         }
 
-        $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
-        $detailsModel->setMarketplaceId($this->getListingProduct()->getListing()->getMarketplaceId());
+        $marketPlaceId = $this->getListingProduct()->getListing()->getMarketplaceId();
 
-        return $this->channelThemes = $detailsModel->getVariationThemes($descriptionTemplate->getProductDataNick());
+        $detailsModel = Mage::getModel('M2ePro/Amazon_Marketplace_Details');
+        $detailsModel->setMarketplaceId($marketPlaceId);
+
+        $channelThemes = $detailsModel->getVariationThemes($descriptionTemplate->getProductDataNick());
+
+        $variationHelper = Mage::helper('M2ePro/Component_Amazon_Variation');
+        $themesUsageData = $variationHelper->getThemesUsageData();
+        $usedThemes = array();
+
+        foreach ($themesUsageData[$marketPlaceId] as $theme => $count) {
+            if (!empty($channelThemes[$theme])) {
+                $usedThemes[$theme] = $channelThemes[$theme];
+            }
+        }
+
+        return $this->channelThemes = array_merge($usedThemes, $channelThemes);
     }
 
     public function getChannelThemeAttr()

@@ -18,13 +18,14 @@ class Ess_M2ePro_Adminhtml_Common_TemplateController
         $this->getLayout()->getBlock('head')->addJs('M2ePro/Plugin/DropDown.js')
             ->addCss('M2ePro/css/Plugin/DropDown.css');
 
+        $this->setComponentPageHelpLink('Policies');
+
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/templates/selling_format') &&
-               Mage::getSingleton('admin/session')->isAllowed('m2epro_common/templates/synchronization');
+        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
     //#############################################
@@ -145,4 +146,6 @@ class Ess_M2ePro_Adminhtml_Common_TemplateController
         return $type == Ess_M2ePro_Block_Adminhtml_Common_Template_Grid::TEMPLATE_SELLING_FORMAT ?
             'SellingFormat' : ucfirst($type);
     }
+
+    //#############################################
 }

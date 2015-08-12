@@ -19,12 +19,14 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_AccountController
              ->setCanLoadExtJs(true)
              ->addJs('M2ePro/Common/Amazon/AccountHandler.js');
 
+        $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Accounts');
+
         return $this;
     }
 
     protected function _isAllowed()
     {
-        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration/account');
+        return Mage::getSingleton('admin/session')->isAllowed('m2epro_common/configuration');
     }
 
     //#############################################

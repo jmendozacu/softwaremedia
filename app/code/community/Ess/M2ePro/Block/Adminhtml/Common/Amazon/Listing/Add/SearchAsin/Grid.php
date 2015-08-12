@@ -13,6 +13,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_SearchAsin_Grid
     const SEARCH_SETTINGS_STATUS_NONE = 'none';
     const SEARCH_SETTINGS_STATUS_COMPLETED = 'completed';
 
+    // ####################################
+
     public function __construct()
     {
         parent::__construct();
@@ -385,12 +387,17 @@ HTML;
                 );
                 $productTitle = Mage::helper('M2ePro')->escapeJs($productTitle);
 
-                $linkTxt = Mage::helper('M2ePro')->__('Choose ASIN/ISBN');
+                $linkTxt = Mage::helper('M2ePro')->__('choose one of the Results');
+
+                $linkHtml = <<<HTML
+<a href="javascript:void(0)"
+    onclick="ListingGridHandlerObj.productSearchHandler.openPopUp(1,'{$productTitle}',{$lpId})">{$linkTxt}</a>
+HTML;
 
                 $msg = Mage::helper('M2ePro')->__('Action Required');
                 $tip = Mage::helper('M2ePro')->__(
-                    'Please choose one of the Results that were found by %type% "%value%"',
-                    $this->prepareSearchType($searchData['type']), $searchData['value']
+                    'Please %link% that were found by %type% "%value%"',
+                    $linkHtml, $this->prepareSearchType($searchData['type']), $searchData['value']
                 );
 
                 return <<<HTML
@@ -399,9 +406,7 @@ HTML;
 <span class="tool-tip-message tip-left" style="left: 528px; top: 249px; display: none; min-width: 230px;">
     <img src="{$skinUrl}/images/help.png">
     <span>{$tip}</span>
-</span><br/>
-<a href="javascript:;" title="{$linkTxt}"
-   onclick="ListingGridHandlerObj.productSearchHandler.openPopUp(1,'{$productTitle}',{$lpId})">{$linkTxt}</a>
+</span>
 HTML;
         }
 
@@ -466,6 +471,18 @@ HTML;
 <a href="javascript: void(0);" title="{$tip}">
     <img src="{$iconSrc}" alt="">
 </a>
+HTML;
+        }
+        // ---------------------------------
+
+        // ---------------------------------
+        if ($searchSettingsStatus == Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_ACTION_REQUIRED) {
+
+            $linkTxt = Mage::helper('M2ePro')->__('Choose ASIN/ISBN');
+
+            return <<<HTML
+<a href="javascript:;" title="{$linkTxt}"
+   onclick="ListingGridHandlerObj.productSearchHandler.openPopUp(1,'{$productTitle}',{$lpId})">{$linkTxt}</a>
 HTML;
         }
         // ---------------------------------
