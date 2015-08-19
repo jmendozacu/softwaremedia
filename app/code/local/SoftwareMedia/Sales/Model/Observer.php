@@ -10,7 +10,7 @@ class SoftwareMedia_Sales_Model_Observer {
 			$lastNote = Mage::getModel('customernotes/notes')->getCollection()->addFieldToFilter('customer_id',$customerId)->addFieldToFilter('static','1');
 			
 			foreach($lastNote as $note) {
-				$order->addStatusHistoryComment("Static Note (" . $note->getNote())->setAdmin($note->getUsername() . ")");
+				$order->addStatusHistoryComment("Static Note (" . $note->getNote())->setAdmin($note->getUsername() . ")")->setPriority(3);
 			}
 		}
 			
