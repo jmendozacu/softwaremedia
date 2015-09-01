@@ -9,7 +9,10 @@ class EmjaInteractive_Accountreceivable_Adminhtml_AccountreceivableController ex
 		
 		return $this;
 	}
-	
+	protected function _isAllowed()
+    {
+        return true;
+    }
 	public function indexAction() {
         $this->_title($this->__('Reports'))
              ->_title($this->__('Account Receivables'));
