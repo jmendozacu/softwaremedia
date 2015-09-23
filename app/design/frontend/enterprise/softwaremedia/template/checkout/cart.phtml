@@ -1,4 +1,4 @@
-<div class="cart-new">
+<div class="cart cart-new">
     <div class="page-title title-buttons">
         <h1><?php echo $this->__('Shopping Cart') ?></h1>
 		<?php if (!$this->hasError()): ?>
@@ -11,8 +11,7 @@
 	<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
 	<?php echo $this->getChildHtml('form_before') ?>
     <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
-		<?php echo $this->getBlockHtml('formkey'); ?>
-		<input type="hidden" name="return_url" value="<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>" />
+        <?php echo $this->getBlockHtml('formkey'); ?>
         <fieldset>
 			<div class="hide-mobile">
 				<table id="shopping-cart-table" class="data-table cart-table">
@@ -62,8 +61,7 @@
 
 							<td colspan="7" class="cart_subtotal a-right">
 								<div class="f-left">
-									<button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
-
+								<button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('Update Shopping Cart'); ?>" class="button btn-update"><span><span><?php echo $this->__('Update Shopping Cart'); ?></span></span></button>
 								</div>
 								<label><?php echo $this->__('Subtotal: '); ?></label>
 								<span>
@@ -110,58 +108,9 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="hide-tablet hide-desktop">
-				<table class="data-table cart-table show-mobile" style="display: table">
-					<thead>
-						<tr>
-							<th colspan="2">Description</th>
-						</tr>
-					</thead>
-					<tfoot>
-						<tr>
-							<td colspan="2" class="cart_subtotal a-right">
-
-								<button type="submit" name="update_cart_action" value="update_qty" title="<?php echo $this->__('reset Shopping Cart'); ?>" class="button btn-refresh" id="reset_cart_button"><span><span><?php echo $this->__('Refresh Cart'); ?></span></span></button>
-								<label><?php
-									echo $this->__('Subtotal: ');
-									echo $_coreHelper->currency(Mage::getSingleton('checkout/cart')->getQuote()->getSubtotal(), true, false);
-									?></label>
-							</td>
-						</tr>
-					</tfoot>
-					<tbody>
-						<?php $item_renderer = $this->getItemRenderer('default'); ?>
-						<?php foreach ($this->getItems() as $_item): ?>
-							<?php $item_renderer->setItem($_item); ?>
-							<tr>
-								<td><img height="75" width="75" src="<?php echo $item_renderer->getProductThumbnail(); ?>" /></td>
-								<td>
-									<a href="<?php echo $item_renderer->getProductUrl(); ?>"><?php echo $item_renderer->getProductName(); ?></a>
-									<div>
-										<strong>Quantity:</strong> <input name="cart[<?php echo $_item->getId(); ?>][qty]" type="number" value="<?php echo $_item->getQty(); ?>" class="input-text qty"/>
-									</div>
-									<div>
-										<span><strong>Unit Price:</strong> $<?php echo $_item->getPrice(); ?></span>
-									</div>
-									<div>
-										<span><strong>Subtotal:</strong> $<?php echo $_item->getPrice() * $_item->getQty(); ?></span>
-									</div>
-								</td>
-							</tr>
-						<?php endforeach ?>
-					</tbody>
-				</table>
-			</div>
             <script type="text/javascript">
 				decorateTable('shopping-cart-table');
 
-				$$('input[name^=cart').invoke('observe', 'change', function() {
-					var val = $(this).value;
-
-					$$('input[name^=cart').each(function(name, index) {
-						$(name).value = val;
-					});
-				});
 			</script>
         </fieldset>
     </form>
