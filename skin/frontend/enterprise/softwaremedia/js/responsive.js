@@ -142,26 +142,7 @@ rInit = function() {
 		// MISC General HTML Adjstments
 		function generalAdjustmentsM() {
 
-			// Cart Page
-			jQuery('#shopping-cart-table tbody tr').each(function() {
-				// Copy and move cart table HTML to Mobile cart
-				var cart_image = jQuery(this).find('td:eq(0)').html();
-				var cart_name = jQuery(this).find('td:eq(1)').html();
-				var cart_price = jQuery(this).find('td:eq(2)').html();
-				var cart_qty = jQuery(this).find('td:eq(3)').html();
-				var cart_sub = jQuery(this).find('td:eq(4)').html();
-				var cart_remove = jQuery(this).find('td:eq(5)').html();
-				var cart_html = '<div class="mobile-cart-row"><div class="mobile-row-col1"><div class="mobile-padding">' + cart_image + '</div></div><div class="mobile-row-col2"><div class="mobile-padding"><div class="mobile-name">' + cart_name + '</div><div class="mobile-price"><span>Unit Price:</span> ' + cart_price + '</div><div class="mobile-qty"><span>Qty:</span> ' + cart_qty + '</div><div class="mobile-sub-remove"><div class="mobile-sub"><span>Sub Total:</span> ' + cart_sub + '</div><div class="mobile-remove data-table">' + cart_remove + '</div></div></div></div></div>';
-				jQuery('.mobile-cart-append .mobile-cart-rows').append(cart_html);
-			});
 
-			// Move Cart Footer HTML to Mobile Cart
-			var cart_foot = jQuery('#shopping-cart-table tfoot td').html();
-			//jQuery('.mobile-cart-subtotal').append(cart_foot+'<div class="clear"></div>');
-//    		jQuery('#shopping-cart-table').remove();
-
-			// Account Adjustments
-			jQuery('.account-template .col2-left-layout .col-left').insertBefore('.account-template .col2-left-layout .col-main');
 
 		}
 
