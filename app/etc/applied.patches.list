@@ -122,3 +122,12 @@ patching file app/code/core/Mage/Catalog/Model/Product/Api/V2.php
 patching file app/design/frontend/enterprise/default/template/giftregistry/search/form.phtml
 
 
+2015-09-30 19:40:37 UTC | 
+
+
+
+2015-09-30 19:42:45 UTC | SUPEE-3176 | EE_1.13.0.1 | v1 | e1b1fd0eedb685ba0efe9bcba24e6b463fbb26ce | Thu Apr 10 15:51:04 2014 +0300 | v1.13.0.1..HEAD
+patching file app/code/core/Mage/Catalog/Model/Resource/Category/Flat/Collection.php
+patching file app/code/core/Mage/Catalog/Model/Resource/Category/Tree.php
+
+
