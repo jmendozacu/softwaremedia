@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<swmreports_adminhtml_noteoverview_index>
+		<reference name="content">
+			<block type="swmreports/adminhtml_noteoverview_grid" name="noteoverview" template="reports/notegrid.phtml" />
+		</reference>
+	</swmreports_adminhtml_noteoverview_index>
+</layout>

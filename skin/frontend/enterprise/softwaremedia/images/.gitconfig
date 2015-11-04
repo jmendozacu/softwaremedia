@@ -1,0 +1,12 @@
+[user]
+	name = Akasirus
+	email = jlosee@softwaremedia.com
+[core]
+	excludesfile = /Users/jlosee/.gitignore
+[filter "media"]
+	required = true
+	clean = git media clean %f
+	smudge = git media smudge %f
+[alias]
+	add-commit = !git add -A && git commit
+	ac = !git add -A && git commit

@@ -3,7 +3,7 @@
 //if ($_SERVER['REMOTE_ADDR'] !== '<your server ip address') {
 //  die("You are not a cron job!");
 //}
-require "/var/www/magento/htdocs/app/Mage.php";
+require "/var/www/www.softwaremedia.com/app/Mage.php";
 // wget -O - http://<www.example.com>/Cron_Import.php/?files=3XSEEEE.csv
   umask(0);
 
@@ -12,7 +12,7 @@ require "/var/www/magento/htdocs/app/Mage.php";
 
   $profileId = 13; //put your profile id here
   
-  $filename =  'cpc_export.log';  
+  $logFileName =  'cpc_export.log';  
   $recordCount = 0;
 
   Mage::log("Import Started",null,$logFileName);  

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<swmreports_adminhtml_customernoteorder_index>
+		<reference name="content">
+			<block type="swmreports/adminhtml_customernoteorder_grid" name="customernote" template="reports/grid.phtml" />
+		</reference>
+	</swmreports_adminhtml_customernoteorder_index>
+</layout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<swmreports_adminhtml_peachtree_index>
+		<reference name="content">
+			<block type="swmreports/adminhtml_peachtree_amazon_grid" name="amazon" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_buy_grid" name="buy" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_bestbuy_grid" name="bestbuy" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_online_grid" name="online" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_pending_grid" name="pending" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_extra_grid" name="freight" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_discount_grid" name="discount" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_closed_grid" name="closed" template="reports/grid.phtml" />
+			<block type="swmreports/adminhtml_peachtree_total_grid" name="total" template="reports/grid.phtml" />
+		</reference>
+	</swmreports_adminhtml_peachtree_index>
+</layout>
