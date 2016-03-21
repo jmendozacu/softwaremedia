@@ -2,11 +2,11 @@
 .cpsubholder{
     display: inline-block;
     margin: 0 auto;
-	text-align: left:
+	text-align: left !important;
 }
 .level0 .software {
 	text-align: center !important;
 }
 .software .categories-menu {
-    width: 42%;
+    width: 42% !important;
 }
