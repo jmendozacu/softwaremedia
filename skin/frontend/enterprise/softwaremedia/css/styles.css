@@ -3273,7 +3273,7 @@ a.addthis_button_expanded {padding: 0 !important;margin: 0 !important;}
 .footer-top {float: left;width: 100%;border-bottom: 2px solid #fff;padding: 0 0 10px 0}
 .footer-top .free-shipping {float: left;width: 495px; padding: 0 0 0 128px;line-height: 44px; background: url("../images/car-icon.png") no-repeat 27px center;color: #fff;font-size: 35px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;text-transform: uppercase;text-decoration: none;}
 .footer-top .free-shipping:hover {color: #D26734}
-.footer-top .footer-newsletter {float: left;width: 495px;}
+.footer-top .footer-newsletter {margin:auto;width: 495px;}
 .footer-newsletter .text {float: left;padding: 0 0 2px 0; font-size: 20px;font-family: 'Carrois Gothic', 'Duru Sans',sans-serif; font-style: normal; font-weight: 400;text-transform: uppercase;width: 276px;}
 .footer-newsletter .social-footer {float: left}
 .footer-newsletter .social-footer a {float: left;width: 26px;height: 26px;background: url(../images/social-icon.png) no-repeat;margin: 0 4px 0 0;text-indent: -9999px;}
