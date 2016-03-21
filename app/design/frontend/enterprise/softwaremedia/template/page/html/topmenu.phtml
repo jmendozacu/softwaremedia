@@ -66,9 +66,10 @@ $categoryIds = implode(',',$temp);
 						<a class="level-top"><span><?php echo $sub_cat->getName() ?></span></a>
 						<?php if ($sub_cat->getName() == 'Download'): ?>
 							<div class="sub-navigation software download" style="display: none">
+							<div class="cpsubholder">
 							<?php else: ?>
 								<div class="sub-navigation software" style="display: none">
-
+								<div class="cpsubholder">
 								<?php endif; ?>
 								<!-- Brand-->
 								<?php if ($sub_cat->getName() == 'Software'): ?>
@@ -240,7 +241,7 @@ $categoryIds = implode(',',$temp);
 											</dd>
 										</dl>
 										<!-- End.Other-->
-										</div>
+										</div></div>
 									<?php else: ?>
 										<a class="level-top" href="<?php echo $sub_cat->getUrl() ?>">
 											<span><?php echo $sub_cat->getName() ?></span>
