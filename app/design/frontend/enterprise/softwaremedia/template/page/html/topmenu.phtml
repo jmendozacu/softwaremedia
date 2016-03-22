@@ -35,7 +35,6 @@
 $root_id = Mage::app()->getStore()->getRootCategoryId();
 $root_category = Mage::getModel('catalog/category')->load($root_id);
 $brand_category = Mage::getModel('catalog/category')->load(66);
-$categoryIds = $root_category->getChildren();
 $categorySoftware = $root_category->getChildren() == '51';
 
 $attributeCode = 'brand';
@@ -46,8 +45,16 @@ $_attributes = Mage::getResourceModel('eav/entity_attribute_collection')
 $_attribute = $_attributes->getFirstItem()->setEntity($_product->getResource());
 $attributeOptions = $_attribute->getSource()->getAllOptions(false);
 $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getStore()->getRootCategoryId());
-?>
+$baseUrl = Mage::getBaseUrl();
+$categoryIds = $root_category->getChildren();
 
+// move Services category between "Licensing" and "Top Deals"
+	$temp = explode(',', $categoryIds);
+	$serviceId = array_pop($temp);
+	array_splice($temp,2,0,$serviceId);
+
+$categoryIds = implode(',',$temp);
+?>
 
 <div class="nav-container">
     <ul id="nav">
@@ -59,9 +66,10 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
 						<a class="level-top"><span><?php echo $sub_cat->getName() ?></span></a>
 						<?php if ($sub_cat->getName() == 'Download'): ?>
 							<div class="sub-navigation software download" style="display: none">
+							<div class="cpsubholder">
 							<?php else: ?>
 								<div class="sub-navigation software" style="display: none">
-
+								<div class="cpsubholder">
 								<?php endif; ?>
 								<!-- Brand-->
 								<?php if ($sub_cat->getName() == 'Software'): ?>
@@ -114,8 +122,26 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
 								<!-- End.Brand-->
 
 								<!-- Categories-->
+								<?php if ($sub_cat->getName() == 'Services'): ?>
+									
+									<dl class="categories-menu">
+									<dt>Services</dt>
+										<dd class="categories-menu-ul software-list">
+<ol>
+									       <li class="category-menu-title">
+											<a href="<?php echo $baseUrl ?>/office-365-migration-services"><span>Microsoft Office 365 Deployment & Migration Services</span></a>
+									       </li>
+									       <li class="category-menu-title">
+											<a href="<?php echo $baseUrl ?>/microsoft-cloud-solution-provider"><span>Microsoft Cloud Solution Provider</span></a>
+									       </li>
+									       <li class="category-menu-title">
+											<a href="<?php echo $baseUrl ?>/microsoft-software-asset-management-review"><span>Microsoft Software Asset Management Review</span></a>
+									       </li>
+</ol>
+</dd>
+									</dl>
 
-								<?php if ($sub_cat->getName() == 'Software'): ?>
+								<?php elseif ($sub_cat->getName() == 'Software'): ?>
 									<dl class="categories-menu">
 										<dt>software</dt>
 										<dd class="categories-menu-ul software-list">
@@ -205,6 +231,8 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
 											<dd class="other-menu-ul">
 												<?php if ($sub_cat->getName() == 'Software'): ?>
 													<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('other-dropdown-software')->toHtml(); ?>
+												<?php elseif ($sub_cat->getName() == 'Services'): ?>
+													<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('other-dropdown-services')->toHtml(); ?>
 												<?php elseif ($sub_cat->getName() == 'Licensing'): ?>
 													<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('other-dropdown-licensing')->toHtml(); ?>
 												<?php elseif ($sub_cat->getName() == 'Download'): ?>
@@ -213,7 +241,7 @@ $children = Mage::getModel('catalog/category')->getCategories(Mage::app()->getSt
 											</dd>
 										</dl>
 										<!-- End.Other-->
-										</div>
+										</div></div>
 									<?php else: ?>
 										<a class="level-top" href="<?php echo $sub_cat->getUrl() ?>">
 											<span><?php echo $sub_cat->getName() ?></span>
