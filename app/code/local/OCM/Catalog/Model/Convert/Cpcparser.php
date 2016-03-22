@@ -548,7 +548,7 @@ class OCM_Catalog_Model_Convert_Cpcparser
 			$row['description_stripped'] = substr($row['description_stripped'],0,990);
 			
 			if (!$row['cpc_price'])
-				$row['cpc_price'] = $row['price'];
+				$row['cpc_price'] = Mage::helper('core')->currency($row['price'], true, false);
 				
 			$params = array('_ignore_category'=>true);
 
