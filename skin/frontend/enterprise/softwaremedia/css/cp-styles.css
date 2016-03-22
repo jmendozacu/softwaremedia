@@ -1,6 +1,5 @@
 
-.cpsubholder{
-    display: inline-block;
+.software .cpsubholder{
     margin: 0 auto;
 	text-align: left !important;
 }
@@ -9,4 +8,8 @@
 }
 .software .categories-menu {
     width: 42% !important;
+}
+
+#nav li:first-child.level-top .software .categories-menu {
+    width: 24% !important;
 }
